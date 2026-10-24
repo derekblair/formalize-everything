@@ -7,8 +7,8 @@
 > programme's supported wording: **"no complete book-ordered Lean formalization found"**
 > in the dated, documented searches behind these reports. `SYNTHESIS.md` supersedes
 > this report where they conflict, and `SYNTHESIS.md` §6 already flags this phrasing.
-> The only other change in this revision is one trailing newline at EOF, aligning the
-> file with the canonical Dropbox copy.
+> The body of this report below is byte-identical to the canonical Dropbox copy;
+> this header is the only change in this revision.
 >
 > ---
 
