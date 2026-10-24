@@ -254,4 +254,3 @@ Format: **rank. Title, author, edition** — field · scope estimate · existing
 - **Training-knowledge-only claims** (flagged inline where load-bearing): Coq information-theory library (Affeldt et al.), Isabelle AFP logic/computability depth. Everything else in the report cites a live check.
 
 **Confidence summary:** high confidence on "already done" do-not entries (all evidence-based, cited); high confidence on the top-3 absence claims (multiple independent registries + searches + catalogues all empty); medium confidence on Mathlib readiness details (verified spot-checks over a fast-moving library — re-run Loogle checks at project start); medium confidence on effort classes (extrapolated, not measured).
-
