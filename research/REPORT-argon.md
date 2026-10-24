@@ -1,3 +1,17 @@
+> **Editorial note (added 2026-10-24, revision of PR #1 after independent review — VERDICT: FAIL, Checks 1 & 3):**
+> This is a raw lane report, preserved as a historical artifact. Its absence and novelty
+> phrasing inside the report body is the lane's own unedited wording and is **not** the
+> programme's claim. Where the body says e.g. "never been formalized", "nobody has",
+> "for the first time in Lean", "Not done anywhere", "100% untouched", or
+> "completely unformalized in any proof assistant", read it as bounded by the
+> programme's supported wording: **"no complete book-ordered Lean formalization found"**
+> in the dated, documented searches behind these reports. `SYNTHESIS.md` supersedes
+> this report where they conflict, and `SYNTHESIS.md` §6 already flags this phrasing.
+> The only other change in this revision is one trailing newline at EOF, aligning the
+> file with the canonical Dropbox copy.
+>
+> ---
+
 # What Next for `formalize-everything`? A Landscape Audit & Target Selection Report
 
 **Date:** October 21, 2026  
@@ -376,3 +390,4 @@ All existing-formalization checks and Mathlib gap analyses were executed via liv
 | **Mathlib4 Module Paths & Existing Theorem Coverage** | Live GitHub tree inspection (`gh api repos/leanprover-community/mathlib4/contents/...`) on `master` (Oct 21, 2026) | **Very High (99%)** | Every `Mathlib/...` directory and `.lean` file cited in Sections 3 and 4 was verified live against the current `mathlib4` repository tree. |
 | **Textbook Chapter Structures, Theorem Numbers, and Main-Text Node Estimates** | Cross-referenced against `rudin-lean` (329 nodes), `TauCetiRoadmap` (`baby_rudin.json`, `hartshorne.json`, `evans_pde.json`), `algebraic-combinatorics` (340 targets), and analyst knowledge of the printed editions | **High (90%)** | While exact theorem numbers (e.g., Atiyah–Macdonald Thm 4.5, 4.10, 11.14; Williams Thm 10.10, 11.5, 14.12; Serre Thm 3, 7, 12, 17, 19) are exact, the total main-text node estimates per book (e.g., ~265 for Atiyah–Macdonald, ~215 for Williams, ~220 for Serre) carry a $\pm 15\%$ variance depending on whether unnumbered Definitions/Remarks in prose are split into standalone node declarations during Phase-0 extraction. |
 | **Effort Multipliers (Relative to Rudin PMA)** | Calibrated against `rudin-lean` actuals + Mathlib gap depth per chapter | **Medium–High (85%)** | Effort depends not only on node count and Mathlib readiness, but also on how well current LLM-assisted proof workflows (`Aristotle`, `Leanstral`, `Claude`) handle specific domains (algebraic diagram chases vs. geometric epsilon-delta manifolds). |
+

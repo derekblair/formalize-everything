@@ -1,3 +1,17 @@
+> **Editorial note (added 2026-10-24, revision of PR #1 after independent review — VERDICT: FAIL, Checks 1 & 3):**
+> This is a raw lane report, preserved as a historical artifact. Its absence and novelty
+> phrasing inside the report body is the lane's own unedited wording and is **not** the
+> programme's claim. Where the body says e.g. "never been formalized", "nobody has",
+> "for the first time in Lean", "Not done anywhere", "100% untouched", or
+> "completely unformalized in any proof assistant", read it as bounded by the
+> programme's supported wording: **"no complete book-ordered Lean formalization found"**
+> in the dated, documented searches behind these reports. `SYNTHESIS.md` supersedes
+> this report where they conflict, and `SYNTHESIS.md` §6 already flags this phrasing.
+> The only other change in this revision is one trailing newline at EOF, aligning the
+> file with the canonical Dropbox copy.
+>
+> ---
+
 # What should formalize-everything formalize next?
 
 **Research report for the formalize-everything programme · compiled 2026-10-21**
@@ -240,3 +254,4 @@ Format: **rank. Title, author, edition** — field · scope estimate · existing
 - **Training-knowledge-only claims** (flagged inline where load-bearing): Coq information-theory library (Affeldt et al.), Isabelle AFP logic/computability depth. Everything else in the report cites a live check.
 
 **Confidence summary:** high confidence on "already done" do-not entries (all evidence-based, cited); high confidence on the top-3 absence claims (multiple independent registries + searches + catalogues all empty); medium confidence on Mathlib readiness details (verified spot-checks over a fast-moving library — re-run Loogle checks at project start); medium confidence on effort classes (extrapolated, not measured).
+
