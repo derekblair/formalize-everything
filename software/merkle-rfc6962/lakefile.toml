@@ -1,0 +1,6 @@
+name = "merkle-rfc6962"
+version = "0.1.0"
+defaultTargets = ["Merkle"]
+
+[[lean_lib]]
+name = "Merkle"
