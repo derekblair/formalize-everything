@@ -23,13 +23,16 @@ proof-shaped: digit ranges in `dec-octet`, the `1*4` bound in `h16`, and
 the `*k` bounds on IPv6 compression prefixes. Those side conditions are
 part of the rule as written, so they are fields of the tree.
 
-Two fidelity points that are easy to get wrong from memory (both checked
-against the collected ABNF in Appendix A of the RFC):
+Three fidelity points that are easy to get wrong from memory (all
+checked against the collected ABNF in Appendix A of the RFC):
 
 * `IP-literal = "[" ( IPv6address / IPvFuture ) "]"` — there is **no**
   zone-id alternative; `IPv6addrz` is RFC 6874, not RFC 3986.
 * The sixth `IPv6address` alternative ends in `h16 ":" ls32`, not in
   `1( h16 ":" ) ls32`.
+* The `IPvFuture` marker `"v"` is case-insensitive (§3.2.2 says so in
+  words), so the tree preserves the marker's case; a renderer that
+  hardcoded `'v'` would silently drop every `V…` literal.
 -/
 
 /-- A nonempty list of items: the ABNF repetition `1*`. -/
@@ -79,6 +82,12 @@ def UserinfoChar.render : UserinfoChar → List Char
   | .subDelims c _ => [c]
   | .colon => [':']
 
+/-- `userinfo = *( unreserved / pct-encoded / sub-delims / ":" )` -/
+def Userinfo := List UserinfoChar
+
+def Userinfo.render (u : Userinfo) : List Char :=
+  u.flatMap UserinfoChar.render
+
 /-- One character of `reg-name = *( unreserved / pct-encoded / sub-delims )`. -/
 inductive RegNameChar where
   | unreserved (c : Char) (h : IsUnreserved c)
@@ -89,6 +98,12 @@ def RegNameChar.render : RegNameChar → List Char
   | .unreserved c _ => [c]
   | .pctEncoded p => p.render
   | .subDelims c _ => [c]
+
+/-- `reg-name = *( unreserved / pct-encoded / sub-delims )` -/
+def RegName := List RegNameChar
+
+def RegName.render (r : RegName) : List Char :=
+  r.flatMap RegNameChar.render
 
 /-- One character of
 `segment-nz-nc = 1*( unreserved / pct-encoded / sub-delims / "@" )`. -/
@@ -273,13 +288,30 @@ def IPvFutureChar.render : IPvFutureChar → List Char
   | .subDelims c _ => [c]
   | .colon => [':']
 
-/-- `IPvFuture = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )` -/
+/-- The version marker of an `IPvFuture`. The ABNF writes it as the
+literal `"v"`, but ABNF literals are case-insensitive and §3.2.2 says
+so in words — an IP-literal starts with `"v"` (case-insensitive) — so
+both spellings belong to the language, and the tree records which one
+it derives. (This is the only alphabetic literal in Appendix A: every
+other quoted literal there is punctuation or a digit string, neither
+of which has case variants.) -/
+inductive IPvFutureMarker where
+  | lower
+  | upper
+
+def IPvFutureMarker.render : IPvFutureMarker → List Char
+  | .lower => ['v']
+  | .upper => ['V']
+
+/-- `IPvFuture = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )`,
+with the marker taken case-insensitively, per §3.2.2. -/
 structure IPvFuture where
+  marker : IPvFutureMarker
   version : NEList HexDigChar
   rest : NEList IPvFutureChar
 
 def IPvFuture.render (f : IPvFuture) : List Char :=
-  'v' :: (f.version.render fun d => [d.1]) ++
+  f.marker.render ++ (f.version.render fun d => [d.1]) ++
     '.' :: (f.rest.render IPvFutureChar.render)
 
 /-- `IP-literal = "[" ( IPv6address / IPvFuture ) "]"`.
@@ -297,12 +329,12 @@ def IPLiteral.render : IPLiteral → List Char
 inductive Host where
   | ipLiteral (l : IPLiteral)
   | ipv4 (a : IPv4Address)
-  | regName (chars : List RegNameChar)
+  | regName (chars : RegName)
 
 def Host.render : Host → List Char
   | .ipLiteral l => l.render
   | .ipv4 a => a.render
-  | .regName cs => cs.flatMap RegNameChar.render
+  | .regName cs => cs.render
 
 /-! ## Authority -/
 
@@ -317,13 +349,13 @@ def Port.render (p : Port) : List Char :=
 
 /-- `authority = [ userinfo "@" ] host [ ":" port ]` -/
 structure Authority where
-  userinfo : Option (List UserinfoChar)
+  userinfo : Option Userinfo
   host : Host
   port : Option Port
 
 def Authority.render (a : Authority) : List Char :=
   (match a.userinfo with
-   | some u => u.flatMap UserinfoChar.render ++ ['@']
+   | some u => u.render ++ ['@']
    | none => []) ++
   a.host.render ++
   (match a.port with
@@ -341,9 +373,15 @@ def Segment.render (s : Segment) : List Char :=
 /-- `segment-nz = 1*pchar` -/
 def SegmentNZ := NEList PChar
 
+def SegmentNZ.render (s : SegmentNZ) : List Char :=
+  NEList.render PChar.render s
+
 /-- `segment-nz-nc = 1*( unreserved / pct-encoded / sub-delims / "@" )`
 (non-zero-length segment without any colon). -/
 def SegmentNZNC := NEList SegNZNCChar
+
+def SegmentNZNC.render (s : SegmentNZNC) : List Char :=
+  NEList.render SegNZNCChar.render s
 
 /-- `path-abempty = *( "/" segment )` -/
 def PathAbempty := List Segment
@@ -361,7 +399,7 @@ inductive PathAbsolute where
 def PathAbsolute.render : PathAbsolute → List Char
   | .empty => ['/']
   | .nonempty first rest =>
-      '/' :: (first.render PChar.render) ++
+      '/' :: (first.render) ++
         rest.flatMap fun s => '/' :: Segment.render s
 
 /-- `path-rootless = segment-nz *( "/" segment )` -/
@@ -370,7 +408,7 @@ structure PathRootless where
   rest : List Segment
 
 def PathRootless.render (p : PathRootless) : List Char :=
-  (p.first.render PChar.render) ++
+  (p.first.render) ++
     p.rest.flatMap fun s => '/' :: Segment.render s
 
 /-- `path-noscheme = segment-nz-nc *( "/" segment )` -/
@@ -379,7 +417,7 @@ structure PathNoscheme where
   rest : List Segment
 
 def PathNoscheme.render (p : PathNoscheme) : List Char :=
-  (p.first.render SegNZNCChar.render) ++
+  (p.first.render) ++
     p.rest.flatMap fun s => '/' :: Segment.render s
 
 /-- `path-empty = 0<pchar>` — exactly zero characters. -/

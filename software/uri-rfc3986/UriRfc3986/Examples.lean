@@ -555,7 +555,8 @@ theorem ref_http_g_render : ref_http_g.render = "http:g".toList := by decide
 
 §5.4 exercises only reg-name hosts. The trees below check the remaining
 `host` alternatives — IPv4, IP-literal over IPv6 (compressed and full),
-and a `userinfo`-bearing authority — plus a port and a percent-encoded
+IP-literal over IPvFuture (in both marker cases), and a
+`userinfo`-bearing authority — plus a port and a percent-encoded
 segment, so that every `host` constructor and the port option are
 covered by at least one `decide`-checked example. -/
 
@@ -603,19 +604,20 @@ def ipv6_unspecified : IPv6Address := .compressed7 none
 theorem ipv6_unspecified_render :
     ipv6_unspecified.render = "::".toList := by decide
 
-/-- The host `192.168.0.1`, an IPv4 address. Its octets exercise three of
-the five `dec-octet` alternatives: `"1" 2DIGIT` (192, 168), `DIGIT` (0),
-and `DIGIT` (1). -/
+/-- The host `192.168.0.250`, an IPv4 address. Its octets exercise three
+of the five `dec-octet` alternatives: `"1" 2DIGIT` (192, 168), `DIGIT`
+(0), and `"25" %x30-35` (250). -/
 def hostIPv4 : Host :=
   .ipv4 { o₁ := .oneHundred '9' '2' (by decide) (by decide),
           o₂ := .oneHundred '6' '8' (by decide) (by decide),
           o₃ := .single '0' (by decide),
-          o₄ := .single '1' (by decide) }
+          o₄ := .twoFifty '0' (by decide) }
 
-theorem hostIPv4_render : hostIPv4.render = "192.168.0.1".toList := by decide
+theorem hostIPv4_render :
+    hostIPv4.render = "192.168.0.250".toList := by decide
 
-/-- `http://192.168.0.1:8080/p?q#f` — IPv4 host, a present port, and all
-five components defined. -/
+/-- `http://192.168.0.250:8080/p?q#f` — IPv4 host, a present port, and
+all five components defined. -/
 def uri_ipv4 : URI :=
   { scheme := schemeHttp,
     hierPart := .authority
@@ -627,7 +629,7 @@ def uri_ipv4 : URI :=
     fragment := some [.pchar (u 'f')] }
 
 theorem uri_ipv4_render :
-    uri_ipv4.render = "http://192.168.0.1:8080/p?q#f".toList := by decide
+    uri_ipv4.render = "http://192.168.0.250:8080/p?q#f".toList := by decide
 
 /-- `http://[2001:db8::1]/x` — an IP-literal host. -/
 def uri_ipv6 : URI :=
@@ -669,3 +671,50 @@ def uri_pct : URI := httpURI [[pct '7' 'E', u 'u', u 's', u 'e', u 'r']]
 
 theorem uri_pct_render :
     uri_pct.render = "http://a/%7Euser".toList := by decide
+
+/-- The `IPvFuture` `v1.a`: version `1`, suffix `a`, lowercase marker. -/
+def ipvFutureLower : IPvFuture :=
+  { marker := .lower,
+    version := { head := ⟨'1', by decide⟩, tail := [] },
+    rest := { head := .unreserved 'a' (by decide), tail := [] } }
+
+/-- The `IPvFuture` `V1.a` — the same literal with the uppercase marker
+that §3.2.2 requires be accepted: the marker is case-insensitive, so
+this spelling is in the language exactly as the lowercase one is. -/
+def ipvFutureUpper : IPvFuture :=
+  { marker := .upper,
+    version := { head := ⟨'1', by decide⟩, tail := [] },
+    rest := { head := .unreserved 'a' (by decide), tail := [] } }
+
+theorem ipLiteral_ipvFuture_lower_render :
+    (IPLiteral.ipvFuture ipvFutureLower).render = "[v1.a]".toList := by
+  decide
+
+theorem ipLiteral_ipvFuture_upper_render :
+    (IPLiteral.ipvFuture ipvFutureUpper).render = "[V1.a]".toList := by
+  decide
+
+/-- `http://[v1.a]/` — a URI whose host is a lowercase-marker
+IPvFuture literal. -/
+def uri_ipvFuture_lower : URI :=
+  { scheme := schemeHttp,
+    hierPart := .authority
+      { userinfo := none, host := .ipLiteral (.ipvFuture ipvFutureLower),
+        port := none }
+      [segEmpty],
+    query := none, fragment := none }
+
+theorem uri_ipvFuture_lower_render :
+    uri_ipvFuture_lower.render = "http://[v1.a]/".toList := by decide
+
+/-- `http://[V1.a]/` — the uppercase-marker spelling of the same URI. -/
+def uri_ipvFuture_upper : URI :=
+  { scheme := schemeHttp,
+    hierPart := .authority
+      { userinfo := none, host := .ipLiteral (.ipvFuture ipvFutureUpper),
+        port := none }
+      [segEmpty],
+    query := none, fragment := none }
+
+theorem uri_ipvFuture_upper_render :
+    uri_ipvFuture_upper.render = "http://[V1.a]/".toList := by decide

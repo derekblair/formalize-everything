@@ -50,24 +50,33 @@ port (`none`) is a different tree from one with an empty port
 (`some []`, from `":"` followed by zero digits), exactly as the ABNF
 distinguishes them.
 
-## Prior art (checked 2026-10-26)
+## Prior art (checked 2026-10-26; the Std account corrected in review)
 
 A sweep of Lean libraries and of other proof assistants found:
 
-- **No RFC 3986 specification, parser, or theorem exists in Lean.**
-  Nothing in the Lean ecosystem states the RFC 3986 grammar as a spec,
-  let alone proves anything about it.
-- The one Lean URL library targets the **WHATWG** URL Standard — a
-  different, living-standard specification (forgiving parsing, a
-  mutable URL object) — and proves nothing about it.
+- **Lean's own standard library ships an RFC 3986-oriented URI
+  library**: `Std.Http.Data.URI`, part of the Lean v4.34.1 toolchain
+  this project pins. It provides *executable parsers* (`URI.parse?`,
+  `URIReference.parse?`) for a narrower, HTTP-oriented subset of the
+  syntax — its own documentation states that hosts are limited to
+  IPv4, bracketed IPv6, and DNS-style domain names (the full
+  `reg-name` syntax is not accepted) and that `IPvFuture` is
+  currently rejected. It contains no specification of the Appendix A
+  grammar and no proofs about the grammar or the parsers' fidelity
+  to it: it is a parsing library, not a formalization.
+- The one other Lean URL library targets the **WHATWG** URL
+  Standard — a different, living-standard specification (forgiving
+  parsing, a mutable URL object) — and proves nothing about it.
 - No mechanization of RFC 3986 was found in Coq, Isabelle, or Dafny
   either.
 
 So this is, as far as the sweep could determine, the first
-machine-checked statement of the RFC 3986 grammar in any proof
-assistant. (Adjacent work exists for other specifications and other
-assistants, and WHATWG formalizations exist elsewhere; neither is this
-grammar in Lean.)
+machine-checked *specification* of the complete RFC 3986 grammar in
+any proof assistant: all of Appendix A as derivation trees, including
+the complete `IPvFuture` alternative (both marker cases) that Std's
+parser rejects. (Adjacent work exists for other specifications and
+other assistants, and WHATWG formalizations exist elsewhere; neither
+is this grammar in Lean.)
 
 ## Coverage account
 
@@ -89,8 +98,9 @@ Appendix A is present:
   `reserved`, `gen-delims`, `sub-delims`, and the core rules `ALPHA`,
   `DIGIT`, `HEXDIG`.
 
-Four fidelity points that a from-memory transcription typically gets
-wrong; all four were caught by working from Appendix A itself:
+Five fidelity points that a from-memory transcription typically gets
+wrong; the first four were caught by working from Appendix A itself,
+the fifth in review:
 
 1. **`IP-literal` has no zone-id alternative.** As published, it is
    `"[" ( IPv6address / IPvFuture ) "]"`. `IPv6addrz` is RFC 6874
@@ -108,6 +118,13 @@ wrong; all four were caught by working from Appendix A itself:
    `path-empty` (exactly zero characters), and `path-absolute`'s
    bracketed tail is two constructors (`empty` / `nonempty`), so a
    tree cannot render `//…` while claiming to be path-absolute.
+5. **The `IPvFuture` marker is case-insensitive.** Appendix A writes
+   the rule with a lowercase `"v"`, but §3.2.2 states that an
+   IP-literal starts with `"v"` (case-insensitive), so `V…` literals
+   are in the language too. The tree preserves the marker's case
+   (`IPvFutureMarker`) and both spellings carry `decide`-checked
+   examples; a renderer hardcoding `'v'` would silently drop half
+   the rule.
 
 One honest limitation of the tree presentation: the ABNF is ambiguous
 as a *language* definition — e.g. a dotted-quad string matches both
@@ -145,13 +162,14 @@ part of the build log).
   dot-segments-in-query/fragment cases and the strict reading of
   `http:g`;
 - extra trees exercising what §5.4 does not: an IPv4 host with a port
-  (`http://192.168.0.1:8080/p?q#f`), IPv6 literals (compressed
-  `2001:db8::1`, full `1:2:3:4:5:6:7:8`, and `::`), a userinfo
-  authority (`ftp://user@example.com/`), and a percent-encoded segment
-  (`http://a/%7Euser`).
+  (`http://192.168.0.250:8080/p?q#f`), IPv6 literals (compressed
+  `2001:db8::1`, full `1:2:3:4:5:6:7:8`, and `::`), IPvFuture literals
+  in both marker cases (`http://[v1.a]/` and `http://[V1.a]/`), a
+  userinfo authority (`ftp://user@example.com/`), and a
+  percent-encoded segment (`http://a/%7Euser`).
 
 Every one of these carries a `*_render` theorem proved by `decide` —
-69 membership checks in all — exhibiting the tree and verifying it
+73 membership checks in all — exhibiting the tree and verifying it
 derives the example string character for character. The
 reference↔target *correspondence* of §5.4 is not claimed yet: that is
 the resolution milestone.
