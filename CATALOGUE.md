@@ -11,6 +11,12 @@ Every formalization target, its status, and where it lives. A target is **done**
 | Rudin, *Functional Analysis* | Queued — follows RCA | here (planned) |
 | Garling, *A Course in Galois Theory* | Candidate — landscape checked 2026-10-10, no complete formalization found | here (planned) |
 
+## Software
+
+| Target | Status | Home |
+|---|---|---|
+| Bech32 / Bech32m (BIP-173 / BIP-350) | Milestone 1 in progress — executable spec, vectors, and round-trip proofs | here, [software/bech32/](software/bech32/) |
+
 ## Papers and shorter texts
 
 | Target | Status | Home |
