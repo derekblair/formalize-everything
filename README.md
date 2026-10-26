@@ -23,6 +23,7 @@ Each target gets its own directory and its own Lake project, so books never bloc
 ```
 books/<slug>/     one book (or text) per directory: lakefile, toolchain, sources
 papers/           standalone papers and shorter texts, same pattern
+software/         software specifications and correctness proofs, same pattern
 CATALOGUE.md      the index: every target, its status, and where it lives
 ```
 
