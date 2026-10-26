@@ -11,6 +11,12 @@ Every formalization target, its status, and where it lives. A target is **done**
 | Rudin, *Functional Analysis* | Queued — follows RCA | here (planned) |
 | Garling, *A Course in Galois Theory* | Candidate — landscape checked 2026-10-10, no complete formalization found | here (planned) |
 
+## Software
+
+| Target | Status | Home |
+|---|---|---|
+| URI (RFC 3986) | Milestone 1 in progress — complete ABNF as inductive spec | here (software/uri-rfc3986/) |
+
 ## Papers and shorter texts
 
 | Target | Status | Home |
