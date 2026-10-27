@@ -4,7 +4,9 @@ The default `lake build` checks **28 symbolic shape equalities** in
 [`Merkle/Vectors.lean`](Merkle/Vectors.lean), plus **16 concrete verifier
 regressions** in [`Merkle/VerifierCases.lean`](Merkle/VerifierCases.lean), and
 **one shifted-parse inclusion attack with seven checked facts** in
-[`Merkle/InclusionAttack.lean`](Merkle/InclusionAttack.lean).
+[`Merkle/InclusionAttack.lean`](Merkle/InclusionAttack.lean), plus
+**consistency and binding attacks with eight checked facts** in
+[`Merkle/ConsistencyAttack.lean`](Merkle/ConsistencyAttack.lean).
 The symbolic vectors quantify over every `H : ByteArray → ByteArray` and
 arbitrary input bytes `d0` through `d6`; only list lengths and indices are
 fixed. They check exact expressions, not sampled digest values.
@@ -113,7 +115,7 @@ All names have namespace prefix `Merkle.VerifierCases.`.
 | 16 | `consistency_four_seed_omitted` | Accept 4-to-7 with exactly the right subtree root | §§2.1.2, 2.1.3 |
 
 These examples supplement the general completeness theorems. They do not
-prove general rejection of forged proofs; M2a's separate soundness theorems
+prove general rejection of forged proofs; milestone 2's separate soundness theorems
 extract a collision under `FixedWidth`. Concrete SHA-256 numeric vectors are deferred until a verified
 SHA-256 implementation is introduced, as required by the hash-abstract design.
 
@@ -145,3 +147,41 @@ The three concrete byte/verifier assertions use `decide +kernel`; the remaining
 facts use direct proofs and kernel-checked arithmetic. No compiled evaluator
 is trusted as a proof oracle. The attack demonstrates that dropping the width
 hypothesis from the inclusion theorem would make its statement false.
+
+
+## M2b consistency and binding attacks: D1/D2
+
+These local regressions extend the digest-width abstraction gap **D1** and the
+insufficiency of injectivity alone **D2** to consistency and tree binding. They
+are kernel-checked counterexamples to removing `FixedWidth`, not RFC-published
+vectors or attacks on SHA-256. All theorem names below have prefix
+`Merkle.ConsistencyAttack.`; the identity-hash injectivity, absence of collisions,
+and absence of fixed width are reused from `Merkle.InclusionAttack`.
+
+For consistency, the old list `oldLeaves = [#[]]` has root `00`; the new list
+`[#[0x78], #[0x79]]` has root `01 00 78 00 79`. At sizes 1 and 2, the proof
+`[#[0x78, 0x00, 0x79]]` is accepted despite the old list not being the new list's
+one-leaf prefix. The unchanged verifier hashes `01 | 00 | 78 00 79` instead of
+the honest node split `01 | 00 78 | 00 79`.
+
+For binding, `bindingLeaves = [#[0x78], #[0x00, 0x79]]` and
+`bindingLeaves' = [#[0x78, 0x00], #[0x79]]` have the same root
+`01 00 78 00 00 79`. Their node inputs agree byte-for-byte despite different
+child boundaries, so no collision in the identity hash is involved.
+
+| Theorem | Checked fact |
+|---|---|
+| `old_root_bytes` | The old consistency root is exactly `00`. |
+| `shifted_parse_accepts` | The unchanged consistency verifier accepts the supplied proof against both honest roots at the actual list lengths. |
+| `shifted_parse_not_prefix` | The old list differs from the new list's one-leaf prefix. |
+| `shifted_parse_attack` | The valid sizes, acceptance, non-prefix result, injectivity, absence of collisions, and absence of fixed width hold together. |
+| `binding_root_bytes` | The first binding tree's root is exactly `01 00 78 00 00 79`. |
+| `binding_roots_eq` | Both binding lists produce the same root. |
+| `binding_leaves_ne` | The two binding lists are distinct. |
+| `binding_attack` | Equal roots, distinct lists, injectivity, absence of collisions, and absence of fixed width hold together. |
+
+The six concrete byte/list/verifier assertions use `decide +kernel`; the two
+bundled attack statements compose those proofs with the existing identity-hash
+facts. The positive size checks also use kernel `decide`. Together with the
+inclusion regression, these show that all three width-free target statements
+would be false even for an injective hash.
