@@ -77,10 +77,12 @@ against this implementation. Three new modules, all pure Lean core +
   constant-word characterization `gf1024Log_mod_33`: for `a ≠ 0`,
   `gf1024Hi a = 0 ↔ gf1024Log a % 33 = 0` (the BCH view of the checksum:
   symbols are the residues of the syndrome polynomial at the generator's
-  roots, and `33 = 1023 / 31` is the order of the constant subfield's
-  multiplicative group).
-* `Bech32/Distance.lean` — the distance theorem. The checksum transition
-  is intertwined with multiplication in `F_1024^6`; the primitive
+  roots, and `33 = 1023 / 31` is the index of the constant subfield's
+  multiplicative group in `F_1024*` — the subfield group itself has
+  order 31).
+* `Bech32/Distance.lean` — the distance theorem. The proof decomposes
+  the checksum transition into six GF(32) state chunks, with GF(32)
+  scaling, impulse decomposition, and packed minor certificates; the primitive
   (length-1023) code has designed distance 4, and the shortened code
   keeps distance 5 exactly up to **89 expanded symbols**: any error
   pattern of Hamming weight `≤ 4` in at most 89 expanded symbols has a
@@ -142,8 +144,9 @@ BIP-350 changed the checksum constant to repair Bech32's insertion
 weakness. Both directions are now theorems:
 
 * `bech32_q_insertion_undetected`: for Bech32, inserting any number `k`
-  of `q` characters (zero words) immediately before the final data word
-  of a valid word **still verifies** — the weakness is real.
+  of `q` characters (zero words) immediately before a final `p` (word 1)
+  of a valid word **still verifies** — the weakness is real. (The final
+  `p` is essential: without it the inserted string need not verify.)
 * `bech32m_q_insertion_detected`: for Bech32m, inserting
   `1 ≤ k ≤ 1022` zero words there **never verifies**. The proof
   evaluates states at the generator root `r = γ^172` of order 1023:
