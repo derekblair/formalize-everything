@@ -1,5 +1,13 @@
 import Merkle.Vectors
 import Merkle.VerifierCases
+import Merkle.ByteAlgebra
+import Merkle.AuditStructure
+import Merkle.Soundness
+import Merkle.InclusionAttack
+import Merkle.Binding
+import Merkle.ConsistencyStructure
+import Merkle.ConsistencySoundness
+import Merkle.ConsistencyAttack
 import Lean.Util.CollectAxioms
 import Lean.Elab.Command
 
@@ -53,3 +61,52 @@ run_cmd do
 #print axioms Merkle.consistencyRoots_complete
 #print axioms Merkle.audit_complete
 #print axioms Merkle.consistency_complete
+
+-- M2a: hypotheses, every new theorem, and the shifted-parse regression.
+#print axioms Merkle.Collides
+#print axioms Merkle.FixedWidth
+#print axioms Merkle.empty_ne_leaf
+#print axioms Merkle.empty_ne_node
+#print axioms Merkle.leaf_ne_node
+#print axioms Merkle.leaf_inj
+#print axioms Merkle.node_inj_left
+#print axioms Merkle.node_inj_right
+#print axioms Merkle.leafHash_eq
+#print axioms Merkle.nodeHash_eq_left
+#print axioms Merkle.nodeHash_eq_right
+#print axioms Merkle.leafHash_size
+#print axioms Merkle.nodeHash_size
+#print axioms Merkle.MTH_size
+#print axioms Merkle.auditWalk_left_inv
+#print axioms Merkle.auditWalk_right_inv
+#print axioms Merkle.auditWalk_one_inv
+#print axioms Merkle.auditWalk_size
+#print axioms Merkle.auditWalk_extract
+#print axioms Merkle.audit_sound
+#print axioms Merkle.audit_sound_of_injective
+#print axioms Merkle.InclusionAttack.honest_root_bytes
+#print axioms Merkle.InclusionAttack.shifted_parse_accepts
+#print axioms Merkle.InclusionAttack.shifted_parse_leaf_ne
+#print axioms Merkle.InclusionAttack.diagnosticHash_injective
+#print axioms Merkle.InclusionAttack.diagnosticHash_no_collision
+#print axioms Merkle.InclusionAttack.diagnosticHash_not_fixedWidth
+#print axioms Merkle.InclusionAttack.shifted_parse_attack
+
+-- M2b: every new theorem, including both width-gap counterexamples.
+#print axioms Merkle.mth_binding
+#print axioms Merkle.mth_binding_of_injective
+#print axioms Merkle.consistencyRoots_left_inv
+#print axioms Merkle.consistencyRoots_right_inv
+#print axioms Merkle.consistencyRoots_equal
+#print axioms Merkle.consistencyRoots_current_size
+#print axioms Merkle.consistencyRoots_extract
+#print axioms Merkle.consistency_sound
+#print axioms Merkle.consistency_sound_of_injective
+#print axioms Merkle.ConsistencyAttack.old_root_bytes
+#print axioms Merkle.ConsistencyAttack.shifted_parse_accepts
+#print axioms Merkle.ConsistencyAttack.shifted_parse_not_prefix
+#print axioms Merkle.ConsistencyAttack.shifted_parse_attack
+#print axioms Merkle.ConsistencyAttack.binding_root_bytes
+#print axioms Merkle.ConsistencyAttack.binding_roots_eq
+#print axioms Merkle.ConsistencyAttack.binding_leaves_ne
+#print axioms Merkle.ConsistencyAttack.binding_attack
