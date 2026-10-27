@@ -4,3 +4,4 @@ defaultTargets = ["Utf8"]
 
 [[lean_lib]]
 name = "Utf8"
+globs = ["Utf8", "Utf8.+"]

@@ -120,8 +120,11 @@ none (that absence is part of ticket #18's prior-art finding).
 
 ## Examples
 
-`Utf8/Examples.lean` contains kernel-checked theorems (all proved
-by `decide` through the characterization; no `native_decide`):
+`Utf8/Examples.lean` contains kernel-checked theorems. The
+concrete valid and invalid examples are proved by `decide`
+through the proved characterization (`valid_iff_decode`); the
+file's general exclusion theorems are ordinary proofs over
+arbitrary byte tails. No `native_decide` occurs in code:
 
 - **Valid**: the empty sequence; U+0024 `$`; U+00A2 `¢`; U+00E9;
   U+0800 (the `E0` floor); U+20AC `€`; U+D7FF and U+E000 (the two
@@ -157,18 +160,28 @@ UTF8_AUDIT_VERBOSE=1 lake env lean Utf8/Audit.lean
 
 `lean-toolchain` pins `leanprover/lean4:v4.34.1`. The project uses
 only Lean core; there are no external packages and no Mathlib
-dependency. The default target imports the specification, decoder,
-characterization, core agreement, examples, and the audit.
+dependency. The default target builds every module of the library,
+including the audit entrypoint.
 
-[`Utf8/Audit.lean`](Utf8/Audit.lean) selects declarations by their
-originating project module, including private helpers and
-compiler-generated equations and termination declarations. It
-checks their transitive axiom dependencies and fails the build on
-any project axiom declaration or any dependency outside `propext`,
+[`Utf8/Audit.lean`](Utf8/Audit.lean) imports the umbrella module
+`Utf8`, so it runs over the complete library import graph. It
+selects declarations by their originating project module,
+including private helpers and compiler-generated equations and
+termination declarations, checks their transitive axiom
+dependencies, and fails the build on any project axiom
+declaration or any dependency outside `propext`,
 `Classical.choice`, and `Quot.sound` — so a `sorryAx` dependency
-also fails the build. It additionally prints axioms for the
-principal theorems and definitions. No proof uses `sorry`,
-`admit`, or `native_decide`.
+also fails the build. A module-inventory guard compares the
+project modules actually present in the environment (derived from
+`env.header.moduleNames`) against an explicit expected inventory
+in both directions: a project module in the import graph that is
+missing from the inventory fails the build, and so does an
+expected module absent from the import graph, so no module in the
+library import graph can escape the audit. (The inventory
+accounts explicitly for the two import-only modules: the umbrella
+`Utf8` and the audit entrypoint `Utf8.Audit` itself.) It
+additionally prints axioms for the principal theorems and
+definitions. No proof uses `sorry`, `admit`, or `native_decide`.
 
 ## Prior art
 
