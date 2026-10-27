@@ -39,11 +39,14 @@ any build in which this audit elaborates — including clean
 builds, where the default target compiles every library module,
 this entrypoint included.
 
-The package root is resolved from this audit module's own source
-position, falling back to an upward search from the working
-directory for a directory holding a lakefile together with
-`Utf8/Audit.lean`. If no source tree can be located, the audit
-fails loudly rather than passing vacuously.
+The inventoried tree is anchored to this audit file itself: the
+package root is derived from the source path of the audit module
+being elaborated — a relative filename is resolved against the
+working directory and canonicalized first — so the inventory
+describes the tree that owns this file, never another checkout
+found by searching the working directory's ancestors. If the
+root cannot be derived or fails validation, the audit fails
+loudly rather than passing vacuously.
 
 Two inventory entries are import-only and declare nothing: the
 umbrella `Utf8` itself, and this audit entrypoint `Utf8.Audit`
@@ -66,36 +69,60 @@ run_cmd do
     #[`Utf8, `Utf8.Spec, `Utf8.Decode, `Utf8.Char, `Utf8.Core,
       `Utf8.Examples, `Utf8.Audit]
   let entrypoint : Name := `Utf8.Audit
-  -- Resolve the package root: primarily from this module's own
-  -- source position (`<root>/Utf8/Audit.lean`), falling back to
-  -- an upward search from the working directory. A candidate
-  -- root must hold a lakefile together with this audit's source.
+  -- Resolve the package root from this audit module's own source
+  -- position, anchored to the file actually being elaborated.
+  -- The reported source filename — absolute under `lake build`,
+  -- but possibly relative under a direct `lean` invocation — is
+  -- resolved against the working directory when relative and
+  -- canonicalized lexically; the root is then the resolved
+  -- file's grandparent directory (`<root>/Utf8/Audit.lean`).
+  -- There is deliberately no search over ancestors of the
+  -- working directory or anywhere else: a directory is the
+  -- package root only if it owns this very file, so the
+  -- inventory below describes the tree the audited declarations
+  -- came from, never another checkout.
   let isPackageRoot (dir : System.FilePath) : IO Bool := do
     let hasAudit ← (dir / "Utf8" / "Audit.lean").pathExists
     let hasToml ← (dir / "lakefile.toml").pathExists
     let hasLean ← (dir / "lakefile.lean").pathExists
     return hasAudit && (hasToml || hasLean)
-  let mut packageRoot : Option System.FilePath := none
-  let ownPath : System.FilePath := (← getFileName)
-  if ownPath.isAbsolute then
-    match ownPath.parent.bind System.FilePath.parent with
-    | some root =>
-      if ← isPackageRoot root then
-        packageRoot := some root
-    | none => pure ()
-  if packageRoot.isNone then
-    let mut dir : Option System.FilePath := some (← IO.currentDir)
-    for _ in [0:16] do
-      match dir with
-      | none => break
-      | some d =>
-        if ← isPackageRoot d then
-          packageRoot := some d
-          break
-        dir := d.parent
-  let root ← match packageRoot with
-    | some r => pure r
-    | none => throwError "Axiom audit could not locate the package source tree (no ancestor of the audit module or of the working directory contains a lakefile together with Utf8/Audit.lean); refusing to pass without a source-tree inventory"
+  -- Lexical canonicalization: drop empty and `.` components and
+  -- resolve `..` against the preceding component. (This
+  -- toolchain's `FilePath.normalize` does not resolve `.`/`..`,
+  -- and the first component of an absolute path here is the
+  -- empty string, so absoluteness comes from `isAbsolute`.)
+  let normalizePath (p : System.FilePath) : System.FilePath :=
+    let isAbs := p.isAbsolute
+    let stack : Array String := p.components.foldl (init := #[]) fun stack c =>
+      match c with
+      | "" => stack
+      | "." => stack
+      | ".." =>
+        if !stack.isEmpty && stack.back! != ".." then stack.pop
+        else if !isAbs then stack.push ".."
+        else stack
+      | _ => stack.push c
+    if isAbs then
+      System.FilePath.mk ("/" ++ String.intercalate "/" stack.toList)
+    else if stack.isEmpty then
+      "."
+    else
+      System.FilePath.mk (String.intercalate "/" stack.toList)
+  let ownRaw : System.FilePath := (← getFileName)
+  let cwd ← IO.currentDir
+  let ownPath : System.FilePath :=
+    normalizePath (if ownRaw.isAbsolute then ownRaw else cwd / ownRaw)
+  unless ownPath.fileName == some "Audit.lean" &&
+      (ownPath.parent.bind System.FilePath.fileName) == some "Utf8" do
+    throwError "Axiom audit could not locate the package source tree: this audit module's own source path {ownPath} is not of the form <root>/Utf8/Audit.lean; refusing to pass without a source-tree inventory"
+  let root ← match ownPath.parent.bind System.FilePath.parent with
+    | some r =>
+      if ← isPackageRoot r then
+        pure r
+      else
+        throwError "Axiom audit could not locate the package source tree: the root {r} derived from this audit module's own source path {ownPath} does not contain a lakefile together with Utf8/Audit.lean; refusing to pass without a source-tree inventory"
+    | none =>
+      throwError "Axiom audit could not locate the package source tree: this audit module's own source path {ownPath} has no grandparent directory to derive a package root from; refusing to pass without a source-tree inventory"
   -- DISCOVERED set: every `.lean` source file in the package
   -- source tree (`.lake` build output excluded), mapped to a
   -- module name by its path relative to the package root.
