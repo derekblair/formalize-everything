@@ -583,6 +583,26 @@ theorem gf32Mul_swap_head (a b : Word) (t : Word) :
     gf32Mul a (gf32Mul b t) = gf32Mul b (gf32Mul a t) := by
   rw [← gf32Mul_assoc, gf32Mul_comm a b, gf32Mul_assoc]
 
+
+/-- Swap the last two factors of a triple product.  (Deterministic
+    factor-order normalisation for the cofactor expansions: these
+    permutation lemmas are simp-order-guarded, so the expansions'
+    closers do not depend on `grind`'s search order.) -/
+theorem gf32Mul_swap_tail3 (a b c : Word) :
+    gf32Mul a (gf32Mul b c) = gf32Mul a (gf32Mul c b) := by
+  rw [gf32Mul_comm b c]
+
+/-- Swap the last two factors of a quadruple product. -/
+theorem gf32Mul_swap_tail4 (a b c d : Word) :
+    gf32Mul a (gf32Mul b (gf32Mul c d)) =
+      gf32Mul a (gf32Mul b (gf32Mul d c)) := by
+  rw [gf32Mul_comm c d]
+
+/-- Swap the last two factors of a quintuple product. -/
+theorem gf32Mul_swap_tail5 (a b c d e : Word) :
+    gf32Mul a (gf32Mul b (gf32Mul c (gf32Mul d e))) =
+      gf32Mul a (gf32Mul b (gf32Mul c (gf32Mul e d))) := by
+  rw [gf32Mul_comm d e]
 /-- Cofactor expansion of `det3W` along the second vector. -/
 theorem det3W_expand_mid (x y z : BitVec 30) (i j k : Nat) :
     det3W x y z i j k =
@@ -596,7 +616,8 @@ theorem det3W_expand_mid (x y z : BitVec 30) (i j k : Nat) :
     gf32Mul_swap_head (chunkW x j) (chunkW y k) (chunkW z i),
     gf32Mul_swap_head (chunkW x k) (chunkW y i) (chunkW z j),
     gf32Mul_swap_head (chunkW x k) (chunkW y j) (chunkW z i)]
-  grind
+  try simp only [gf32Mul_swap_tail3]
+  ac_rfl
 
 /-- Cofactor expansion of `det3W` along the third vector. -/
 theorem det3W_expand_third (x y z : BitVec 30) (i j k : Nat) :
@@ -617,7 +638,8 @@ theorem det3W_expand_third (x y z : BitVec 30) (i j k : Nat) :
     gf32Mul_swap_head (chunkW x k) (chunkW z j) (chunkW y i),
     gf32Mul_comm (chunkW y j) (chunkW z i),
     gf32Mul_swap_head (chunkW x k) (chunkW z i) (chunkW y j)]
-  grind
+  try simp only [gf32Mul_swap_tail3]
+  ac_rfl
 
 theorem det3W_rep_fst (y z : BitVec 30) (i j k : Nat) :
     det3W y y z i j k = 0 := by
@@ -680,7 +702,7 @@ theorem det4W_expand_second (x y z w : BitVec 30) (i j k l : Nat) :
         gf32Mul (chunkW y l) (det3W x z w i j k) := by
   simp only [det4W, det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right,
     gf32Mul_swap_head]
-  grind
+  ac_rfl
 
 /-- Cofactor expansion of `det4W` along the fourth vector. -/
 theorem det4W_expand_fourth (x y z w : BitVec 30) (i j k l : Nat) :
@@ -690,8 +712,8 @@ theorem det4W_expand_fourth (x y z w : BitVec 30) (i j k l : Nat) :
         gf32Mul (chunkW w k) (det3W x y z i j l) ^^^
         gf32Mul (chunkW w l) (det3W x y z i j k) := by
   simp only [det4W, det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right,
-    gf32Mul_swap_head]
-  grind
+    gf32Mul_swap_head, gf32Mul_swap_tail4]
+  ac_rfl
 
 theorem det4W_rep_fst (y z w : BitVec 30) (i j k l : Nat) :
     det4W y y z w i j k l = 0 := by
@@ -764,8 +786,8 @@ theorem det5W_expand_second (x1 x2 x3 x4 x5 : BitVec 30) :
         gf32Mul (chunkW x2 4) (det4W x1 x3 x4 x5 1 2 3 5) ^^^
         gf32Mul (chunkW x2 5) (det4W x1 x3 x4 x5 1 2 3 4) := by
   simp only [det5W, det4W, det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right,
-    gf32Mul_swap_head]
-  grind
+    gf32Mul_swap_head, gf32Mul_swap_tail5]
+  ac_rfl
 
 /-- Cofactor expansion of `det5W` along the fifth vector. -/
 theorem det5W_expand_fifth (x1 x2 x3 x4 x5 : BitVec 30) :
@@ -776,8 +798,8 @@ theorem det5W_expand_fifth (x1 x2 x3 x4 x5 : BitVec 30) :
         gf32Mul (chunkW x5 4) (det4W x1 x2 x3 x4 1 2 3 5) ^^^
         gf32Mul (chunkW x5 5) (det4W x1 x2 x3 x4 1 2 3 4) := by
   simp only [det5W, det4W, det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right,
-    gf32Mul_swap_head]
-  grind
+    gf32Mul_swap_head, gf32Mul_swap_tail5]
+  ac_rfl
 
 theorem det5W_rep_fst (y z w u : BitVec 30) :
     det5W y y z w u = 0 := by
