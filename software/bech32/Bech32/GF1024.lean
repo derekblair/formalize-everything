@@ -66,6 +66,10 @@ theorem ite_acc (c : Prop) [Decidable c] (x A : Nat) :
     (if c then x ^^^ A else x) = x ^^^ (if c then A else 0) := by
   by_cases h : c <;> simp [h]
 
+/-- `xtimeNat` with the conditional moved off the whole multiple. -/
+theorem xtimeNat_eq (a : Nat) :
+    xtimeNat a = a * 2 ^^^ (if 32 ≤ a * 2 then 41 else 0) := ite_acc _ _ _
+
 /-- The defining loop of `gf32MulNat`, unrolled: an XOR of five conditional
     multiples of `a`, gated on the bits of `b`. -/
 theorem gf32MulNat_unroll (a b : Nat) :
@@ -77,8 +81,7 @@ theorem gf32MulNat_unroll (a b : Nat) :
             else 0)) ^^^
           (if b / 2 / 2 / 2 / 2 % 2 = 1 then
             xtimeNat (xtimeNat (xtimeNat (xtimeNat a))) else 0) := by
-  simp only [gf32MulNat, gf32MulNat.go, xtimeNat, Nat.zero_xor]
-  rw [ite_acc, ite_acc, ite_acc, ite_acc, ite_acc]
+  simp only [gf32MulNat, gf32MulNat.go, ← xtimeNat_eq, Nat.zero_xor, ite_acc]
 
 theorem gf32MulNat_lt : ∀ a b : Fin 32, gf32MulNat a.val b.val < 32 := by
   decide
@@ -99,16 +102,13 @@ theorem gf32Mul_toNat (a b : Word) :
   simp only [gf32Mul, BitVec.toNat_ofNat]
   exact Nat.mod_eq_of_lt (gf32MulNat_lt ⟨a.toNat, a.isLt⟩ ⟨b.toNat, b.isLt⟩)
 
-/-- Bit `m` of an XOR is the XOR of the bits: division form. -/
-theorem xor_bit (b c : Nat) (m : Nat) :
-    (b ^^^ c) / 2 ^ m % 2 = (b / 2 ^ m % 2) ^^^ (c / 2 ^ m % 2) := by
-  rw [Nat.xor_div_two_pow, Nat.xor_mod_two_pow]
-
 /-- Splitting a conditional multiple over an XOR of two bits. -/
 theorem ite_xor_split (X Y T : Nat) (hX : X < 2) (hY : Y < 2) :
     (if X ^^^ Y = 1 then T else 0) =
       (if X = 1 then T else 0) ^^^ (if Y = 1 then T else 0) := by
-  interval_cases X <;> interval_cases Y <;> simp
+  have hX' : X = 0 ∨ X = 1 := by omega
+  have hY' : Y = 0 ∨ Y = 1 := by omega
+  obtain (rfl | rfl) := hX' <;> obtain (rfl | rfl) := hY' <;> simp
 
 /-- Distributivity of `gf32MulNat` in its second argument, from the
     unrolled loop: bit `m` of `b ^^^ c` is the XOR of the bits, and a
@@ -116,22 +116,23 @@ theorem ite_xor_split (X Y T : Nat) (hX : X < 2) (hY : Y < 2) :
 theorem gf32MulNat_xor_right (a b c : Nat) :
     gf32MulNat a (b ^^^ c) = gf32MulNat a b ^^^ gf32MulNat a c := by
   rw [gf32MulNat_unroll, gf32MulNat_unroll, gf32MulNat_unroll]
-  have hd0 : (b ^^^ c) % 2 = (b % 2) ^^^ (c % 2) := xor_bit b c 0
+  have hd0 : (b ^^^ c) % 2 = (b % 2) ^^^ (c % 2) :=
+    Nat.xor_mod_two_pow (n := 1)
   have hd1 : (b ^^^ c) / 2 % 2 = (b / 2 % 2) ^^^ (c / 2 % 2) := by
-    have h := xor_bit b c 1
-    simpa using h
+    rw [Nat.xor_div_two]
+    exact Nat.xor_mod_two_pow (n := 1)
   have hd2 : (b ^^^ c) / 2 / 2 % 2 =
       (b / 2 / 2 % 2) ^^^ (c / 2 / 2 % 2) := by
     rw [Nat.xor_div_two, Nat.xor_div_two]
-    exact xor_bit (b / 2 / 2) (c / 2 / 2) 0
+    exact Nat.xor_mod_two_pow (n := 1)
   have hd3 : (b ^^^ c) / 2 / 2 / 2 % 2 =
       (b / 2 / 2 / 2 % 2) ^^^ (c / 2 / 2 / 2 % 2) := by
     rw [Nat.xor_div_two, Nat.xor_div_two, Nat.xor_div_two]
-    exact xor_bit (b / 2 / 2 / 2) (c / 2 / 2 / 2) 0
+    exact Nat.xor_mod_two_pow (n := 1)
   have hd4 : (b ^^^ c) / 2 / 2 / 2 / 2 % 2 =
       (b / 2 / 2 / 2 / 2 % 2) ^^^ (c / 2 / 2 / 2 / 2 % 2) := by
     rw [Nat.xor_div_two, Nat.xor_div_two, Nat.xor_div_two, Nat.xor_div_two]
-    exact xor_bit (b / 2 / 2 / 2 / 2) (c / 2 / 2 / 2 / 2) 0
+    exact Nat.xor_mod_two_pow (n := 1)
   have hb0 : b % 2 < 2 := Nat.mod_lt _ (by decide)
   have hc0 : c % 2 < 2 := Nat.mod_lt _ (by decide)
   have hb1 : b / 2 % 2 < 2 := Nat.mod_lt _ (by decide)
@@ -151,7 +152,7 @@ theorem gf32MulNat_xor_right (a b c : Nat) :
       (xtimeNat (xtimeNat (xtimeNat a))) hb3 hc3,
     ite_xor_split (b / 2 / 2 / 2 / 2 % 2) (c / 2 / 2 / 2 / 2 % 2)
       (xtimeNat (xtimeNat (xtimeNat (xtimeNat a)))) hb4 hc4]
-  simp only [Nat.xor_assoc, Nat.xor_comm, Nat.xor_left_comm]
+  grind
 
 /-- Powers at the `Nat` level. -/
 def gf32PowNat (a : Nat) : Nat → Nat
@@ -162,7 +163,7 @@ theorem gf32PowNat_lt (x : Nat) (hx : x < 32) : ∀ n : Nat,
     gf32PowNat x n < 32 := by
   intro n
   induction n with
-  | zero => decide
+  | zero => exact (by decide : (1 : Nat) < 32)
   | succ n ih => exact gf32MulNat_lt ⟨x, hx⟩ ⟨_, ih⟩
 
 theorem gf32Pow_toNat (a : Word) (n : Nat) :
@@ -176,14 +177,21 @@ theorem gf32Pow_toNat (a : Word) (n : Nat) :
 def gf32LogNat (v : Nat) : Nat :=
   (931001199420549403946829020058309183778805187584 >>> (5 * (v % 32))) % 32
 
-/-- Exponential base `x = 2` in `GF(32)`. -/
-def gf32ExpNat (k : Nat) : Nat := gf32PowNat 2 (k % 31)
+/-- Exponential base `x = 2` in `GF(32)`, as a packed kernel-certified
+    table (5 bits per entry; entry `k % 31` at bits `5 * (k % 31)`). -/
+def gf32ExpNat (k : Nat) : Nat :=
+  (28998911709443755533846148002736542561727680577 >>> (5 * (k % 31))) % 32
 
 theorem gf32ExpNat_mod (k : Nat) : gf32ExpNat k = gf32ExpNat (k % 31) := by
   simp only [gf32ExpNat, Nat.mod_mod]
 
+/-- `gf32ExpNat` depends only on its argument modulo `31`. -/
+theorem gf32ExpNat_congr {a b : Nat} (h : a % 31 = b % 31) :
+    gf32ExpNat a = gf32ExpNat b := by
+  rw [gf32ExpNat_mod a, gf32ExpNat_mod b, h]
+
 theorem gf32ExpNat_lt (k : Nat) : gf32ExpNat k < 32 :=
-  gf32PowNat_lt 2 (by decide) _
+  Nat.mod_lt _ (by decide)
 
 theorem gf32Exp_log : ∀ a : Fin 32, a.val ≠ 0 →
     gf32ExpNat (gf32LogNat a.val) = a.val := by
@@ -194,8 +202,9 @@ theorem gf32Log_exp_small : ∀ k : Fin 31,
   decide
 
 theorem gf32Log_exp (k : Nat) : gf32LogNat (gf32ExpNat k) = k % 31 := by
-  conv_lhs => rw [gf32ExpNat_mod k]
-  exact gf32Log_exp_small ⟨k % 31, Nat.mod_lt _ (by decide)⟩
+  have h := gf32Log_exp_small ⟨k % 31, Nat.mod_lt _ (by decide)⟩
+  rw [gf32ExpNat_mod k]
+  exact h
 
 theorem gf32ExpNat_ne_zero : ∀ k : Nat, gf32ExpNat k ≠ 0 := by
   intro k
@@ -228,7 +237,8 @@ theorem gf32MulNat_assoc (x y z : Nat) (hx : x < 32) (hy : y < 32)
     gf32MulNat (gf32MulNat x y) z = gf32MulNat x (gf32MulNat y z) := by
   by_cases hx0 : x = 0
   · subst hx0
-    rw [gf32MulNat_zero_left ⟨y, hy⟩, gf32MulNat_zero_left ⟨z, hz⟩]
+    rw [gf32MulNat_zero_left ⟨y, hy⟩, gf32MulNat_zero_left ⟨z, hz⟩,
+      gf32MulNat_zero_left ⟨gf32MulNat y z, gf32MulNat_lt ⟨y, hy⟩ ⟨z, hz⟩⟩]
   by_cases hy0 : y = 0
   · subst hy0
     rw [gf32MulNat_zero_right ⟨x, hx⟩, gf32MulNat_zero_left ⟨z, hz⟩,
@@ -242,10 +252,15 @@ theorem gf32MulNat_assoc (x y z : Nat) (hx : x < 32) (hy : y < 32)
   have hyz : gf32MulNat y z ≠ 0 := gf32MulNat_ne_zero ⟨y, hy⟩ ⟨z, hz⟩ hy0 hz0
   have hxy32 : gf32MulNat x y < 32 := gf32MulNat_lt ⟨x, hx⟩ ⟨y, hy⟩
   have hyz32 : gf32MulNat y z < 32 := gf32MulNat_lt ⟨y, hy⟩ ⟨z, hz⟩
+  have hlm1 : gf32LogNat (gf32MulNat x y) =
+      (gf32LogNat x + gf32LogNat y) % 31 :=
+    gf32Log_mul ⟨x, hx⟩ ⟨y, hy⟩ hx0 hy0
+  have hlm2 : gf32LogNat (gf32MulNat y z) =
+      (gf32LogNat y + gf32LogNat z) % 31 :=
+    gf32Log_mul ⟨y, hy⟩ ⟨z, hz⟩ hy0 hz0
   rw [gf32MulNat_formula hxy32 hz hxy hz0, gf32MulNat_formula hx hyz32 hx0 hyz,
-    gf32Log_mul ⟨x, hx⟩ ⟨y, hy⟩ hx0 hy0, gf32Log_mul ⟨y, hy⟩ ⟨z, hz⟩ hy0 hz0,
-    gf32ExpNat_mod, gf32ExpNat_mod]
-  congr 1
+    hlm1, hlm2]
+  apply gf32ExpNat_congr
   omega
 
 /-- Powers of a nonzero element are exponentials of multiples of its log. -/
@@ -253,16 +268,21 @@ theorem gf32PowNat_exp (x : Nat) (hx : x < 32) (hx0 : x ≠ 0) :
     ∀ n : Nat, gf32PowNat x n = gf32ExpNat (n * gf32LogNat x) := by
   intro n
   induction n with
-  | zero => rfl
+  | zero =>
+    show (1 : Nat) = gf32ExpNat (0 * gf32LogNat x)
+    rw [Nat.zero_mul]
+    rfl
   | succ n ih =>
     have e1 : gf32PowNat x (n + 1) = gf32MulNat x (gf32PowNat x n) := by
       simp only [gf32PowNat]
     have e2 : (n + 1) * gf32LogNat x = n * gf32LogNat x + gf32LogNat x := by
       rw [Nat.mul_comm (n + 1) _, Nat.mul_succ, Nat.mul_comm]
+    have hle : gf32LogNat (gf32ExpNat (n * gf32LogNat x)) =
+        (n * gf32LogNat x) % 31 := gf32Log_exp _
     rw [e1, ih,
       gf32MulNat_formula hx (gf32ExpNat_lt _) hx0 (gf32ExpNat_ne_zero _),
-      gf32Log_exp, e2, gf32ExpNat_mod, gf32ExpNat_mod]
-    congr 1
+      hle, e2]
+    apply gf32ExpNat_congr
     omega
 
 /-- The `Nat`-level inverse identity: `a * a^30 = 1` for `a ≠ 0`. -/
@@ -290,8 +310,8 @@ theorem gf32Mul_assoc (a b c : Word) :
 theorem gf32Mul_xor_right (a b c : Word) :
     gf32Mul a (b ^^^ c) = gf32Mul a b ^^^ gf32Mul a c := by
   apply BitVec.eq_of_toNat_eq
-  rw [gf32Mul_toNat, gf32Mul_toNat, gf32Mul_toNat, BitVec.toNat_xor,
-    BitVec.toNat_xor]
+  rw [gf32Mul_toNat, BitVec.toNat_xor, BitVec.toNat_xor, gf32Mul_toNat,
+    gf32Mul_toNat]
   exact gf32MulNat_xor_right a.toNat b.toNat c.toNat
 
 theorem gf32Mul_xor_left (a b c : Word) :
@@ -342,12 +362,29 @@ def gf1024Hi (x : GF1024) : Word := x.extractLsb' 5 5
 /-- Assemble an element of `GF(1024)` from its two `GF(32)` coefficients. -/
 def gf1024Mk (a b : Word) : GF1024 := a.setWidth 10 ^^^ (b.setWidth 10 <<< 5)
 
+/-- Low 5 bits of an XOR, when the second summand has zero low bits. -/
+theorem xor_mod_two_pow_five_of_eq_zero {x y : Nat} (hy : y % 2 ^ 5 = 0) :
+    (x ^^^ y) % 2 ^ 5 = x % 2 ^ 5 := by
+  have h : (x ^^^ y) % (2 ^ 5) = (x % (2 ^ 5)) ^^^ (y % (2 ^ 5)) :=
+    Nat.xor_mod_two_pow
+  rw [hy, Nat.xor_zero] at h
+  exact h
+
+/-- Shifting an XOR right by 5 shifts both summands. -/
+theorem xor_shiftRight_five (X Y : Nat) :
+    (X ^^^ Y) >>> 5 = (X >>> 5) ^^^ (Y >>> 5) := by
+  rw [Nat.shiftRight_eq_div_pow, Nat.shiftRight_eq_div_pow,
+    Nat.shiftRight_eq_div_pow, Nat.xor_div_two_pow]
+
 theorem gf1024Lo_mk (a b : Word) : gf1024Lo (gf1024Mk a b) = a := by
   apply BitVec.eq_of_toNat_eq
   simp only [gf1024Lo, gf1024Mk, BitVec.extractLsb'_toNat, Nat.shiftRight_zero,
     BitVec.toNat_xor, BitVec.toNat_setWidth, BitVec.toNat_shiftLeft]
   have ha : a.toNat < 32 := a.isLt
-  have hb : b.toNat < 1024 := by have h := b.isLt; omega
+  have hy0 : (((b.toNat % 2 ^ 10) <<< 5) % 2 ^ 10) % 2 ^ 5 = 0 := by
+    rw [Nat.shiftLeft_eq]
+    omega
+  rw [xor_mod_two_pow_five_of_eq_zero hy0]
   omega
 
 theorem gf1024Hi_mk (a b : Word) : gf1024Hi (gf1024Mk a b) = b := by
@@ -356,6 +393,14 @@ theorem gf1024Hi_mk (a b : Word) : gf1024Hi (gf1024Mk a b) = b := by
     BitVec.toNat_setWidth, BitVec.toNat_shiftLeft]
   have ha : a.toNat < 32 := a.isLt
   have hb : b.toNat < 32 := b.isLt
+  rw [xor_shiftRight_five]
+  have e2 : (a.toNat % 2 ^ 10) >>> 5 = 0 := by
+    rw [Nat.shiftRight_eq_div_pow]
+    omega
+  have e3 : (((b.toNat % 2 ^ 10) <<< 5) % 2 ^ 10) >>> 5 = b.toNat := by
+    rw [Nat.shiftRight_eq_div_pow, Nat.shiftLeft_eq]
+    omega
+  rw [e3, e2, Nat.zero_xor]
   omega
 
 /-- Two elements of `GF(1024)` are equal iff both coefficients agree. -/
@@ -385,9 +430,9 @@ theorem gf1024Lo_emb (w : Word) : gf1024Lo (gf1024Emb w) = w := by
 
 theorem gf1024Hi_emb (w : Word) : gf1024Hi (gf1024Emb w) = 0 := by
   apply BitVec.eq_of_toNat_eq
-  simp only [gf1024Hi, gf1024Emb, BitVec.extractLsb'_toNat, BitVec.toNat_setWidth,
-    BitVec.toNat_zero]
+  simp only [gf1024Hi, gf1024Emb, BitVec.extractLsb'_toNat, BitVec.toNat_setWidth]
   have hw : w.toNat < 32 := w.isLt
+  change (w.toNat % 2 ^ 10) >>> 5 % 2 ^ 5 = 0
   omega
 
 /-- Addition in `GF(1024)` is bitwise XOR. -/
@@ -404,16 +449,13 @@ theorem gf1024Lo_add (x y : GF1024) : gf1024Lo (gf1024Add x y) = gf1024Lo x ^^^ 
   apply BitVec.eq_of_toNat_eq
   simp only [gf1024Lo, gf1024Add, BitVec.extractLsb'_toNat, Nat.shiftRight_zero,
     BitVec.toNat_xor]
-  have hx : x.toNat < 1024 := x.isLt
-  have hy : y.toNat < 1024 := y.isLt
-  omega
+  exact Nat.xor_mod_two_pow (n := 5)
 
 theorem gf1024Hi_add (x y : GF1024) : gf1024Hi (gf1024Add x y) = gf1024Hi x ^^^ gf1024Hi y := by
   apply BitVec.eq_of_toNat_eq
   simp only [gf1024Hi, gf1024Add, BitVec.extractLsb'_toNat, BitVec.toNat_xor]
-  have hx : x.toNat < 1024 := x.isLt
-  have hy : y.toNat < 1024 := y.isLt
-  omega
+  rw [xor_shiftRight_five]
+  exact Nat.xor_mod_two_pow (n := 5)
 
 theorem gf1024Lo_mul (x y : GF1024) :
     gf1024Lo (gf1024Mul x y) =
@@ -449,18 +491,14 @@ theorem gf1024Hi_one : gf1024Hi 1 = 0 := by decide
 theorem gf1024Lo_zero : gf1024Lo 0 = 0 := by decide
 theorem gf1024Hi_zero : gf1024Hi 0 = 0 := by decide
 
-theorem gf1024Mul_one (x : GF1024) : gf1024Mul x 1 = x := by
-  apply gf1024_ext
-  · simp [gf1024Lo_mul, gf1024Lo_one, gf1024Hi_one, gf32Mul_one, gf32Mul_zero]
-  · simp [gf1024Hi_mul, gf1024Lo_one, gf1024Hi_one, gf32Mul_one, gf32Mul_zero]
+theorem gf1024Mul_one (x : GF1024) : gf1024Mul x 1 = x :=
+  (by decide : ∀ x : GF1024, gf1024Mul x 1 = x) x
 
 theorem gf1024One_mul (x : GF1024) : gf1024Mul 1 x = x := by
   rw [gf1024Mul_comm]; exact gf1024Mul_one x
 
-theorem gf1024Mul_zero (x : GF1024) : gf1024Mul x 0 = 0 := by
-  apply gf1024_ext <;>
-    simp [gf1024Lo_mul, gf1024Hi_mul, gf1024Lo_zero, gf1024Hi_zero, gf32Mul_zero,
-      gf32Zero_mul]
+theorem gf1024Mul_zero (x : GF1024) : gf1024Mul x 0 = 0 :=
+  (by decide : ∀ x : GF1024, gf1024Mul x 0 = 0) x
 
 theorem gf1024Zero_mul (x : GF1024) : gf1024Mul 0 x = 0 := by
   rw [gf1024Mul_comm]; exact gf1024Mul_zero x
@@ -472,25 +510,23 @@ theorem gf1024Mul_assoc (x y z : GF1024) :
       gf32Mul_assoc]
     rw [gf32Mul_comm (gf1024Hi x) (gf32Mul (gf1024Lo y) (gf1024Hi z)),
       gf32Mul_comm (gf1024Hi x) (gf32Mul (gf1024Hi y) (gf1024Lo z))]
-    simp only [BitVec.xor_assoc, BitVec.xor_comm, BitVec.xor_left_comm,
-      BitVec.xor_self, BitVec.xor_zero, BitVec.zero_xor]
+    grind
   · simp only [gf1024Lo_mul, gf1024Hi_mul, gf32Mul_xor_left, gf32Mul_xor_right,
       gf32Mul_assoc]
     rw [gf32Mul_comm (gf1024Hi x) (gf32Mul (gf1024Lo y) (gf1024Hi z)),
       gf32Mul_comm (gf1024Hi x) (gf32Mul (gf1024Hi y) (gf1024Lo z)),
       gf32Mul_comm (gf1024Hi x) (gf32Mul (gf1024Hi y) (gf1024Hi z))]
-    simp only [BitVec.xor_assoc, BitVec.xor_comm, BitVec.xor_left_comm,
-      BitVec.xor_self, BitVec.xor_zero, BitVec.zero_xor]
+    grind
 
 theorem gf1024Mul_add (x y z : GF1024) :
     gf1024Mul x (gf1024Add y z) = gf1024Add (gf1024Mul x y) (gf1024Mul x z) := by
   apply gf1024_ext
   · simp only [gf1024Lo_mul, gf1024Hi_mul, gf1024Lo_add, gf1024Hi_add,
-      gf32Mul_xor_left, BitVec.xor_assoc, BitVec.xor_comm, BitVec.xor_left_comm,
-      BitVec.xor_self, BitVec.xor_zero, BitVec.zero_xor]
+      gf32Mul_xor_right]
+    grind
   · simp only [gf1024Lo_mul, gf1024Hi_mul, gf1024Lo_add, gf1024Hi_add,
-      gf32Mul_xor_left, BitVec.xor_assoc, BitVec.xor_comm, BitVec.xor_left_comm,
-      BitVec.xor_self, BitVec.xor_zero, BitVec.zero_xor]
+      gf32Mul_xor_right]
+    grind
 
 theorem gf1024Add_mul (x y z : GF1024) :
     gf1024Mul (gf1024Add x y) z = gf1024Add (gf1024Mul x z) (gf1024Mul y z) := by
@@ -498,10 +534,9 @@ theorem gf1024Add_mul (x y z : GF1024) :
   exact gf1024Mul_add z x y
 
 theorem gf1024Emb_mul (a b : Word) :
-    gf1024Emb (gf32Mul a b) = gf1024Mul (gf1024Emb a) (gf1024Emb b) := by
-  apply gf1024_ext
-  · simp [gf1024Lo_mul, gf1024Lo_emb, gf1024Hi_emb, gf32Mul_zero]
-  · simp [gf1024Hi_mul, gf1024Lo_emb, gf1024Hi_emb, gf32Mul_zero, gf32Zero_mul]
+    gf1024Emb (gf32Mul a b) = gf1024Mul (gf1024Emb a) (gf1024Emb b) :=
+  (by decide : ∀ a b : Word, gf1024Emb (gf32Mul a b) =
+    gf1024Mul (gf1024Emb a) (gf1024Emb b)) a b
 
 /-! ## Kernel-certified exponential / logarithm tables -/
 
@@ -573,7 +608,9 @@ theorem gf1024Exp_step_all (n : Nat) :
 theorem gf1024Exp_add (i j : Nat) :
     gf1024Exp (i + j) = gf1024Mul (gf1024Exp i) (gf1024Exp j) := by
   induction j with
-  | zero => simp [gf1024Exp_zero, gf1024Mul_one]
+  | zero =>
+    simp only [Nat.add_zero, gf1024Exp_zero]
+    exact (gf1024Mul_one _).symm
   | succ j ih =>
     have e1 : i + (j + 1) = (i + j) + 1 := by omega
     rw [e1, gf1024Exp_step_all, ih, gf1024Exp_step_all j,
@@ -615,7 +652,7 @@ theorem gf1024Log_mul {a b : GF1024} (ha : a ≠ 0) (hb : b ≠ 0) :
   have h2 : gf1024Exp (gf1024Log a + gf1024Log b) = gf1024Mul a b := by
     rw [gf1024Exp_add, gf1024Exp_log a ha, gf1024Exp_log b hb]
   have h3 : gf1024Exp (gf1024Log (gf1024Mul a b)) =
-      gf1024Exp (gf1024Log a + gf1024Log b) := h1.trans h2
+      gf1024Exp (gf1024Log a + gf1024Log b) := h1.trans h2.symm
   have h4 := congrArg gf1024Log h3
   rw [gf1024Log_exp_nat, gf1024Log_exp_nat] at h4
   have hle : gf1024Log (gf1024Mul a b) ≤ 1022 := gf1024Log_le _
@@ -640,8 +677,10 @@ theorem gf1024Mul_inv_cancel {a : GF1024} (ha : a ≠ 0) :
     unfold gf1024Inv
     rw [if_neg ha]
   rw [h1]
-  nth_rewrite 1 [← gf1024Exp_log a ha]
-  rw [← gf1024Exp_add]
+  have e : gf1024Mul a (gf1024Exp (1023 - gf1024Log a)) =
+      gf1024Mul (gf1024Exp (gf1024Log a)) (gf1024Exp (1023 - gf1024Log a)) := by
+    rw [gf1024Exp_log a ha]
+  rw [e, ← gf1024Exp_add]
   have hsum : gf1024Log a + (1023 - gf1024Log a) = 1023 := by omega
   rw [hsum]
   have h1023 : gf1024Exp 1023 = gf1024Exp 0 := gf1024Exp_congr (by decide)
