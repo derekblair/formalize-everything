@@ -18,6 +18,7 @@ Every formalization target, its status, and where it lives. A target is **done**
 | Bech32 / Bech32m (BIP-173 / BIP-350) | Milestone 1 landed (PR #9) — executable spec, vectors, and round-trip proofs; error-detection guarantee is milestone 2 | here, [software/bech32/](software/bech32/) |
 | URI (RFC 3986) | Milestone 1 landed (PR #10) — complete ABNF as inductive spec, §5.3 recomposition, §5.4 examples | here, [software/uri-rfc3986/](software/uri-rfc3986/) |
 | Merkle proofs (RFC 6962) | Milestone 1 landed (PR #12) — hash-abstract spec, executable verifiers, completeness, and symbolic vectors; collision-explicit soundness is milestone 2 | here, [software/merkle-rfc6962/](software/merkle-rfc6962/) |
+| UTF-8 (RFC 3629 / Unicode Table 3-7) | Milestone 1 in progress — independent Table 3-7 spec, Valid ↔ decode characterization, exact agreement with Lean core `IsValidUTF8`/`validateUTF8`, kernel-checked examples | here, [software/utf8/](software/utf8/) |
 
 ## Papers and shorter texts
 
