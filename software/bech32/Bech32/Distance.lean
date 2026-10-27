@@ -1110,7 +1110,11 @@ theorem decomp_length (es : List Word) :
     · have hd : decomp (a :: es) = (es.length, a) :: decomp es := by
         simp only [decomp, if_neg ha, List.cons_append, List.nil_append]
       have hw : hammingWeight (a :: es) = hammingWeight es + 1 := by
-        simp [hammingWeight, List.filter_cons, ha]
+        have hd2 : decide (a ≠ 0) = true := decide_eq_true_eq.mpr ha
+        show ((a :: es).filter (· ≠ 0)).length = hammingWeight es + 1
+        rw [List.filter_cons]
+        simp only [hd2]
+        rfl
       rw [hd, hw, List.length_cons, ih]
 
 theorem decomp_snd_ne {p : Nat × Word} : ∀ {es : List Word},
@@ -1243,9 +1247,13 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
     by_cases hes : es = []
     · subst hes
       rfl
-    · set init := es.dropLast with hinit_def
-      set last := es.getLast hes with hlast_def
-      have hsplit : init ++ [last] = es := List.dropLast_append_getLast hes
+    · obtain ⟨init, hinit_def⟩ : ∃ l : List Word, l = es.dropLast :=
+        ⟨_, rfl⟩
+      obtain ⟨last, hlast_def⟩ : ∃ w : Word, w = es.getLast hes :=
+        ⟨_, rfl⟩
+      have hsplit : init ++ [last] = es := by
+        rw [hinit_def, hlast_def]
+        exact List.dropLast_concat_getLast hes
       by_cases hlast0 : last = 0
       · -- Strip the trailing zero and recurse.
         have hfold_init : init.foldl polymodStep 0 = 0 := by
@@ -1262,14 +1270,16 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
           rw [hsplit] at h3
           exact h3.symm
         have hlen_init : init.length ≤ n := by
-          have h1 : init.length = es.length - 1 := List.length_dropLast
+          have h1 : init.length = es.length - 1 := by
+            rw [hinit_def]; exact List.length_dropLast
           omega
         have hcase' : (hammingWeight init ≤ 3 ∧ init.length ≤ 173) ∨
             (hammingWeight init ≤ 4 ∧ init.length ≤ 89) ∨
             (hammingWeight init ≤ 5 ∧ init.length ≤ 18) ∨
             (hammingWeight init ≤ 6 ∧ init.length ≤ 8) := by
           have hli : init.length ≤ es.length := by
-            have h1 : init.length = es.length - 1 := List.length_dropLast
+            have h1 : init.length = es.length - 1 := by
+              rw [hinit_def]; exact List.length_dropLast
             omega
           rcases hcase with ⟨hw, hl⟩ | ⟨hw, hl⟩ | ⟨hw, hl⟩ | ⟨hw, hl⟩
           · exact Or.inl ⟨by rw [hweight]; exact hw, by omega⟩
@@ -1282,7 +1292,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
         have hdecomp_form : decomp es =
             (decomp init).map (fun p => (p.1 + 1, p.2)) ++ [(0, last)] := by
           have h := decomp_append_singleton init last
-          rwa [hsplit] at h
+          rwa [hsplit, if_neg hlast0] at h
         by_cases hr0 : hammingWeight es = 0
         · exact hr0
         by_cases hr1 : hammingWeight es = 1
@@ -1292,31 +1302,35 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
             have h2 := congrArg List.length hdecomp_form
             rw [List.length_append, List.length_map, List.length_singleton] at h2
             omega
-          have hLd_nil : decomp init = [] := List.length_eq_zero.mp hLd
+          have hLd_nil : decomp init = [] := List.eq_nil_of_length_eq_zero hLd
           have hdecomp1 : decomp es = [(0, last)] := by
             rw [hdecomp_form, hLd_nil]; simp
           rw [fold_eq_xorsum, hdecomp1] at hfold
-          simp only [List.foldr_cons, List.foldr_nil, BitVec.xor_zero] at hfold
-          exact absurd hfold (syn_ne_zero hlast0)
+          simp only [List.foldr_cons, List.foldr_nil] at hfold
+          have hxz : syn 0 last ^^^ (0 : BitVec 30) = syn 0 last :=
+            BitVec.xor_zero
+          rw [hxz] at hfold
+          exact (syn_ne_zero hlast0 hfold).elim
         · -- Weight at least 2: normalize and apply the certificates.
           have hr_ge : 2 ≤ hammingWeight es := by omega
           have hr_le : hammingWeight es ≤ 6 := by
             rcases hcase with h | h | h | h <;> omega
           have hlen173 : es.length ≤ 173 := by
             rcases hcase with h | h | h | h <;> omega
-          obtain ⟨q, Lq, hq⟩ : ∃ q Lq, decomp init = q :: Lq := by
+          obtain ⟨q, Lq, hq⟩ : ∃ q : Nat × Word,
+              ∃ Lq : List (Nat × Word), decomp init = q :: Lq := by
             apply List.exists_cons_of_ne_nil
             intro hnil
             rw [hnil] at hdecomp_form
-            have hlen1 : (decomp es).length = 1 := by rw [hdecomp_form]
+            have hlen1 : (decomp es).length = 1 := by simp [hdecomp_form]
             rw [decomp_length] at hlen1
             exact hr1 hlen1
           have hdecomp_es : decomp es = (q.1 + 1, q.2) ::
-              ((Lq.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)]) := by
+              ((Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++ [(0, last)]) := by
             rw [hdecomp_form, hq]
             simp [List.map_cons]
           have hq_mem : q ∈ decomp init := by
-            rw [hq]; exact List.mem_cons_self q Lq
+            rw [hq]; exact List.mem_cons_self
           have hv1ne : q.2 ≠ 0 := decomp_snd_ne hq_mem
           have hd1 : q.1 + 1 < es.length :=
             decomp_fst_lt (p := (q.1 + 1, q.2))
@@ -1324,9 +1338,10 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
           have hpair : (decomp es).Pairwise (fun p q => p.1 > q.1) :=
             decomp_pairwise es
           rw [hdecomp_es] at hpair
-          obtain ⟨hhead_rel, hpair_rest⟩ := List.Pairwise_cons.mp hpair
-          set c := gf32Inv q.2 with hc_def
-          have hhead_val : gf32Mul c q.2 = 1 := gf32Inv_mul_cancel hv1ne
+          obtain ⟨hhead_rel, hpair_rest⟩ := List.pairwise_cons.mp hpair
+          obtain ⟨c, hc_def⟩ : ∃ w : Word, w = gf32Inv q.2 := ⟨_, rfl⟩
+          have hhead_val : gf32Mul c q.2 = 1 := by
+            rw [hc_def]; exact gf32Inv_mul_cancel hv1ne
           have hchunk : ∀ m : Nat, m < 6 →
               ((decomp es).map (fun p => (p.1, gf32Mul c p.2))).foldr
                 (fun p acc => gf32Mul p.2 (chunkW (syn p.1 1) m) ^^^ acc) 0 = 0 := by
@@ -1352,8 +1367,12 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
             have hcw : chunkW (syn 0 1) m = 0 := by
               rw [syn_zero, chunkW_setWidth]
               exact if_neg (by omega : ¬ m = 0)
-            simpa only [List.foldr_cons, List.foldr_nil, hcw, gf32Mul_zero,
-              BitVec.zero_xor, BitVec.xor_zero] using h
+            simp only [List.foldr_cons, List.foldr_nil, hcw, gf32Mul_zero]
+              at h
+            have hxz : (0 : Word) ^^^ (0 : Word) = (0 : Word) :=
+              BitVec.zero_xor
+            rw [hxz] at h
+            exact h
           have hprefix_form : (decomp init).map
                 (fun p => (p.1 + 1, gf32Mul c p.2)) =
               (q.1 + 1, gf32Mul c q.2) ::
@@ -1374,23 +1393,37 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               hammingWeight es = 6 by omega) with h2 | h3 | h4 | h5 | h6
           · -- weight = 2
             have hLq : Lq = [] :=
-              List.length_eq_zero.mp (by omega)
+              List.eq_nil_of_length_eq_zero (by omega)
             have hcheq : ∀ m : Nat, 1 ≤ m → m ≤ 5 →
                 chunkW (syn (q.1 + 1) 1) m = 0 := by
               intro m hm1 hm2
               have h := hprefix m hm1 hm2
               rw [hprefix_form, hLq] at h
-              simp only [List.map_nil, List.foldr_cons, List.foldr_nil,
-                BitVec.xor_zero] at h
-              rwa [hhead_val, gf32One_mul] at h
+              simp only [List.map_nil, List.foldr_cons, List.foldr_nil] at h
+              have hxz : gf32Mul (gf32Mul c q.2) (chunkW (syn (q.1 + 1) 1) m)
+                  ^^^ (0 : Word) =
+                  gf32Mul (gf32Mul c q.2) (chunkW (syn (q.1 + 1) 1) m) :=
+                BitVec.xor_zero
+              rw [hxz, hhead_val, gf32One_mul] at h
+              exact h
             obtain ⟨m, hm1, hm2, hne⟩ := synTop_ne_zero (q.1 + 1) (by omega)
               (by omega)
-            exact hne (hcheq m hm1 hm2)
+            exact (hne (hcheq m hm1 hm2)).elim
           · -- weight = 3
-            obtain ⟨q2, hq2⟩ : ∃ q2, Lq = [q2] :=
-              List.length_eq_one.mp (by omega)
+            obtain ⟨q2, Lq2, hq2c⟩ : ∃ q2 : Nat × Word,
+                ∃ Lq2 : List (Nat × Word), Lq = q2 :: Lq2 := by
+              apply List.exists_cons_of_ne_nil
+              intro hn
+              rw [hn] at hlenLq
+              simp only [List.length_nil] at hlenLq
+              omega
+            have hLq2 : Lq2 = [] := List.eq_nil_of_length_eq_zero (by
+              rw [hq2c] at hlenLq
+              simp only [List.length_cons] at hlenLq
+              omega)
+            have hq2 : Lq = [q2] := by rw [hq2c, hLq2]
             have hq2_mem : (q2.1 + 1, q2.2) ∈
-                (Lq.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
+                (Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++ [(0, last)] := by
               rw [hq2]
               simp
             have hd12 : q2.1 + 1 < q.1 + 1 := by
@@ -1403,15 +1436,20 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               have h := hprefix m hm1 hm2
               rw [hprefix_form, hq2] at h
               simp only [List.map_cons, List.map_nil, List.foldr_cons,
-                List.foldr_nil, BitVec.xor_zero] at h
-              rwa [hhead_val] at h
+                List.foldr_nil] at h
+              have hxz : gf32Mul (gf32Mul c q2.2) (chunkW (syn (q2.1 + 1) 1) m)
+                  ^^^ (0 : Word) =
+                  gf32Mul (gf32Mul c q2.2) (chunkW (syn (q2.1 + 1) 1) m) :=
+                BitVec.xor_zero
+              rw [hxz, hhead_val] at h
+              exact h
             obtain ⟨i, j, hij_mem, hdet⟩ := exists_det2 (q.1 + 1) (q2.1 + 1)
               (by omega) (by omega) (by omega)
             have hb := coordPairs_bounds hij_mem
             have hcram := cramer2 (syn (q.1 + 1) 1) (syn (q2.1 + 1) 1) 1
               (gf32Mul c q2.2) i j (hcheq i hb.1 hb.2.1) (hcheq j hb.2.2.1 hb.2.2.2)
             rw [gf32One_mul] at hcram
-            exact hdet hcram
+            exact (hdet hcram).elim
           · -- weight = 4
             have hlen89 : es.length ≤ 89 := by
               rcases hcase with h | h | h | h <;> omega
@@ -1421,25 +1459,33 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
                 rw [hnil] at hlenLq
                 simp only [List.length_nil] at hlenLq
                 omega)
-            obtain ⟨q3, hq3⟩ : ∃ q3, Lq2 = [q3] :=
-              List.length_eq_one.mp (by
-                rw [hq2] at hlenLq
-                simp only [List.length_cons] at hlenLq
-                omega)
+            obtain ⟨q3, Lq3, hq3c⟩ : ∃ q3 : Nat × Word,
+                ∃ Lq3 : List (Nat × Word), Lq2 = q3 :: Lq3 := by
+              apply List.exists_cons_of_ne_nil
+              intro hn
+              rw [hq2, hn] at hlenLq
+              simp only [List.length_cons, List.length_nil] at hlenLq
+              omega
+            have hLq3 : Lq3 = [] := List.eq_nil_of_length_eq_zero (by
+              rw [hq2, hq3c] at hlenLq
+              simp only [List.length_cons] at hlenLq
+              omega)
+            have hq3 : Lq2 = [q3] := by rw [hq3c, hLq3]
             have hq2_mem : (q2.1 + 1, q2.2) ∈
-                (Lq.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
+                (Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++ [(0, last)] := by
               rw [hq2]; simp
             have hq3_mem : (q3.1 + 1, q3.2) ∈
-                (Lq.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
+                (Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++ [(0, last)] := by
               rw [hq2, hq3]; simp
             have hd12 : q2.1 + 1 < q.1 + 1 := hhead_rel _ hq2_mem
             have hd13 : q3.1 + 1 < q.1 + 1 := hhead_rel _ hq3_mem
             have hd23 : q3.1 + 1 < q2.1 + 1 := by
-              have hpair2 : ((Lq.map (fun p => (p.1 + 1, p.2))) ++
-                  [(0, last)]).Pairwise (fun p q => p.1 > q.1) := hpair_rest
+              have hpair2 : ((Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++
+                  [(0, last)]).Pairwise (fun p q : Nat × Word => p.1 > q.1) :=
+              hpair_rest
               rw [hq2] at hpair2
               simp only [List.map_cons, List.cons_append] at hpair2
-              obtain ⟨hrel2, -⟩ := List.Pairwise_cons.mp hpair2
+              obtain ⟨hrel2, -⟩ := List.pairwise_cons.mp hpair2
               have hmem : (q3.1 + 1, q3.2) ∈
                   (Lq2.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
                 rw [hq3]; simp
@@ -1452,8 +1498,13 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               have h := hprefix m hm1 hm2
               rw [hprefix_form, hq2, hq3] at h
               simp only [List.map_cons, List.map_nil, List.foldr_cons,
-                List.foldr_nil, BitVec.xor_zero, ← BitVec.xor_assoc] at h
-              rwa [hhead_val] at h
+                List.foldr_nil] at h
+              have hxz : gf32Mul (gf32Mul c q3.2) (chunkW (syn (q3.1 + 1) 1) m)
+                  ^^^ (0 : Word) =
+                  gf32Mul (gf32Mul c q3.2) (chunkW (syn (q3.1 + 1) 1) m) :=
+                BitVec.xor_zero
+              rw [hxz, ← BitVec.xor_assoc, hhead_val] at h
+              exact h
             obtain ⟨i, j, k, hijk_mem, hdet⟩ := exists_det3 (q.1 + 1)
               (q2.1 + 1) (q3.1 + 1) (by omega) (by omega) (by omega) (by omega)
             have hb := coordTriples_bounds hijk_mem
@@ -1462,7 +1513,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               (hcheq i hb.1 hb.2.1) (hcheq j hb.2.2.1 hb.2.2.2.1)
               (hcheq k hb.2.2.2.2.1 hb.2.2.2.2.2)
             rw [gf32One_mul] at hcram
-            exact hdet hcram
+            exact (hdet hcram).elim
           · -- weight = 5
             have hlen18 : es.length ≤ 18 := by
               rcases hcase with h | h | h | h <;> omega
@@ -1478,28 +1529,36 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
                 rw [hq2, hnil] at hlenLq
                 simp only [List.length_cons, List.length_nil] at hlenLq
                 omega)
-            obtain ⟨q4, hq4⟩ : ∃ q4, Lq3 = [q4] :=
-              List.length_eq_one.mp (by
-                rw [hq2, hq3] at hlenLq
-                simp only [List.length_cons] at hlenLq
-                omega)
+            obtain ⟨q4, Lq4, hq4c⟩ : ∃ q4 : Nat × Word,
+                ∃ Lq4 : List (Nat × Word), Lq3 = q4 :: Lq4 := by
+              apply List.exists_cons_of_ne_nil
+              intro hn
+              rw [hq2, hq3, hn] at hlenLq
+              simp only [List.length_cons, List.length_nil] at hlenLq
+              omega
+            have hLq4 : Lq4 = [] := List.eq_nil_of_length_eq_zero (by
+              rw [hq2, hq3, hq4c] at hlenLq
+              simp only [List.length_cons] at hlenLq
+              omega)
+            have hq4 : Lq3 = [q4] := by rw [hq4c, hLq4]
             have hmem2 : (q2.1 + 1, q2.2) ∈
-                (Lq.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
+                (Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++ [(0, last)] := by
               rw [hq2]; simp
             have hmem3 : (q3.1 + 1, q3.2) ∈
-                (Lq.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
+                (Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++ [(0, last)] := by
               rw [hq2, hq3]; simp
             have hmem4 : (q4.1 + 1, q4.2) ∈
-                (Lq.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
+                (Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++ [(0, last)] := by
               rw [hq2, hq3, hq4]; simp
             have hd12 : q2.1 + 1 < q.1 + 1 := hhead_rel _ hmem2
             have hd13 : q3.1 + 1 < q.1 + 1 := hhead_rel _ hmem3
             have hd14 : q4.1 + 1 < q.1 + 1 := hhead_rel _ hmem4
-            have hpair2 : ((Lq.map (fun p => (p.1 + 1, p.2))) ++
-                [(0, last)]).Pairwise (fun p q => p.1 > q.1) := hpair_rest
+            have hpair2 : ((Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++
+                [(0, last)]).Pairwise (fun p q : Nat × Word => p.1 > q.1) :=
+              hpair_rest
             rw [hq2] at hpair2
             simp only [List.map_cons, List.cons_append] at hpair2
-            obtain ⟨hrel2, hpair3⟩ := List.Pairwise_cons.mp hpair2
+            obtain ⟨hrel2, hpair3⟩ := List.pairwise_cons.mp hpair2
             have hd23 : q3.1 + 1 < q2.1 + 1 := by
               have hmem : (q3.1 + 1, q3.2) ∈
                   (Lq2.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
@@ -1513,7 +1572,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
             have hd34 : q4.1 + 1 < q3.1 + 1 := by
               rw [hq3] at hpair3
               simp only [List.map_cons, List.cons_append] at hpair3
-              obtain ⟨hrel3, -⟩ := List.Pairwise_cons.mp hpair3
+              obtain ⟨hrel3, -⟩ := List.pairwise_cons.mp hpair3
               have hmem : (q4.1 + 1, q4.2) ∈
                   (Lq3.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
                 rw [hq4]; simp
@@ -1527,8 +1586,13 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               have h := hprefix m hm1 hm2
               rw [hprefix_form, hq2, hq3, hq4] at h
               simp only [List.map_cons, List.map_nil, List.foldr_cons,
-                List.foldr_nil, BitVec.xor_zero, ← BitVec.xor_assoc] at h
-              rwa [hhead_val] at h
+                List.foldr_nil] at h
+              have hxz : gf32Mul (gf32Mul c q4.2) (chunkW (syn (q4.1 + 1) 1) m)
+                  ^^^ (0 : Word) =
+                  gf32Mul (gf32Mul c q4.2) (chunkW (syn (q4.1 + 1) 1) m) :=
+                BitVec.xor_zero
+              rw [hxz, ← BitVec.xor_assoc, ← BitVec.xor_assoc, hhead_val] at h
+              exact h
             obtain ⟨i, j, k, l, hijkl_mem, hdet⟩ := exists_det4 (q.1 + 1)
               (q2.1 + 1) (q3.1 + 1) (q4.1 + 1) (by omega) (by omega)
               (by omega) (by omega) (by omega)
@@ -1540,7 +1604,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               (hcheq k hb.2.2.2.2.1 hb.2.2.2.2.2.1)
               (hcheq l hb.2.2.2.2.2.2.1 hb.2.2.2.2.2.2.2)
             rw [gf32One_mul] at hcram
-            exact hdet hcram
+            exact (hdet hcram).elim
           · -- weight = 6
             have hlen8 : es.length ≤ 8 := by
               rcases hcase with h | h | h | h <;> omega
@@ -1562,32 +1626,40 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
                 rw [hq2, hq3, hnil] at hlenLq
                 simp only [List.length_cons, List.length_nil] at hlenLq
                 omega)
-            obtain ⟨q5, hq5⟩ : ∃ q5, Lq4 = [q5] :=
-              List.length_eq_one.mp (by
-                rw [hq2, hq3, hq4] at hlenLq
-                simp only [List.length_cons] at hlenLq
-                omega)
+            obtain ⟨q5, Lq5, hq5c⟩ : ∃ q5 : Nat × Word,
+                ∃ Lq5 : List (Nat × Word), Lq4 = q5 :: Lq5 := by
+              apply List.exists_cons_of_ne_nil
+              intro hn
+              rw [hq2, hq3, hq4, hn] at hlenLq
+              simp only [List.length_cons, List.length_nil] at hlenLq
+              omega
+            have hLq5 : Lq5 = [] := List.eq_nil_of_length_eq_zero (by
+              rw [hq2, hq3, hq4, hq5c] at hlenLq
+              simp only [List.length_cons] at hlenLq
+              omega)
+            have hq5 : Lq4 = [q5] := by rw [hq5c, hLq5]
             have hmem2 : (q2.1 + 1, q2.2) ∈
-                (Lq.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
+                (Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++ [(0, last)] := by
               rw [hq2]; simp
             have hmem3 : (q3.1 + 1, q3.2) ∈
-                (Lq.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
+                (Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++ [(0, last)] := by
               rw [hq2, hq3]; simp
             have hmem4 : (q4.1 + 1, q4.2) ∈
-                (Lq.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
+                (Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++ [(0, last)] := by
               rw [hq2, hq3, hq4]; simp
             have hmem5 : (q5.1 + 1, q5.2) ∈
-                (Lq.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
+                (Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++ [(0, last)] := by
               rw [hq2, hq3, hq4, hq5]; simp
             have hd12 : q2.1 + 1 < q.1 + 1 := hhead_rel _ hmem2
             have hd13 : q3.1 + 1 < q.1 + 1 := hhead_rel _ hmem3
             have hd14 : q4.1 + 1 < q.1 + 1 := hhead_rel _ hmem4
             have hd15 : q5.1 + 1 < q.1 + 1 := hhead_rel _ hmem5
-            have hpair2 : ((Lq.map (fun p => (p.1 + 1, p.2))) ++
-                [(0, last)]).Pairwise (fun p q => p.1 > q.1) := hpair_rest
+            have hpair2 : ((Lq.map (fun p : Nat × Word => (p.1 + 1, p.2))) ++
+                [(0, last)]).Pairwise (fun p q : Nat × Word => p.1 > q.1) :=
+              hpair_rest
             rw [hq2] at hpair2
             simp only [List.map_cons, List.cons_append] at hpair2
-            obtain ⟨hrel2, hpair3⟩ := List.Pairwise_cons.mp hpair2
+            obtain ⟨hrel2, hpair3⟩ := List.pairwise_cons.mp hpair2
             have hd23 : q3.1 + 1 < q2.1 + 1 := by
               have hmem : (q3.1 + 1, q3.2) ∈
                   (Lq2.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
@@ -1605,7 +1677,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               exact hrel2 _ hmem
             rw [hq3] at hpair3
             simp only [List.map_cons, List.cons_append] at hpair3
-            obtain ⟨hrel3, hpair4⟩ := List.Pairwise_cons.mp hpair3
+            obtain ⟨hrel3, hpair4⟩ := List.pairwise_cons.mp hpair3
             have hd34 : q4.1 + 1 < q3.1 + 1 := by
               have hmem : (q4.1 + 1, q4.2) ∈
                   (Lq3.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
@@ -1618,7 +1690,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               exact hrel3 _ hmem
             rw [hq4] at hpair4
             simp only [List.map_cons, List.cons_append] at hpair4
-            obtain ⟨hrel4, -⟩ := List.Pairwise_cons.mp hpair4
+            obtain ⟨hrel4, -⟩ := List.pairwise_cons.mp hpair4
             have hd45 : q5.1 + 1 < q4.1 + 1 := by
               have hmem : (q5.1 + 1, q5.2) ∈
                   (Lq4.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
@@ -1634,8 +1706,14 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               have h := hprefix m hm1 hm2
               rw [hprefix_form, hq2, hq3, hq4, hq5] at h
               simp only [List.map_cons, List.map_nil, List.foldr_cons,
-                List.foldr_nil, BitVec.xor_zero, ← BitVec.xor_assoc] at h
-              rwa [hhead_val] at h
+                List.foldr_nil] at h
+              have hxz : gf32Mul (gf32Mul c q5.2) (chunkW (syn (q5.1 + 1) 1) m)
+                  ^^^ (0 : Word) =
+                  gf32Mul (gf32Mul c q5.2) (chunkW (syn (q5.1 + 1) 1) m) :=
+                BitVec.xor_zero
+              rw [hxz, ← BitVec.xor_assoc, ← BitVec.xor_assoc,
+                ← BitVec.xor_assoc, hhead_val] at h
+              exact h
             have hdet := exists_det5 (q.1 + 1) (q2.1 + 1) (q3.1 + 1)
               (q4.1 + 1) (q5.1 + 1) (by omega) (by omega) (by omega)
               (by omega) (by omega) (by omega)
@@ -1649,7 +1727,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               (hcheq 4 (by decide) (by decide))
               (hcheq 5 (by decide) (by decide))
             rw [gf32One_mul] at hcram
-            exact hdet hcram
+            exact (hdet hcram).elim
 
 /-! ## The distance theorems -/
 
@@ -1691,9 +1769,9 @@ theorem foldl_polymodStep_zero_ne_zero_of_weight_le_six
 
 /-! ## Sharpness witnesses -/
 
+set_option maxRecDepth 8192 in
 /-- Sharpness at length 90: `x^89 + 19x^79 + 15x^14 + 29` is a weight-4
     multiple of the generator. -/
-set_option maxRecDepth 8192 in
 theorem exists_weight_four_kernel_length_90 :
     ∃ es : List Word, es.length = 90 ∧ hammingWeight es = 4 ∧
       es.foldl polymodStep 0 = 0 := by
@@ -1701,8 +1779,8 @@ theorem exists_weight_four_kernel_length_90 :
     if i = 0 then 1 else if i = 10 then 19 else if i = 75 then 15 else
     if i = 89 then 29 else 0), by decide, by decide, by decide⟩
 
-/-- Sharpness at length 19: a weight-5 kernel word. -/
 set_option maxRecDepth 8192 in
+/-- Sharpness at length 19: a weight-5 kernel word. -/
 theorem exists_weight_five_kernel_length_19 :
     ∃ es : List Word, es.length = 19 ∧ hammingWeight es = 5 ∧
       es.foldl polymodStep 0 = 0 := by
@@ -1711,8 +1789,8 @@ theorem exists_weight_five_kernel_length_19 :
     if i = 15 then 12 else if i = 18 then 30 else 0),
     by decide, by decide, by decide⟩
 
-/-- Sharpness at length 9: a weight-6 kernel word. -/
 set_option maxRecDepth 8192 in
+/-- Sharpness at length 9: a weight-6 kernel word. -/
 theorem exists_weight_six_kernel_length_9 :
     ∃ es : List Word, es.length = 9 ∧ hammingWeight es = 6 ∧
       es.foldl polymodStep 0 = 0 := by
@@ -1721,8 +1799,8 @@ theorem exists_weight_six_kernel_length_9 :
     if i = 5 then 1 else if i = 6 then 22 else if i = 8 then 21 else 0),
     by decide, by decide, by decide⟩
 
+set_option maxRecDepth 65536 in
 /-- At the primitive length, distance drops to 2: `x^1023 + 1`. -/
-set_option maxRecDepth 8192 in
 theorem exists_weight_two_kernel_length_1024 :
     ∃ es : List Word, es.length = 1024 ∧ hammingWeight es = 2 ∧
       es.foldl polymodStep 0 = 0 := by
@@ -1735,6 +1813,9 @@ theorem exists_weight_two_kernel_length_1024 :
 theorem hammingDist_eq_hammingWeight_xor (xs ys : List Word)
     (h : xs.length = ys.length) :
     hammingDist xs ys = hammingWeight (List.zipWith (· ^^^ ·) xs ys) := by
+  show ((xs.zip ys).filter (fun p => p.1 ≠ p.2)).length =
+    ((List.zipWith (· ^^^ ·) xs ys).filter (· ≠ 0)).length
+  rw [← List.countP_eq_length_filter, ← List.countP_eq_length_filter]
   induction xs generalizing ys with
   | nil =>
     cases ys with
@@ -1745,17 +1826,23 @@ theorem hammingDist_eq_hammingWeight_xor (xs ys : List Word)
     | nil => simp at h
     | cons y ys =>
       simp only [List.length_cons, Nat.add_right_cancel_iff] at h
-      simp only [hammingDist, hammingWeight, List.zip_cons_cons,
-        List.zipWith_cons_cons, List.filter_cons]
-      by_cases hxy : x ≠ y
-      · have hxor : (x ^^^ y) ≠ 0 := by
-          intro hz
-          exact hxy (xor_eq_zero_imp hz)
-        simp [hxy, hxor, ih ys h]
-      · have hxy2 : x = y := by
-          simpa using hxy
-        subst hxy2
-        simp [ih ys h]
+      rw [List.zip_cons_cons, List.zipWith_cons_cons, List.countP_cons,
+        List.countP_cons, ih ys h]
+      by_cases hxy : x = y
+      · subst hxy
+        have e1 : decide ((x, x).1 ≠ (x, x).2) = false := by
+          show decide (x ≠ x) = false
+          exact decide_eq_false_iff_not.mpr (by simp)
+        have e2 : decide (x ^^^ x ≠ 0) = false := by
+          rw [show x ^^^ x = (0 : Word) from BitVec.xor_self]
+          exact decide_eq_false_iff_not.mpr (by simp)
+        rw [e1, e2]
+      · have e1 : decide ((x, y).1 ≠ (x, y).2) = true := by
+          show decide (x ≠ y) = true
+          exact decide_eq_true_eq.mpr hxy
+        have e2 : decide (x ^^^ y ≠ 0) = true :=
+          decide_eq_true_eq.mpr (fun hz => hxy (xor_eq_zero_imp hz))
+        rw [e1, e2]
 
 theorem hammingDist_eq_zero_imp {xs ys : List Word}
     (h : hammingDist xs ys = 0) (hlen : xs.length = ys.length) : xs = ys := by
@@ -1902,10 +1989,17 @@ theorem char_list_eq_of_hi_lo (hrp₁ hrp₂ : List Char)
         have hmod : c₁.toNat &&& 31 = c₂.toNat &&& 31 := by
           have h5 := congrArg BitVec.toNat hlo1
           simp only [BitVec.toNat_ofNat] at h5
-          have hb1 : c₁.toNat &&& 31 < 32 := by omega
-          have hb2 : c₂.toNat &&& 31 < 32 := by omega
+          have hb1 : c₁.toNat &&& 31 < 32 :=
+            Nat.lt_succ_of_le Nat.and_le_right
+          have hb2 : c₂.toNat &&& 31 < 32 :=
+            Nat.lt_succ_of_le Nat.and_le_right
           omega
-        have hnat : c₁.toNat = c₂.toNat := by omega
+        have hnat : c₁.toNat = c₂.toNat := by
+          have hb1' : c₁.toNat &&& 31 = c₁.toNat % 32 :=
+            Nat.and_two_pow_sub_one_eq_mod c₁.toNat 5
+          have hb2' : c₂.toNat &&& 31 = c₂.toNat % 32 :=
+            Nat.and_two_pow_sub_one_eq_mod c₂.toNat 5
+          omega
         exact Char.toNat_inj.mp hnat
       simp only [List.cons.injEq]
       exact ⟨hc, ih _ hlen' hhi2 hlo2
