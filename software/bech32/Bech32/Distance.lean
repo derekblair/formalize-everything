@@ -77,7 +77,7 @@ def chunkW (s : BitVec 30) (j : Nat) : Word := s.extractLsb' (5 * j) 5
 
 theorem chunkW_toNat (s : BitVec 30) (j : Nat) :
     (chunkW s j).toNat = (s.toNat >>> (5 * j)) % 32 := by
-  simp [chunkW, BitVec.toNat_extractLsb']
+  simp [chunkW, BitVec.extractLsb'_toNat]
 
 theorem chunkW_zero (j : Nat) : chunkW 0 j = 0 := by
   simp [chunkW]
@@ -90,9 +90,7 @@ theorem chunkW_inj {s t : BitVec 30}
   have hbit : ∀ (z : BitVec 30) (j : Nat) (hj : j < 6) (b : Nat) (hb : b < 5),
       z.getLsbD (5 * j + b) = (chunkW z j).getLsbD b := by
     intro z j hj b hb
-    simp only [chunkW, BitVec.getLsbD_extractLsb', hb, Bool.true_and]
-    congr 1
-    omega
+    simp only [chunkW, BitVec.getLsbD_extractLsb', hb, decide_true, Bool.true_and]
   have hi5 : i / 5 < 6 := by omega
   have hb : i % 5 < 5 := Nat.mod_lt _ (by decide)
   have hdecomp : 5 * (i / 5) + i % 5 = i := by omega
@@ -102,71 +100,73 @@ theorem chunkW_inj {s t : BitVec 30}
 theorem chunkW_xor (s t : BitVec 30) (j : Nat) :
     chunkW (s ^^^ t) j = chunkW s j ^^^ chunkW t j := by
   apply BitVec.eq_of_toNat_eq
-  rw [chunkW_toNat, chunkW_toNat, chunkW_toNat, BitVec.toNat_xor]
-  have hs : s.toNat < 2 ^ 30 := s.isLt
-  have ht : t.toNat < 2 ^ 30 := t.isLt
-  omega
+  rw [BitVec.toNat_xor, chunkW_toNat, chunkW_toNat, chunkW_toNat,
+    BitVec.toNat_xor]
+  have e1 : (s.toNat ^^^ t.toNat) >>> (5 * j) =
+      (s.toNat >>> (5 * j)) ^^^ (t.toNat >>> (5 * j)) := by
+    rw [Nat.shiftRight_eq_div_pow, Nat.shiftRight_eq_div_pow,
+      Nat.shiftRight_eq_div_pow, Nat.xor_div_two_pow]
+  rw [e1]
+  exact Nat.xor_mod_two_pow (n := 5)
 
-theorem chunkW_shiftLeft5 (s : BitVec 30) (j : Nat) :
+theorem chunkW_shiftLeft5 (s : BitVec 30) (j : Nat) (hj : j < 6) :
     chunkW (s <<< 5) j = if j = 0 then 0 else chunkW s (j - 1) := by
-  by_cases hj : j = 0
-  · subst hj
-    apply BitVec.eq_of_toNat_eq
-    rw [chunkW_toNat, chunkW_toNat]
-    simp [BitVec.toNat_shiftLeft]
-    have hs : s.toNat < 2 ^ 30 := s.isLt
-    omega
-  · rw [if_neg hj]
-    apply BitVec.eq_of_toNat_eq
-    rw [chunkW_toNat, chunkW_toNat, BitVec.toNat_shiftLeft]
-    have hs : s.toNat < 2 ^ 30 := s.isLt
-    have hmod : (s.toNat <<< 5) % 2 ^ 30 = (s.toNat * 32) % 2 ^ 30 := by
-      rw [Nat.shiftLeft_eq]
-    rw [hmod]
-    omega
+  apply BitVec.eq_of_getLsbD_eq_iff.mpr
+  intro i hi
+  by_cases hj0 : j = 0
+  · subst hj0
+    simp [chunkW, hi]
+  · rw [if_neg hj0]
+    have hi30 : 5 * j + i < 30 := by omega
+    have hge : ¬ (5 * j + i < 5) := by omega
+    have hidx : 5 * j + i - 5 = 5 * (j - 1) + i := by omega
+    simp only [chunkW, BitVec.getLsbD_extractLsb', hi, decide_true,
+      Bool.true_and]
+    have hd1 : decide (5 * j + i < 30) = true := by
+      rw [decide_eq_true_eq]; exact hi30
+    have hd2 : decide (5 * j + i < 5) = false := by
+      rw [decide_eq_false_iff_not]; exact hge
+    rw [BitVec.getLsbD_shiftLeft, hd1, hd2, Bool.not_false, Bool.true_and,
+      Bool.true_and, hidx]
 
 theorem chunkW_setWidth (v : Word) (j : Nat) :
     chunkW (v.setWidth 30) j = if j = 0 then v else 0 := by
+  apply BitVec.eq_of_getLsbD_eq_iff.mpr
+  intro i hi
   by_cases hj : j = 0
   · subst hj
-    simp only [if_pos rfl]
-    apply BitVec.eq_of_toNat_eq
-    rw [chunkW_toNat, BitVec.toNat_setWidth]
-    have hv : v.toNat < 32 := v.isLt
-    omega
+    have hi30 : i < 30 := by omega
+    simp [chunkW, hi, hi30]
   · rw [if_neg hj]
-    apply BitVec.eq_of_toNat_eq
-    rw [chunkW_toNat, BitVec.toNat_setWidth, BitVec.toNat_zero]
-    have hv : v.toNat < 32 := v.isLt
-    omega
+    have hge : v.getLsbD (5 * j + i) = false :=
+      BitVec.getLsbD_of_ge v (5 * j + i) (by omega)
+    simp [chunkW, hi, hge]
 
-theorem chunkW_shiftMul (s : BitVec 30) (k j : Nat) :
+theorem chunkW_shiftMul (s : BitVec 30) (k j : Nat) (hj : j < 6) :
     chunkW (s <<< (5 * k)) j = if j < k then 0 else chunkW s (j - k) := by
   apply BitVec.eq_of_getLsbD_eq_iff.mpr
   intro i hi
+  have hi30 : 5 * j + i < 30 := by omega
   by_cases hjk : j < k
   · rw [if_pos hjk]
     have h1 : (chunkW (s <<< (5 * k)) j).getLsbD i =
         (s <<< (5 * k)).getLsbD (5 * j + i) := by
-      simp only [chunkW, BitVec.getLsbD_extractLsb', hi, Bool.true_and]
-      congr 1
-      omega
+      simp only [chunkW, BitVec.getLsbD_extractLsb', hi, decide_true,
+        Bool.true_and]
     rw [h1, BitVec.getLsbD_shiftLeft]
     have : 5 * j + i < 5 * k := by omega
     simp [this, BitVec.getLsbD_zero]
   · rw [if_neg hjk]
     have h1 : (chunkW (s <<< (5 * k)) j).getLsbD i =
         (s <<< (5 * k)).getLsbD (5 * j + i) := by
-      simp only [chunkW, BitVec.getLsbD_extractLsb', hi, Bool.true_and]
-      congr 1
-      omega
+      simp only [chunkW, BitVec.getLsbD_extractLsb', hi, decide_true,
+        Bool.true_and]
     have h2 : (chunkW s (j - k)).getLsbD i = s.getLsbD (5 * (j - k) + i) := by
-      simp only [chunkW, BitVec.getLsbD_extractLsb', hi, Bool.true_and]
-      congr 1
-      omega
+      simp only [chunkW, BitVec.getLsbD_extractLsb', hi, decide_true,
+        Bool.true_and]
     rw [h1, h2, BitVec.getLsbD_shiftLeft]
     have hge : ¬ (5 * j + i < 5 * k) := by omega
-    simp [hge]
+    simp [hge, hi30]
     congr 1
     have : 5 * j + i - 5 * k = 5 * (j - k) + i := by omega
     rw [this]
@@ -197,9 +197,11 @@ theorem genXor_zero : genXor 0 = 0 := by decide
 
 theorem getLsbD_chunkW_top (s : BitVec 30) (i : Nat) (hi : i < 5) :
     (chunkW s 5).getLsbD i = s.getLsbD (25 + i) := by
-  simp only [chunkW, BitVec.getLsbD_extractLsb', hi, Bool.true_and]
-  congr 1
-  omega
+  have hd : decide (i < 5) = true := by
+    rw [decide_eq_true_eq]; exact hi
+  rw [show chunkW s 5 = s.extractLsb' (5 * 5) 5 from rfl,
+    BitVec.getLsbD_extractLsb', hd, Bool.true_and,
+    show (5 : Nat) * 5 = 25 from rfl]
 
 theorem polymodStep_eq (s : BitVec 30) (v : Word) :
     polymodStep s v = (s <<< 5) ^^^ v.setWidth 30 ^^^ genXor (chunkW s 5) := by
@@ -207,6 +209,7 @@ theorem polymodStep_eq (s : BitVec 30) (v : Word) :
   rw [← getLsbD_chunkW_top s 0 (by decide), ← getLsbD_chunkW_top s 1 (by decide),
     ← getLsbD_chunkW_top s 2 (by decide), ← getLsbD_chunkW_top s 3 (by decide),
     ← getLsbD_chunkW_top s 4 (by decide)]
+  grind
 
 /-- The chunks of the generator tail are `GF(32)`-multiples of the top chunk:
     the BIP-173 generator constants are the `alpha^i * g_low` table. -/
@@ -221,54 +224,55 @@ theorem polymodStep_chunk (s : BitVec 30) (v : Word) (j : Nat) (hj : j < 6) :
       (if j = 0 then 0 else chunkW s (j - 1)) ^^^
       (if j = 0 then v else 0) ^^^
       gf32Mul (chunkW s 5) (genChunk j) := by
-  rw [polymodStep_eq, chunkW_xor, chunkW_xor, chunkW_shiftLeft5, chunkW_setWidth,
-    chunkW_genXor _ j hj]
+  rw [polymodStep_eq, chunkW_xor, chunkW_xor, chunkW_shiftLeft5 _ _ hj,
+    chunkW_setWidth, chunkW_genXor _ j hj]
 
 /-! ## `GF(32)`-scaling of a state -/
 
 /-- Scale every chunk of a state by `c : GF(32)`. -/
 def scaleState (c : Word) (s : BitVec 30) : BitVec 30 :=
   (gf32Mul c (chunkW s 0)).setWidth 30 ^^^
-  ((gf32Mul c (chunkW s 1)).setWidth 30 <<< 5) ^^^
-  ((gf32Mul c (chunkW s 2)).setWidth 30 <<< 10) ^^^
-  ((gf32Mul c (chunkW s 3)).setWidth 30 <<< 15) ^^^
-  ((gf32Mul c (chunkW s 4)).setWidth 30 <<< 20) ^^^
-  ((gf32Mul c (chunkW s 5)).setWidth 30 <<< 25)
+  ((gf32Mul c (chunkW s 1)).setWidth 30 <<< (5 * 1)) ^^^
+  ((gf32Mul c (chunkW s 2)).setWidth 30 <<< (5 * 2)) ^^^
+  ((gf32Mul c (chunkW s 3)).setWidth 30 <<< (5 * 3)) ^^^
+  ((gf32Mul c (chunkW s 4)).setWidth 30 <<< (5 * 4)) ^^^
+  ((gf32Mul c (chunkW s 5)).setWidth 30 <<< (5 * 5))
 
 theorem chunkW_scaleState (c : Word) (s : BitVec 30) (j : Nat) (hj : j < 6) :
     chunkW (scaleState c s) j = gf32Mul c (chunkW s j) := by
-  have hterm : ∀ (w : Word) (k j : Nat), j < 6 → k < 6 →
+  have hterm : ∀ (w : Word) (k j : Nat), j < 6 →
       chunkW ((w.setWidth 30) <<< (5 * k)) j = if j = k then w else 0 := by
-    intro w k j hj hk
-    rw [chunkW_shiftMul]
+    intro w k j hj
+    rw [chunkW_shiftMul _ _ _ hj]
     by_cases h : j = k
     · subst h
       simp [chunkW_setWidth]
-    · have hge : ¬ j < k ∨ ¬ k ≤ j := by omega
-      rw [if_neg (by omega : ¬ j < k)]
-      rw [chunkW_setWidth]
-      simp [h, show j - k ≠ 0 by omega]
+    · by_cases hjk : j < k
+      · rw [if_pos hjk, if_neg h]
+      · rw [if_neg hjk, chunkW_setWidth, if_neg (show j - k ≠ 0 by omega),
+          if_neg h]
   simp only [scaleState, chunkW_xor]
   have hj0 : j = 0 ∨ j = 1 ∨ j = 2 ∨ j = 3 ∨ j = 4 ∨ j = 5 := by omega
   rcases hj0 with rfl | rfl | rfl | rfl | rfl | rfl <;>
-    simp [hterm _ _ _ hj (by decide), chunkW_setWidth]
+    (simp only [hterm _ _ _ hj, chunkW_setWidth, BitVec.xor_zero]; try grind)
 
 theorem scaleState_xor (c : Word) (s t : BitVec 30) :
     scaleState c (s ^^^ t) = scaleState c s ^^^ scaleState c t := by
   apply chunkW_inj
   intro j hj
-  rw [chunkW_scaleState, chunkW_xor, gf32Mul_xor_right, ← chunkW_scaleState,
-    ← chunkW_scaleState, chunkW_xor]
+  rw [chunkW_scaleState _ _ _ hj, chunkW_xor, gf32Mul_xor_right,
+    ← chunkW_scaleState _ _ _ hj, ← chunkW_scaleState _ _ _ hj, chunkW_xor]
 
 theorem scaleState_zero_state (c : Word) : scaleState c 0 = 0 := by
   apply chunkW_inj
   intro j hj
-  rw [chunkW_scaleState, chunkW_zero, gf32Mul_zero, chunkW_zero]
+  rw [chunkW_scaleState _ _ _ hj, chunkW_zero, gf32Mul_zero]
 
 theorem scaleState_zero_coeff (s : BitVec 30) : scaleState 0 s = 0 := by
   apply chunkW_inj
   intro j hj
-  rw [chunkW_scaleState, gf32Zero_mul, chunkW_zero]
+  rw [chunkW_scaleState _ _ _ hj, gf32Zero_mul]
+  exact (chunkW_zero j).symm
 
 /-- `polymodStep` intertwines with `GF(32)`-scaling. -/
 theorem polymodStep_scale (c : Word) (s : BitVec 30) (v : Word) :
@@ -276,17 +280,16 @@ theorem polymodStep_scale (c : Word) (s : BitVec 30) (v : Word) :
       scaleState c (polymodStep s v) := by
   apply chunkW_inj
   intro j hj
-  rw [chunkW_scaleState, polymodStep_chunk _ _ j hj, polymodStep_chunk _ _ j hj,
-    chunkW_scaleState _ _ 5 (by decide)]
+  rw [chunkW_scaleState _ _ _ hj, polymodStep_chunk _ _ j hj,
+    polymodStep_chunk _ _ j hj,
+    chunkW_scaleState _ _ _ (by decide : (5 : Nat) < 6)]
   by_cases hj0 : j = 0
   · subst hj0
-    simp [gf32Mul_xor_left]
+    simp
+    rw [gf32Mul_xor_right, gf32Mul_assoc]
   · have hjm : j - 1 < 6 := by omega
     rw [chunkW_scaleState c s (j - 1) hjm]
-    simp only [if_neg hj0]
-    rw [gf32Mul_xor_left, gf32Mul_xor_left, gf32Mul_assoc,
-      gf32Mul_comm (gf32Mul c (chunkW s 5)) (genChunk j),
-      ← gf32Mul_assoc]
+    simp [hj0, gf32Mul_xor_right, gf32Mul_assoc, chunkW_setWidth]
 
 /-- One zero step is injective on states: the top chunk is recovered from the
     low chunk of the result since `genChunk 0 = 18 ≠ 0`. -/
@@ -309,15 +312,14 @@ theorem polymodStep_zero_inj {s : BitVec 30} (h : polymodStep s 0 = 0) : s = 0 :
   · subst hj5; exact htop
   · have hjm : j + 1 < 6 := by omega
     have h1 : chunkW (s <<< 5) (j + 1) = chunkW s j := by
-      rw [chunkW_shiftLeft5]
+      rw [chunkW_shiftLeft5 _ _ hjm]
       simp [show j + 1 ≠ 0 by omega, show j + 1 - 1 = j by omega]
     have h2 : polymodStep s 0 = (s <<< 5) ^^^ genXor (chunkW s 5) := by
       rw [polymodStep_eq]
       simp
     rw [htop, genXor_zero] at h2
-    have h3 : (s <<< 5) = 0 := by
-      have := congrArg (chunkW · (j + 1)) (h.trans h2)
-      simpa [chunkW_zero] using this
+    rw [h2] at h
+    have h3 : (s <<< 5) = 0 := (BitVec.xor_zero).symm.trans h
     rw [← h1, h3]
     exact chunkW_zero _
 
@@ -343,7 +345,7 @@ theorem syn_zero (v : Word) : syn 0 v = v.setWidth 30 := rfl
 
 theorem syn_succ (d : Nat) (v : Word) :
     syn (d + 1) v = polymodStep (syn d v) 0 := by
-  simp only [syn, List.replicate_add, List.foldl_append]
+  simp only [syn, List.replicate_succ', List.foldl_append]
   rfl
 
 theorem syn_scale (c : Word) (d : Nat) (v : Word) :
@@ -352,14 +354,18 @@ theorem syn_scale (c : Word) (d : Nat) (v : Word) :
   | zero =>
     apply chunkW_inj
     intro j hj
-    rw [chunkW_scaleState, syn_zero, syn_zero, chunkW_setWidth, chunkW_setWidth]
+    rw [chunkW_scaleState _ _ _ hj, syn_zero, syn_zero, chunkW_setWidth,
+      chunkW_setWidth]
     by_cases hj0 : j = 0
-    · subst hj0; simp
-    · simp [hj0, gf32Mul_zero]
+    · subst hj0
+      rw [if_pos rfl, if_pos rfl]
+    · simp only [if_neg hj0]
+      exact (gf32Mul_zero c).symm
   | succ d ih =>
-    rw [syn_succ, syn_succ, ← ih]
     have h := polymodStep_scale c (syn d v) 0
-    rwa [gf32Mul_zero] at h
+    rw [gf32Mul_zero] at h
+    rw [syn_succ, syn_succ, ih]
+    exact h
 
 theorem syn_zero_val (d : Nat) : syn d 0 = 0 := by
   induction d with
@@ -393,6 +399,8 @@ def synPacked : Nat :=
 /-- Extract the `d`-th syndrome from the packed table. -/
 def synEntry (d : Nat) : Nat := (synPacked >>> (30 * d)) &&& 1073741823
 
+set_option maxRecDepth 131072 in
+set_option maxHeartbeats 3200000 in
 theorem synEntry_eq (d : BitVec 10) (hd : d.toNat < 173) :
     synEntry d.toNat = (syn d.toNat 1).toNat := by
   exact (by decide : ∀ d : BitVec 10, d.toNat < 173 →
@@ -400,16 +408,6 @@ theorem synEntry_eq (d : BitVec 10) (hd : d.toNat < 173) :
 
 /-- `Nat` chunk extraction, mirroring `chunkW`. -/
 def chunkNat (s j : Nat) : Nat := (s >>> (5 * j)) % 32
-
-theorem gf32MulNat_lt (a b : Nat) (ha : a < 32) (hb : b < 32) :
-    gf32MulNat a b < 32 := by
-  have h : ∀ a b : Fin 32, gf32MulNat a.val b.val < 32 := by decide
-  exact h ⟨a, ha⟩ ⟨b, hb⟩
-
-theorem gf32Mul_toNat (a b : Word) :
-    (gf32Mul a b).toNat = gf32MulNat a.toNat b.toNat := by
-  simp only [gf32Mul, BitVec.toNat_ofNat]
-  exact Nat.mod_eq_of_lt (gf32MulNat_lt a.toNat b.toNat a.isLt b.isLt)
 
 /-- Determinants over `GF(32)` at the `Nat` level (certificate side).
     Coordinates are chunk indices; for syndrome vectors the relevant
@@ -495,9 +493,13 @@ def cert5 : Bool :=
             det5Nat (synEntry (i + 5)) (synEntry (j + 4)) (synEntry (k + 3))
               (synEntry (l + 2)) (synEntry (m + 1)) != 0)))))
 
+set_option maxRecDepth 16384 in
 theorem certTopNe_eq : certTopNe = true := by decide
+set_option maxRecDepth 16384 in
 theorem cert2_eq : cert2 = true := by decide
+set_option maxRecDepth 16384 in
 theorem cert4_eq : cert4 = true := by decide
+set_option maxRecDepth 16384 in
 theorem cert5_eq : cert5 = true := by decide
 
 /-! ## Determinants over `GF(32)` (proof side) and Cramer identities -/
@@ -529,31 +531,34 @@ def det5W (x1 x2 x3 x4 x5 : BitVec 30) : Word :=
 
 theorem det2W_toNat (x y : BitVec 30) (i j : Nat) :
     (det2W x y i j).toNat = det2Nat x.toNat y.toNat i j := by
-  simp [det2W, det2Nat, chunkW_toNat, chunkNat, gf32Mul_toNat, BitVec.toNat_xor]
+  simp only [det2W, det2Nat, chunkW_toNat, chunkNat, gf32Mul_toNat, BitVec.toNat_xor]
 
 theorem det3W_toNat (x y z : BitVec 30) (i j k : Nat) :
     (det3W x y z i j k).toNat = det3Nat x.toNat y.toNat z.toNat i j k := by
-  simp [det3W, det3Nat, det2W_toNat, chunkW_toNat, chunkNat, gf32Mul_toNat,
-    BitVec.toNat_xor]
+  simp only [det3W, det3Nat, det2W_toNat, chunkW_toNat, chunkNat,
+    gf32Mul_toNat, BitVec.toNat_xor]
 
 theorem det4W_toNat (x y z w : BitVec 30) (i j k l : Nat) :
     (det4W x y z w i j k l).toNat =
       det4Nat x.toNat y.toNat z.toNat w.toNat i j k l := by
-  simp [det4W, det4Nat, det3W_toNat, chunkW_toNat, chunkNat, gf32Mul_toNat,
-    BitVec.toNat_xor]
+  simp only [det4W, det4Nat, det3W_toNat, chunkW_toNat, chunkNat,
+    gf32Mul_toNat, BitVec.toNat_xor]
 
 theorem det5W_toNat (x1 x2 x3 x4 x5 : BitVec 30) :
     (det5W x1 x2 x3 x4 x5).toNat =
       det5Nat x1.toNat x2.toNat x3.toNat x4.toNat x5.toNat := by
-  simp [det5W, det5Nat, det4W_toNat, chunkW_toNat, chunkNat, gf32Mul_toNat,
-    BitVec.toNat_xor]
+  simp only [det5W, det5Nat, det4W_toNat, chunkW_toNat, chunkNat,
+    gf32Mul_toNat, BitVec.toNat_xor]
 
 theorem xor_eq_zero_imp {p q : Word} (h : p ^^^ q = 0) : p = q := by
   have h2 := congrArg (· ^^^ q) h
   simpa [BitVec.xor_assoc] using h2
 
 theorem det2W_self (y : BitVec 30) (i j : Nat) : det2W y y i j = 0 := by
-  simp only [det2W, gf32Mul_comm (chunkW y j) (chunkW y i), BitVec.xor_self]
+  show gf32Mul (chunkW y i) (chunkW y j) ^^^
+    gf32Mul (chunkW y j) (chunkW y i) = 0
+  rw [gf32Mul_comm (chunkW y j) (chunkW y i)]
+  exact BitVec.xor_self
 
 /-- Cramer identity, `2×2`: a relation at coordinates `i, j` annihilates
     `a * det`. -/
@@ -566,12 +571,17 @@ theorem cramer2 (x y : BitVec 30) (a b : Word) (i j : Nat)
   calc gf32Mul a (det2W x y i j)
       = gf32Mul (gf32Mul a (chunkW x i)) (chunkW y j) ^^^
           gf32Mul (gf32Mul a (chunkW x j)) (chunkW y i) := by
-        simp [det2W, gf32Mul_xor_left, gf32Mul_assoc]
+        rw [det2W, gf32Mul_xor_right, ← gf32Mul_assoc, ← gf32Mul_assoc]
     _ = gf32Mul (gf32Mul b (chunkW y i)) (chunkW y j) ^^^
           gf32Mul (gf32Mul b (chunkW y j)) (chunkW y i) := by rw [hai, haj]
     _ = gf32Mul b (det2W y y i j) := by
-        simp [det2W, gf32Mul_xor_left, gf32Mul_assoc]
+        rw [det2W, gf32Mul_xor_right, gf32Mul_assoc, gf32Mul_assoc]
     _ = 0 := by rw [det2W_self]; exact gf32Mul_zero b
+
+/-- Swap the first two factors of a triple product. -/
+theorem gf32Mul_swap_head (a b : Word) (t : Word) :
+    gf32Mul a (gf32Mul b t) = gf32Mul b (gf32Mul a t) := by
+  rw [← gf32Mul_assoc, gf32Mul_comm a b, gf32Mul_assoc]
 
 /-- Cofactor expansion of `det3W` along the second vector. -/
 theorem det3W_expand_mid (x y z : BitVec 30) (i j k : Nat) :
@@ -579,10 +589,14 @@ theorem det3W_expand_mid (x y z : BitVec 30) (i j k : Nat) :
       gf32Mul (chunkW y i) (det2W x z j k) ^^^
         gf32Mul (chunkW y j) (det2W x z i k) ^^^
         gf32Mul (chunkW y k) (det2W x z i j) := by
-  simp only [det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right, gf32Mul_assoc]
-  rw [gf32Mul_comm (chunkW y j) (chunkW x i), gf32Mul_comm (chunkW y k) (chunkW x i),
-    gf32Mul_comm (chunkW y k) (chunkW x j)]
-  simp [BitVec.xor_comm, BitVec.xor_assoc]
+  simp only [det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right]
+  rw [gf32Mul_swap_head (chunkW x i) (chunkW y j) (chunkW z k),
+    gf32Mul_swap_head (chunkW x i) (chunkW y k) (chunkW z j),
+    gf32Mul_swap_head (chunkW x j) (chunkW y i) (chunkW z k),
+    gf32Mul_swap_head (chunkW x j) (chunkW y k) (chunkW z i),
+    gf32Mul_swap_head (chunkW x k) (chunkW y i) (chunkW z j),
+    gf32Mul_swap_head (chunkW x k) (chunkW y j) (chunkW z i)]
+  grind
 
 /-- Cofactor expansion of `det3W` along the third vector. -/
 theorem det3W_expand_third (x y z : BitVec 30) (i j k : Nat) :
@@ -590,21 +604,30 @@ theorem det3W_expand_third (x y z : BitVec 30) (i j k : Nat) :
       gf32Mul (chunkW z i) (det2W x y j k) ^^^
         gf32Mul (chunkW z j) (det2W x y i k) ^^^
         gf32Mul (chunkW z k) (det2W x y i j) := by
-  simp only [det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right, gf32Mul_assoc]
-  rw [gf32Mul_comm (chunkW z k) (chunkW x i), gf32Mul_comm (chunkW z j) (chunkW x i),
-    gf32Mul_comm (chunkW z k) (chunkW x j), gf32Mul_comm (chunkW z k) (chunkW y i),
-    gf32Mul_comm (chunkW z j) (chunkW y i), gf32Mul_comm (chunkW z k) (chunkW y j)]
-  simp [BitVec.xor_comm, BitVec.xor_assoc]
+  simp only [det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right]
+  rw [gf32Mul_comm (chunkW y j) (chunkW z k),
+    gf32Mul_swap_head (chunkW x i) (chunkW z k) (chunkW y j),
+    gf32Mul_comm (chunkW y k) (chunkW z j),
+    gf32Mul_swap_head (chunkW x i) (chunkW z j) (chunkW y k),
+    gf32Mul_comm (chunkW y i) (chunkW z k),
+    gf32Mul_swap_head (chunkW x j) (chunkW z k) (chunkW y i),
+    gf32Mul_comm (chunkW y k) (chunkW z i),
+    gf32Mul_swap_head (chunkW x j) (chunkW z i) (chunkW y k),
+    gf32Mul_comm (chunkW y i) (chunkW z j),
+    gf32Mul_swap_head (chunkW x k) (chunkW z j) (chunkW y i),
+    gf32Mul_comm (chunkW y j) (chunkW z i),
+    gf32Mul_swap_head (chunkW x k) (chunkW z i) (chunkW y j)]
+  grind
 
 theorem det3W_rep_fst (y z : BitVec 30) (i j k : Nat) :
     det3W y y z i j k = 0 := by
-  rw [det3W_expand_third]
-  simp [det2W_self]
+  rw [det3W_expand_third, det2W_self, det2W_self, det2W_self,
+    gf32Mul_zero, gf32Mul_zero, gf32Mul_zero]; rfl
 
 theorem det3W_rep_mid (z y : BitVec 30) (i j k : Nat) :
     det3W z y z i j k = 0 := by
-  rw [det3W_expand_mid]
-  simp [det2W_self]
+  rw [det3W_expand_mid, det2W_self, det2W_self, det2W_self,
+    gf32Mul_zero, gf32Mul_zero, gf32Mul_zero]; rfl
 
 /-- Cramer identity, `3×3`. -/
 theorem cramer3 (x y z : BitVec 30) (a b c : Word) (i j k : Nat)
@@ -618,37 +641,35 @@ theorem cramer3 (x y z : BitVec 30) (a b c : Word) (i j k : Nat)
   have hai : gf32Mul a (chunkW x i) =
       gf32Mul b (chunkW y i) ^^^ gf32Mul c (chunkW z i) := by
     have h := hi
-    rw [← BitVec.xor_assoc] at h
+    rw [BitVec.xor_assoc] at h
     exact xor_eq_zero_imp h
   have haj : gf32Mul a (chunkW x j) =
       gf32Mul b (chunkW y j) ^^^ gf32Mul c (chunkW z j) := by
     have h := hj
-    rw [← BitVec.xor_assoc] at h
+    rw [BitVec.xor_assoc] at h
     exact xor_eq_zero_imp h
   have hak : gf32Mul a (chunkW x k) =
       gf32Mul b (chunkW y k) ^^^ gf32Mul c (chunkW z k) := by
     have h := hk
-    rw [← BitVec.xor_assoc] at h
+    rw [BitVec.xor_assoc] at h
     exact xor_eq_zero_imp h
   calc gf32Mul a (det3W x y z i j k)
       = gf32Mul (gf32Mul a (chunkW x i)) (det2W y z j k) ^^^
           gf32Mul (gf32Mul a (chunkW x j)) (det2W y z i k) ^^^
           gf32Mul (gf32Mul a (chunkW x k)) (det2W y z i j) := by
-        simp [det3W, gf32Mul_xor_left, gf32Mul_assoc]
+        simp only [det3W, gf32Mul_xor_right, ← gf32Mul_assoc]
     _ = gf32Mul b (det3W y y z i j k) ^^^ gf32Mul c (det3W z y z i j k) := by
         rw [hai, haj, hak]
-        simp [det3W, gf32Mul_xor_left, gf32Mul_xor_right, gf32Mul_assoc,
-          BitVec.xor_assoc]
-    _ = 0 := by rw [det3W_rep_fst, det3W_rep_mid]; simp
+        simp only [det3W, gf32Mul_xor_left, gf32Mul_xor_right, gf32Mul_assoc]
+        ac_rfl
+    _ = 0 := by
+        rw [det3W_rep_fst, det3W_rep_mid, gf32Mul_zero, gf32Mul_zero]; rfl
 
+set_option maxRecDepth 16384 in
+set_option maxHeartbeats 1600000 in
 theorem cert3_eq : cert3 = true := by decide
 
 /-! ## Higher Cramer identities -/
-
-/-- Swap the first two factors of a triple product. -/
-theorem gf32Mul_swap_head (a b : Word) (t : Word) :
-    gf32Mul a (gf32Mul b t) = gf32Mul b (gf32Mul a t) := by
-  rw [← gf32Mul_assoc, gf32Mul_comm a b, gf32Mul_assoc]
 
 /-- Cofactor expansion of `det4W` along the second vector. -/
 theorem det4W_expand_second (x y z w : BitVec 30) (i j k l : Nat) :
@@ -658,8 +679,8 @@ theorem det4W_expand_second (x y z w : BitVec 30) (i j k l : Nat) :
         gf32Mul (chunkW y k) (det3W x z w i j l) ^^^
         gf32Mul (chunkW y l) (det3W x z w i j k) := by
   simp only [det4W, det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right,
-    gf32Mul_assoc, gf32Mul_swap_head]
-  simp [BitVec.xor_comm, BitVec.xor_assoc]
+    gf32Mul_swap_head]
+  grind
 
 /-- Cofactor expansion of `det4W` along the fourth vector. -/
 theorem det4W_expand_fourth (x y z w : BitVec 30) (i j k l : Nat) :
@@ -669,23 +690,23 @@ theorem det4W_expand_fourth (x y z w : BitVec 30) (i j k l : Nat) :
         gf32Mul (chunkW w k) (det3W x y z i j l) ^^^
         gf32Mul (chunkW w l) (det3W x y z i j k) := by
   simp only [det4W, det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right,
-    gf32Mul_assoc, gf32Mul_swap_head]
-  simp [BitVec.xor_comm, BitVec.xor_assoc]
+    gf32Mul_swap_head]
+  grind
 
 theorem det4W_rep_fst (y z w : BitVec 30) (i j k l : Nat) :
     det4W y y z w i j k l = 0 := by
-  rw [det4W_expand_fourth]
-  simp [det3W_rep_fst]
+  rw [det4W_expand_fourth, det3W_rep_fst, det3W_rep_fst, det3W_rep_fst,
+    det3W_rep_fst, gf32Mul_zero, gf32Mul_zero, gf32Mul_zero, gf32Mul_zero]; rfl
 
 theorem det4W_rep_13 (z y w : BitVec 30) (i j k l : Nat) :
     det4W z y z w i j k l = 0 := by
-  rw [det4W_expand_second]
-  simp [det3W_rep_fst]
+  rw [det4W_expand_second, det3W_rep_fst, det3W_rep_fst, det3W_rep_fst,
+    det3W_rep_fst, gf32Mul_zero, gf32Mul_zero, gf32Mul_zero, gf32Mul_zero]; rfl
 
 theorem det4W_rep_14 (w y z : BitVec 30) (i j k l : Nat) :
     det4W w y z w i j k l = 0 := by
-  rw [det4W_expand_second]
-  simp [det3W_rep_mid]
+  rw [det4W_expand_second, det3W_rep_mid, det3W_rep_mid, det3W_rep_mid,
+    det3W_rep_mid, gf32Mul_zero, gf32Mul_zero, gf32Mul_zero, gf32Mul_zero]; rfl
 
 /-- Cramer identity, `4×4`. -/
 theorem cramer4 (x y z w : BitVec 30) (a b c d : Word) (i j k l : Nat)
@@ -701,42 +722,38 @@ theorem cramer4 (x y z w : BitVec 30) (a b c d : Word) (i j k l : Nat)
   have hai : gf32Mul a (chunkW x i) =
       gf32Mul b (chunkW y i) ^^^ gf32Mul c (chunkW z i) ^^^
         gf32Mul d (chunkW w i) := by
-    have h := hi
-    rw [← BitVec.xor_assoc, ← BitVec.xor_assoc] at h
-    exact xor_eq_zero_imp h
+    exact xor_eq_zero_imp (by
+      rw [← BitVec.xor_assoc, ← BitVec.xor_assoc]; exact hi)
   have haj : gf32Mul a (chunkW x j) =
       gf32Mul b (chunkW y j) ^^^ gf32Mul c (chunkW z j) ^^^
         gf32Mul d (chunkW w j) := by
-    have h := hj
-    rw [← BitVec.xor_assoc, ← BitVec.xor_assoc] at h
-    exact xor_eq_zero_imp h
+    exact xor_eq_zero_imp (by
+      rw [← BitVec.xor_assoc, ← BitVec.xor_assoc]; exact hj)
   have hak : gf32Mul a (chunkW x k) =
       gf32Mul b (chunkW y k) ^^^ gf32Mul c (chunkW z k) ^^^
         gf32Mul d (chunkW w k) := by
-    have h := hk
-    rw [← BitVec.xor_assoc, ← BitVec.xor_assoc] at h
-    exact xor_eq_zero_imp h
+    exact xor_eq_zero_imp (by
+      rw [← BitVec.xor_assoc, ← BitVec.xor_assoc]; exact hk)
   have hal : gf32Mul a (chunkW x l) =
       gf32Mul b (chunkW y l) ^^^ gf32Mul c (chunkW z l) ^^^
         gf32Mul d (chunkW w l) := by
-    have h := hl
-    rw [← BitVec.xor_assoc, ← BitVec.xor_assoc] at h
-    exact xor_eq_zero_imp h
+    exact xor_eq_zero_imp (by
+      rw [← BitVec.xor_assoc, ← BitVec.xor_assoc]; exact hl)
   calc gf32Mul a (det4W x y z w i j k l)
       = gf32Mul (gf32Mul a (chunkW x i)) (det3W y z w j k l) ^^^
           gf32Mul (gf32Mul a (chunkW x j)) (det3W y z w i k l) ^^^
           gf32Mul (gf32Mul a (chunkW x k)) (det3W y z w i j l) ^^^
           gf32Mul (gf32Mul a (chunkW x l)) (det3W y z w i j k) := by
-        simp [det4W, gf32Mul_xor_left, gf32Mul_assoc]
+        simp only [det4W, gf32Mul_xor_right, ← gf32Mul_assoc]
     _ = gf32Mul b (det4W y y z w i j k l) ^^^
           gf32Mul c (det4W z y z w i j k l) ^^^
           gf32Mul d (det4W w y z w i j k l) := by
         rw [hai, haj, hak, hal]
-        simp [det4W, gf32Mul_xor_left, gf32Mul_xor_right, gf32Mul_assoc,
-          BitVec.xor_assoc]
+        simp only [det4W, gf32Mul_xor_left, gf32Mul_xor_right, gf32Mul_assoc]
+        ac_rfl
     _ = 0 := by
-        rw [det4W_rep_fst, det4W_rep_13, det4W_rep_14]
-        simp
+        rw [det4W_rep_fst, det4W_rep_13, det4W_rep_14, gf32Mul_zero,
+          gf32Mul_zero, gf32Mul_zero]; rfl
 
 /-- Cofactor expansion of `det5W` along the second vector. -/
 theorem det5W_expand_second (x1 x2 x3 x4 x5 : BitVec 30) :
@@ -747,8 +764,8 @@ theorem det5W_expand_second (x1 x2 x3 x4 x5 : BitVec 30) :
         gf32Mul (chunkW x2 4) (det4W x1 x3 x4 x5 1 2 3 5) ^^^
         gf32Mul (chunkW x2 5) (det4W x1 x3 x4 x5 1 2 3 4) := by
   simp only [det5W, det4W, det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right,
-    gf32Mul_assoc, gf32Mul_swap_head]
-  simp [BitVec.xor_comm, BitVec.xor_assoc]
+    gf32Mul_swap_head]
+  grind
 
 /-- Cofactor expansion of `det5W` along the fifth vector. -/
 theorem det5W_expand_fifth (x1 x2 x3 x4 x5 : BitVec 30) :
@@ -759,28 +776,32 @@ theorem det5W_expand_fifth (x1 x2 x3 x4 x5 : BitVec 30) :
         gf32Mul (chunkW x5 4) (det4W x1 x2 x3 x4 1 2 3 5) ^^^
         gf32Mul (chunkW x5 5) (det4W x1 x2 x3 x4 1 2 3 4) := by
   simp only [det5W, det4W, det3W, det2W, gf32Mul_xor_left, gf32Mul_xor_right,
-    gf32Mul_assoc, gf32Mul_swap_head]
-  simp [BitVec.xor_comm, BitVec.xor_assoc]
+    gf32Mul_swap_head]
+  grind
 
 theorem det5W_rep_fst (y z w u : BitVec 30) :
     det5W y y z w u = 0 := by
-  rw [det5W_expand_fifth]
-  simp [det4W_rep_fst]
+  rw [det5W_expand_fifth, det4W_rep_fst, det4W_rep_fst, det4W_rep_fst,
+    det4W_rep_fst, det4W_rep_fst, gf32Mul_zero, gf32Mul_zero, gf32Mul_zero,
+    gf32Mul_zero, gf32Mul_zero]; rfl
 
 theorem det5W_rep_13 (z y w u : BitVec 30) :
     det5W z y z w u = 0 := by
-  rw [det5W_expand_fifth]
-  simp [det4W_rep_13]
+  rw [det5W_expand_fifth, det4W_rep_13, det4W_rep_13, det4W_rep_13,
+    det4W_rep_13, det4W_rep_13, gf32Mul_zero, gf32Mul_zero, gf32Mul_zero,
+    gf32Mul_zero, gf32Mul_zero]; rfl
 
 theorem det5W_rep_14 (w y z u : BitVec 30) :
     det5W w y z w u = 0 := by
-  rw [det5W_expand_fifth]
-  simp [det4W_rep_14]
+  rw [det5W_expand_fifth, det4W_rep_14, det4W_rep_14, det4W_rep_14,
+    det4W_rep_14, det4W_rep_14, gf32Mul_zero, gf32Mul_zero, gf32Mul_zero,
+    gf32Mul_zero, gf32Mul_zero]; rfl
 
 theorem det5W_rep_15 (u y z w : BitVec 30) :
     det5W u y z w u = 0 := by
-  rw [det5W_expand_second]
-  simp [det4W_rep_14]
+  rw [det5W_expand_second, det4W_rep_14, det4W_rep_14, det4W_rep_14,
+    det4W_rep_14, det4W_rep_14, gf32Mul_zero, gf32Mul_zero, gf32Mul_zero,
+    gf32Mul_zero, gf32Mul_zero]; rfl
 
 /-- Cramer identity, `5×5` at the top coordinates. -/
 theorem cramer5 (x1 x2 x3 x4 x5 : BitVec 30) (a b c d e : Word)
@@ -803,50 +824,50 @@ theorem cramer5 (x1 x2 x3 x4 x5 : BitVec 30) (a b c d e : Word)
   have ha1 : gf32Mul a (chunkW x1 1) =
       gf32Mul b (chunkW x2 1) ^^^ gf32Mul c (chunkW x3 1) ^^^
         gf32Mul d (chunkW x4 1) ^^^ gf32Mul e (chunkW x5 1) := by
-    have h := h1
-    rw [← BitVec.xor_assoc, ← BitVec.xor_assoc, ← BitVec.xor_assoc] at h
-    exact xor_eq_zero_imp h
+    exact xor_eq_zero_imp (by
+      rw [← BitVec.xor_assoc, ← BitVec.xor_assoc, ← BitVec.xor_assoc]
+      exact h1)
   have ha2 : gf32Mul a (chunkW x1 2) =
       gf32Mul b (chunkW x2 2) ^^^ gf32Mul c (chunkW x3 2) ^^^
         gf32Mul d (chunkW x4 2) ^^^ gf32Mul e (chunkW x5 2) := by
-    have h := h2
-    rw [← BitVec.xor_assoc, ← BitVec.xor_assoc, ← BitVec.xor_assoc] at h
-    exact xor_eq_zero_imp h
+    exact xor_eq_zero_imp (by
+      rw [← BitVec.xor_assoc, ← BitVec.xor_assoc, ← BitVec.xor_assoc]
+      exact h2)
   have ha3 : gf32Mul a (chunkW x1 3) =
       gf32Mul b (chunkW x2 3) ^^^ gf32Mul c (chunkW x3 3) ^^^
         gf32Mul d (chunkW x4 3) ^^^ gf32Mul e (chunkW x5 3) := by
-    have h := h3
-    rw [← BitVec.xor_assoc, ← BitVec.xor_assoc, ← BitVec.xor_assoc] at h
-    exact xor_eq_zero_imp h
+    exact xor_eq_zero_imp (by
+      rw [← BitVec.xor_assoc, ← BitVec.xor_assoc, ← BitVec.xor_assoc]
+      exact h3)
   have ha4 : gf32Mul a (chunkW x1 4) =
       gf32Mul b (chunkW x2 4) ^^^ gf32Mul c (chunkW x3 4) ^^^
         gf32Mul d (chunkW x4 4) ^^^ gf32Mul e (chunkW x5 4) := by
-    have h := h4
-    rw [← BitVec.xor_assoc, ← BitVec.xor_assoc, ← BitVec.xor_assoc] at h
-    exact xor_eq_zero_imp h
+    exact xor_eq_zero_imp (by
+      rw [← BitVec.xor_assoc, ← BitVec.xor_assoc, ← BitVec.xor_assoc]
+      exact h4)
   have ha5 : gf32Mul a (chunkW x1 5) =
       gf32Mul b (chunkW x2 5) ^^^ gf32Mul c (chunkW x3 5) ^^^
         gf32Mul d (chunkW x4 5) ^^^ gf32Mul e (chunkW x5 5) := by
-    have h := h5
-    rw [← BitVec.xor_assoc, ← BitVec.xor_assoc, ← BitVec.xor_assoc] at h
-    exact xor_eq_zero_imp h
+    exact xor_eq_zero_imp (by
+      rw [← BitVec.xor_assoc, ← BitVec.xor_assoc, ← BitVec.xor_assoc]
+      exact h5)
   calc gf32Mul a (det5W x1 x2 x3 x4 x5)
       = gf32Mul (gf32Mul a (chunkW x1 1)) (det4W x2 x3 x4 x5 2 3 4 5) ^^^
           gf32Mul (gf32Mul a (chunkW x1 2)) (det4W x2 x3 x4 x5 1 3 4 5) ^^^
           gf32Mul (gf32Mul a (chunkW x1 3)) (det4W x2 x3 x4 x5 1 2 4 5) ^^^
           gf32Mul (gf32Mul a (chunkW x1 4)) (det4W x2 x3 x4 x5 1 2 3 5) ^^^
           gf32Mul (gf32Mul a (chunkW x1 5)) (det4W x2 x3 x4 x5 1 2 3 4) := by
-        simp [det5W, gf32Mul_xor_left, gf32Mul_assoc]
+        simp only [det5W, gf32Mul_xor_right, ← gf32Mul_assoc]
     _ = gf32Mul b (det5W x2 x2 x3 x4 x5) ^^^
           gf32Mul c (det5W x3 x2 x3 x4 x5) ^^^
           gf32Mul d (det5W x4 x2 x3 x4 x5) ^^^
           gf32Mul e (det5W x5 x2 x3 x4 x5) := by
         rw [ha1, ha2, ha3, ha4, ha5]
-        simp [det5W, gf32Mul_xor_left, gf32Mul_xor_right, gf32Mul_assoc,
-          BitVec.xor_assoc]
+        simp only [det5W, gf32Mul_xor_left, gf32Mul_xor_right, gf32Mul_assoc]
+        ac_rfl
     _ = 0 := by
-        rw [det5W_rep_fst, det5W_rep_13, det5W_rep_14, det5W_rep_15]
-        simp
+        rw [det5W_rep_fst, det5W_rep_13, det5W_rep_14, det5W_rep_15,
+          gf32Mul_zero, gf32Mul_zero, gf32Mul_zero, gf32Mul_zero]; rfl
 /-! ## Certificate extraction -/
 
 theorem synEntry_ofNat (d : Nat) (hd : d < 173) :
@@ -858,8 +879,12 @@ theorem synEntry_ofNat (d : Nat) (hd : d < 173) :
 
 theorem synTop_ne_zero (d : Nat) (h1 : 1 ≤ d) (h2 : d ≤ 172) :
     ∃ m : Nat, 1 ≤ m ∧ m ≤ 5 ∧ chunkW (syn d 1) m ≠ 0 := by
-  by_contra hcon
-  push_neg at hcon
+  refine Classical.byContradiction fun hcon => ?_
+  have hcon : ∀ m : Nat, 1 ≤ m → m ≤ 5 → chunkW (syn d 1) m = 0 := by
+    intro m hm1 hm2
+    by_cases hne : chunkW (syn d 1) m = 0
+    · exact hne
+    · exact absurd ⟨m, hm1, hm2, hne⟩ hcon
   have hcert : synEntry d >>> 5 ≠ 0 := by
     have hc := certTopNe_eq
     unfold certTopNe at hc
@@ -867,8 +892,7 @@ theorem synTop_ne_zero (d : Nat) (h1 : 1 ≤ d) (h2 : d ≤ 172) :
     have h2 : (synEntry d >>> 5 != 0) = true := by
       have hd1 : d - 1 + 1 = d := by omega
       simpa [hd1] using h
-    by_contra hz
-    push_neg at hz
+    intro hz
     rw [hz] at h2
     simp at h2
   have hzero : (syn d 1).toNat >>> 5 = 0 := by
@@ -897,10 +921,11 @@ theorem exists_det2 (d1 d2 : Nat) (h2 : 1 ≤ d2) (h12 : d2 < d1) (h1 : d1 ≤ 1
   simp only [show d1 - 2 + 2 = d1 by omega, show d2 - 1 + 1 = d2 by omega] at h2'
   unfold minor2Ok at h2'
   obtain ⟨p, hp_mem, hp_ne⟩ := List.any_eq_true.mp h2'
+  have hp_ne : (det2Nat (synEntry d1) (synEntry d2) p.1 p.2 != 0) = true :=
+    hp_ne
   refine ⟨p.1, p.2, hp_mem, ?_⟩
   have hne : det2Nat (synEntry d1) (synEntry d2) p.1 p.2 ≠ 0 := by
-    by_contra hz
-    push_neg at hz
+    intro hz
     rw [hz] at hp_ne
     simp at hp_ne
   intro hzero
@@ -923,10 +948,11 @@ theorem exists_det3 (d1 d2 d3 : Nat) (h3 : 1 ≤ d3) (h32 : d3 < d2)
     show d3 - 1 + 1 = d3 by omega] at h3'
   unfold minor3Ok at h3'
   obtain ⟨p, hp_mem, hp_ne⟩ := List.any_eq_true.mp h3'
+  have hp_ne : (det3Nat (synEntry d1) (synEntry d2) (synEntry d3)
+    p.1 p.2.1 p.2.2 != 0) = true := hp_ne
   refine ⟨p.1, p.2.1, p.2.2, hp_mem, ?_⟩
   have hne : det3Nat (synEntry d1) (synEntry d2) (synEntry d3) p.1 p.2.1 p.2.2 ≠ 0 := by
-    by_contra hz
-    push_neg at hz
+    intro hz
     rw [hz] at hp_ne
     simp at hp_ne
   intro hzero
@@ -951,11 +977,12 @@ theorem exists_det4 (d1 d2 d3 d4 : Nat) (h4 : 1 ≤ d4) (h43 : d4 < d3)
     show d3 - 2 + 2 = d3 by omega, show d4 - 1 + 1 = d4 by omega] at h4'
   unfold minor4Ok at h4'
   obtain ⟨p, hp_mem, hp_ne⟩ := List.any_eq_true.mp h4'
+  have hp_ne : (det4Nat (synEntry d1) (synEntry d2) (synEntry d3)
+    (synEntry d4) p.1 p.2.1 p.2.2.1 p.2.2.2 != 0) = true := hp_ne
   refine ⟨p.1, p.2.1, p.2.2.1, p.2.2.2, hp_mem, ?_⟩
   have hne : det4Nat (synEntry d1) (synEntry d2) (synEntry d3) (synEntry d4)
       p.1 p.2.1 p.2.2.1 p.2.2.2 ≠ 0 := by
-    by_contra hz
-    push_neg at hz
+    intro hz
     rw [hz] at hp_ne
     simp at hp_ne
   intro hzero
@@ -983,8 +1010,7 @@ theorem exists_det5 (d1 d2 d3 d4 d5 : Nat) (h5 : 1 ≤ d5) (h54 : d5 < d4)
     show d5 - 1 + 1 = d5 by omega] at h5'
   have hne : det5Nat (synEntry d1) (synEntry d2) (synEntry d3) (synEntry d4)
       (synEntry d5) ≠ 0 := by
-    by_contra hz
-    push_neg at hz
+    intro hz
     rw [hz] at h5'
     simp at h5'
   intro hzero
@@ -1031,56 +1057,72 @@ theorem fold_eq_xorsum (es : List Word) :
     have hstep : (a :: es).foldl polymodStep 0 =
         es.foldl polymodStep 0 ^^^ syn es.length a := by
       simp only [List.foldl_cons, polymodStep_zero_left]
-      rw [← BitVec.zero_xor (a.setWidth 30), foldl_polymodStep_from]
+      have hz : (0 : BitVec 30) ^^^ a.setWidth 30 = a.setWidth 30 :=
+        BitVec.zero_xor
+      rw [← hz, foldl_polymodStep_from]
       rfl
     rw [hstep, ih]
     by_cases ha : a = 0
     · subst ha
-      simp [decomp, syn_zero_val]
-    · simp only [decomp, ha, if_false, List.append_eq_cons, List.foldr_cons]
-      rw [BitVec.xor_comm]
+      rw [show decomp ((0 : Word) :: es) = decomp es by simp [decomp],
+        syn_zero_val]
+      exact BitVec.xor_zero
+    · simp only [decomp, ha, if_false, List.cons_append, List.nil_append]
+      show (decomp es).foldr (fun p acc => syn p.1 p.2 ^^^ acc) 0 ^^^
+          syn es.length a =
+        syn es.length a ^^^
+          (decomp es).foldr (fun p acc => syn p.1 p.2 ^^^ acc) 0
+      exact BitVec.xor_comm _ _
 
 theorem decomp_length (es : List Word) :
     (decomp es).length = hammingWeight es := by
   induction es with
   | nil => rfl
   | cons a es ih =>
-    simp only [decomp, hammingWeight, List.filter_cons]
     by_cases ha : a = 0
     · subst ha
-      simp [ih]
-    · simp [ha, ih]
+      have hd : decomp ((0 : Word) :: es) = decomp es := by simp [decomp]
+      have hw : hammingWeight ((0 : Word) :: es) = hammingWeight es := by
+        simp [hammingWeight]
+      rw [hd, hw, ih]
+    · have hd : decomp (a :: es) = (es.length, a) :: decomp es := by
+        simp only [decomp, if_neg ha, List.cons_append, List.nil_append]
+      have hw : hammingWeight (a :: es) = hammingWeight es + 1 := by
+        simp [hammingWeight, List.filter_cons, ha]
+      rw [hd, hw, List.length_cons, ih]
 
-theorem decomp_snd_ne {es : List Word} {p : Nat × Word} (hp : p ∈ decomp es) :
-    p.2 ≠ 0 := by
+theorem decomp_snd_ne {p : Nat × Word} : ∀ {es : List Word},
+    p ∈ decomp es → p.2 ≠ 0 := by
+  intro es
   induction es with
-  | nil => simp at hp
+  | nil => intro hp; simp [decomp] at hp
   | cons a es ih =>
+    intro hp
     simp only [decomp] at hp
     by_cases ha : a = 0
     · subst ha
-      simp at hp
-      exact ih hp
-    · simp only [ha, if_false, List.append_eq_cons, List.mem_cons] at hp
-      cases hp with
-      | inl h => rw [← h]; exact ha
-      | inr h => exact ih h
+      exact ih (by simpa [decomp] using hp)
+    · simp only [ha, if_false, List.cons_append, List.nil_append] at hp
+      rcases List.mem_cons.mp hp with rfl | h
+      · exact ha
+      · exact ih h
 
-theorem decomp_fst_lt {es : List Word} {p : Nat × Word} (hp : p ∈ decomp es) :
-    p.1 < es.length := by
+theorem decomp_fst_lt {p : Nat × Word} : ∀ {es : List Word},
+    p ∈ decomp es → p.1 < es.length := by
+  intro es
   induction es with
-  | nil => simp at hp
+  | nil => intro hp; simp [decomp] at hp
   | cons a es ih =>
+    intro hp
     simp only [decomp, List.length_cons] at hp ⊢
     by_cases ha : a = 0
     · subst ha
-      simp at hp
-      have := ih hp
+      have := ih (by simpa [decomp] using hp)
       omega
-    · simp only [ha, if_false, List.append_eq_cons, List.mem_cons] at hp
-      cases hp with
-      | inl h => rw [← h]; simp
-      | inr h => have := ih h; omega
+    · simp only [ha, if_false, List.cons_append, List.nil_append] at hp
+      rcases List.mem_cons.mp hp with rfl | h
+      · exact Nat.lt_succ_self _
+      · have := ih h; omega
 
 theorem decomp_pairwise (es : List Word) :
     (decomp es).Pairwise (fun p q => p.1 > q.1) := by
@@ -1091,7 +1133,7 @@ theorem decomp_pairwise (es : List Word) :
     · subst ha
       simpa [decomp] using ih
     · have hdecomp : decomp (a :: es) = (es.length, a) :: decomp es := by
-        simp [decomp, ha]
+        simp only [decomp, if_neg ha, List.cons_append, List.nil_append]
       rw [hdecomp]
       refine List.Pairwise.cons (fun p hp => ?_) ih
       have h := decomp_fst_lt hp
@@ -1109,8 +1151,8 @@ theorem decomp_append_singleton (es : List Word) (x : Word) :
     by_cases ha : a = 0
     · subst ha
       simp
-    · simp only [ha, if_false, List.append_eq_cons, List.map_append,
-        List.map_cons]
+    · simp only [ha, if_false, List.cons_append, List.nil_append,
+        List.map_append, List.map_cons]
       congr 2
       simp [List.length_append]
 
@@ -1119,7 +1161,7 @@ theorem scale_foldr_syn (c : Word) (L : List (Nat × Word)) :
       (L.map (fun p => (p.1, gf32Mul c p.2))).foldr
         (fun p acc => syn p.1 p.2 ^^^ acc) 0 := by
   induction L with
-  | nil => simp [scaleState_zero_state]
+  | nil => exact scaleState_zero_state c
   | cons p L ih =>
     simp only [List.foldr_cons, List.map_cons, ← ih, scaleState_xor, syn_scale]
 
@@ -1127,7 +1169,7 @@ theorem chunkW_foldr_syn (L : List (Nat × Word)) (m : Nat) (hm : m < 6) :
     chunkW (L.foldr (fun p acc => syn p.1 p.2 ^^^ acc) 0) m =
       L.foldr (fun p acc => gf32Mul p.2 (chunkW (syn p.1 1) m) ^^^ acc) 0 := by
   induction L with
-  | nil => simp [chunkW_zero]
+  | nil => exact chunkW_zero m
   | cons p L ih =>
     simp only [List.foldr_cons, ← ih, chunkW_xor]
     congr 1
@@ -1138,20 +1180,23 @@ theorem chunkW_foldr_syn (L : List (Nat × Word)) (m : Nat) (hm : m < 6) :
 
 theorem coordPairs_bounds {i j : Nat} (h : (i, j) ∈ coordPairs) :
     1 ≤ i ∧ i ≤ 5 ∧ 1 ≤ j ∧ j ≤ 5 := by
-  simp only [coordPairs, List.mem_cons, List.mem_singleton, Prod.mk.injEq] at h
+  simp only [coordPairs, List.mem_cons, List.mem_singleton, Prod.mk.injEq,
+    List.not_mem_nil, or_false] at h
   rcases h with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ |
     ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;> omega
 
 theorem coordTriples_bounds {i j k : Nat} (h : (i, j, k) ∈ coordTriples) :
     1 ≤ i ∧ i ≤ 5 ∧ 1 ≤ j ∧ j ≤ 5 ∧ 1 ≤ k ∧ k ≤ 5 := by
-  simp only [coordTriples, List.mem_cons, List.mem_singleton, Prod.mk.injEq] at h
+  simp only [coordTriples, List.mem_cons, List.mem_singleton, Prod.mk.injEq,
+    List.not_mem_nil, or_false] at h
   rcases h with ⟨rfl, rfl, rfl⟩ | ⟨rfl, rfl, rfl⟩ | ⟨rfl, rfl, rfl⟩ |
     ⟨rfl, rfl, rfl⟩ | ⟨rfl, rfl, rfl⟩ | ⟨rfl, rfl, rfl⟩ | ⟨rfl, rfl, rfl⟩ |
     ⟨rfl, rfl, rfl⟩ | ⟨rfl, rfl, rfl⟩ | ⟨rfl, rfl, rfl⟩ <;> omega
 
 theorem coordQuads_bounds {i j k l : Nat} (h : (i, j, k, l) ∈ coordQuads) :
     1 ≤ i ∧ i ≤ 5 ∧ 1 ≤ j ∧ j ≤ 5 ∧ 1 ≤ k ∧ k ≤ 5 ∧ 1 ≤ l ∧ l ≤ 5 := by
-  simp only [coordQuads, List.mem_cons, List.mem_singleton, Prod.mk.injEq] at h
+  simp only [coordQuads, List.mem_cons, List.mem_singleton, Prod.mk.injEq,
+    List.not_mem_nil, or_false] at h
   rcases h with ⟨rfl, rfl, rfl, rfl⟩ | ⟨rfl, rfl, rfl, rfl⟩ |
     ⟨rfl, rfl, rfl, rfl⟩ | ⟨rfl, rfl, rfl, rfl⟩ | ⟨rfl, rfl, rfl, rfl⟩ <;> omega
 
@@ -1184,9 +1229,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
         have hfold_init : init.foldl polymodStep 0 = 0 := by
           have h1 : es.foldl polymodStep 0 =
               polymodStep (init.foldl polymodStep 0) last := by
-            conv_lhs => rw [← hsplit]
-            rw [List.foldl_append]
-            rfl
+            rw [← hsplit, List.foldl_append]; rfl
           have h2 : polymodStep (init.foldl polymodStep 0) last = 0 :=
             h1.symm.trans hfold
           rw [hlast0] at h2
@@ -1255,7 +1298,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
           have hv1ne : q.2 ≠ 0 := decomp_snd_ne hq_mem
           have hd1 : q.1 + 1 < es.length :=
             decomp_fst_lt (p := (q.1 + 1, q.2))
-              (by rw [hdecomp_es]; exact List.mem_cons_self _ _)
+              (by rw [hdecomp_es]; exact List.mem_cons_self)
           have hpair : (decomp es).Pairwise (fun p q => p.1 > q.1) :=
             decomp_pairwise es
           rw [hdecomp_es] at hpair
@@ -1373,7 +1416,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               have hpair2 : ((Lq.map (fun p => (p.1 + 1, p.2))) ++
                   [(0, last)]).Pairwise (fun p q => p.1 > q.1) := hpair_rest
               rw [hq2] at hpair2
-              simp only [List.map_cons, List.append_eq_cons] at hpair2
+              simp only [List.map_cons, List.cons_append] at hpair2
               obtain ⟨hrel2, -⟩ := List.Pairwise_cons.mp hpair2
               have hmem : (q3.1 + 1, q3.2) ∈
                   (Lq2.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
@@ -1433,7 +1476,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
             have hpair2 : ((Lq.map (fun p => (p.1 + 1, p.2))) ++
                 [(0, last)]).Pairwise (fun p q => p.1 > q.1) := hpair_rest
             rw [hq2] at hpair2
-            simp only [List.map_cons, List.append_eq_cons] at hpair2
+            simp only [List.map_cons, List.cons_append] at hpair2
             obtain ⟨hrel2, hpair3⟩ := List.Pairwise_cons.mp hpair2
             have hd23 : q3.1 + 1 < q2.1 + 1 := by
               have hmem : (q3.1 + 1, q3.2) ∈
@@ -1447,7 +1490,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
               exact hrel2 _ hmem
             have hd34 : q4.1 + 1 < q3.1 + 1 := by
               rw [hq3] at hpair3
-              simp only [List.map_cons, List.append_eq_cons] at hpair3
+              simp only [List.map_cons, List.cons_append] at hpair3
               obtain ⟨hrel3, -⟩ := List.Pairwise_cons.mp hpair3
               have hmem : (q4.1 + 1, q4.2) ∈
                   (Lq3.map (fun p => (p.1 + 1, p.2))) ++ [(0, last)] := by
@@ -1521,7 +1564,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
             have hpair2 : ((Lq.map (fun p => (p.1 + 1, p.2))) ++
                 [(0, last)]).Pairwise (fun p q => p.1 > q.1) := hpair_rest
             rw [hq2] at hpair2
-            simp only [List.map_cons, List.append_eq_cons] at hpair2
+            simp only [List.map_cons, List.cons_append] at hpair2
             obtain ⟨hrel2, hpair3⟩ := List.Pairwise_cons.mp hpair2
             have hd23 : q3.1 + 1 < q2.1 + 1 := by
               have hmem : (q3.1 + 1, q3.2) ∈
@@ -1539,7 +1582,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
                 rw [hq3, hq4, hq5]; simp
               exact hrel2 _ hmem
             rw [hq3] at hpair3
-            simp only [List.map_cons, List.append_eq_cons] at hpair3
+            simp only [List.map_cons, List.cons_append] at hpair3
             obtain ⟨hrel3, hpair4⟩ := List.Pairwise_cons.mp hpair3
             have hd34 : q4.1 + 1 < q3.1 + 1 := by
               have hmem : (q4.1 + 1, q4.2) ∈
@@ -1552,7 +1595,7 @@ theorem fold_eq_zero_weight (n : Nat) : ∀ (es : List Word),
                 rw [hq4, hq5]; simp
               exact hrel3 _ hmem
             rw [hq4] at hpair4
-            simp only [List.map_cons, List.append_eq_cons] at hpair4
+            simp only [List.map_cons, List.cons_append] at hpair4
             obtain ⟨hrel4, -⟩ := List.Pairwise_cons.mp hpair4
             have hd45 : q5.1 + 1 < q4.1 + 1 := by
               have hmem : (q5.1 + 1, q5.2) ∈
@@ -1593,7 +1636,7 @@ theorem foldl_polymodStep_zero_ne_zero_of_weight_le_three
     (hne : 0 < hammingWeight es) (hwt : hammingWeight es ≤ 3) :
     es.foldl polymodStep 0 ≠ 0 := by
   intro hfold
-  have h := fold_eq_zero_weight es.length es (le_refl _) hfold
+  have h := fold_eq_zero_weight es.length es (Nat.le_refl _) hfold
     (Or.inl ⟨hwt, hlen⟩)
   omega
 
@@ -1602,7 +1645,7 @@ theorem foldl_polymodStep_zero_ne_zero_of_weight_le_four
     (hne : 0 < hammingWeight es) (hwt : hammingWeight es ≤ 4) :
     es.foldl polymodStep 0 ≠ 0 := by
   intro hfold
-  have h := fold_eq_zero_weight es.length es (le_refl _) hfold
+  have h := fold_eq_zero_weight es.length es (Nat.le_refl _) hfold
     (Or.inr (Or.inl ⟨hwt, hlen⟩))
   omega
 
@@ -1611,7 +1654,7 @@ theorem foldl_polymodStep_zero_ne_zero_of_weight_le_five
     (hne : 0 < hammingWeight es) (hwt : hammingWeight es ≤ 5) :
     es.foldl polymodStep 0 ≠ 0 := by
   intro hfold
-  have h := fold_eq_zero_weight es.length es (le_refl _) hfold
+  have h := fold_eq_zero_weight es.length es (Nat.le_refl _) hfold
     (Or.inr (Or.inr (Or.inl ⟨hwt, hlen⟩)))
   omega
 
@@ -1620,7 +1663,7 @@ theorem foldl_polymodStep_zero_ne_zero_of_weight_le_six
     (hne : 0 < hammingWeight es) (hwt : hammingWeight es ≤ 6) :
     es.foldl polymodStep 0 ≠ 0 := by
   intro hfold
-  have h := fold_eq_zero_weight es.length es (le_refl _) hfold
+  have h := fold_eq_zero_weight es.length es (Nat.le_refl _) hfold
     (Or.inr (Or.inr (Or.inr ⟨hwt, hlen⟩)))
   omega
 
@@ -1628,6 +1671,7 @@ theorem foldl_polymodStep_zero_ne_zero_of_weight_le_six
 
 /-- Sharpness at length 90: `x^89 + 19x^79 + 15x^14 + 29` is a weight-4
     multiple of the generator. -/
+set_option maxRecDepth 8192 in
 theorem exists_weight_four_kernel_length_90 :
     ∃ es : List Word, es.length = 90 ∧ hammingWeight es = 4 ∧
       es.foldl polymodStep 0 = 0 := by
@@ -1636,6 +1680,7 @@ theorem exists_weight_four_kernel_length_90 :
     if i = 89 then 29 else 0), by decide, by decide, by decide⟩
 
 /-- Sharpness at length 19: a weight-5 kernel word. -/
+set_option maxRecDepth 8192 in
 theorem exists_weight_five_kernel_length_19 :
     ∃ es : List Word, es.length = 19 ∧ hammingWeight es = 5 ∧
       es.foldl polymodStep 0 = 0 := by
@@ -1645,6 +1690,7 @@ theorem exists_weight_five_kernel_length_19 :
     by decide, by decide, by decide⟩
 
 /-- Sharpness at length 9: a weight-6 kernel word. -/
+set_option maxRecDepth 8192 in
 theorem exists_weight_six_kernel_length_9 :
     ∃ es : List Word, es.length = 9 ∧ hammingWeight es = 6 ∧
       es.foldl polymodStep 0 = 0 := by
@@ -1654,6 +1700,7 @@ theorem exists_weight_six_kernel_length_9 :
     by decide, by decide, by decide⟩
 
 /-- At the primitive length, distance drops to 2: `x^1023 + 1`. -/
+set_option maxRecDepth 8192 in
 theorem exists_weight_two_kernel_length_1024 :
     ∃ es : List Word, es.length = 1024 ∧ hammingWeight es = 2 ∧
       es.foldl polymodStep 0 = 0 := by
@@ -1701,16 +1748,17 @@ theorem hammingDist_eq_zero_imp {xs ys : List Word}
     | cons y ys =>
       simp only [List.length_cons, Nat.add_right_cancel_iff] at hlen
       have hxy : x = y := by
-        by_contra hc
-        have hge : 1 ≤ hammingDist (x :: xs) (y :: ys) := by
-          simp [hammingDist, hc]
-        omega
+        by_cases hxy : x = y
+        · exact hxy
+        · have hge : 1 ≤ hammingDist (x :: xs) (y :: ys) := by
+            simp [hammingDist, hxy]
+          omega
       subst hxy
       congr 1
       apply ih _ hlen
       have h2 : hammingDist (x :: xs) (x :: ys) =
           hammingDist xs ys := by
-        simp [hammingDist]
+        simp [hammingDist, List.zip_cons_cons]
       omega
 
 theorem polymod_ne_of_hammingDist_le_four
@@ -1727,17 +1775,15 @@ theorem polymod_ne_of_hammingDist_le_four
   have h2 : (List.zipWith (· ^^^ ·) xs ys).foldl polymodStep 0 = 0 := by
     have hx := foldl_polymodStep_xor xs ys (pfx.foldl polymodStep 1)
       (pfx.foldl polymodStep 1) hlen
-    rw [BitVec.xor_self] at hx
-    rw [hx, h1]
-    exact BitVec.xor_self _
+    rw [BitVec.xor_self, h1, BitVec.xor_self] at hx
+    exact hx
   have hw : hammingWeight (List.zipWith (· ^^^ ·) xs ys) =
       hammingDist xs ys := (hammingDist_eq_hammingWeight_xor xs ys hlen).symm
   have hpos : 0 < hammingWeight (List.zipWith (· ^^^ ·) xs ys) := by
     rw [hw]
-    by_contra hz
-    push_neg at hz
-    have hz0 : hammingDist xs ys = 0 := by omega
-    exact hne (hammingDist_eq_zero_imp hz0 hlen)
+    by_cases hz : hammingDist xs ys = 0
+    · exact absurd (hammingDist_eq_zero_imp hz hlen) hne
+    · omega
   have hlen2 : (List.zipWith (· ^^^ ·) xs ys).length ≤ 89 := by
     rw [List.length_zipWith]
     omega
@@ -1750,17 +1796,19 @@ theorem verifyChecksum_false_of_data_substitutions_le_four
     (hne : data₁ ≠ data₂) (hdist : hammingDist data₁ data₂ ≤ 4)
     (hvalid : verifyChecksum variant hrp data₁ = true) :
     verifyChecksum variant hrp data₂ = false := by
-  by_contra hcon
-  have h2 : verifyChecksum variant hrp data₂ = true := by
-    cases h : verifyChecksum variant hrp data₂ with
-    | false => exact absurd h hcon
-    | true => rfl
-  have heq : polymod (hrpExpand hrp ++ data₁) =
-      polymod (hrpExpand hrp ++ data₂) := by
-    simp only [verifyChecksum, beq_iff_eq] at hvalid h2
-    rw [hvalid, h2]
-  exact polymod_ne_of_hammingDist_le_four (hrpExpand hrp) data₁ data₂ hlen
-    hbound hne hdist heq
+  by_cases hcon : verifyChecksum variant hrp data₂ = false
+  · exact hcon
+  · exfalso
+    have h2 : verifyChecksum variant hrp data₂ = true := by
+      cases h : verifyChecksum variant hrp data₂ with
+      | false => exact absurd h hcon
+      | true => rfl
+    have heq : polymod (hrpExpand hrp ++ data₁) =
+        polymod (hrpExpand hrp ++ data₂) := by
+      simp only [verifyChecksum, beq_iff_eq] at hvalid h2
+      rw [hvalid, h2]
+    exact polymod_ne_of_hammingDist_le_four (hrpExpand hrp) data₁ data₂ hlen
+      hbound hne hdist heq
 
 /-- The high halves of `hrpExpand` are equal when the character high bits
     are. -/
@@ -1783,7 +1831,7 @@ theorem hrpExpand_hi_eq (hrp₁ hrp₂ : List Char)
       simp only [List.map_cons, List.cons.injEq] at hhi
       obtain ⟨h1, h2⟩ := hhi
       simp only [List.map_cons, List.cons.injEq]
-      exact ⟨congrArg (BitVec.ofNat 5) h1, ih hlen' h2⟩
+      exact ⟨congrArg (BitVec.ofNat 5) h1, ih _ hlen' h2⟩
 
 /-- Appending equal-length prefixes is injective in both components. -/
 theorem append_inj_of_len {a b c d : List Word} (hlen : a.length = b.length)
@@ -1827,8 +1875,8 @@ theorem char_list_eq_of_hi_lo (hrp₁ hrp₂ : List Char)
       obtain ⟨hhi1, hhi2⟩ := hhi
       obtain ⟨hlo1, hlo2⟩ := hlo
       have hc : c₁ = c₂ := by
-        have ha1 := ha₁ c₁ (List.mem_cons_self _ _)
-        have ha2 := ha₂ c₂ (List.mem_cons_self _ _)
+        have ha1 := ha₁ c₁ (List.mem_cons_self)
+        have ha2 := ha₂ c₂ (List.mem_cons_self)
         have hmod : c₁.toNat &&& 31 = c₂.toNat &&& 31 := by
           have h5 := congrArg BitVec.toNat hlo1
           simp only [BitVec.toNat_ofNat] at h5
@@ -1838,9 +1886,9 @@ theorem char_list_eq_of_hi_lo (hrp₁ hrp₂ : List Char)
         have hnat : c₁.toNat = c₂.toNat := by omega
         exact Char.toNat_inj.mp hnat
       simp only [List.cons.injEq]
-      exact ⟨hc, ih hlen' hhi2 hlo2
-        (fun c hc => ha₁ c (List.mem_cons_of_mem _ hc))
-        (fun c hc => ha₂ c (List.mem_cons_of_mem _ hc))⟩
+      exact ⟨hc, ih _ hlen' hhi2 hlo2
+        (fun c hc => ha₁ c (List.mem_cons_of_mem c₁ hc))
+        (fun c hc => ha₂ c (List.mem_cons_of_mem c₂ hc))⟩
 
 /-- The joint HRP+data guarantee: with the HRP length fixed, the high bits
     preserved, and at most four substitutions split across HRP and data, a
@@ -1858,41 +1906,43 @@ theorem verifyChecksum_false_of_substitutions_le_four
     (hdist : hammingDist hrp₁ hrp₂ + hammingDist data₁ data₂ ≤ 4)
     (hvalid : verifyChecksum variant hrp₁ data₁ = true) :
     verifyChecksum variant hrp₂ data₂ = false := by
-  by_contra hcon
-  have h2 : verifyChecksum variant hrp₂ data₂ = true := by
-    cases h : verifyChecksum variant hrp₂ data₂ with
-    | false => exact absurd h hcon
-    | true => rfl
-  have heq : polymod (hrpExpand hrp₁ ++ data₁) =
-      polymod (hrpExpand hrp₂ ++ data₂) := by
-    simp only [verifyChecksum, beq_iff_eq] at hvalid h2
-    rw [hvalid, h2]
-  have hhiW : hrp₁.map (fun c => BitVec.ofNat 5 (c.toNat >>> 5)) =
-      hrp₂.map (fun c => BitVec.ofNat 5 (c.toNat >>> 5)) :=
-    hrpExpand_hi_eq hrp₁ hrp₂ hhrp_len hhi
-  have hexp1 : hrpExpand hrp₁ ++ data₁ =
-      (hrp₁.map (fun c => BitVec.ofNat 5 (c.toNat >>> 5)) ++ [0]) ++
-        (hrp₁.map (fun c => BitVec.ofNat 5 (c.toNat &&& 31)) ++ data₁) := by
-    simp [hrpExpand, List.append_assoc]
-  have hexp2 : hrpExpand hrp₂ ++ data₂ =
-      (hrp₂.map (fun c => BitVec.ofNat 5 (c.toNat >>> 5)) ++ [0]) ++
-        (hrp₂.map (fun c => BitVec.ofNat 5 (c.toNat &&& 31)) ++ data₂) := by
-    simp [hrpExpand, List.append_assoc]
-  rw [hexp1, hexp2, hhiW] at heq
-  refine polymod_ne_of_hammingDist_le_four _ _ _ ?_ ?_ ?_ ?_ heq
-  · simp [List.length_append, hhrp_len, hdata_len]
-  · simp only [List.length_append, List.length_map]
-    omega
-  · intro hEq
-    obtain ⟨hlo, hdata⟩ := append_inj_of_len (by simp [hhrp_len]) hEq
-    have hhrp_eq : hrp₁ = hrp₂ :=
-      char_list_eq_of_hi_lo hrp₁ hrp₂ hhrp_len hhi hlo hascii₁ hascii₂
-    cases hne with
-    | inl h => exact h hhrp_eq
-    | inr h => exact h hdata
-  · rw [hammingDist_append _ _ _ _ (by simp [List.length_map, hhrp_len])]
-    have hle := hammingDist_map_le
-      (fun c => BitVec.ofNat 5 (c.toNat &&& 31)) hrp₁ hrp₂
-    omega
+  by_cases hcon : verifyChecksum variant hrp₂ data₂ = false
+  · exact hcon
+  · exfalso
+    have h2 : verifyChecksum variant hrp₂ data₂ = true := by
+      cases h : verifyChecksum variant hrp₂ data₂ with
+      | false => exact absurd h hcon
+      | true => rfl
+    have heq : polymod (hrpExpand hrp₁ ++ data₁) =
+        polymod (hrpExpand hrp₂ ++ data₂) := by
+      simp only [verifyChecksum, beq_iff_eq] at hvalid h2
+      rw [hvalid, h2]
+    have hhiW : hrp₁.map (fun c => BitVec.ofNat 5 (c.toNat >>> 5)) =
+        hrp₂.map (fun c => BitVec.ofNat 5 (c.toNat >>> 5)) :=
+      hrpExpand_hi_eq hrp₁ hrp₂ hhrp_len hhi
+    have hexp1 : hrpExpand hrp₁ ++ data₁ =
+        (hrp₁.map (fun c => BitVec.ofNat 5 (c.toNat >>> 5)) ++ [0]) ++
+          (hrp₁.map (fun c => BitVec.ofNat 5 (c.toNat &&& 31)) ++ data₁) := by
+      simp [hrpExpand, List.append_assoc]
+    have hexp2 : hrpExpand hrp₂ ++ data₂ =
+        (hrp₂.map (fun c => BitVec.ofNat 5 (c.toNat >>> 5)) ++ [0]) ++
+          (hrp₂.map (fun c => BitVec.ofNat 5 (c.toNat &&& 31)) ++ data₂) := by
+      simp [hrpExpand, List.append_assoc]
+    rw [hexp1, hexp2, hhiW] at heq
+    refine polymod_ne_of_hammingDist_le_four _ _ _ ?_ ?_ ?_ ?_ heq
+    · simp only [List.length_append, List.length_map, hhrp_len, hdata_len]
+    · simp only [List.length_append, List.length_map]
+      omega
+    · intro hEq
+      obtain ⟨hlo, hdata⟩ := append_inj_of_len (by simp [hhrp_len]) hEq
+      have hhrp_eq : hrp₁ = hrp₂ :=
+        char_list_eq_of_hi_lo hrp₁ hrp₂ hhrp_len hhi hlo hascii₁ hascii₂
+      cases hne with
+      | inl h => exact h hhrp_eq
+      | inr h => exact h hdata
+    · rw [hammingDist_append _ _ _ _ (by simp [List.length_map, hhrp_len])]
+      have hle := hammingDist_map_le
+        (fun c => BitVec.ofNat 5 (c.toNat &&& 31)) hrp₁ hrp₂
+      omega
 
 end Bech32
