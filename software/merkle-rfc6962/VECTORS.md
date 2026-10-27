@@ -2,7 +2,9 @@
 
 The default `lake build` checks **28 symbolic shape equalities** in
 [`Merkle/Vectors.lean`](Merkle/Vectors.lean), plus **16 concrete verifier
-regressions** in [`Merkle/VerifierCases.lean`](Merkle/VerifierCases.lean).
+regressions** in [`Merkle/VerifierCases.lean`](Merkle/VerifierCases.lean), and
+**one shifted-parse inclusion attack with seven checked facts** in
+[`Merkle/InclusionAttack.lean`](Merkle/InclusionAttack.lean).
 The symbolic vectors quantify over every `H : ByteArray → ByteArray` and
 arbitrary input bytes `d0` through `d6`; only list lengths and indices are
 fixed. They check exact expressions, not sampled digest values.
@@ -111,6 +113,35 @@ All names have namespace prefix `Merkle.VerifierCases.`.
 | 16 | `consistency_four_seed_omitted` | Accept 4-to-7 with exactly the right subtree root | §§2.1.2, 2.1.3 |
 
 These examples supplement the general completeness theorems. They do not
-prove general rejection of forged proofs; collision-explicit soundness is
-milestone 2. Concrete SHA-256 numeric vectors are deferred until a verified
+prove general rejection of forged proofs; M2a's separate soundness theorems
+extract a collision under `FixedWidth`. Concrete SHA-256 numeric vectors are deferred until a verified
 SHA-256 implementation is introduced, as required by the hash-abstract design.
+
+## M2a inclusion attack: why width is a hypothesis
+
+This local regression records the digest-width abstraction gap **D1** and the
+insufficiency of injectivity alone (**D2**); it is not an RFC-published vector or
+an attack on SHA-256. All theorem names below have prefix
+`Merkle.InclusionAttack.`. `diagnosticHash` is the existing identity hash from
+`Merkle.VerifierCases`.
+
+The honest list is `[#[0x78], #[0x79]]`, with root `01 00 78 00 79`.
+The supplied leaf is empty, its index is `0`, and the proof has one element,
+`#[0x78, 0x00, 0x79]`. The verifier parses the same root bytes as
+`01 | 00 | 78 00 79`, shifting the child boundary from the honest split
+`01 | 00 78 | 00 79`.
+
+| Theorem | Checked fact |
+|---|---|
+| `honest_root_bytes` | The honest root is exactly `01 00 78 00 79`. |
+| `shifted_parse_accepts` | The unchanged verifier accepts the empty leaf and supplied proof against that honest root, at the honest tree size. |
+| `shifted_parse_leaf_ne` | The accepted empty leaf differs from the committed leaf at index `0`. |
+| `diagnosticHash_injective` | Equal outputs of the identity hash imply equal inputs. |
+| `diagnosticHash_no_collision` | No witness of `Collides diagnosticHash` exists. |
+| `diagnosticHash_not_fixedWidth` | No `ℓ` gives this hash fixed output width. |
+| `shifted_parse_attack` | The acceptance, differing leaf, injectivity, absence of collisions, and absence of fixed width hold together. |
+
+The three concrete byte/verifier assertions use `decide +kernel`; the remaining
+facts use direct proofs and kernel-checked arithmetic. No compiled evaluator
+is trusted as a proof oracle. The attack demonstrates that dropping the width
+hypothesis from the inclusion theorem would make its statement false.
