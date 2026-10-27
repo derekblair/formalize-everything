@@ -151,8 +151,9 @@ theorem decodeSeq?_cons (b₀ : UInt8) (rest : List UInt8) :
 
 /-- Decode a whole byte list by iterating `decodeSeq?`. Fuel is the
 length of the input; every successful step consumes at least one byte,
-so `l.length` units of fuel always suffice (proved below as
-`decodeFuel_irrel`). -/
+so `l.length` units of fuel always suffice (the fuel-general proofs
+are `decodeFuel_of_valid`, `valid_of_decodeFuel`, and
+`decodeFuel_encodeAll` in `Utf8/Char.lean`). -/
 def decodeFuel : Nat → List UInt8 → Option (List Char)
   | _, [] => some []
   | 0, _ :: _ => none

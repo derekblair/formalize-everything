@@ -33,7 +33,7 @@ theorem valid_dollar : Valid [0x24] ∧ decode [0x24] = some ['$'] :=
   ⟨valid_iff_decode.2 ⟨['$'], by decide, by decide⟩, by decide⟩
 
 /-- U+00A2 CENT SIGN: the smallest interesting two-byte row value
-in RFC 3629's examples. -/
+in the Unicode standard's examples. -/
 theorem valid_cent : Valid [0xC2, 0xA2] ∧ decode [0xC2, 0xA2] = some ['¢'] :=
   ⟨valid_iff_decode.2 ⟨['¢'], by decide, by decide⟩, by decide⟩
 
@@ -63,13 +63,13 @@ theorem valid_above_surrogates : Valid [0xEE, 0x80, 0x80] :=
 theorem valid_smallest_four : Valid [0xF0, 0x90, 0x80, 0x80] :=
   valid_iff_decode.2 ⟨['𐀀'], by decide, by decide⟩
 
-/-- U+10348 (Gothic letter hwair), RFC 3629's four-byte example. -/
+/-- U+10348 (Gothic letter hwair), the Unicode standard's four-byte example. -/
 theorem valid_gothic :
     Valid [0xF0, 0x90, 0x8D, 0x88] ∧
       decode [0xF0, 0x90, 0x8D, 0x88] = some ['𐍈'] :=
   ⟨valid_iff_decode.2 ⟨['𐍈'], by decide, by decide⟩, by decide⟩
 
-/-- U+1F600, a four-byte encoding from the `F1–F3` rows' range. -/
+/-- U+1F600, a four-byte encoding in the `F0` row. -/
 theorem valid_emoji :
     Valid [0xF0, 0x9F, 0x98, 0x80] ∧
       decode [0xF0, 0x9F, 0x98, 0x80] = some ['😀'] :=
