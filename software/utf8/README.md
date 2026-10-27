@@ -164,24 +164,33 @@ dependency. The default target builds every module of the library,
 including the audit entrypoint.
 
 [`Utf8/Audit.lean`](Utf8/Audit.lean) imports the umbrella module
-`Utf8`, so it runs over the complete library import graph. It
-selects declarations by their originating project module,
-including private helpers and compiler-generated equations and
-termination declarations, checks their transitive axiom
-dependencies, and fails the build on any project axiom
+`Utf8`. It selects declarations by their originating project
+module, including private helpers and compiler-generated
+equations and termination declarations, checks their transitive
+axiom dependencies, and fails the build on any project axiom
 declaration or any dependency outside `propext`,
 `Classical.choice`, and `Quot.sound` — so a `sorryAx` dependency
-also fails the build. A module-inventory guard compares the
-project modules actually present in the environment (derived from
-`env.header.moduleNames`) against an explicit expected inventory
-in both directions: a project module in the import graph that is
-missing from the inventory fails the build, and so does an
-expected module absent from the import graph, so no module in the
-library import graph can escape the audit. (The inventory
+also fails the build. A three-way module-inventory guard compares
+(i) the modules discovered by walking this package's source tree
+— every `.lean` file under the package root outside `.lake`,
+mapped to a module name by path, so module ownership is the
+source tree rather than a name prefix — against (ii) the project
+modules present in the audit's environment and (iii) an explicit
+expected inventory in the audit file. The build fails if a source
+module is not imported into the audited graph, if a discovered or
+audited module is missing from the expected inventory, or if an
+expected module is absent from the environment; and if the
+package source tree cannot be located at all, the audit fails
+rather than passing vacuously. The guarantee is therefore exactly
+this: every module whose source belongs to this package is
+audited on any build in which the audit elaborates — which
+includes every clean build, since the default target compiles
+every library module, this entrypoint included. (The inventory
 accounts explicitly for the two import-only modules: the umbrella
-`Utf8` and the audit entrypoint `Utf8.Audit` itself.) It
-additionally prints axioms for the principal theorems and
-definitions. No proof uses `sorry`, `admit`, or `native_decide`.
+`Utf8` and the audit entrypoint `Utf8.Audit` itself, which cannot
+appear in its own import environment.) It additionally prints
+axioms for the principal theorems and definitions. No proof uses
+`sorry`, `admit`, or `native_decide`.
 
 ## Prior art
 
