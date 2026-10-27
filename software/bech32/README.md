@@ -88,7 +88,10 @@ against this implementation. Three new modules, all pure Lean core +
   pattern of Hamming weight `≤ 4` in at most 89 expanded symbols has a
   nonzero syndrome (`polymod_ne_of_hammingDist_le_four`, and
   `verifyChecksum_false_of_substitutions_le_four`, uniform in
-  `Variant`). The finite checks behind the elimination are boolean
+  `Variant`). For weight `≤ 3`, the proved theorem
+  (`foldl_polymodStep_zero_ne_zero_of_weight_le_three`) covers lengths
+  up to **173** expanded symbols only — not every length up to 1023.
+  The finite checks behind the elimination are boolean
   certificates discharged by `decide` — never `native_decide` — at
   bounded size. Sharpness witnesses (`exists_weight_four_kernel_length_90`
   and siblings) show the bounds cannot be improved: weight-4 kernel
@@ -137,6 +140,18 @@ The true statements, all machine-checked, are:
   alphabetic (`decode_eq_none_of_alpha_hrp_substitutions_le_four`), and
   for a **single** substitution it is unnecessary
   (`decode_eq_none_of_single_substitution`).
+
+Scope limits — what is **not** claimed here:
+
+* Detection of `≤ 3` substitutions is proved only at length `≤ 173`
+  (`foldl_polymodStep_zero_ne_zero_of_weight_le_three`), not at every
+  length `≤ 1023`.
+* For cross-variant confusion, the delivered theorem rules out
+  distance `≤ 2` up to HRP-plus-data length 89
+  (`verifyChecksum_bech32_bech32m_disjoint_of_dist_le_two`), and the
+  distance-3 witness `cex_cross_variant_distance_three` shows that
+  bound is sharp. The stronger refinement — cross-variant distance
+  `≥ 4` for symbol lengths `≤ 79` — is **not formalized** here.
 
 ### The BIP-350 insertion point
 
