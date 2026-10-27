@@ -129,7 +129,7 @@ arbitrary byte tails. No `native_decide` occurs in code:
 - **Valid**: the empty sequence; U+0024 `$`; U+00A2 `¢`; U+00E9;
   U+0800 (the `E0` floor); U+20AC `€`; U+D7FF and U+E000 (the two
   code points bracketing the surrogate range); U+10000 (the `F0`
-  floor); U+10348 (the Unicode standard's four-byte example); U+1F600;
+  floor); U+10348 (a four-byte encoding in the `F0` row); U+1F600;
   U+10FFFF (the `F4` ceiling); and a mixed-width concatenation —
   each with its exact decoded character list and re-encoding.
 - **Invalid** (each with `decode … = none` and `¬ Valid …`):
