@@ -179,10 +179,13 @@ modules present in the audit's environment and (iii) an explicit
 expected inventory in the audit file. The package root from
 which the tree is walked is derived from the source path of the
 audit file being elaborated — a relative filename is resolved
-against the working directory and canonicalized before the root
-is taken from it — so the inventoried tree is always the tree
-that owns the audit source, never another checkout found by
-searching from the working directory. The build fails if a source
+against the working directory, and the path is then
+canonicalized with the operating system's own path resolution
+(POSIX `realpath`), under which the filesystem follows symbolic
+links before applying `..` — so the inventoried tree is always
+the tree that physically owns the audit source, never another
+checkout found by searching from the working directory or by
+reinterpreting the supplied path lexically. The build fails if a source
 module is not imported into the audited graph, if a discovered or
 audited module is missing from the expected inventory, or if an
 expected module is absent from the environment; and if the

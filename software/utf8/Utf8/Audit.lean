@@ -42,11 +42,14 @@ this entrypoint included.
 The inventoried tree is anchored to this audit file itself: the
 package root is derived from the source path of the audit module
 being elaborated — a relative filename is resolved against the
-working directory and canonicalized first — so the inventory
-describes the tree that owns this file, never another checkout
-found by searching the working directory's ancestors. If the
-root cannot be derived or fails validation, the audit fails
-loudly rather than passing vacuously.
+working directory, and the path is then canonicalized with the
+operating system's own path resolution (`IO.FS.realPath`), under
+which the filesystem follows symbolic links before applying
+`..` — so the inventory describes the tree that physically owns
+this file, never another checkout found by searching the working
+directory's ancestors or by reinterpreting the supplied path
+lexically. If the root cannot be derived or fails validation,
+the audit fails loudly rather than passing vacuously.
 
 Two inventory entries are import-only and declare nothing: the
 umbrella `Utf8` itself, and this audit entrypoint `Utf8.Audit`
@@ -73,45 +76,32 @@ run_cmd do
   -- position, anchored to the file actually being elaborated.
   -- The reported source filename — absolute under `lake build`,
   -- but possibly relative under a direct `lean` invocation — is
-  -- resolved against the working directory when relative and
-  -- canonicalized lexically; the root is then the resolved
-  -- file's grandparent directory (`<root>/Utf8/Audit.lean`).
-  -- There is deliberately no search over ancestors of the
-  -- working directory or anywhere else: a directory is the
-  -- package root only if it owns this very file, so the
-  -- inventory below describes the tree the audited declarations
-  -- came from, never another checkout.
+  -- resolved against the working directory when relative, then
+  -- canonicalized with the operating system's own path
+  -- resolution (`IO.FS.realPath`, the POSIX `realpath`
+  -- function), under which the filesystem follows symbolic
+  -- links before applying `..`. The result is therefore the
+  -- physical file Lean opened, never a lexical reinterpretation
+  -- of the supplied path — a purely lexical normalization
+  -- mis-derives the root whenever a path reaches this file
+  -- through a symlinked directory followed by `..`. The root
+  -- is then the resolved file's grandparent directory
+  -- (`<root>/Utf8/Audit.lean`). There is deliberately no search
+  -- over ancestors of the working directory or anywhere else:
+  -- a directory is the package root only if it owns this very
+  -- file, so the inventory below describes the tree the
+  -- audited declarations came from, never another checkout.
+  -- `realPath` throws when the file cannot be resolved, which
+  -- fails this audit rather than letting it pass.
   let isPackageRoot (dir : System.FilePath) : IO Bool := do
     let hasAudit ← (dir / "Utf8" / "Audit.lean").pathExists
     let hasToml ← (dir / "lakefile.toml").pathExists
     let hasLean ← (dir / "lakefile.lean").pathExists
     return hasAudit && (hasToml || hasLean)
-  -- Lexical canonicalization: drop empty and `.` components and
-  -- resolve `..` against the preceding component. (This
-  -- toolchain's `FilePath.normalize` does not resolve `.`/`..`,
-  -- and the first component of an absolute path here is the
-  -- empty string, so absoluteness comes from `isAbsolute`.)
-  let normalizePath (p : System.FilePath) : System.FilePath :=
-    let isAbs := p.isAbsolute
-    let stack : Array String := p.components.foldl (init := #[]) fun stack c =>
-      match c with
-      | "" => stack
-      | "." => stack
-      | ".." =>
-        if !stack.isEmpty && stack.back! != ".." then stack.pop
-        else if !isAbs then stack.push ".."
-        else stack
-      | _ => stack.push c
-    if isAbs then
-      System.FilePath.mk ("/" ++ String.intercalate "/" stack.toList)
-    else if stack.isEmpty then
-      "."
-    else
-      System.FilePath.mk (String.intercalate "/" stack.toList)
   let ownRaw : System.FilePath := (← getFileName)
   let cwd ← IO.currentDir
-  let ownPath : System.FilePath :=
-    normalizePath (if ownRaw.isAbsolute then ownRaw else cwd / ownRaw)
+  let ownPath : System.FilePath ← IO.FS.realPath
+    (if ownRaw.isAbsolute then ownRaw else cwd / ownRaw)
   unless ownPath.fileName == some "Audit.lean" &&
       (ownPath.parent.bind System.FilePath.fileName) == some "Utf8" do
     throwError "Axiom audit could not locate the package source tree: this audit module's own source path {ownPath} is not of the form <root>/Utf8/Audit.lean; refusing to pass without a source-tree inventory"
