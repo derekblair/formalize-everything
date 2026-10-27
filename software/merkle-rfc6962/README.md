@@ -1,17 +1,19 @@
-# Merkle proofs (RFC 6962), milestone 1
+# Merkle proofs (RFC 6962), milestones 1 and 2a
 
 A standalone Lean 4.34.1 project for the Merkle tree algorithms in
 [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962.txt), implementing
-[programme ticket #11](https://github.com/derekblair/formalize-everything/issues/11).
+[programme ticket #11](https://github.com/derekblair/formalize-everything/issues/11)
+and [ticket #19](https://github.com/derekblair/formalize-everything/issues/19).
 It defines tree hashes, audit paths, consistency proofs, and executable
 verifiers, with general completeness proofs for arbitrary hashes and leaf lists.
-Milestone 1 remains in progress until the coordinator-appointed crossed review
-passes and the PR is merged.
+Milestone 2a adds collision-explicit inclusion soundness under an explicit
+fixed-digest-width hypothesis. Tree binding and consistency soundness remain
+milestone 2b work.
 
 The hash is an explicit parameter `H : ByteArray → ByteArray`. There is no
-SHA-256 implementation, digest-width assumption, or collision-resistance
-assumption in this milestone. Completeness concerns the algorithms' structure
-and holds even for a poor hash function. The executable verifiers actually
+SHA-256 implementation. The milestone-1 definitions and completeness theorems
+use no digest-width or collision-resistance assumption. Completeness concerns
+the algorithms' structure and holds even for a poor hash function. The executable verifiers actually
 reconstruct and compare roots; they receive sizes, supplied roots, and proof
 nodes, not the original leaf list or a proof-generation oracle.
 
@@ -20,7 +22,7 @@ nodes, not the original leaf list or a proof-generation oracle.
 | Printed RFC section | Coverage |
 |---|---|
 | §2.1, Merkle Hash Trees | Empty and singleton hashes; exact `0x00` leaf and `0x01` internal-node prefixes; largest-power-of-two split; half-open subtree ranges. |
-| §2.1.1, Merkle Audit Paths | Literal `PATH` recursion and the prose root-recomputation procedure; completeness for every valid leaf index. |
+| §2.1.1, Merkle Audit Paths | Literal `PATH` recursion and the prose root-recomputation procedure; completeness for every valid leaf index; collision-explicit soundness under fixed digest width. |
 | §2.1.2, Merkle Consistency Proofs | Literal `SUBPROOF` recursion, including its Boolean known-root flag; two-root reconstruction and comparison; completeness for every `0 < m ≤ n`. |
 | §2.1.3, Example | All four published audit paths, all three published consistency proofs, the seven-leaf tree and its subtrees, and the three earlier incremental trees. |
 | §2.1.4, Signatures | Outside this algorithm milestone; the printed section concerns signature algorithms. |
@@ -98,6 +100,73 @@ They therefore establish exact proof consumption as well as root equality.
 The public statements have only the RFC's size/index hypotheses and quantify
 over every `H` and every list of `ByteArray` leaves.
 
+## Inclusion soundness and fidelity deviations D1/D2
+
+Milestone 2a adds these definitions as ordinary propositions, not axioms:
+
+```lean
+def Collides (H : Hash) : Prop := ∃ x y : ByteArray, x ≠ y ∧ H x = H y
+def FixedWidth (H : Hash) (ℓ : Nat) : Prop := ∀ x : ByteArray, (H x).size = ℓ
+```
+
+The primary theorem in [`Merkle/Soundness.lean`](Merkle/Soundness.lean) accepts an
+arbitrary proof against the honest root of a universally quantified leaf list:
+
+```lean
+theorem audit_sound (H : Hash) (ℓ : Nat) (hw : FixedWidth H ℓ)
+    (ds : List ByteArray) (m : Nat) (hm : m < ds.length)
+    (leaf : ByteArray) (proof : List ByteArray)
+    (hacc : verifyAudit H m ds.length leaf proof (MTH H ds) = true) :
+    leaf = ds[m] ∨ Collides H
+
+theorem audit_sound_of_injective (H : Hash) (ℓ : Nat) (hw : FixedWidth H ℓ)
+    (hinj : ∀ x y : ByteArray, H x = H y → x = y)
+    (ds : List ByteArray) (m : Nat) (hm : m < ds.length)
+    (leaf : ByteArray) (proof : List ByteArray)
+    (hacc : verifyAudit H m ds.length leaf proof (MTH H ds) = true) :
+    leaf = ds[m]
+```
+
+The tree size is tied to `ds.length`; it is part of the honest commitment
+assumption. No hypothesis says that the supplied proof came from `PATH` or that
+its siblings have a prescribed width. The strengthened `auditWalk_extract` lemma
+allows any unconsumed proof suffix. Exact consumption is enforced by the existing
+verifier, but is not needed for the extraction argument.
+
+[`Merkle/ByteAlgebra.lean`](Merkle/ByteAlgebra.lean) separates the empty, leaf, and
+node input encodings, cancels the leaf tag, and recovers both children from equal
+node inputs when either the left pair or the right pair has equal widths.
+[`Merkle/AuditStructure.lean`](Merkle/AuditStructure.lean) inverts the walk branches
+and proves every successful walk output has width `ℓ`. At each inclusion step,
+equal hash outputs either expose distinct node inputs (an explicit collision) or
+force the traversed child to equal its honest subtree root. At the leaf, differing
+leaf inputs with equal hashes provide the remaining collision case.
+
+**D1 — Digest-width abstraction gap.** RFC 6962 §2.1 fixes SHA-256's 32-byte output;
+milestone 1 deliberately abstracted away that width. Leaf/node tag separation
+alone does not make two concatenated variable-width children unambiguous.
+[`Merkle/InclusionAttack.lean`](Merkle/InclusionAttack.lean) checks the obstruction
+with the identity hash. The honest leaves `[78]`, `[79]` have root
+`01 00 78 00 79`. At index zero, the empty forged leaf and the one-element proof
+`[78 00 79]` reach the same bytes by splitting them as `01 | 00 | 78 00 79`.
+The verifier accepts, the leaf differs from the committed leaf, and the identity
+hash is injective and has no collisions. The file also proves that this hash has
+no fixed width. `FixedWidth H ℓ` is therefore an explicit hypothesis of M2a's
+soundness statements, rather than a change to any verifier definition. The
+parameter permits `ℓ = 32`, but no SHA-256 instantiation is supplied here.
+
+**D2 — M1 had no collision-resistance hypothesis.** `Collides` now names a pair
+of distinct inputs with equal outputs. The injectivity corollary adds the global
+condition `∀ x y, H x = H y → x = y`; it is not a computational or probabilistic
+collision-resistance definition. Injectivity alone is insufficient, as D1 shows.
+Moreover, global injectivity on arbitrarily long byte strings cannot coexist
+with a fixed finite output width. The corollary is a formal conditional statement,
+not an instantiable SHA-256 security assumption. The primary deliverable is the
+explicit-collision theorem and its proof from the verifier's actual hash inputs.
+
+No milestone-1 definition in `Spec.lean`, `Audit.lean`, or `Consistency.lean`
+changes. This milestone introduces no node-ambiguity predicate or trichotomy.
+
 ## Interpretation decisions
 
 1. The source's colon notation appends a sibling to the end of the recursively
@@ -138,8 +207,9 @@ core/Std and Lean's audit metaprogramming support; there are no external
 packages and no Mathlib dependency. The default target imports the proofs,
 vectors, verifier regression cases, and build-enforced audit.
 
-[`VECTORS.md`](VECTORS.md) inventories 28 symbolic shape equalities and 16
-supplemental concrete verifier regressions. Symbolic right-hand sides spell
+[`VECTORS.md`](VECTORS.md) inventories 28 symbolic shape equalities, 16
+milestone-1 concrete verifier regressions, and the M2a shifted-parse inclusion
+attack with its supporting facts. Symbolic right-hand sides spell
 out the exact nested `H` expressions, with prefix bytes independent of the
 implementation's helpers. Two prefix assertions use literal `rfl`; the other 26 use proof-producing
 `cbv` in a left-hand-side conversion to unfold the well-founded defining
@@ -155,8 +225,9 @@ equations and termination declarations. It checks their transitive axiom
 dependencies and fails on any project axiom declaration or dependency outside
 `propext`, `Classical.choice`, and `Quot.sound`. Thus a `sorryAx` dependency
 also fails the build. It additionally prints axioms for the public completeness
-theorems, their stronger internal statements, and representative executable
-definitions. Set `MERKLE_AUDIT_VERBOSE=1` to print every declaration's result.
+theorems, their stronger internal statements, representative executable
+definitions, and every new M2a theorem. All new modules are imported by
+`Checks.lean`. Set `MERKLE_AUDIT_VERBOSE=1` to print every declaration's result.
 No proof uses `native_decide`.
 
 ## Prior art and deferred work
@@ -170,10 +241,10 @@ scheme for ZK, but no RFC-shaped CT verifiers with proved soundness, and no
 corresponding Mathlib/Batteries development. These are the programme's dated
 research findings, not claims proved by this library.
 
-Milestone 2 must prove soundness: a verifying forged inclusion or consistency
-proof yields an explicit collision in `H`, with the necessary hypotheses
-stated explicitly. Completeness alone does not establish that claim or any
-cryptographic security property.
+Milestone 2a proves inclusion soundness with the fixed-width hypothesis above.
+Tree binding (`mth_binding`), consistency soundness, and the consistency attack
+regression are deferred to milestone 2b. No computational cryptographic security
+property is claimed.
 
 Exact SHA-256 numeric vectors are deferred until a verified SHA-256
 implementation is available. An abstract `H` cannot yield concrete SHA-256
