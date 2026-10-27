@@ -4,6 +4,10 @@ import Merkle.ByteAlgebra
 import Merkle.AuditStructure
 import Merkle.Soundness
 import Merkle.InclusionAttack
+import Merkle.Binding
+import Merkle.ConsistencyStructure
+import Merkle.ConsistencySoundness
+import Merkle.ConsistencyAttack
 import Lean.Util.CollectAxioms
 import Lean.Elab.Command
 
@@ -87,3 +91,22 @@ run_cmd do
 #print axioms Merkle.InclusionAttack.diagnosticHash_no_collision
 #print axioms Merkle.InclusionAttack.diagnosticHash_not_fixedWidth
 #print axioms Merkle.InclusionAttack.shifted_parse_attack
+
+-- M2b: every new theorem, including both width-gap counterexamples.
+#print axioms Merkle.mth_binding
+#print axioms Merkle.mth_binding_of_injective
+#print axioms Merkle.consistencyRoots_left_inv
+#print axioms Merkle.consistencyRoots_right_inv
+#print axioms Merkle.consistencyRoots_equal
+#print axioms Merkle.consistencyRoots_current_size
+#print axioms Merkle.consistencyRoots_extract
+#print axioms Merkle.consistency_sound
+#print axioms Merkle.consistency_sound_of_injective
+#print axioms Merkle.ConsistencyAttack.old_root_bytes
+#print axioms Merkle.ConsistencyAttack.shifted_parse_accepts
+#print axioms Merkle.ConsistencyAttack.shifted_parse_not_prefix
+#print axioms Merkle.ConsistencyAttack.shifted_parse_attack
+#print axioms Merkle.ConsistencyAttack.binding_root_bytes
+#print axioms Merkle.ConsistencyAttack.binding_roots_eq
+#print axioms Merkle.ConsistencyAttack.binding_leaves_ne
+#print axioms Merkle.ConsistencyAttack.binding_attack
