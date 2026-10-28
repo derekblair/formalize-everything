@@ -15,9 +15,9 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 7 | Differentiation | 26 | 0 |
 | 8 | Integration on Product Spaces | 18 | 0 |
 | 9 | Fourier Transforms | 23 | 0 |
-| 10 | Elementary Properties of Holomorphic Functions | TBD | 0 |
-| 11 | Harmonic Functions | TBD | 0 |
-| 12 | The Maximum Modulus Principle | TBD | 0 |
+| 10 | Elementary Properties of Holomorphic Functions | 44 | 0 |
+| 11 | Harmonic Functions | 32 | 0 |
+| 12 | The Maximum Modulus Principle | 14 | 0 |
 | 13 | Approximation by Rational Functions | 12 | 0 |
 | 14 | Conformal Mapping | 22 | 0 |
 | 15 | Zeros of Holomorphic Functions | 27 | 0 |
@@ -131,3 +131,10 @@ enumerated from the printed third-edition scan. Exercises are excluded.
 
 The main-branch Done column remains zero until reviewed changes land. A
 successful supporting lemma does not imply completion of its entire book node.
+
+Cluster E's [inventory](inventory/README.md) verifies all 90 numbered nodes
+of Chapters 10–12 against the third-edition scan. Unnumbered corollaries and
+assertions belong to their numbered parent; exercises are excluded.
+The `Done` column continues to mean accepted on main, so it is not advanced
+by unreviewed work on `books/rca-holomorphic`. Branch proof coverage and
+fidelity stops are recorded separately in the inventory and `QUEUE.md`.
