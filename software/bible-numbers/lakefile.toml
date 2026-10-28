@@ -1,0 +1,6 @@
+name = "bibleNumbers"
+version = "0.1.0"
+defaultTargets = ["BibleNumbers"]
+
+[[lean_lib]]
+name = "BibleNumbers"
