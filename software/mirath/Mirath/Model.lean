@@ -1,5 +1,4 @@
-import Init.Data.Rat.Lemmas
-import Init.Data.List.Lemmas
+import Mirath.Settlement
 
 /-!
 The finite-role kinship schedule for milestone 1. All shares are *role totals*;
@@ -44,11 +43,12 @@ inductive PaternalGrandmotherPolicy where
   | blockedByFather | inheritsWithFather
   deriving DecidableEq, BEq, Repr
 
-/-- Majority counts even excluded siblings when reducing the mother's third.
-Ibn Taymiyya/al-Sa'di count only structurally eligible siblings (IslamQA 13632).
+/-- Majority counts even father-excluded siblings when reducing the mother's
+third. The alternative models the father-blocked case explicitly discussed in
+IslamQA 13632 (Ibn Taymiyya/al-Sa'di); no broader minority rule is inferred.
 -/
 inductive MotherSiblingPolicy where
-  | allSiblings | eligibleSiblings
+  | allSiblings | ignoreFatherBlockedSiblings
   deriving DecidableEq, BEq, Repr
 
 /-- The brief's radd approach is the default. The classical treasury alternative
@@ -111,22 +111,10 @@ def Config.siblingCount (c : Config) : Nat :=
 def Config.agnaticSiblingCount (c : Config) : Nat :=
   c.fullBrothers + c.fullSisters + c.paternalBrothers + c.paternalSisters
 
-/-- Structural eligibility for the named minority mother's-share policy.
-An exhausted remainder is not exclusion: an eligible residuary still counts.
-Hajb follows U pp.9–15; the policy's source is IslamQA 13632.
--/
-def Config.eligibleSiblingCount (c : Config) : Nat :=
-  if c.sons > 0 || c.hasMaleAscendant then 0
-  else c.fullBrothers + c.fullSisters +
-    (if c.fullBrothers > 0 || (c.daughters > 0 && c.fullSisters > 0) then 0
-     else c.paternalBrothers +
-       (if c.paternalBrothers > 0 || c.fullSisters < 2 then c.paternalSisters else 0)) +
-    (if c.hasChildren then 0 else c.maternalBrothers + c.maternalSisters)
-
 def Config.motherReducingSiblingCount (c : Config) : Nat :=
   match c.motherSiblingPolicy with
   | .allSiblings => c.siblingCount
-  | .eligibleSiblings => c.eligibleSiblingCount
+  | .ignoreFatherBlockedSiblings => if c.father > 0 then 0 else c.siblingCount
 
 /-- The disputed common-third case (mushtaraka) is explicitly outside milestone
 1, rather than silently choosing between the Hanafi/Hanbali and Maliki/Shafi'i
@@ -261,5 +249,63 @@ def returnWeights (c : Config) : List (Role × Rat) :=
       match c.raddPolicy with
       | .includeSpouses => fixedShares c
       | .excludeSpouses => (fixedShares c).filter fun p => !p.1.isSpouse
+
+/-- The mother's scheduled entitlement is never negative, including malformed
+counts; the stronger `Supported` predicate is reserved for scope validation.
+-/
+theorem motherShare_nonnegative (c : Config) : 0 ≤ motherShare c := by
+  unfold motherShare spouseShare
+  repeat' first | split | decide +kernel
+
+theorem fixedShare_nonnegative (c : Config) (r : Role) : 0 ≤ fixedShare c r := by
+  cases r <;> simp only [fixedShare]
+  all_goals
+    repeat' first
+      | split
+      | exact motherShare_nonnegative c
+      | apply div_nonnegative
+      | apply Rat.mul_nonneg
+      | exact Rat.natCast_nonneg
+      | decide +kernel
+
+theorem fixedShares_nonnegative (c : Config) : Nonnegative (fixedShares c) := by
+  intro x hx
+  obtain ⟨hx, _⟩ := List.mem_filter.mp hx
+  obtain ⟨r, _, hr⟩ := List.mem_map.mp hx
+  subst x
+  exact fixedShare_nonnegative c r
+
+theorem weightedRole_nonnegative (r : Role) (n : Nat) :
+    Nonnegative (weightedRole r n) := by
+  unfold weightedRole
+  split
+  · intro x hx
+    exact False.elim (List.not_mem_nil hx)
+  · intro x hx
+    have hx' : x = (r, (n : Rat)) := List.mem_singleton.mp hx
+    subst x
+    exact Rat.natCast_nonneg
+
+theorem residuaryWeights_nonnegative (c : Config) :
+    Nonnegative (residuaryWeights c) := by
+  unfold residuaryWeights
+  repeat' first
+    | split
+    | apply nonnegative_append
+    | apply weightedRole_nonnegative
+    | exact (fun _ h => False.elim (List.not_mem_nil h))
+
+theorem returnWeights_nonnegative (c : Config) :
+    Nonnegative (returnWeights c) := by
+  unfold returnWeights
+  split
+  · intro x hx
+    have hx' : x = (.publicTreasury, (1 : Rat)) := List.mem_singleton.mp hx
+    subst x
+    decide +kernel
+  · split
+    · exact fixedShares_nonnegative c
+    · intro x hx
+      exact fixedShares_nonnegative c x (List.mem_filter.mp hx).1
 
 end Mirath
