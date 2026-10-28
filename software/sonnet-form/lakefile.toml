@@ -1,0 +1,6 @@
+name = "sonnetForm"
+version = "0.1.0"
+defaultTargets = ["SonnetForm"]
+
+[[lean_lib]]
+name = "SonnetForm"

@@ -25,7 +25,7 @@ Every formalization target, its status, and where it lives. A target is **done**
 
 | Target | Status | Home |
 |---|---|---|
-| — | none yet | — |
+| Shakespeare, the Sonnets (form spec + corpus) | Started 2026-10-27 — novelty gate PARTIAL (estimators exist; no formal spec or checked conformance); milestone 1 in flight (ticket #45) | here, [software/sonnet-form/](software/sonnet-form/) |
 
 ## Proposing a target
 
