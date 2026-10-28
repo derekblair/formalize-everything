@@ -1,3 +1,5 @@
+import Mathlib.Analysis.Complex.AbsMax
+import Mathlib.Analysis.Analytic.Uniqueness
 import Mathlib.Analysis.Complex.TaylorSeries
 import Mathlib.Analysis.Complex.Liouville
 import Mathlib.Analysis.Complex.LocallyUniformLimit
@@ -5,6 +7,8 @@ import Mathlib.Analysis.Complex.RemovableSingularity
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Analysis.Complex.Exponential
 import Mathlib.Analysis.Calculus.Deriv.Slope
+import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
+import Mathlib.Analysis.Analytic.OfScalars
 import Mathlib.Topology.Connected.LocallyConnected
 
 /-!
@@ -58,6 +62,12 @@ theorem hasDerivAt_iff_difference_quotient {f : ℂ → ℂ} {a d : ℂ} :
   have hs : slope f a = fun z => (f z - f a) / (z - a) :=
     funext (slope_def_field f a)
   rw [hasDerivAt_iff_tendsto_slope, hs]
+
+/-- 10.2: as a real-linear operator, the derivative multiplies by the complex derivative. -/
+theorem hasFDerivAt_real_of_hasDerivAt {f : ℂ → ℂ} {a d : ℂ}
+    (hf : HasDerivAt f d a) :
+    HasFDerivAt f ((ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ) d).restrictScalars ℝ) a :=
+  hf.hasFDerivAt.restrictScalars ℝ
 
 /-- 10.3: addition in the ring of holomorphic functions. -/
 theorem holomorphicOn_add {f g : ℂ → ℂ} {Ω : Set ℂ}
@@ -192,12 +202,156 @@ theorem liouville {f : ℂ → ℂ} (hf : HolomorphicOn f univ)
     (hb : Bornology.IsBounded (range f)) : ∃ c : ℂ, ∀ z, f z = c :=
   (show Differentiable ℂ f from fun z => hf z (mem_univ z)).exists_const_forall_eq_of_bounded hb
 
+section MaximumModulus
+open Metric
+
+/-- The maximum in 10.24, written on the geometric boundary circle. -/
+def circleMaximum (f : ℂ → ℂ) (a : ℂ) (r : ℝ) : ℝ :=
+  sSup ((fun z => ‖f z‖) '' sphere a r)
+
+/-- The minimum in the corollary to 10.24. -/
+def circleMinimum (f : ℂ → ℂ) (a : ℂ) (r : ℝ) : ℝ :=
+  sInf ((fun z => ‖f z‖) '' sphere a r)
+
+/-- The geometric-circle maximum is precisely the supremum over Rudin's
+angular parametrization, `a + r * exp (θ * I)`. -/
+theorem circleMaximum_eq_angular_sup (f : ℂ → ℂ) (a : ℂ) {r : ℝ} (hr : 0 < r) :
+    circleMaximum f a r = sSup (range (fun θ : ℝ => ‖f (circleMap a r θ)‖)) := by
+  have hcircle : range (circleMap a r) = sphere a r := by
+    simp [abs_of_pos hr]
+  unfold circleMaximum
+  rw [← hcircle, ← range_comp]
+  rfl
+
+theorem circleMinimum_eq_angular_inf (f : ℂ → ℂ) (a : ℂ) {r : ℝ} (hr : 0 < r) :
+    circleMinimum f a r = sInf (range (fun θ : ℝ => ‖f (circleMap a r θ)‖)) := by
+  have hcircle : range (circleMap a r) = sphere a r := by
+    simp [abs_of_pos hr]
+  unfold circleMinimum
+  rw [← hcircle, ← range_comp]
+  rfl
+
+/-- Compactness ensures that `circleMaximum` really is an attained maximum. -/
+theorem circleMaximum_attained {f : ℂ → ℂ} {a : ℂ} {r : ℝ} (hr : 0 < r)
+    (hc : ContinuousOn f (sphere a r)) :
+    ∃ w ∈ sphere a r, circleMaximum f a r = ‖f w‖ := by
+  obtain ⟨w, hw, hmax⟩ := (isCompact_sphere a r).exists_isMaxOn
+    (NormedSpace.sphere_nonempty.mpr hr.le) hc.norm
+  refine ⟨w, hw, le_antisymm ?_ ?_⟩
+  · apply csSup_le (Nonempty.image _ (NormedSpace.sphere_nonempty.mpr hr.le))
+    rintro _ ⟨z, hz, rfl⟩
+    exact hmax hz
+  · exact le_csSup ((isCompact_sphere a r).image_of_continuousOn hc.norm).bddAbove
+      (mem_image_of_mem _ hw)
+
+/-- Compactness likewise ensures that `circleMinimum` is attained. -/
+theorem circleMinimum_attained {f : ℂ → ℂ} {a : ℂ} {r : ℝ} (hr : 0 < r)
+    (hc : ContinuousOn f (sphere a r)) :
+    ∃ w ∈ sphere a r, circleMinimum f a r = ‖f w‖ := by
+  obtain ⟨w, hw, hmin⟩ := (isCompact_sphere a r).exists_isMinOn
+    (NormedSpace.sphere_nonempty.mpr hr.le) hc.norm
+  refine ⟨w, hw, le_antisymm ?_ ?_⟩
+  · exact csInf_le ((isCompact_sphere a r).image_of_continuousOn hc.norm).bddBelow
+      (mem_image_of_mem _ hw)
+  · apply le_csInf (Nonempty.image _ (NormedSpace.sphere_nonempty.mpr hr.le))
+    rintro _ ⟨z, hz, rfl⟩
+    exact hmin hz
+
+/-- 10.24: a local maximum of the modulus forces constancy throughout the region. -/
+theorem constant_of_local_maximum {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsRegion Ω) (hf : HolomorphicOn f Ω) {a : ℂ} (ha : a ∈ Ω)
+    (hm : IsLocalMax (fun z => ‖f z‖) a) : ∀ z ∈ Ω, f z = f a := by
+  have hd : ∀ᶠ z in 𝓝 a, DifferentiableAt ℂ f z := by
+    filter_upwards [hΩ.1.mem_nhds ha] with z hz using hf z hz
+  have heq := Complex.eventually_eq_of_isLocalMax_norm hd hm
+  have hA := ((holomorphicOn_iff_differentiableOn hΩ.1).mp hf).analyticOnNhd hΩ.1
+  exact hA.eqOn_of_preconnected_of_eventuallyEq analyticOnNhd_const hΩ.2.isPreconnected ha heq
+
+/-- 10.24: the value at the center is bounded by the boundary maximum. -/
+theorem maximum_modulus {f : ℂ → ℂ} {Ω : Set ℂ} (hf : HolomorphicOn f Ω)
+    {a : ℂ} {r : ℝ} (hr : 0 < r) (hsub : closedBall a r ⊆ Ω) :
+    ‖f a‖ ≤ circleMaximum f a r := by
+  have hc : ContinuousOn f (closedBall a r) :=
+    (continuousOn_of_holomorphicOn hf).mono hsub
+  have hd : DiffContOnCl ℂ f (ball a r) :=
+    ⟨fun z hz => (hf z (hsub (ball_subset_closedBall hz))).differentiableWithinAt,
+      by simpa [closure_ball a hr.ne'] using hc⟩
+  have hB := ((isCompact_sphere a r).image_of_continuousOn
+    (hc.mono sphere_subset_closedBall).norm).bddAbove
+  apply Complex.norm_le_of_forall_mem_frontier_norm_le isBounded_ball hd
+    (fun z hz => le_csSup hB (mem_image_of_mem _ ?_)) (subset_closure (mem_ball_self hr))
+  simpa [frontier_ball a hr.ne'] using hz
+
+/-- 10.24: equality is equivalent to constancy on the entire region. -/
+theorem maximum_modulus_eq_iff {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsRegion Ω) (hf : HolomorphicOn f Ω) {a : ℂ} {r : ℝ}
+    (hr : 0 < r) (hsub : closedBall a r ⊆ Ω) :
+    ‖f a‖ = circleMaximum f a r ↔ ∀ z ∈ Ω, f z = f a := by
+  have hc : ContinuousOn f (closedBall a r) :=
+    (continuousOn_of_holomorphicOn hf).mono hsub
+  have hd : DiffContOnCl ℂ f (ball a r) :=
+    ⟨fun z hz => (hf z (hsub (ball_subset_closedBall hz))).differentiableWithinAt,
+      by simpa [closure_ball a hr.ne'] using hc⟩
+  have hB := ((isCompact_sphere a r).image_of_continuousOn
+    (hc.mono sphere_subset_closedBall).norm).bddAbove
+  constructor
+  · intro heq
+    apply constant_of_local_maximum hΩ hf (hsub (mem_closedBall_self hr.le))
+    filter_upwards [ball_mem_nhds a hr] with z hz
+    apply (Complex.norm_le_of_forall_mem_frontier_norm_le isBounded_ball hd
+      (fun w hw => le_csSup hB (mem_image_of_mem _ ?_)))
+      (subset_closure hz) |>.trans_eq heq.symm
+    simpa [frontier_ball a hr.ne'] using hw
+  · intro heq
+    obtain ⟨w, hw, hmax⟩ := circleMaximum_attained hr (hc.mono sphere_subset_closedBall)
+    rw [hmax, heq w (hsub (sphere_subset_closedBall hw))]
+
+/-- The minimum-modulus corollary to 10.24 needs no boundary nonvanishing. -/
+theorem minimum_modulus {f : ℂ → ℂ} {Ω : Set ℂ} (hf : HolomorphicOn f Ω)
+    {a : ℂ} {r : ℝ} (hr : 0 < r) (hsub : closedBall a r ⊆ Ω)
+    (hne : ∀ z ∈ disc a r, f z ≠ 0) : circleMinimum f a r ≤ ‖f a‖ := by
+  have hc : ContinuousOn f (closedBall a r) :=
+    (continuousOn_of_holomorphicOn hf).mono hsub
+  have hB := ((isCompact_sphere a r).image_of_continuousOn
+    (hc.mono sphere_subset_closedBall).norm).bddBelow
+  by_cases hzero : ∃ w ∈ sphere a r, f w = 0
+  · obtain ⟨w, hw, hfw⟩ := hzero
+    exact (csInf_le hB (mem_image_of_mem _ hw)).trans (by simp [hfw])
+  · have hnz : ∀ z ∈ closedBall a r, f z ≠ 0 := by
+      intro z hz
+      rcases lt_or_eq_of_le (mem_closedBall.mp hz) with hlt | heq
+      · exact hne z hlt
+      · exact fun h => hzero ⟨z, heq, h⟩
+    have hdinv : DiffContOnCl ℂ (fun z => (f z)⁻¹) (ball a r) :=
+      ⟨fun z hz => ((hf z (hsub (ball_subset_closedBall hz))).inv
+        (hnz z (ball_subset_closedBall hz))).differentiableWithinAt,
+        by
+          intro z hz
+          have hz' : z ∈ closedBall a r := closure_ball_subset_closedBall hz
+          exact ((hf z (hsub hz')).continuousAt.inv₀ (hnz z hz')).continuousWithinAt⟩
+    obtain ⟨w, hw, hmax⟩ := Complex.exists_mem_frontier_isMaxOn_norm isBounded_ball
+      (nonempty_ball.mpr hr) hdinv
+    have hws : w ∈ sphere a r := by simpa [frontier_ball a hr.ne'] using hw
+    have hbound : ‖(f a)⁻¹‖ ≤ ‖(f w)⁻¹‖ :=
+      hmax (subset_closure (mem_ball_self hr))
+    have hle : ‖f w‖ ≤ ‖f a‖ :=
+      (inv_le_inv₀ (norm_pos_iff.mpr (hnz a (mem_closedBall_self hr.le)))
+        (norm_pos_iff.mpr (hnz w (sphere_subset_closedBall hws)))).mp (by
+        simpa only [norm_inv] using hbound)
+    exact (csInf_le hB (mem_image_of_mem _ hws)).trans hle
+
+
+end MaximumModulus
+
 /-- 10.25: the multiset counts zeros with their multiplicities. The theorem is
 stated for every complex polynomial of degree `n`, and in particular for the
 monic polynomial displayed in Rudin. -/
 theorem number_of_polynomial_zeros (p : Polynomial ℂ) {n : ℕ}
     (_hn : 0 < n) (hdegree : p.natDegree = n) : p.roots.card = n := by
   rw [← Polynomial.Splits.natDegree_eq_card_roots (IsAlgClosed.splits p), hdegree]
+
+theorem nonconstant_polynomial_has_zero {p : Polynomial ℂ} (hp : 0 < p.degree) :
+    ∃ z : ℂ, p.eval z = 0 := Complex.exists_root hp
 
 /-- 10.26: the estimate uses an open disc and requires no boundary extension. -/
 theorem cauchy_estimate {f : ℂ → ℂ} {a : ℂ} {R M : ℝ} (hR : 0 < R)
@@ -213,6 +367,16 @@ theorem cauchy_estimate {f : ℂ → ℂ} {a : ℂ} {R M : ℝ} (hR : 0 < R)
   have hc : ContinuousAt (fun r : ℝ => (n.factorial : ℝ) * M / r ^ n) R :=
     continuousAt_const.div (continuousAt_id.pow n) (pow_ne_zero n hR.ne')
   exact ge_of_tendsto (hc.tendsto.mono_left nhdsWithin_le_nhds) he
+
+/-- The sharpness example following 10.26. -/
+theorem cauchy_estimate_sharp (n : ℕ) :
+    (∀ z ∈ disc (0 : ℂ) 1, ‖z ^ n‖ ≤ 1) ∧
+    iteratedDeriv n (fun z : ℂ => z ^ n) 0 = (n.factorial : ℂ) := by
+  constructor
+  · intro z hz
+    have hz' : ‖z‖ ≤ 1 := (mem_ball_zero_iff.mp hz).le
+    simpa only [norm_pow, one_pow] using pow_le_pow_left₀ (norm_nonneg z) hz' n
+  · simp [Nat.descFactorial_self]
 
 /-- 10.27: uniform convergence on every compact subset of the domain. -/
 def ConvergesOnCompactSubsets (F : ℕ → ℂ → ℂ) (f : ℂ → ℂ) (Ω : Set ℂ) : Prop :=
@@ -248,5 +412,91 @@ theorem convergesOnCompactSubsets_iteratedDeriv {F : ℕ → ℂ → ℂ} {f : �
   | succ n ih =>
     simpa only [iteratedDeriv_succ] using
       (holomorphicOn_limit_and_deriv hΩ (hhol n) ih).2
+
+
+/-- 10.6: power-series representability gives holomorphy. -/
+theorem holomorphicOn_of_representableByPowerSeries {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsOpen Ω) (hf : RepresentableByPowerSeries f Ω) : HolomorphicOn f Ω := by
+  intro a ha
+  obtain ⟨r, hr, hsub⟩ := Metric.isOpen_iff.mp hΩ a ha
+  obtain ⟨c, hc⟩ := hf a r hr hsub
+  have hs : HasFPowerSeriesAt f (FormalMultilinearSeries.ofScalars ℂ c) a := by
+    rw [hasFPowerSeriesAt_iff']
+    filter_upwards [Metric.ball_mem_nhds a hr] with z hz
+    simpa only [FormalMultilinearSeries.coeff_ofScalars, smul_eq_mul, mul_comm] using hc z hz
+  exact hs.analyticAt.differentiableAt
+
+/-- 10.6: the derivative is again representable on every contained disc. -/
+theorem representableByPowerSeries_deriv {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsOpen Ω) (hf : RepresentableByPowerSeries f Ω) :
+    RepresentableByPowerSeries (deriv f) Ω :=
+  representableByPowerSeries_of_holomorphicOn
+    (holomorphicOn_deriv hΩ (holomorphicOn_of_representableByPowerSeries hΩ hf))
+
+/-- The coefficient/derivative equality in the corollary to 10.6. -/
+theorem powerSeries_coefficient {f : ℂ → ℂ} {c : ℕ → ℂ} {a : ℂ} {r : ℝ}
+    (hr : 0 < r) (hc : ∀ z ∈ disc a r, HasSum (fun n => c n * (z - a) ^ n) (f z))
+    (n : ℕ) : (n.factorial : ℂ) * c n = iteratedDeriv n f a := by
+  have hs : HasFPowerSeriesAt f (FormalMultilinearSeries.ofScalars ℂ c) a := by
+    rw [hasFPowerSeriesAt_iff']
+    filter_upwards [Metric.ball_mem_nhds a hr] with z hz
+    simpa only [FormalMultilinearSeries.coeff_ofScalars, smul_eq_mul, mul_comm] using hc z hz
+  obtain ⟨ρ, hρ⟩ := hs
+  simpa [FormalMultilinearSeries.ofScalars_apply_eq, smul_eq_mul,
+    ← iteratedDeriv_eq_iteratedFDeriv] using hρ.factorial_smul (1 : ℂ) n
+
+/-- Uniqueness in the unnumbered corollary to 10.6. -/
+theorem powerSeries_coefficients_unique {f : ℂ → ℂ} {c d : ℕ → ℂ} {a : ℂ} {r : ℝ}
+    (hr : 0 < r) (hc : ∀ z ∈ disc a r, HasSum (fun n => c n * (z - a) ^ n) (f z))
+    (hd : ∀ z ∈ disc a r, HasSum (fun n => d n * (z - a) ^ n) (f z)) : c = d := by
+  funext n
+  apply mul_left_cancel₀ (show (n.factorial : ℂ) ≠ 0 by exact_mod_cast n.factorial_ne_zero)
+  exact (powerSeries_coefficient hr hc n).trans (powerSeries_coefficient hr hd n).symm
+
+/-- All derivatives remain representable, as stated in the corollary to 10.6. -/
+theorem representableByPowerSeries_iteratedDeriv {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsOpen Ω) (hf : RepresentableByPowerSeries f Ω) (k : ℕ) :
+    RepresentableByPowerSeries (iteratedDeriv k f) Ω := by
+  induction k with
+  | zero => simpa using hf
+  | succ k ih =>
+    simpa only [iteratedDeriv_succ] using representableByPowerSeries_deriv hΩ ih
+
+/-- The corollary to 10.6, with the summation index shifted from `n ≥ k` to
+`n ≥ 0`; the factorial ratio is the printed falling factorial. -/
+theorem hasSum_iteratedDeriv_powerSeries {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsOpen Ω) (hf : RepresentableByPowerSeries f Ω)
+    {c : ℕ → ℂ} {a : ℂ} {r : ℝ} (hr : 0 < r) (hsub : disc a r ⊆ Ω)
+    (hc : ∀ z ∈ disc a r, HasSum (fun n => c n * (z - a) ^ n) (f z))
+    (k : ℕ) {z : ℂ} (hz : z ∈ disc a r) :
+    HasSum (fun n => ((n + k).factorial : ℂ) / n.factorial * c (n + k) * (z - a) ^ n)
+      (iteratedDeriv k f z) := by
+  have hk : HolomorphicOn (iteratedDeriv k f) Ω :=
+    holomorphicOn_of_representableByPowerSeries hΩ
+      (representableByPowerSeries_iteratedDeriv hΩ hf k)
+  have hd : DifferentiableOn ℂ (iteratedDeriv k f) (Metric.ball a r) :=
+    fun w hw => (hk w (hsub hw)).differentiableWithinAt
+  convert Complex.hasSum_taylorSeries_on_ball hd hz using 1
+  funext n
+  have hi : iteratedDeriv n (iteratedDeriv k f) = iteratedDeriv (n + k) f := by
+    simp only [iteratedDeriv_eq_iterate, Function.iterate_add_apply]
+  rw [hi, ← powerSeries_coefficient hr hc (n + k)]
+  simp only [smul_eq_mul, div_eq_mul_inv]
+  ring
+
+/-- 10.6's first derivative formula, with its summation index shifted by one. -/
+theorem hasSum_deriv_powerSeries {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsOpen Ω) (hf : RepresentableByPowerSeries f Ω)
+    {c : ℕ → ℂ} {a : ℂ} {r : ℝ} (hr : 0 < r) (hsub : disc a r ⊆ Ω)
+    (hc : ∀ z ∈ disc a r, HasSum (fun n => c n * (z - a) ^ n) (f z))
+    {z : ℂ} (hz : z ∈ disc a r) :
+    HasSum (fun n : ℕ => ((n : ℂ) + 1) * c (n + 1) * (z - a) ^ n) (deriv f z) := by
+  convert hasSum_iteratedDeriv_powerSeries hΩ hf hr hsub hc 1 hz using 1
+  · funext n
+    have hn : (n.factorial : ℂ) ≠ 0 := by exact_mod_cast n.factorial_ne_zero
+    simp only [Nat.factorial_succ, Nat.cast_mul, mul_div_cancel_right₀ _ hn,
+      Nat.cast_add, Nat.cast_one]
+  · simp
+
 
 end RudinRCA.Chapter10
