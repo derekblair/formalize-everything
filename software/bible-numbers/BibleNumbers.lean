@@ -1,3 +1,5 @@
+import BibleNumbers.Data
+
 /-
   The Bible's numerical systems: the Genesis 5 and 11 genealogies
   across the Masoretic, Septuagint, and Samaritan witnesses as
@@ -8,5 +10,5 @@
   no machine-checked formalization of either system anywhere; the
   field is prose scholarship and commentary.
 
-  Modules are added under BibleNumbers/ as the lane lands them.
+  Source provenance is recorded beside the package in PROVENANCE.md.
 -/

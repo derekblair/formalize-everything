@@ -1,0 +1,17 @@
+profile,patriarch_or_span,field,value,status,source,locator
+MT/LXX endpoint interpretation; SP counterfactual sensitivity,Terah,inferred Abraham begetting age,130,INTERPRETIVE_INPUT,Smith2018,Table 4 notes D-F p.25; Table 1 note C p.18; Genesis 11:32 and 12:4 with Acts 7:4
+Smith reconstructed original,Adam to Flood,printed total,2256,COMPARISON_ONLY,Smith2018,Table 1 p.18 Flood AM date
+Smith reconstructed original,Adam to Abraham,printed total,3388,COMPARISON_ONLY,Smith2018,Table 1 p.18 Abraham AM date; Table 4 p.25 LXX total
+Smith reconstructed original,Lamech,begetting age,182,RECONSTRUCTION_NOT_LXX_TABLE2,Smith2018,Table 1 p.18 Lamech row versus Table 2 LXX188
+Smith MT reconstruction,Arpachshad,remaining years,430,CONJECTURE_NOT_MT_READING,Smith2018,Table 2 note E/J p.19 (actual MT403)
+Smith MT reconstruction,Eber,remaining years,370,CONJECTURE_NOT_MT_READING,Smith2018,Table 2 note H/J p.19 (actual MT430)
+Smith MT reconstruction,Nahor,remaining years,129,CONJECTURE_NOT_MT_READING,Smith2018,Table 2 note I/J p.19 (actual MT119)
+Smith MT literal endpoint,Flood to Abraham,printed total,292,COMPARISON_ONLY,Smith2018,Table 4 p.25 MT column; note F
+Smith MT inferred endpoint,Flood to Abraham,printed total,352,COMPARISON_ONLY,Smith2018,Table 4 p.25 MT column; note F
+Smith SP literal endpoint,Flood to Abraham,printed total,942,COMPARISON_ONLY,Smith2018,Table 4 p.25 SP column; note D
+Smith SP alternate endpoint,Flood to Abraham,printed total,1002,COMPARISON_ONLY,Smith2018,Table 4 p.25 SP column; note D
+Smith LXX inferred endpoint,Flood to Abraham,printed total,1132,COMPARISON_ONLY,Smith2018,Table 4 p.25 LXX column; note E
+Jerome SP report,Methuselah,begetting age,187,PARTIAL_HISTORICAL_REPORT,Smith2018,p.24 quotation of Jerome Hebrew Questions on Genesis; no complete historical SP profile available here
+Jerome SP report,Methuselah,remaining years,782,PARTIAL_HISTORICAL_REPORT,Smith2018,p.24 quotation of Jerome
+Jerome SP report,Methuselah,lifespan,969,PARTIAL_HISTORICAL_REPORT,Smith2018,p.24 quotation of Jerome
+Jerome SP report,Lamech,begetting age,182,PARTIAL_HISTORICAL_REPORT,Smith2018,p.24 quotation of Jerome
