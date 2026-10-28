@@ -1,6 +1,6 @@
 name = "rudinRCA"
 version = "0.1.0"
-defaultTargets = ["RudinRCA"]
+defaultTargets = ["RudinRCA", "RudinRCA.AuditA"]
 # Keep chapter elaboration serialized on shared build machines.
 weakLeanArgs = ["-j1"]
 

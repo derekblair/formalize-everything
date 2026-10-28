@@ -95,3 +95,23 @@ spurious one-line proof of 2.17 or 2.18.
 No false printed assertion or corrected mathematical statement was found
 during this inventory. The variant gaps above are implementation work,
 not permission to add hypotheses.
+
+## Implemented in this branch
+
+`RudinRCA/Chapter02.lean` proves **7 of the 14 theorem/lemma nodes**:
+2.4, 2.5, 2.6, 2.7, 2.10, 2.12 and 2.13. Their four attached corollary
+clauses (2.4, 2.5(a,b), 2.10) are included. The declarations are
+`theorem_2_4`, `theorem_2_5`, `theorem_2_6`, `theorem_2_7`,
+`theorem_2_10`, `lemma_2_12`, and `theorem_2_13`, under
+`RudinRCA.Chapter02`; corollary names append `_corollary` and, for 2.5,
+`_a` or `_b`.
+
+The definition-bearing notation node **2.11** is also implemented by
+`IsCutoff`, `CompactCutoff` and `OpenCutoff`; the chained relation is their
+conjunction. `ofRealCutoff` supplies the explicit real-to-complex bridge
+used in 2.12 and 2.13. Thus **8/25 numbered items are represented fully,
+17/25 remain**; the theorem-only count is **7 proved / 7 remaining**.
+The other definition/exposition entries remain inventoried, even where
+their vocabulary is already present in Mathlib. They are not counted as
+completed merely because Mathlib was imported. No measure-theoretic
+numbered theorem from 2.14 onward is claimed proved in this module.

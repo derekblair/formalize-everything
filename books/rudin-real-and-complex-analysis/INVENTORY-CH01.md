@@ -2,7 +2,7 @@
 
 Verified against the [third-edition scan](https://zaco.au/uni/2023-spr/35007-ra/real-and-complex-analysis-1.pdf), title/copyright pages and printed pp. 6–31 (PDF pp. 21–46). The [publisher contents](https://www.mheducation.co.in/real-and-complex-analysis-9789355326119-india) independently confirms the chapter title; it does **not** verify theorem numbering. No numbering was inferred from that contents list.
 
-The complete numbered sequence is **1.1–1.41: 41 items**. There are **24 numbered result-bearing groups** when 1.9, 1.15, and 1.24 are included: 21 headings explicitly labeled theorem/proposition/lemma, the proposition within 1.15, and two groups of propositions. Unnumbered corollaries belong to 1.14 and 1.27; they do not create extra numbered items. Definitions, comments, and examples remain inventoried because the package bar includes definition-bearing items. All 41 identifiers and their kinds are VERIFIED. Exercises are excluded.
+The complete numbered sequence is **1.1–1.41: 41 items**. There are **25 numbered result-bearing groups** when 1.9, 1.15, 1.22, and 1.24 are included: 21 headings explicitly labeled theorem/proposition/lemma, the propositions within 1.15 and 1.22, and two groups of propositions. Unnumbered corollaries belong to 1.14 and 1.27; they do not create extra numbered items. Definitions, comments, and examples remain inventoried because the package bar includes definition-bearing items. All 41 identifiers and their kinds are VERIFIED. Exercises are excluded.
 
 Mathlib checkout inspected: `d13f23b723b8a846827a245b89c10fc7d3f11612`. **U** = already in Mathlib in usable form; **V** = Mathlib variant/components needing a faithful restatement or packaging; **M** = exact content missing in the inspected sources (not a claim that the result cannot be proved). A candidate mapping is not a book proof. In particular, `Integrable` alone uses almost-everywhere strong measurability; before 1.37 the book additionally requires ordinary measurability. Completion and finite-valued simple functions also need explicit bridges.
 
@@ -29,7 +29,7 @@ Mathlib checkout inspected: `d13f23b723b8a846827a245b89c10fc7d3f11612`. **U** = 
 | 1.19 | 16 | Theorem: measure properties | U | `measure_empty`, `measure_biUnion_finset`, `measure_mono`, monotone/antitone continuity of measure |
 | 1.20 | 17 | Examples | V | `Measure.count`, `Measure.dirac`; descending infinite tails give failure without finite initial measure |
 | 1.21 | 17 | Terminology | U | Types and instances supply the underlying space/sigma-algebra/measure data |
-| 1.22 | 18 | Extended arithmetic | V | `ENNReal` semiring/order-continuity, `Measurable.add`, `.mul`; collect stated laws and cancellation restrictions |
+| 1.22 | 18 | Arithmetic/proposition: products | V | `ENNReal` semiring/order-continuity, `Measurable.add`, `.mul`; collect stated laws and cancellation restrictions |
 | 1.23 | 19 | Definition: positive integral | V | `SimpleFunc.lintegral`, `lintegral`, `lintegral_eq_nnreal`; reconcile finite-valued simple functions |
 | 1.24 | 19 | Propositions: integral properties | U | `lintegral_mono`, `lintegral_mono_set`, `lintegral_const_mul`, `lintegral_zero`, `lintegral_indicator`, restriction to null sets |
 | 1.25 | 20 | Proposition: simple integration | U | `Measure.withDensity`, `withDensity_apply`, `lintegral_add_left`; specializes to finite-valued simple functions |
