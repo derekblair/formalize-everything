@@ -25,6 +25,7 @@ Every formalization target, its status, and where it lives. A target is **done**
 
 | Target | Status | Home |
 |---|---|---|
+| Quranic inheritance (mirath, An-Nisa 4:11–12, 4:176) | Started 2026-10-27 — novelty gate CLEAN (no formalization in any proof assistant; field is unverified calculators); milestone 1 in flight (ticket #46) | here, [software/mirath/](software/mirath/) |
 | Shakespeare, the Sonnets (form spec + corpus) | Started 2026-10-27 — novelty gate PARTIAL (estimators exist; no formal spec or checked conformance); milestone 1 in flight (ticket #45) | here, [software/sonnet-form/](software/sonnet-form/) |
 
 ## Proposing a target

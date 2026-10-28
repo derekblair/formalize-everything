@@ -1,0 +1,6 @@
+name = "mirath"
+version = "0.1.0"
+defaultTargets = ["Mirath"]
+
+[[lean_lib]]
+name = "Mirath"
