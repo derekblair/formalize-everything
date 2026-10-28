@@ -1,0 +1,36 @@
+{
+  "sonnets": 154,
+  "lines": 2155,
+  "line_count": {
+    "pass": 152,
+    "fail": 2
+  },
+  "rhyme": {
+    "pass": 21,
+    "fail": 133
+  },
+  "strict_meter": {
+    "pass": 1,
+    "fail": 153
+  },
+  "licensed_meter": {
+    "pass": 28,
+    "fail": 126
+  },
+  "line_strict": {
+    "pass": 1228,
+    "fail": 927
+  },
+  "line_licensed": {
+    "pass": 1883,
+    "fail": 272
+  },
+  "unresolved_lines": 1,
+  "licenses": {
+    "INITIAL_TROCHAIC_INVERSION": 92,
+    "FEMININE_ENDING": 250,
+    "PYRRHIC_SUBSTITUTION": 257,
+    "SPONDAIC_SUBSTITUTION": 229,
+    "UNSTRESSED_ELISION": 33
+  }
+}
