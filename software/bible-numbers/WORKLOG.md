@@ -6,6 +6,16 @@ Author pool: ChatGPT/Codex. Branch: `texts/bible-numbers-m1`.
 Independent crossed review is reserved for the coordinator; this lane does not
 appoint a reviewer or merge.
 
+## Checkpoints
+
+- `74da011`: sourced datasets/provenance committed and pushed. Verified 360
+  provenance coordinates against generated Lean; `lake build BibleNumbers.Data`
+  exited 0. All 298 populated cells and twelve bridge inputs have sources.
+- Totals and divergence: six profiles, both Terah endpoint scenarios, exact
+  lists for all fifteen unordered profile pairs, and the systematic offsets.
+  Missing requested ages are proved to invalidate a sum. No data were changed
+  to reproduce a printed source total.
+
 ## Implementation sequence
 
 1. Source and encode named witness datasets with a cell-level provenance table;
