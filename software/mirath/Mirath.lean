@@ -8,5 +8,6 @@
   no formalization in any proof assistant; the existing field is
   unverified calculators and paper presentations.
 
-  Modules are added under Mirath/ as the lane lands them.
 -/
+import Mirath.Model
+import Mirath.Settlement
