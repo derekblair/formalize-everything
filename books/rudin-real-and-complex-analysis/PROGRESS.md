@@ -11,8 +11,8 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 3 | Lp-Spaces | 17 | 0 |
 | 4 | Elementary Hilbert Space Theory | 26 | 0 |
 | 5 | Examples of Banach Space Techniques | 25 | 0 |
-| 6 | Complex Measures | TBD | 0 |
-| 7 | Differentiation | TBD | 0 |
+| 6 | Complex Measures | 19 | 0 |
+| 7 | Differentiation | 26 | 0 |
 | 8 | Integration on Product Spaces | 18 | 0 |
 | 9 | Fourier Transforms | 23 | 0 |
 | 10 | Elementary Properties of Holomorphic Functions | TBD | 0 |
@@ -55,6 +55,8 @@ have zero proof placeholders and only `propext`, `Classical.choice`, and
 PR: [#48](https://github.com/derekblair/formalize-everything/pull/48).
 Coordinator-appointed crossed review is still required. The main table above
 continues to count only independently reviewed work landed on main.
+
+Cluster C independently enumerated 45 numbered nodes (6.1–6.19 and 7.1–7.26); see [SCOPING-C.md](SCOPING-C.md) for printed statements, pages, subclauses, pinned Mathlib claims checks, and uncovered obligations. Chapter 6 implementation is in progress. No chapter has yet passed the complete Stage 2 gate; the Done column remains zero.
 
 ## Cluster D development branch
 
