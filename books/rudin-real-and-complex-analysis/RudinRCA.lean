@@ -4,6 +4,7 @@ import RudinRCA.Chapter03
 import RudinRCA.Chapter04
 import RudinRCA.Chapter05
 import RudinRCA.Chapter08
+import RudinRCA.Chapter13
 
 /-!
 Rudin, *Real and Complex Analysis*, third edition.
