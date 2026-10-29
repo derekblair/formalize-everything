@@ -18,8 +18,8 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 10 | Elementary Properties of Holomorphic Functions | TBD | 0 |
 | 11 | Harmonic Functions | TBD | 0 |
 | 12 | The Maximum Modulus Principle | TBD | 0 |
-| 13 | Approximation by Rational Functions | TBD | 0 |
-| 14 | Conformal Mapping | TBD | 0 |
+| 13 | Approximation by Rational Functions | 12 | 0 |
+| 14 | Conformal Mapping | 22 | 0 |
 | 15 | Zeros of Holomorphic Functions | TBD | 0 |
 | 16 | Analytic Continuation | TBD | 0 |
 | 17 | Hp-Spaces | TBD | 0 |
@@ -109,3 +109,11 @@ contains four proved results: a counterexample and three facts about the
 explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
 remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
 The `Done` column in the main table remains zero because no merge occurred.
+
+## Cluster F working-branch status
+
+The independent inventory in [SCOPING-F.md](SCOPING-F.md) counts all 34 numbered nodes: 13.1–13.12 and 14.1–14.22, including definitions and exposition with substantive assertions. No chapter is complete. The `Done` column above retains its stated meaning of proved and reviewed on main.
+
+The ticket’s headline numbering differs from the printed third edition: Runge is 13.6/13.9; 13.10 is Mittag-Leffler; 13.12 is harmonicity of log modulus. Mergelyan is 20.5 and is outside this cluster. The forward dependency 13.11(j) → 14.8 is explicit in the book.
+
+Stage 2 work begins with 13.1 and 13.2. Partial assertions must not be counted as completed numbered nodes.
