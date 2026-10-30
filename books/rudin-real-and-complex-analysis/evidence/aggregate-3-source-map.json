@@ -1,0 +1,158 @@
+[
+  {
+    "source": "RudinRCA/Chapter06.lean",
+    "start": 72,
+    "end": 513,
+    "sha256": "2da71c74acd6da19750682b8f8d41953274ae74c48a3067cc9c5ce63f866c490"
+  },
+  {
+    "source": "DevelopmentImports.lean",
+    "start": 517,
+    "end": 530,
+    "sha256": "d19e317cf6315fee01430095e9f44acffb3562dfa00dac639899eeba61982352"
+  },
+  {
+    "source": "Scratch69.lean",
+    "start": 534,
+    "end": 981,
+    "sha256": "c786ca0e250c9735c637b92108df23e70e2f04eacfd2f680f8757a9cd45b3552"
+  },
+  {
+    "source": "Scratch63.lean",
+    "start": 985,
+    "end": 1108,
+    "sha256": "35012e349d7f3629b14a2008816efbce2ea7d65ee0e0805c5a1f9ef2adfc7dd1"
+  },
+  {
+    "source": "Scratch618Extension.lean",
+    "start": 1112,
+    "end": 1211,
+    "sha256": "3e6c828b9aeea1af5a27fd92a0012fd85f69eb78bff56551c1f216daae1e6de0"
+  },
+  {
+    "source": "Scratch618Polar.lean",
+    "start": 1215,
+    "end": 1282,
+    "sha256": "9cc5087213c50172d2cf264ce6dba476da40f8a1003ed674c32175d95d7404df"
+  },
+  {
+    "source": "Scratch618Final.lean",
+    "start": 1286,
+    "end": 1324,
+    "sha256": "dc71db52f2732a35f4bb30c7b81802341c50ea1accdd451f298a5eb9add87b60"
+  },
+  {
+    "source": "Scratch611Example.lean",
+    "start": 1328,
+    "end": 1384,
+    "sha256": "b879f754de2edf689afe2c122597dc13389d0419b3e69c8565e1473ba30a985e"
+  },
+  {
+    "source": "Scratch610Discussion.lean",
+    "start": 1388,
+    "end": 1603,
+    "sha256": "903bb45b6ee7b43e45703b2d5c4922574a595a7e40f0c4db9ac257c4d210c2a7"
+  },
+  {
+    "source": "Scratch611Completed.lean",
+    "start": 1607,
+    "end": 1689,
+    "sha256": "a786c11b759174f04bd52712cd0504871d5e2ba0589a867a3214e07d57ba0659"
+  },
+  {
+    "source": "Scratch616.lean",
+    "start": 1693,
+    "end": 1864,
+    "sha256": "a21f65b603096b17ed15f7b186955721989c5ba9321bb37e2ecb080d9c00515b"
+  },
+  {
+    "source": "Scratch616B.lean",
+    "start": 1868,
+    "end": 1981,
+    "sha256": "79df5baaf73d7a21d7ce16a08e0855d7cfceff25a62ab7ab5e51b797c6ecab7e"
+  },
+  {
+    "source": "Scratch616C.lean",
+    "start": 1985,
+    "end": 2083,
+    "sha256": "d2ade6791af952c730083dbd91c608f5e9b11d81cfefe839f8ca25c368eb28f7"
+  },
+  {
+    "source": "Scratch616D.lean",
+    "start": 2087,
+    "end": 2232,
+    "sha256": "e25f0aa9ef4665b82e78d35de039777a8279baa380e958b5a99cb57cbe7bf1e8"
+  },
+  {
+    "source": "Scratch616E.lean",
+    "start": 2236,
+    "end": 2376,
+    "sha256": "3264b025ea1750008aa9e74b00ff353a1b2a88e60b591173fe27c71fdb252f71"
+  },
+  {
+    "source": "Scratch616F.lean",
+    "start": 2380,
+    "end": 2472,
+    "sha256": "674ff199010f10fca6969b95e633c57886591da357a63dca6e482c9a8a0955d7"
+  },
+  {
+    "source": "Scratch616G.lean",
+    "start": 2476,
+    "end": 2532,
+    "sha256": "06df844036dc2969017300df9f1eac28cf8c23c6d4b1ecc821c5682cd80cbbd0"
+  },
+  {
+    "source": "Scratch616H.lean",
+    "start": 2536,
+    "end": 2616,
+    "sha256": "337c702dab7c81a2cb6624a29449288f030f2cafd51d5ed2b1ab96a829846428"
+  },
+  {
+    "source": "Scratch616I.lean",
+    "start": 2620,
+    "end": 2753,
+    "sha256": "05d0090548752aae98c84472acc80ccbdaac3118ecc72d1278a711d4d09e9e9f"
+  },
+  {
+    "source": "Scratch616J.lean",
+    "start": 2757,
+    "end": 2832,
+    "sha256": "6b26c4e1b5ffb89363c5b77b047bae9377eab588a0a7f4dba57897a1e7bb24c4"
+  },
+  {
+    "source": "Scratch619Regular.lean",
+    "start": 2836,
+    "end": 2893,
+    "sha256": "eeb4a24f23ed6f7cf82d09ea6270a37def9d546dff0684072d2789b89532192b"
+  },
+  {
+    "source": "Scratch619Density.lean",
+    "start": 2897,
+    "end": 3040,
+    "sha256": "4c399e54ebf5906b8b5e8e6e1098bcbda845a34fa0642ebf0ad7186f37935e85"
+  },
+  {
+    "source": "Scratch619Clip.lean",
+    "start": 3044,
+    "end": 3126,
+    "sha256": "9d3109c49152ffc514862942f1d3dd148dabab2a9f139728b56543d2cd397a50"
+  },
+  {
+    "source": "Scratch619Uniqueness.lean",
+    "start": 3130,
+    "end": 3251,
+    "sha256": "af25505194c082aa85344136ff0b7b2296aab15877729027138d0cd5a5403b90"
+  },
+  {
+    "source": "Scratch619PositivePart.lean",
+    "start": 3255,
+    "end": 3585,
+    "sha256": "fa1abaaf242398990f6adc93bf8060afca6c8c3792328d5d2d13f23ff348d108"
+  },
+  {
+    "source": "Scratch619Assembly.lean",
+    "start": 3589,
+    "end": 3751,
+    "sha256": "83ccb4abcbe4575ac1e3863a483da74ec15b1a9942944a9fa4f4dde3adf133c9"
+  }
+]

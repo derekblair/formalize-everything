@@ -1,0 +1,9 @@
+RudinRCA/Chapter06.lean:35:2: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  FiniteDimensional ℝ ℂ
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+RudinRCA/Chapter06.lean:112:48: error: unexpected token 'λ'; expected '_' or identifier
+RudinRCA/Chapter06.lean:117:60: error: unexpected token 'λ'; expected '_' or identifier
+RudinRCA/Chapter06.lean:122:64: error: unexpected token 'λ'; expected '_' or identifier
+RudinRCA/Chapter06.lean:135:29: error: unexpected token 'λ'; expected '_' or identifier
+RudinRCA/Chapter06.lean:142:59: error: unexpected token 'λ'; expected '_' or identifier

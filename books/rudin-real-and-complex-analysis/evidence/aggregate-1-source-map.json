@@ -1,0 +1,62 @@
+[
+  {
+    "source": "RudinRCA/Chapter06.lean",
+    "start": 45,
+    "end": 486,
+    "sha256": "2da71c74acd6da19750682b8f8d41953274ae74c48a3067cc9c5ce63f866c490"
+  },
+  {
+    "source": "Scratch69.lean",
+    "start": 490,
+    "end": 937,
+    "sha256": "c786ca0e250c9735c637b92108df23e70e2f04eacfd2f680f8757a9cd45b3552"
+  },
+  {
+    "source": "Scratch63.lean",
+    "start": 941,
+    "end": 1064,
+    "sha256": "9508a6800bd974568a1e051e9735db0ee9bfe583485afcb88c1c133120189c92"
+  },
+  {
+    "source": "Scratch618Extension.lean",
+    "start": 1068,
+    "end": 1158,
+    "sha256": "77b21b9ec93807c3c1156a9e7aea32f9b057ba9a979137df14bcf18b4b790deb"
+  },
+  {
+    "source": "Scratch618Polar.lean",
+    "start": 1162,
+    "end": 1226,
+    "sha256": "fe076464ed0ad958ea46a580dd23c6fc3cdfb2ae635570526858947c8dab3496"
+  },
+  {
+    "source": "Scratch611Example.lean",
+    "start": 1230,
+    "end": 1286,
+    "sha256": "9579c598f910e0203f2f7918c50c9c98c0259ca746bd45853b6de673d030a27f"
+  },
+  {
+    "source": "Scratch616.lean",
+    "start": 1290,
+    "end": 1461,
+    "sha256": "d7fb5274243a059a8680fa4428047a486e8601f1aa84789ec7f2ba80f32dc6de"
+  },
+  {
+    "source": "Scratch616B.lean",
+    "start": 1465,
+    "end": 1578,
+    "sha256": "86fa9cfd47774795994305424ce314200fc2704b50b33078f5dfc23e5e772bdd"
+  },
+  {
+    "source": "Scratch616C.lean",
+    "start": 1582,
+    "end": 1678,
+    "sha256": "971023ec2957e07fdd403b53c9ff760dd50c853c65310801af9499bb024dd64d"
+  },
+  {
+    "source": "Scratch616D.lean",
+    "start": 1682,
+    "end": 1826,
+    "sha256": "427abb5d28cf49a0b4504a6d4e9d73e0901535b111f4c6594e1ac6622dca19b9"
+  }
+]
