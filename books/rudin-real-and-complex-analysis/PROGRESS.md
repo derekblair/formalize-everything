@@ -23,6 +23,18 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 15 | Zeros of Holomorphic Functions | TBD | 0 |
 | 16 | Analytic Continuation | TBD | 0 |
 | 17 | Hp-Spaces | TBD | 0 |
-| 18 | Some Applications of the Phragmén–Lindelöf Method | TBD | 0 |
-| 19 | Entire Functions | TBD | 0 |
-| 20 | Boundary Behavior of Bounded Analytic Functions | TBD | 0 |
+| 18 | Elementary Theory of Banach Algebras | 21 (+ 3 local corollaries) | 0 |
+| 19 | Holomorphic Fourier Transforms | 11 | 0 |
+| 20 | Uniform Approximation by Polynomials | 5 | 0 |
+
+## Cluster H inventory and scope correction
+
+Printed third-edition Chapters 18–20 have 37 top-level numbered nodes, plus
+three locally numbered corollaries under 18.4. The previous titles, also present
+in issue #44, do not match the printed edition. This branch follows the printed
+chapter numbers and discloses the discrepancy; see [SCOPING-H.md](SCOPING-H.md).
+No separate Stage 1 lane inventory was supplied. Counts here were independently
+enumerated from the printed third-edition scan. Exercises are excluded.
+
+The main-branch Done column remains zero until reviewed changes land. A
+successful supporting lemma does not imply completion of its entire book node.
