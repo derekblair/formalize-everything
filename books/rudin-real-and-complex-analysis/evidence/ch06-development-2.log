@@ -1,0 +1,106 @@
+RudinRCA/Chapter06.lean:111:8: error: Type mismatch: After simplification, term
+  Finpartition.sup_parts_apply P (fun x x_1 => rfl) rfl
+ has type
+  (iUnion fun (x : Subtype MeasurableSet) => ⋃ (_ : x ∈ P.parts), ↑x) = E
+but is expected to have type
+  (iUnion fun (i : ↥P.parts) => ↑↑i) = E
+RudinRCA/Chapter06.lean:114:4: error: Type mismatch: After simplification, term
+  h
+ has type
+  ∑ i, ‖μ ↑↑i‖ₑ ≤ ⨆ Q, ∑' (i : Q.Index), ‖μ (Q.part i)‖ₑ
+but is expected to have type
+  ∑ p ∈ P.parts, ‖μ ↑p‖ₑ ≤ ⨆ P, ∑' (i : P.Index), ‖μ (P.part i)‖ₑ
+'RudinRCA.Chapter06.complex_variation_le_re_add_im' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_variation_univ_lt_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasureNorm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasureNormedSpace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_measure_norm_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positive_add_negative_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positive_sub_negative_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positiveVariation_real_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.negativeVariation_real_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+RudinRCA/Chapter06.lean:249:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.absolutelyContinuous_iff_null_sets`:
+  [T2Space V]
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:262:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.mutuallySingular_iff_concentrated`:
+  [T2Space V]
+  [ContinuousAdd V]
+  [T2Space W]
+  [ContinuousAdd W]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] [ContinuousAdd V] [T2Space W] [ContinuousAdd W] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:286:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.concentratedOn_iff_inter`:
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:304:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.variation_concentratedOn`:
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:314:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.variations_mutuallySingular`:
+  [ContinuousAdd V]
+  [ContinuousAdd W]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] [ContinuousAdd W] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:321:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.singular_add`:
+  [T2Space V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:326:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.absolutelyContinuous_add`:
+  [T2Space V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:331:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.variation_absolutelyContinuous`:
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:343:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.mutuallySingular_of_ac_of_singular`:
+  [T2Space V]
+  [ContinuousAdd V]
+  [T2Space W]
+  [ContinuousAdd W]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] [ContinuousAdd V] [T2Space W] [ContinuousAdd W] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+'RudinRCA.Chapter06.complexMeasure_hasSum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasure_summable_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.enorm_le_totalVariation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.totalVariation_minimal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_positive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_positive_extended' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.totalVariation_empty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.totalVariation_iUnion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_eq_iSup_countablePartitions' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter06.absolutelyContinuous_iff_null_sets' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.mutuallySingular_iff_concentrated' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.concentratedOn_iff_inter' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_concentratedOn' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variations_mutuallySingular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.singular_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.absolutelyContinuous_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_absolutelyContinuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.mutuallySingular_of_ac_of_singular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.eq_zero_of_ac_of_singular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.hilbert_lp_duality' depends on axioms: [propext, Classical.choice, Quot.sound]
