@@ -1,0 +1,14 @@
+{
+  "kind": "development_only",
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "-j1",
+    "--incr-header-save=evidence/ch06-header-v1.incr",
+    "DevelopmentAggregate.lean"
+  ],
+  "source_sha256": "b248d7cdd6e10a6719aa9fbe52737eb0f8b4f445db30bd04b7b8c6c7f7c54a4f",
+  "started_utc": "2026-10-29T18:38:48.146001+00:00",
+  "exit_code": null
+}

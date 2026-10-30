@@ -1,0 +1,134 @@
+[
+  {
+    "source": "RudinRCA/Chapter06.lean",
+    "start": 60,
+    "end": 501,
+    "sha256": "2da71c74acd6da19750682b8f8d41953274ae74c48a3067cc9c5ce63f866c490"
+  },
+  {
+    "source": "Scratch69.lean",
+    "start": 505,
+    "end": 952,
+    "sha256": "c786ca0e250c9735c637b92108df23e70e2f04eacfd2f680f8757a9cd45b3552"
+  },
+  {
+    "source": "Scratch63.lean",
+    "start": 956,
+    "end": 1079,
+    "sha256": "35012e349d7f3629b14a2008816efbce2ea7d65ee0e0805c5a1f9ef2adfc7dd1"
+  },
+  {
+    "source": "Scratch618Extension.lean",
+    "start": 1083,
+    "end": 1174,
+    "sha256": "ebcf6ffa851dbd0b22256645ecf0b6f9a072217d6ef0498b406ee6058a63d145"
+  },
+  {
+    "source": "Scratch618Polar.lean",
+    "start": 1178,
+    "end": 1245,
+    "sha256": "9cc5087213c50172d2cf264ce6dba476da40f8a1003ed674c32175d95d7404df"
+  },
+  {
+    "source": "Scratch618Final.lean",
+    "start": 1249,
+    "end": 1287,
+    "sha256": "dc71db52f2732a35f4bb30c7b81802341c50ea1accdd451f298a5eb9add87b60"
+  },
+  {
+    "source": "Scratch611Example.lean",
+    "start": 1291,
+    "end": 1347,
+    "sha256": "b879f754de2edf689afe2c122597dc13389d0419b3e69c8565e1473ba30a985e"
+  },
+  {
+    "source": "Scratch610Discussion.lean",
+    "start": 1351,
+    "end": 1500,
+    "sha256": "f1d59d654cfe9fc07be4e33f2912034f3f34022e7ca29a1baba1b5826c8a9044"
+  },
+  {
+    "source": "Scratch616.lean",
+    "start": 1504,
+    "end": 1675,
+    "sha256": "a21f65b603096b17ed15f7b186955721989c5ba9321bb37e2ecb080d9c00515b"
+  },
+  {
+    "source": "Scratch616B.lean",
+    "start": 1679,
+    "end": 1792,
+    "sha256": "79df5baaf73d7a21d7ce16a08e0855d7cfceff25a62ab7ab5e51b797c6ecab7e"
+  },
+  {
+    "source": "Scratch616C.lean",
+    "start": 1796,
+    "end": 1892,
+    "sha256": "8e25fd822e82055a967b5ccab538f4156bfc8c9ded83e43a8c8eb0c52d3360e4"
+  },
+  {
+    "source": "Scratch616D.lean",
+    "start": 1896,
+    "end": 2040,
+    "sha256": "eefb2fe000d5c368883c891047f88d981609b9624a85f89266eec315a8b3bc69"
+  },
+  {
+    "source": "Scratch616E.lean",
+    "start": 2044,
+    "end": 2183,
+    "sha256": "fdd5bd7e1fbbfee12065af07082a29790af81c6b156089506399f36c5a0f7c36"
+  },
+  {
+    "source": "Scratch616F.lean",
+    "start": 2187,
+    "end": 2276,
+    "sha256": "eee969c70e6051b8e72848ff8ce4d52ccf2f1a350b42d5854f4d6ab91a217d18"
+  },
+  {
+    "source": "Scratch616G.lean",
+    "start": 2280,
+    "end": 2336,
+    "sha256": "06df844036dc2969017300df9f1eac28cf8c23c6d4b1ecc821c5682cd80cbbd0"
+  },
+  {
+    "source": "Scratch616H.lean",
+    "start": 2340,
+    "end": 2420,
+    "sha256": "d9e1e95f653a2e65f5281e35ee58b454d6a3256ca6c56b58b0cbc85e593b3b01"
+  },
+  {
+    "source": "Scratch616I.lean",
+    "start": 2424,
+    "end": 2553,
+    "sha256": "47919b2369e89294cb17d1f1fd333a36e02adda460365823a421e51d1d1330d9"
+  },
+  {
+    "source": "Scratch619Regular.lean",
+    "start": 2557,
+    "end": 2614,
+    "sha256": "eeb4a24f23ed6f7cf82d09ea6270a37def9d546dff0684072d2789b89532192b"
+  },
+  {
+    "source": "Scratch619Density.lean",
+    "start": 2618,
+    "end": 2760,
+    "sha256": "60f6d548ecb064cdf05513d1e9e09b1e66d0b929c35b30aef909659a387bdfeb"
+  },
+  {
+    "source": "Scratch619Clip.lean",
+    "start": 2764,
+    "end": 2845,
+    "sha256": "16360192add0e4e666ec1b56943d7715268304990443b56a6745f0a9771d3689"
+  },
+  {
+    "source": "Scratch619Uniqueness.lean",
+    "start": 2849,
+    "end": 2969,
+    "sha256": "31d2b728e478f8c94b198527748105becfb9599b17229130cecdddf727c0d6a2"
+  },
+  {
+    "source": "Scratch619PositivePart.lean",
+    "start": 2973,
+    "end": 3288,
+    "sha256": "15e2cb74b9fa80c62d93e5108b86a6a06c37e55ae744d6cba9c9972f1561625e"
+  }
+]

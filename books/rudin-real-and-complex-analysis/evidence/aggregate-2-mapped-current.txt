@@ -1,0 +1,737 @@
+'RudinRCA.Chapter06.complex_variation_le_re_add_im' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_variation_univ_lt_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasureNorm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasure_add_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasure_smul_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_norm_eq_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasureNormedSpace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_measure_norm_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positive_add_negative_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positive_sub_negative_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positiveVariation_real_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.negativeVariation_real_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+RudinRCA/Chapter06.lean:273:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.absolutelyContinuous_iff_null_sets`:
+  [T2Space V]
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:286:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.mutuallySingular_iff_concentrated`:
+  [T2Space V]
+  [ContinuousAdd V]
+  [T2Space W]
+  [ContinuousAdd W]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] [ContinuousAdd V] [T2Space W] [ContinuousAdd W] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:310:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.concentratedOn_iff_inter`:
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:328:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.variation_concentratedOn`:
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:338:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.variations_mutuallySingular`:
+  [ContinuousAdd V]
+  [ContinuousAdd W]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] [ContinuousAdd W] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:345:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.singular_add`:
+  [T2Space V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:350:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.absolutelyContinuous_add`:
+  [T2Space V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:355:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.variation_absolutelyContinuous`:
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+RudinRCA/Chapter06.lean:367:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.mutuallySingular_of_ac_of_singular`:
+  [T2Space V]
+  [ContinuousAdd V]
+  [T2Space W]
+  [ContinuousAdd W]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] [ContinuousAdd V] [T2Space W] [ContinuousAdd W] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+'RudinRCA.Chapter06.complexMeasure_hasSum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasure_summable_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.enorm_le_totalVariation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.totalVariation_minimal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_positive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_positive_extended' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.totalVariation_empty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.totalVariation_iUnion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_eq_iSup_countablePartitions' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.absolutelyContinuous_iff_null_sets' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.mutuallySingular_iff_concentrated' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.concentratedOn_iff_inter' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_concentratedOn' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variations_mutuallySingular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.singular_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.absolutelyContinuous_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_absolutelyContinuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.mutuallySingular_of_ac_of_singular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.eq_zero_of_ac_of_singular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.hilbert_lp_duality' depends on axioms: [propext, Classical.choice, Quot.sound]
+Scratch69.lean:111:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch69.lean:142:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch69.lean:177:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+'RudinRCA.Chapter06.lemma_6_9' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.lemma_6_9_equivalent_finite_measure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_rn_reconstruction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_10_lebesgue' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_10_positive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_10_radon_nikodym' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_11_of_finite_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_11_real_of_finite_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_11' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_12_of_finite_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_12' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_13' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_13_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_14' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_14_minimal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_15' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_indicator' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_polar_functional' depends on axioms: [propext, Classical.choice, Quot.sound]
+Scratch63.lean:52:14: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+'RCA63.exists_subset_sum_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+Scratch618Extension.lean:56:8: error: Type mismatch: After simplification, term
+  hKf hx
+ has type
+  x ∈ {x | ‖f x‖ < ε / 2}
+but is expected to have type
+  ‖f x‖ < ε / 2
+Scratch618Extension.lean:82:59: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  Norm (↥(compactSupportSubmodule X) →L[ℂ] ℂ)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+'RCA618.exists_unique_extension' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.vectorIntegral_eq_polar' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_functional' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.inverseDensity_absolutelyContinuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.inverseDensity_Ioo' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.inverseDensity_fails_uniform_absoluteContinuity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+Scratch610Discussion.lean:33:4: warning: Try `simp at h` instead of `simpa using h`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+Scratch610Discussion.lean:93:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+'RCA610Discussion.count_no_decomposition' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RCA610Discussion.count_no_density' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RCA610Discussion.count_no_complex_density' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RCA610Discussion.unitInterval_counterexamples' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RCA610Discussion.unitInterval_count_not_sigmaFinite' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RCA610Discussion.sigmaFinite_positive_decomposition' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RCA610Discussion.sigmaFinite_density_need_not_be_integrable' depends on axioms: [propext, Classical.choice, Quot.sound]
+Scratch616.lean:29:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.finiteLpIndicator_measurable`:
+  [Fact (1 ≤ p)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fact (1 ≤ p)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+'RudinRCA.Chapter06.finiteLpIndicator_hasSum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.finiteLpFunctionalMeasure_norm_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.finiteLpFunctionalMeasure_absolutelyContinuous' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter06.lpFunctional_eq_simple_of_indicator' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.lpFunctional_eq_bounded_of_indicator' depends on axioms: [propext, Classical.choice, Quot.sound]
+Scratch616C.lean:29:22: warning: This simp argument is unused:
+  norm_div
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [dualityPhase, norm_ne_zero_iff.mpr hz]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'RudinRCA.Chapter06.dualityPhase_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.lpOneFunctional_density_ae_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.lpOneFunctional_density_memLp_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+Scratch616D.lean:30:22: warning: This simp argument is unused:
+  norm_div
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [dualityPhase, norm_ne_zero_iff.mpr hz]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Scratch616D.lean:51:4: warning: Try `simp at hqpos` instead of `simpa using hqpos`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+Scratch616D.lean:101:14: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  OfNat (Set ℝ) 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  Set ℝ
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+Scratch616D.lean:101:23: error: Type mismatch
+  integral_nonneg fun x => ?m.639
+has type
+  0 ≤ ∫ (x : ?m.622), ?m.632 x ∂?m.627
+but is expected to have type
+  0 ⊆ I
+'RudinRCA.Chapter06.duality_root_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.lpFunctional_density_eLpNorm_le_of_finite_conjugates' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter06.lpFunctional_density_memLp_of_finite_conjugates' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+Scratch616E.lean:39:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch616E.lean:65:6: error: Type mismatch
+  fun f => Ψ f
+has type
+  { x : X →ₘ[μ] ℂ // x ∈ Lp ℂ p μ } → ℂ
+but is expected to have type
+  { x : ↥(Lp ℂ p μ) // x ∈ Lp.simpleFunc ℂ p μ } → ℂ
+Scratch616E.lean:110:6: error: unexpected token 'λ'; expected '(', ':=', '[', '{', '|', '⦃' or term
+Scratch616E.lean:110:6: error: Missing cases:
+Scratch616E.lean:109:78: error: unsolved goals
+X : Type u_1
+inst✝⁴ : MeasurableSpace X
+μ : Measure X
+inst✝³ : IsFiniteMeasure μ
+p q : ℝ≥0∞
+inst✝² : Fact (1 ≤ p)
+inst✝¹ : Fact (1 ≤ q)
+inst✝ : p.HolderConjugate q
+hp : p ≠ ∞
+Φ : ↥(Lp ℂ p μ) →L[ℂ] ℂ
+⊢ ∃! G, (∀ (f : ↥(Lp ℂ p μ)), Φ f = ∫ (x : X), ↑↑f x * ↑↑G x ∂μ) ∧ ‖Φ‖ = ‖G‖
+'RudinRCA.Chapter06.lp_integral_pairing_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.lpFunctional_eq_of_indicator' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_16_finite' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+Scratch616F.lean:29:26: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Scratch616F.lean:45:17: error: (deterministic) timeout at `«synthesize pending MVars»`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Scratch616F.lean:50:4: error: Function expected at
+  lpZeroExtend
+but this term has type
+  ?m.6
+
+Note: Expected a function because this term is being applied to the argument
+  μ
+
+Hint: The identifier `lpZeroExtend` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+Scratch616F.lean:56:10: error(lean.unknownIdentifier): Unknown identifier `lpZeroExtend`
+Scratch616F.lean:61:2: error: (deterministic) timeout at `isDefEq`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+Scratch616F.lean:70:4: error: Function expected at
+  lpZeroExtend
+but this term has type
+  ?m.6
+
+Note: Expected a function because this term is being applied to the argument
+  μ
+
+Hint: The identifier `lpZeroExtend` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+Scratch616F.lean:86:14: error(lean.unknownIdentifier): Unknown constant `lpZeroExtend`
+'RudinRCA.Chapter06.lpFunctionalOnRestriction_norm_le' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter06.lpZeroExtend_indicatorConstLp' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.sigmaFinite_glue_densities' depends on axioms: [propext, Classical.choice, Quot.sound]
+Scratch616H.lean:51:10: error: redundant binder annotation update
+Scratch616H.lean:57:52: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  SigmaFinite μ
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+Scratch616H.lean:60:41: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  SigmaFinite μ
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+Scratch616H.lean:62:23: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  SigmaFinite μ
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+Scratch616H.lean:70:29: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  SigmaFinite μ
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+Scratch616H.lean:70:61: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  SigmaFinite μ
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+Scratch616H.lean:73:55: warning: `Set.diff_subset` has been deprecated: Use `Set.sdiff_subset` instead
+'RudinRCA.Chapter06.lpFunctional_eq_of_finite_indicator' depends on axioms: [propext, Classical.choice, Quot.sound]
+Scratch616H.lean:79:14: error(lean.unknownIdentifier): Unknown constant `tendsto_indicatorConstLp_spanningSets`
+Scratch616I.lean:33:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch616I.lean:39:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch616I.lean:47:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch616I.lean:49:14: error(lean.unknownIdentifier): Unknown identifier `lpZeroExtend`
+Scratch616I.lean:88:53: error: Application type mismatch: The argument
+  hglocal n
+has type
+  g =ᵐ[μ.restrict (spanningSets μ n)] ↑↑(gn n)
+but is expected to have type
+  0 = ?m.678
+in the application
+  Eq.trans (ae_restrict_of_ae (MemLp.coeFn_toLp hgp)) (hglocal n)
+Scratch616I.lean:108:17: error(lean.unknownIdentifier): Unknown identifier `tendsto_indicatorConstLp_spanningSets`
+'RudinRCA.Chapter06.theorem_6_16' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+Scratch619Regular.lean:17:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch619Regular.lean:39:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch619Regular.lean:50:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+'RudinRCA.Chapter06.regular_of_le_finite_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.regular_add_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_variation_sub_regular' depends on axioms: [propext, Classical.choice, Quot.sound]
+Scratch619Density.lean:136:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (x : α), ‖(f - g) x‖ ∂μ
+in the target expression
+  ∫ (x : α), ‖f x - g x‖ ∂μ ≤ ε
+
+α : Type u_1
+inst✝⁷ : TopologicalSpace α
+inst✝⁶ : T2Space α
+inst✝⁵ : LocallyCompactSpace α
+inst✝⁴ : MeasurableSpace α
+inst✝³ : BorelSpace α
+E : Type u_2
+inst✝² : NormedAddCommGroup E
+inst✝¹ : NormedSpace ℝ E
+μ : Measure α
+inst✝ : μ.Regular
+f : α → E
+hf : Integrable f μ
+ε : ℝ
+hε : 0 < ε
+g : α → E
+hg_support : HasCompactSupport g
+hg : ∫⁻ (x : α), ‖(f - g) x‖ₑ ∂μ ≤ ENNReal.ofReal ε
+hg_cont : Continuous[inst✝⁷, PseudoMetricSpace.toUniformSpace.toTopologicalSpace] g
+hg_mem : MemLp g 1 μ
+hgi : Integrable g μ
+hfg : AEStronglyMeasurable (f - g) μ
+⊢ ∫ (x : α), ‖f x - g x‖ ∂μ ≤ ε
+'RudinRCA.Chapter06.lch_exists_continuous_eLpNorm_sub_le_of_compact' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter06.lch_memLp_exists_hasCompactSupport_eLpNorm_sub_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter06.lch_integrable_exists_hasCompactSupport_integral_sub_le' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+Scratch619Clip.lean:76:6: error: Type mismatch: After simplification, term
+  unitClip_error_le (g x) (f x) (hn x)
+ has type
+  @LE.le ℝ Real.instLE ‖f x - unitClip (g x)‖ (2 * ‖f x - g x‖)
+but is expected to have type
+  @LE.le ℝ ((fun i => Real.partialOrder.toLE) x) ‖(f - unitClip ∘ g) x‖ (2 * ‖(f - g) x‖)
+'RudinRCA.Chapter06.unitClip_error_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.exists_unitBounded_compactSupport_approx' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+Scratch619Uniqueness.lean:19:24: error(lean.unknownIdentifier): Unknown constant `Complex.conj`
+Scratch619Uniqueness.lean:29:12: error(lean.unknownIdentifier): Unknown constant `Complex.conj`
+Scratch619Uniqueness.lean:30:13: error(lean.unknownIdentifier): Unknown identifier `integrable_conj_polar`
+Scratch619Uniqueness.lean:29:54: error: unsolved goals
+X : Type u_1
+inst✝⁴ : TopologicalSpace X
+inst✝³ : MeasurableSpace X
+inst✝² : BorelSpace X
+inst✝¹ : T2Space X
+inst✝ : LocallyCompactSpace X
+c : ComplexMeasure X
+h : X → ℂ
+hm : Measurable h
+hn : ∀ (x : X), ‖h x‖ = 1
+hi : Integrable h (VectorMeasure.variation c)
+hr : (VectorMeasure.variation c).withDensityᵥ h = c
+g : X → ℂ
+hg : Integrable g (VectorMeasure.variation c)
+⊢ (VectorMeasure.variation c).real univ ≤ ‖complexIntegral c g‖ + ∫ (x : X), ‖sorry - g x‖ ∂VectorMeasure.variation c
+Scratch619Uniqueness.lean:72:4: error: Type mismatch: After simplification, term
+  theorem_6_18_bound c ⇑f ‖f‖ (norm_nonneg f) fun x => BoundedContinuousFunction.norm_coe_le_norm f.toBCF x
+ has type
+  @LE.le ℝ Real.instLE ‖complexIntegral c ⇑f‖ (‖f‖ * (VectorMeasure.variation c).real univ)
+but is expected to have type
+  @LE.le ℝ Real.instLE ‖complexIntegral c ⇑f‖ (‖f‖ * ((VectorMeasure.variation c) univ).toReal)
+Scratch619Uniqueness.lean:75:15: error(lean.unknownIdentifier): Unknown identifier `integrable_conj_polar`
+Scratch619Uniqueness.lean:96:61: error: Application type mismatch: The argument
+  norm_zero
+has type
+  ‖@OfNat.ofNat ?m.60 0 (@Zero.toOfNat0 ?m.60 SubtractionMonoid.toSubNegZeroMonoid.toNegZeroClass.toZero)‖ = 0
+but is expected to have type
+  ‖@OfNat.ofNat ((X →C₀ ℂ) →L[ℂ] ℂ) 0 (@Zero.toOfNat0 ((X →C₀ ℂ) →L[ℂ] ℂ) ContinuousLinearMap.zero)‖ = 0
+in the application
+  Eq.trans (Eq.symm (theorem_6_19_norm c 0 fun f => Eq.symm (hc f))) norm_zero
+Scratch619Uniqueness.lean:105:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+'RudinRCA.Chapter06.polar_mass_le_integral_add_error' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter06.theorem_6_19_norm' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_19_zero' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_19_unique' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+Scratch619PositivePart.lean:32:12: error(lean.unknownIdentifier): Unknown identifier `hbdd`
+Scratch619PositivePart.lean:35:42: error(lean.unknownIdentifier): Unknown identifier `hbdd`
+Scratch619PositivePart.lean:48:27: error: Type mismatch: After simplification, term
+  hg
+ has type
+  g ≤ CompactlySupportedContinuousMap.toReal 0
+but is expected to have type
+  g ≤ 0
+Scratch619PositivePart.lean:50:26: error(lean.unknownIdentifier): Unknown identifier `hbdd`
+Scratch619PositivePart.lean:68:37: error: Type mismatch
+  NNReal.coe_nonneg ?m.158
+has type
+  0 ≤ ↑?m.158
+but is expected to have type
+  0 ≤ h.toReal x
+Scratch619PositivePart.lean:69:6: error: 'change' tactic failed, pattern
+  g x ≤ ↑(f x) + ↑(h x)
+is not definitionally equal to target
+  g x ≤ (f + h).toReal x
+Scratch619PositivePart.lean:76:27: error(lean.unknownIdentifier): Unknown identifier `hbdd`
+Scratch619PositivePart.lean:89:10: error: Type mismatch
+  add_le_add (hgf x) (hkh x)
+has type
+  g x + k x ≤ f.toReal x + h.toReal x
+but is expected to have type
+  (g + k) x ≤ (f + h).toReal x
+Scratch619PositivePart.lean:90:32: error(lean.unknownIdentifier): Unknown identifier `hbdd`
+Scratch619PositivePart.lean:100:26: error: Function expected at
+  posSup_zero L
+but this term has type
+  posSup L 0 = 0
+
+Note: Expected a function because this term is being applied to the argument
+  hbdd
+Scratch619PositivePart.lean:99:2: error: unsolved goals
+case pos
+X : Type u_1
+inst✝ : TopologicalSpace X
+L : (X →C_c ℝ) →ₗ[ℝ] ℝ
+f : X →C_c ℝ≥0
+⊢ posSup L 0 = 0
+Scratch619PositivePart.lean:111:6: error: 'change' tactic failed, pattern
+  g x ≤ ↑r * ↑(f x)
+is not definitionally equal to target
+  g x ≤ (r • f).toReal x
+Scratch619PositivePart.lean:114:28: error(lean.unknownIdentifier): Unknown identifier `hbdd`
+Scratch619PositivePart.lean:124:8: error: Type mismatch
+  mul_le_mul_of_nonneg_left (hgf x) (LT.lt.le hrpos)
+has type
+  ↑r * g x ≤ ↑r * f.toReal x
+but is expected to have type
+  (↑r • g) x ≤ (r • f).toReal x
+Scratch619PositivePart.lean:125:33: error(lean.unknownIdentifier): Unknown identifier `hbdd`
+Scratch619PositivePart.lean:133:42: error: Application type mismatch: The argument
+  hbdd
+has type
+  ∀ (f : X →C_c ℝ≥0), BddAbove (Values L f)
+of sort `Prop` but is expected to have type
+  X →C_c ℝ≥0
+of sort `Type u_1` in the application
+  posSup_nonneg L hbdd
+Scratch619PositivePart.lean:136:23: error: Application type mismatch: The argument
+  hbdd
+has type
+  ∀ (f : X →C_c ℝ≥0), BddAbove (Values L f)
+of sort `Prop` but is expected to have type
+  X →C_c ℝ≥0
+of sort `Type u_1` in the application
+  posSup_add L hbdd
+Scratch619PositivePart.lean:139:24: error: Application type mismatch: The argument
+  hbdd
+has type
+  ∀ (f : X →C_c ℝ≥0), BddAbove (Values L f)
+of sort `Prop` but is expected to have type
+  ℝ≥0
+of sort `Type` in the application
+  posSup_smul L hbdd
+Scratch619PositivePart.lean:144:77: error: Application type mismatch: The argument
+  hbdd
+has type
+  ∀ (f : X →C_c ℝ≥0), BddAbove (Values L f)
+of sort `Prop` but is expected to have type
+  X →C_c ℝ≥0
+of sort `Type u_1` in the application
+  (positiveConeLinear L) hbdd
+Scratch619PositivePart.lean:147:4: error: Function expected at
+  positivePart ?m.26
+but this term has type
+  ℝ
+
+Note: Expected a function because this term is being applied to the argument
+  hbdd
+Scratch619PositivePart.lean:147:17: error: Application type mismatch: The argument
+  L
+has type
+  (X →C_c ℝ) →ₗ[ℝ] ℝ
+but is expected to have type
+  ?m.23 →C_c ℝ
+in the application
+  positivePart L
+Scratch619PositivePart.lean:150:61: error: Function expected at
+  positivePart ?m.31
+but this term has type
+  ℝ
+
+Note: Expected a function because this term is being applied to the argument
+  hbdd
+Scratch619PositivePart.lean:150:74: error: Application type mismatch: The argument
+  L
+has type
+  (X →C_c ℝ) →ₗ[ℝ] ℝ
+but is expected to have type
+  ?m.28 →C_c ℝ
+in the application
+  positivePart L
+Scratch619PositivePart.lean:164:32: error(lean.unknownIdentifier): Unknown identifier `le_positivePart`
+Scratch619PositivePart.lean:163:26: error: Function expected at
+  positivePart ?m.62
+but this term has type
+  ℝ
+
+Note: Expected a function because this term is being applied to the argument
+  hbdd
+Scratch619PositivePart.lean:163:39: error: Application type mismatch: The argument
+  L
+has type
+  (X →C_c ℝ) →ₗ[ℝ] ℝ
+but is expected to have type
+  ?m.59 →C_c ℝ
+in the application
+  positivePart L
+Scratch619PositivePart.lean:167:4: error: Function expected at
+  positivePart ?m.26
+but this term has type
+  ℝ
+
+Note: Expected a function because this term is being applied to the argument
+  hbdd
+Scratch619PositivePart.lean:167:28: error: Function expected at
+  negativePart ?m.32
+but this term has type
+  ℝ
+
+Note: Expected a function because this term is being applied to the argument
+  hbdd
+Scratch619PositivePart.lean:167:41: error: Application type mismatch: The argument
+  L
+has type
+  (X →C_c ℝ) →ₗ[ℝ] ℝ
+but is expected to have type
+  ?m.29 →C_c ℝ
+in the application
+  negativePart L
+Scratch619PositivePart.lean:192:4: error: Function expected at
+  positivePart ?m.54
+but this term has type
+  ℝ
+
+Note: Expected a function because this term is being applied to the argument
+  hbdd
+Scratch619PositivePart.lean:192:17: error: Application type mismatch: The argument
+  L
+has type
+  (X →C_c ℝ) →ₗ[ℝ] ℝ
+but is expected to have type
+  ?m.51 →C_c ℝ
+in the application
+  positivePart L
+Scratch619PositivePart.lean:215:10: error: Function expected at
+  positivePart ?m.143
+but this term has type
+  ℝ
+
+Note: Expected a function because this term is being applied to the argument
+  hb
+Scratch619PositivePart.lean:215:29: error: Function expected at
+  negativePart ?m.150
+but this term has type
+  ℝ
+
+Note: Expected a function because this term is being applied to the argument
+  hb
+Scratch619PositivePart.lean:215:42: error: Application type mismatch: The argument
+  L
+has type
+  (X →C_c ℝ) →ₗ[ℝ] ℝ
+but is expected to have type
+  ?m.147 →C_c ℝ
+in the application
+  negativePart L
+'RCA619PositivePart.posSup_add' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RCA619PositivePart.posSup_smul' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RCA619PositivePart.exists_positive_decomposition' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+Scratch619PositivePart.lean:270:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch619PositivePart.lean:271:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch619PositivePart.lean:288:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch619PositivePart.lean:289:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch619PositivePart.lean:296:6: error: Type mismatch: After simplification, term
+  Continuous.integrable_of_hasCompactSupport (ContinuousMap.continuous f.toContinuousMap)
+    (CompactlySupportedContinuousMap.hasCompactSupport f)
+ has type
+  @Integrable ℝ PseudoMetricSpace.toUniformSpace.toTopologicalSpace SeminormedAddGroup.toContinuousENorm X inst✝¹
+    (⇑f.toContinuousMap) μ
+but is expected to have type
+  @Integrable ℝ PseudoMetricSpace.toUniformSpace.toTopologicalSpace SeminormedAddGroup.toContinuousENorm X inst✝¹ (⇑f) μ
+Scratch619PositivePart.lean:299:6: error: Type mismatch: After simplification, term
+  Continuous.integrable_of_hasCompactSupport (ContinuousMap.continuous f.toContinuousMap)
+    (CompactlySupportedContinuousMap.hasCompactSupport f)
+ has type
+  @Integrable ℝ PseudoMetricSpace.toUniformSpace.toTopologicalSpace SeminormedAddGroup.toContinuousENorm X inst✝¹
+    (⇑f.toContinuousMap) ν
+but is expected to have type
+  @Integrable ℝ PseudoMetricSpace.toUniformSpace.toTopologicalSpace SeminormedAddGroup.toContinuousENorm X inst✝¹ (⇑f) ν
+'RCA619PositivePart.rieszMeasure_univ_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RCA619PositivePart.rieszMeasure_isFiniteMeasure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RCA619PositivePart.exists_finite_measure_representation' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RCA619PositivePart.exists_signed_representation' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+
