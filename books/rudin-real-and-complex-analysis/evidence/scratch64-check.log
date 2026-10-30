@@ -1,0 +1,22 @@
+Scratch64.lean:24:8: error: Type mismatch: After simplification, term
+  add_le_add (SignedMeasure.norm_le_totalVariation (ComplexMeasure.re μ) E)
+    (SignedMeasure.norm_le_totalVariation (ComplexMeasure.im μ) E)
+ has type
+  @LE.le ℝ Real.instPreorder.toLE
+    (|(VectorMeasure.mapRange μ Complex.reLm.toAddMonoidHom ⋯) E| +
+      |(VectorMeasure.mapRange μ Complex.imLm.toAddMonoidHom ⋯) E|)
+    ((SignedMeasure.totalVariation (VectorMeasure.mapRange μ Complex.reLm.toAddMonoidHom ⋯)).real E +
+      (SignedMeasure.totalVariation (VectorMeasure.mapRange μ Complex.imLm.toAddMonoidHom ⋯)).real E)
+but is expected to have type
+  @LE.le ℝ Real.instLE (|(μ E).re| + |(μ E).im|)
+    ((SignedMeasure.totalVariation (VectorMeasure.mapRange μ Complex.reLm.toAddMonoidHom ⋯)).real E +
+      (SignedMeasure.totalVariation (VectorMeasure.mapRange μ Complex.imLm.toAddMonoidHom ⋯)).real E)
+'RudinRCA.Chapter06.complex_variation_le_re_add_im' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_variation_univ_lt_top' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasureNorm' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasureNormedSpace' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_measure_norm_le' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positive_add_negative_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positive_sub_negative_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positiveVariation_real_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.negativeVariation_real_eq' depends on axioms: [propext, Classical.choice, Quot.sound]

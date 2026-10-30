@@ -1,0 +1,74 @@
+Scratch69.lean:110:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch69.lean:141:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+Scratch69.lean:159:2: error: unsolved goals
+case refine_1
+X : Type u_1
+inst✝¹ : MeasurableSpace X
+c : ComplexMeasure X
+μ : Measure X
+inst✝ : SigmaFinite μ
+hc : c ≪ᵥ μ.toENNRealVectorMeasure
+E : Set X
+hE : MeasurableSet E
+⊢ ∫ (x : X) in E, c.rnDeriv μ x ∂μ = ∫ (x : X) in E, ComplexMeasure.rnDeriv (μ.withDensityᵥ (c.rnDeriv μ)) μ x ∂μ
+Scratch69.lean:173:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+Scratch69.lean:315:63: error: unsolved goals
+X : Type u_1
+inst✝ : MeasurableSpace X
+s : SignedMeasure X
+A : Set X
+hA : MeasurableSet A
+hpos : 0 ≤[A] s
+hneg : s ≤[Aᶜ] 0
+hP : s.toJordanDecomposition.posPart = s.toMeasureOfZeroLE A hA hpos
+hN : s.toJordanDecomposition.negPart = s.toMeasureOfLEZero Aᶜ ⋯ hneg
+E : Set X
+hE : MeasurableSet E
+⊢ True ∧ True
+Scratch69.lean:328:9: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  CanonicallyOrderedAdd (Measure X)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+Scratch69.lean:328:23: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  CanonicallyOrderedAdd (Measure X)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+'RudinRCA.Chapter06.lemma_6_9' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.lemma_6_9_equivalent_finite_measure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_rn_reconstruction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_10_lebesgue' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_10_positive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_10_radon_nikodym' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_11_of_finite_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_11_real_of_finite_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_11' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_12_of_finite_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_12' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_13' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_13_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_14' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_14_minimal' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_15' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_indicator' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
