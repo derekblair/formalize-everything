@@ -1,0 +1,129 @@
+{
+  "target": "Chapter15QuotientInterpolationWork.lean",
+  "sha256": "b871f5292f464f5baf2fc4f17a2dc85e1c754320543bc719701e10b40991976c",
+  "lines": 1397,
+  "theorem_family_count": 59,
+  "status": "draft; no Lean check launched",
+  "required_base": "RudinRCA.Chapter15 with all 15.11 sphere construction declarations",
+  "sources": [
+    {
+      "file": "MeromorphicQuotientWork.lean",
+      "sha256": "5c03b2f15e2da3115d23bf8dad67917e1bab70d4061377cb923716c82110bd56",
+      "families": [
+        "holomorphic_regularization_of_nonnegative_orders",
+        "holomorphic_nonzero_codiscrete",
+        "meromorphic_quotient_of_canceling_denominator",
+        "quotient_holomorphic_meromorphic"
+      ]
+    },
+    {
+      "file": "MeromorphicPoleDataWork.lean",
+      "sha256": "bfecc4d1b7a4cb8f97bcf52f8567cc2f8c3d5f738176478bb29839e46710a545",
+      "families": [
+        "meromorphicPoleSet_subset_support",
+        "meromorphicPoleSet_subset",
+        "meromorphicPoleSet_locallyFinite",
+        "meromorphicPoleSet_no_accPt",
+        "meromorphicPoleMultiplicity_pos",
+        "meromorphicPoleMultiplicity_eq_zero",
+        "meromorphicOrderAt_nonneg_of_not_pole",
+        "denominator_order_of_pole_data",
+        "nonnegative_order_of_pole_denominator"
+      ]
+    },
+    {
+      "file": "MeromorphicQuotientAssemblyWork.lean",
+      "sha256": "62e363c163ee38772d596bea06adef93709932d4c9f8d637531335679d6baf86",
+      "families": [
+        "meromorphic_function_quotient",
+        "quotient_eq_at_of_codiscrete",
+        "meromorphic_function_quotient_off_poles"
+      ]
+    },
+    {
+      "file": "MittagLefflerKernelWork.lean",
+      "sha256": "3a17031208961b4c6d5431c2804c74921b302a3e6f83cc82c5065a9a12e14122",
+      "families": [
+        "reciprocalExpansion_error",
+        "analyticAt_reciprocalExpansion",
+        "reciprocalExpansion_exterior_geometry",
+        "norm_reciprocalExpansion_error_le",
+        "reciprocalExpansion_tendstoUniformlyOn",
+        "reciprocalExpansion_uniform_bounds",
+        "exists_polynomial_reciprocal_approximation"
+      ]
+    },
+    {
+      "file": "MittagLefflerSeriesWork.lean",
+      "sha256": "de71f1867a2249763c0b6806210df5ad990493bc0b7eacfc2c5f76b1a9449744",
+      "families": [
+        "meromorphicAt_polynomial_eval",
+        "uniformOn_complex_series_tail",
+        "locallyUniform_complex_series_tail",
+        "analyticOnNhd_series_remainder",
+        "boundary_exteriors_contain_compacts",
+        "correctedPrincipalPart_analyticAt",
+        "correctedPrincipalPart_meromorphicAt",
+        "exists_locally_uniform_principal_part_series",
+        "correctedPrincipalPart_eventually_analytic_near",
+        "meromorphicAt_of_locally_uniform_series",
+        "analyticAt_of_locally_uniform_series",
+        "analyticAt_series_sub_term",
+        "exists_normalized_mittag_leffler"
+      ]
+    },
+    {
+      "file": "MittagLefflerInfinityWork.lean",
+      "sha256": "cf69d124222c7581a1b83b5ec8a89a0ab823c63e6c7128d4151a137379f67f55",
+      "families": [
+        "reciprocal_at_infinity_eq",
+        "reciprocalExpansionAtInfinity_eq",
+        "correctedPrincipalPartAtInfinity_eq",
+        "correctedPrincipalPartAtInfinity_zero",
+        "correctedPrincipalPartAtInfinity_analyticAt",
+        "infinity_exterior_of_small_difference",
+        "principal_part_series_analytic_at_infinity"
+      ]
+    },
+    {
+      "file": "MittagLefflerSetWork.lean",
+      "sha256": "2d1ff076a41ce94c8721ca13eb9a7bea12578d8964c088561fed2f24b5d04b9d",
+      "families": [
+        "principalPartOnSphere_infinity_chart",
+        "principalPartOnSphere_analytic_infinity",
+        "normalized_mittag_leffler_on_set"
+      ]
+    },
+    {
+      "file": "InterpolationLocalWork.lean",
+      "sha256": "090817d58b722ba13cdd4842853bba4de1aec738f8e00a840287b08073f4773a",
+      "families": [
+        "reciprocalTaylorPolynomial_mul_pow",
+        "analytic_quotient_has_polynomial_principal_part",
+        "regularization_eq_analytic_germ",
+        "interpolation_from_matching_principal_part"
+      ]
+    },
+    {
+      "file": "NormalizedInterpolationWork.lean",
+      "sha256": "f22e9ee87524dfd1355a12e6c14fa8bc07d54d6115a38d4bb9cc8d5b2559b1e0",
+      "families": [
+        "sphereRegularization_coe",
+        "sphereRegularization_infty",
+        "sphereRegularization_analytic_infinity",
+        "normalized_interpolate_analytic_germs"
+      ]
+    },
+    {
+      "file": "InterpolationWork.lean",
+      "sha256": "7d4832ab58fb637c8740d919da37d278aca0793ede5beabdd6639696b58ad8c2",
+      "families": [
+        "sphere_interpolate_analytic_germs",
+        "interpolate_analytic_germs",
+        "analyticAt_prescribedJetPolynomial",
+        "iteratedDeriv_prescribedJetPolynomial",
+        "interpolate_prescribed_derivative_jets"
+      ]
+    }
+  ]
+}
