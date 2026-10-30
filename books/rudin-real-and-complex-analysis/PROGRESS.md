@@ -9,8 +9,8 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 1 | Abstract Integration | TBD | 0 |
 | 2 | Positive Borel Measures | TBD | 0 |
 | 3 | Lp-Spaces | TBD | 0 |
-| 4 | Elementary Hilbert Space Theory | TBD | 0 |
-| 5 | Examples of Banach Space Techniques | TBD | 0 |
+| 4 | Elementary Hilbert Space Theory | 26 | 0 |
+| 5 | Examples of Banach Space Techniques | 25 | 0 |
 | 6 | Complex Measures | TBD | 0 |
 | 7 | Differentiation | TBD | 0 |
 | 8 | Integration on Product Spaces | TBD | 0 |
@@ -26,3 +26,10 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 18 | Some Applications of the Phragmén–Lindelöf Method | TBD | 0 |
 | 19 | Entire Functions | TBD | 0 |
 | 20 | Boundary Behavior of Bounded Analytic Functions | TBD | 0 |
+
+Cluster B's counts come from a fresh printed-text enumeration in
+[INVENTORY-B.md](INVENTORY-B.md): 4.1–4.26 and 5.1–5.25, including numbered
+definitions and narrative/proof passages. See [SCOPING-B.md](SCOPING-B.md)
+for conventions, corrected statements, and the closed-graph exercise scope
+discrepancy. Stage 2 work on branch `rca-b-stage2-proton` is in progress;
+the `Done` column continues to mean independently reviewed and landed on main.
