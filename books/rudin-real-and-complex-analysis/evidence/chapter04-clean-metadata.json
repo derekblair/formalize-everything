@@ -1,0 +1,50 @@
+{
+  "started_utc": "2026-11-01T09:05:21.675956+00:00",
+  "chapter": 4,
+  "method": "Entire .lake moved aside; fresh pinned dependency cache followed by ordinary lake build, no incremental snapshots.",
+  "serialization": "lane-local lean-check.lock; LEAN_NUM_THREADS=1 for Lake; weakLeanArgs=[\"-j1\"] for chapter compilers",
+  "source_sha256": {
+    "RudinRCA/Chapter04.lean": "d71fb2f7202629914f1773382b9a8448c462a29d27fc1ff300ff8f17100c4b45"
+  },
+  "manifest_sha256": "3d3476c312fb2220e92334726052c3b23080ad1f97c3db6cfceedc9a90466d1b",
+  "lakefile_sha256": "5891835867714a57568c217bcae78911549ea06bd0896de174d2bdb13eeab5b6",
+  "active_step": "complete",
+  "cache": {
+    "command": [
+      "lake",
+      "exe",
+      "cache",
+      "get"
+    ],
+    "exit_code": 0,
+    "log": "evidence/chapter04-clean-continuation2-cache.log",
+    "finished_utc": "2026-11-01T09:07:56.758450+00:00"
+  },
+  "build": {
+    "command": [
+      "lake",
+      "build"
+    ],
+    "exit_code": 0,
+    "log": "evidence/chapter04-clean-continuation2-build.log",
+    "finished_utc": "2026-11-01T09:09:48.904914+00:00"
+  },
+  "audits": {
+    "Chapter04": {
+      "exit_code": 0,
+      "log": "evidence/chapter04-clean-continuation2-Chapter04-axioms.log"
+    }
+  },
+  "finished_utc": "2026-11-01T09:09:48.983732+00:00",
+  "origin_metadata_basename": "chapter04-clean-metadata.json",
+  "portability_note": "Backup path omitted; log paths are relative to the book directory.",
+  "proof_token_scan": {
+    "tokens": [
+      "sorry",
+      "admit",
+      "axiom",
+      "native_decide"
+    ],
+    "matches": []
+  }
+}

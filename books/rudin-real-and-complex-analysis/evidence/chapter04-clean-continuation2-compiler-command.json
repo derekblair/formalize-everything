@@ -1,0 +1,23 @@
+{
+  "observed_utc": "2026-11-01T09:08:27.176228+00:00",
+  "processes": [
+    {
+      "pid": 36444,
+      "command": [
+        "/home/derekblair/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+        "-j1",
+        "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/RudinRCA/Chapter04.lean",
+        "-o",
+        "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/lib/lean/RudinRCA/Chapter04.olean",
+        "-i",
+        "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/lib/lean/RudinRCA/Chapter04.ilean",
+        "-c",
+        "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/ir/RudinRCA/Chapter04.c",
+        "--setup",
+        "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/ir/RudinRCA/Chapter04.setup.json",
+        "--json"
+      ],
+      "explicit_j1": true
+    }
+  ]
+}

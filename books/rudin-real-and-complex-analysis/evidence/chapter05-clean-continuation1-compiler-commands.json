@@ -1,0 +1,38 @@
+{
+  "Chapter04.lean": {
+    "observed_utc": "2026-11-01T09:20:00.113739+00:00",
+    "pid": 39942,
+    "command": [
+      "/home/derekblair/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+      "-j1",
+      "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/RudinRCA/Chapter04.lean",
+      "-o",
+      "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/lib/lean/RudinRCA/Chapter04.olean",
+      "-i",
+      "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/lib/lean/RudinRCA/Chapter04.ilean",
+      "-c",
+      "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/ir/RudinRCA/Chapter04.c",
+      "--setup",
+      "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/ir/RudinRCA/Chapter04.setup.json",
+      "--json"
+    ]
+  },
+  "Chapter05.lean": {
+    "observed_utc": "2026-11-01T09:21:55.483091+00:00",
+    "pid": 40124,
+    "command": [
+      "/home/derekblair/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean",
+      "-j1",
+      "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/RudinRCA/Chapter05.lean",
+      "-o",
+      "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/lib/lean/RudinRCA/Chapter05.olean",
+      "-i",
+      "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/lib/lean/RudinRCA/Chapter05.ilean",
+      "-c",
+      "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/ir/RudinRCA/Chapter05.c",
+      "--setup",
+      "/home/derekblair/lane-work/codex-rca-b-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/ir/RudinRCA/Chapter05.setup.json",
+      "--json"
+    ]
+  }
+}
