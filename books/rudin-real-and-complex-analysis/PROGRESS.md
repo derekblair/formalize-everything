@@ -33,3 +33,7 @@ definitions and narrative/proof passages. See [SCOPING-B.md](SCOPING-B.md)
 for conventions, corrected statements, and the closed-graph exercise scope
 discrepancy. Stage 2 work on branch `rca-b-stage2-proton` is in progress;
 the `Done` column continues to mean independently reviewed and landed on main.
+
+## Cluster B branch gates
+
+On `rca-b-stage2-proton`, Chapter 4 implements all **26/26** numbered nodes and passed the fresh-cache, clean `lake build` and **172/172** permitted-axiom audits on 2026-11-01. See [Chapter 4 evidence](BUILD-CHAPTER04.md). Chapter 5 remains an uncompiled draft outside the library. The table above still counts only work independently reviewed and landed on main.
