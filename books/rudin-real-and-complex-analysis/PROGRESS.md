@@ -43,7 +43,7 @@ the final gate rebuilt and reaudited both modules from a fresh `.lake`.
 | Module | Numbered nodes implemented | Theorem/lemma declarations | Audit records | Clean build / audit |
 | --- | ---: | ---: | ---: | --- |
 | `RudinRCA/Chapter04.lean` | 26/26 | 172 | 172 | PASS; [evidence](BUILD-CHAPTER04.md) |
-| `RudinRCA/Chapter05.lean` | 25/25 | 173 | 175 (includes two instances) | PASS; [evidence](BUILD-CHAPTER05.md) |
+| `RudinRCA/Chapter05.lean` | 25/25, including the printed strict 5.11 bound | 182 | 184 (includes two instances) | PASS; [F1 follow-up evidence](evidence/f1-gates.md) |
 
 Each cache fetch, ordinary full build, and axiom checker exited 0. Both modules
 have zero proof placeholders and only `propext`, `Classical.choice`, and

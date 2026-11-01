@@ -34,6 +34,16 @@ research-lane inventory was present or used.
   the whole plane can be added to that chain. `originDiscChain_extend_by_univ`
   and `originDiscChain_not_maximal` prove the counterexample; the printed
   maximality assertion is explicitly rejected, not treated as proved.
+- **5.11:** `lebesgueConstant_printed_lower` proves Rudin's p.102 strict
+  estimate `(4/pi^2) * H_n < lebesgueConstant n`. The normalized measure is
+  exactly `dt/(2*pi)` on `[-pi,pi]`, and `dirichletKernel n` uses frequencies
+  `-n,...,n`. The formal sum over `range n` of `1/(k+1)` is H_n; there is no
+  index shift. The proof also covers n = 0. The original
+  `lebesgueConstant_harmonic_lower` remains unchanged and gives only the weaker
+  nonstrict `(1/(2*pi)) * H_(n+1)` bound. It alone did not cover the printed
+  quantitative assertion; F1 is closed by the new strict theorem, with
+  [normalization/provenance](evidence/f1-normalization.md) and
+  [build/axiom evidence](evidence/f1-gates.md).
 - **5.7 / 5.13:** nonemptiness is needed for the corresponding nonmeagreness /
   uncountability conclusions. Empty spaces are admitted in Lean.
   `complete_space_not_first_category` and `countable_dense_not_gdelta` prove
