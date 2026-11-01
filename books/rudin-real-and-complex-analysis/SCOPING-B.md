@@ -35,8 +35,13 @@ research-lane inventory was present or used.
   and `originDiscChain_not_maximal` prove the counterexample; the printed
   maximality assertion is explicitly rejected, not treated as proved.
 - **5.7 / 5.13:** nonemptiness is needed for the corresponding nonmeagreness /
-  uncountability conclusions. Empty spaces are admitted in Lean. These cases
-  require explicit corrected statements and counterexamples before certification.
+  uncountability conclusions. Empty spaces are admitted in Lean.
+  `complete_space_not_first_category` and `countable_dense_not_gdelta` prove
+  the corrected nonempty statements; `empty_complete_space_first_category`
+  and `empty_countable_dense_gdelta` prove the empty-space counterexamples.
+  The generic category definitions and countable-set meagreness statement
+  do not assume completeness. The attached perfect-subset conclusion retains
+  complete-metric generality without separability or local compactness.
 - The ticket's headline mentions closed graph consequences, but the closed graph
   theorem is Exercise 16 of Chapter 5, outside the numbered-body v1 scope.
   No exercise is silently added to or counted in the 51-node body inventory.

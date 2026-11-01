@@ -31,9 +31,27 @@ Cluster B's counts come from a fresh printed-text enumeration in
 [INVENTORY-B.md](INVENTORY-B.md): 4.1–4.26 and 5.1–5.25, including numbered
 definitions and narrative/proof passages. See [SCOPING-B.md](SCOPING-B.md)
 for conventions, corrected statements, and the closed-graph exercise scope
-discrepancy. Stage 2 work on branch `rca-b-stage2-proton` is in progress;
+discrepancy. Stage 2 implementation and clean build/axiom gates for both cluster B chapters have passed on branch `rca-b-stage2-proton`;
 the `Done` column continues to mean independently reviewed and landed on main.
 
 ## Cluster B branch gates
 
-On `rca-b-stage2-proton`, Chapter 4 implements all **26/26** numbered nodes and passed the fresh-cache, clean `lake build` and **172/172** permitted-axiom audits on 2026-11-01. See [Chapter 4 evidence](BUILD-CHAPTER04.md). Chapter 5 remains an uncompiled draft outside the library. The table above still counts only work independently reviewed and landed on main.
+Both chapters passed their required clean-slate builds and axiom audits on
+2026-11-01. The separate Chapter 4 gate passed before Chapter 5 compilation;
+the final gate rebuilt and reaudited both modules from a fresh `.lake`.
+
+| Module | Numbered nodes implemented | Theorem/lemma declarations | Audit records | Clean build / audit |
+| --- | ---: | ---: | ---: | --- |
+| `RudinRCA/Chapter04.lean` | 26/26 | 172 | 172 | PASS; [evidence](BUILD-CHAPTER04.md) |
+| `RudinRCA/Chapter05.lean` | 25/25 | 173 | 175 (includes two instances) | PASS; [evidence](BUILD-CHAPTER05.md) |
+
+Each cache fetch, ordinary full build, and axiom checker exited 0. Both modules
+have zero proof placeholders and only `propext`, `Classical.choice`, and
+`Quot.sound` in their audited axiom unions. See the
+[Chapter 4 coverage](CHAPTER04-COVERAGE.md),
+[Chapter 5 coverage](CHAPTER05-COVERAGE.md), and
+[statement disclosures](SCOPING-B.md).
+
+PR: [#48](https://github.com/derekblair/formalize-everything/pull/48).
+Coordinator-appointed crossed review is still required. The main table above
+continues to count only independently reviewed work landed on main.
