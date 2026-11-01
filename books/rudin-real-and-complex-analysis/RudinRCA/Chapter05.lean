@@ -1705,6 +1705,183 @@ theorem dirichletKernel_zero (N : ℕ) : dirichletKernel N 0 = (2 * N + 1 : ℂ)
   have h := dirichletKernel_cosine N 0
   simpa [AddCircle.coe_zero, mul_comm, add_comm] using h
 
+/-- The norm of the symmetric Dirichlet kernel is even in its real parameter. -/
+theorem dirichlet_norm_even (N : ℕ) (t : ℝ) :
+    ‖dirichletKernel N ((-t : ℝ) : FourierCircle)‖ =
+      ‖dirichletKernel N (t : FourierCircle)‖ := by
+  simp only [dirichletKernel_cosine, mul_neg, Real.cos_neg]
+
+/-- The normalized circle integral equals `1 / π` times the integral over a half-period. -/
+theorem lebesgueConstant_half_interval (N : ℕ) :
+    lebesgueConstant N = (1 / Real.pi) *
+      ∫ t in 0..Real.pi, ‖dirichletKernel N (t : FourierCircle)‖ := by
+  let f : ℝ → ℝ := fun t => ‖dirichletKernel N (t : FourierCircle)‖
+  have hc : Continuous f := (continuous_circleFunction (dirichletKernel N)).norm
+  have hneg : (∫ t in -Real.pi..0, f t) = ∫ t in 0..Real.pi, f t := by
+    simpa only [f, neg_zero, dirichlet_norm_even] using
+      (intervalIntegral.integral_comp_neg (a := 0) (b := Real.pi) f).symm
+  have hadd : (∫ t in -Real.pi..Real.pi, f t) =
+      (∫ t in -Real.pi..0, f t) + ∫ t in 0..Real.pi, f t :=
+    (intervalIntegral.integral_add_adjacent_intervals
+      (hc.intervalIntegrable _ _) (hc.intervalIntegrable _ _)).symm
+  rw [lebesgueConstant, circleIntegral_interval, smul_eq_mul]
+  change (1 / (2 * Real.pi)) * (∫ t in -Real.pi..Real.pi, f t) =
+    (1 / Real.pi) * ∫ t in 0..Real.pi, f t
+  rw [hadd, hneg]
+  field_simp
+  ring
+
+/-- A division-free lower estimate valid also at the zeros of `sin (t / 2)`. -/
+theorem dirichlet_norm_lobe_lower (N : ℕ) (b t : ℝ) (ht : 0 ≤ t) (htb : t ≤ b) :
+    2 * |Real.sin (((N : ℝ) + 1 / 2) * t)| ≤
+      b * ‖dirichletKernel N (t : FourierCircle)‖ := by
+  have hmul : |Real.sin (((N : ℝ) + 1 / 2) * t)| =
+      |Real.sin (t / 2)| * ‖dirichletKernel N (t : FourierCircle)‖ := by
+    rw [dirichletKernel_cosine, Complex.norm_real, Real.norm_eq_abs,
+      ← abs_mul, dirichlet_cosine_sin_mul]
+  have hs : |Real.sin (t / 2)| ≤ t / 2 := by
+    simpa only [abs_of_nonneg (by linarith : 0 ≤ t / 2)] using
+      (Real.abs_sin_le_abs (x := t / 2))
+  have hm := mul_le_mul_of_nonneg_right hs
+    (norm_nonneg (dirichletKernel N (t : FourierCircle)))
+  have hb := mul_nonneg (sub_nonneg.mpr htb)
+    (norm_nonneg (dirichletKernel N (t : FourierCircle)))
+  rw [← hmul] at hm
+  nlinarith
+
+/-- The terminal point of the half-period has Dirichlet-kernel norm one. -/
+theorem dirichlet_norm_pi (N : ℕ) :
+    ‖dirichletKernel N (Real.pi : FourierCircle)‖ = 1 := by
+  rw [dirichletKernel_sine_quotient N Real.pi (by simp)]
+  rw [show ((N : ℝ) + 1 / 2) * Real.pi =
+    (N : ℝ) * Real.pi + Real.pi / 2 by ring]
+  simp [Real.sin_add, Real.sin_nat_mul_pi, Real.cos_nat_mul_pi]
+
+/-- The unused terminal half-lobe contributes strictly positive mass. -/
+theorem dirichlet_norm_tail_pos (N : ℕ) :
+    0 < ∫ t in (N : ℝ) * Real.pi / ((N : ℝ) + 1 / 2)..Real.pi,
+      ‖dirichletKernel N (t : FourierCircle)‖ := by
+  have hA : 0 < (N : ℝ) + 1 / 2 := by positivity
+  have hab : (N : ℝ) * Real.pi / ((N : ℝ) + 1 / 2) < Real.pi := by
+    apply (div_lt_iff₀ hA).2
+    nlinarith [Real.pi_pos]
+  apply intervalIntegral.integral_pos hab
+    ((continuous_circleFunction (dirichletKernel N)).norm.continuousOn)
+    (fun t _ => norm_nonneg _)
+  exact ⟨Real.pi, ⟨hab.le, le_rfl⟩, by rw [dirichlet_norm_pi]; norm_num⟩
+
+/-- The absolute sine has mass two on every full lobe. -/
+theorem integral_abs_sin_lobe (k : ℕ) :
+    (∫ x in (k : ℝ) * Real.pi..((k : ℝ) + 1) * Real.pi, |Real.sin x|) = 2 := by
+  have hp : Function.Periodic (fun x : ℝ => |Real.sin x|) Real.pi := by
+    intro x
+    simp
+  have hbase : (∫ x in (0 : ℝ)..Real.pi, |Real.sin x|) = 2 := by
+    calc
+      _ = ∫ x in (0 : ℝ)..Real.pi, Real.sin x := by
+        apply intervalIntegral.integral_congr
+        intro x hx
+        rw [Set.uIcc_of_le Real.pi_pos.le] at hx
+        exact abs_of_nonneg (Real.sin_nonneg_of_mem_Icc hx)
+      _ = 2 := by rw [integral_sin]; norm_num
+  have h := hp.intervalIntegral_add_eq ((k : ℝ) * Real.pi) 0
+  simpa only [zero_add, add_mul, one_mul, hbase] using h
+
+/-- Rescaling a complete sine lobe multiplies its mass by the inverse frequency. -/
+theorem integral_abs_sin_mul_lobe (a : ℝ) (ha : 0 < a) (k : ℕ) :
+    (∫ x in (k : ℝ) * Real.pi / a..((k : ℝ) + 1) * Real.pi / a,
+      |Real.sin (a * x)|) = 2 / a := by
+  rw [intervalIntegral.integral_comp_mul_left (f := fun x : ℝ => |Real.sin x|) ha.ne']
+  have hleft : a * ((k : ℝ) * Real.pi / a) = (k : ℝ) * Real.pi := by
+    field_simp
+  have hright : a * (((k : ℝ) + 1) * Real.pi / a) = ((k : ℝ) + 1) * Real.pi := by
+    field_simp
+  rw [hleft, hright, integral_abs_sin_lobe]
+  simp [smul_eq_mul, div_eq_mul_inv, mul_comm]
+
+theorem dirichlet_norm_integral_lobe_lower (N k : ℕ) :
+    4 / (((k : ℝ) + 1) * Real.pi) ≤
+      ∫ t in (k : ℝ) * Real.pi / ((N : ℝ) + 1 / 2)..
+        ((k : ℝ) + 1) * Real.pi / ((N : ℝ) + 1 / 2),
+        ‖dirichletKernel N (t : FourierCircle)‖ := by
+  let a : ℝ := (N : ℝ) + 1 / 2
+  let b : ℝ := ((k : ℝ) + 1) * Real.pi / a
+  have ha : 0 < a := by dsimp [a]; positivity
+  have hb : 0 < b := by dsimp [b]; positivity
+  have hleft : 0 ≤ (k : ℝ) * Real.pi / a := by positivity
+  have hab : (k : ℝ) * Real.pi / a ≤ b := by
+    dsimp [b]
+    apply div_le_div_of_nonneg_right _ ha.le
+    nlinarith [Real.pi_pos]
+  have hc : Continuous (fun t : ℝ => ‖dirichletKernel N (t : FourierCircle)‖) :=
+    (continuous_circleFunction (dirichletKernel N)).norm
+  have hs : Continuous (fun t : ℝ => |Real.sin (a * t)|) := by fun_prop
+  have hm : 2 * (2 / a) ≤ b *
+      ∫ t in (k : ℝ) * Real.pi / a..b, ‖dirichletKernel N (t : FourierCircle)‖ := by
+    calc
+      _ = ∫ t in (k : ℝ) * Real.pi / a..b, 2 * |Real.sin (a * t)| := by
+        rw [intervalIntegral.integral_const_mul]
+        congr 1
+        exact (integral_abs_sin_mul_lobe a ha k).symm
+      _ ≤ ∫ t in (k : ℝ) * Real.pi / a..b,
+          b * ‖dirichletKernel N (t : FourierCircle)‖ := by
+        apply intervalIntegral.integral_mono_on hab
+          ((continuous_const.mul hs).intervalIntegrable _ _)
+          ((continuous_const.mul hc).intervalIntegrable _ _)
+        intro t ht
+        exact dirichlet_norm_lobe_lower N b t (hleft.trans ht.1) ht.2
+      _ = _ := intervalIntegral.integral_const_mul _ _
+  have he : b * (4 / (((k : ℝ) + 1) * Real.pi)) = 2 * (2 / a) := by
+    dsimp [b]
+    field_simp
+    ring
+  rw [← he] at hm
+  exact (mul_le_mul_iff_right₀ hb).mp hm
+
+/-- Rudin 5.11, p.102: the printed strict lower bound for the normalized L1
+norm. `range n` with summand `1/(k+1)` is exactly H_n = sum_{k=1}^n 1/k;
+the kernel index is n (frequencies -n through n), with no index shift.
+The estimate also holds for n = 0, and hence in particular for n ≥ 1. -/
+theorem lebesgueConstant_printed_lower (n : ℕ) :
+    (4 / Real.pi ^ 2) * (∑ k ∈ Finset.range n, 1 / ((k : ℝ) + 1)) <
+      lebesgueConstant n := by
+  let a : ℝ := (n : ℝ) + 1 / 2
+  let x (k : ℕ) : ℝ := (k : ℝ) * Real.pi / a
+  have hc : Continuous (fun t : ℝ => ‖dirichletKernel n (t : FourierCircle)‖) :=
+    (continuous_circleFunction (dirichletKernel n)).norm
+  have hsum : (4 / Real.pi) * (∑ k ∈ Finset.range n, 1 / ((k : ℝ) + 1)) ≤
+      ∫ t in 0..x n, ‖dirichletKernel n (t : FourierCircle)‖ := by
+    calc
+      _ = ∑ k ∈ Finset.range n, 4 / (((k : ℝ) + 1) * Real.pi) := by
+        rw [Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro k hk
+        field_simp
+        <;> ring
+      _ ≤ ∑ k ∈ Finset.range n,
+          ∫ t in x k..x (k + 1), ‖dirichletKernel n (t : FourierCircle)‖ := by
+        apply Finset.sum_le_sum
+        intro k hk
+        simpa only [x, a, Nat.cast_add, Nat.cast_one] using
+          dirichlet_norm_integral_lobe_lower n k
+      _ = _ := by
+        simpa only [x, Nat.cast_zero, zero_mul, zero_div] using
+          intervalIntegral.sum_integral_adjacent_intervals (a := x) (n := n)
+            (fun k hk => hc.intervalIntegrable (x k) (x (k + 1)))
+  have hstrict : (∫ t in 0..x n, ‖dirichletKernel n (t : FourierCircle)‖) <
+      ∫ t in 0..Real.pi, ‖dirichletKernel n (t : FourierCircle)‖ := by
+    have ht := dirichlet_norm_tail_pos n
+    have hadd := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
+      (hc.intervalIntegrable 0 (x n)) (hc.intervalIntegrable (x n) Real.pi)
+    change 0 < ∫ t in x n..Real.pi, ‖dirichletKernel n (t : FourierCircle)‖ at ht
+    linarith
+  rw [lebesgueConstant_half_interval]
+  calc
+    _ = (1 / Real.pi) * ((4 / Real.pi) *
+        (∑ k ∈ Finset.range n, 1 / ((k : ℝ) + 1))) := by ring
+    _ < _ := mul_lt_mul_of_pos_left (hsum.trans_lt hstrict) (by positivity)
+
+
 /-- The residual function family in 5.12 and every one of its divergence sets are uncountable. -/
 theorem theorem_5_12_uncountable :
     ∃ E : Set C(FourierCircle, ℂ), Dense E ∧ IsGδ E ∧ ¬ E.Countable ∧
@@ -2736,3 +2913,13 @@ end
 #print axioms RudinRCA.Chapter05.representing_boundary_dirac
 #print axioms RudinRCA.Chapter05.poissonMeasure_finite
 #print axioms RudinRCA.Chapter05.poissonMeasure_probability
+
+#print axioms RudinRCA.Chapter05.dirichlet_norm_even
+#print axioms RudinRCA.Chapter05.lebesgueConstant_half_interval
+#print axioms RudinRCA.Chapter05.dirichlet_norm_lobe_lower
+#print axioms RudinRCA.Chapter05.dirichlet_norm_pi
+#print axioms RudinRCA.Chapter05.dirichlet_norm_tail_pos
+#print axioms RudinRCA.Chapter05.integral_abs_sin_lobe
+#print axioms RudinRCA.Chapter05.integral_abs_sin_mul_lobe
+#print axioms RudinRCA.Chapter05.dirichlet_norm_integral_lobe_lower
+#print axioms RudinRCA.Chapter05.lebesgueConstant_printed_lower
