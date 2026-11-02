@@ -4,3 +4,4 @@ defaultTargets = ["BibleNumbers"]
 
 [[lean_lib]]
 name = "BibleNumbers"
+globs = ["BibleNumbers", "BibleNumbers.+"]

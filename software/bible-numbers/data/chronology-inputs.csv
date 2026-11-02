@@ -1,0 +1,13 @@
+variant,patriarch,field,value,status,source,locator
+mt,noah,floodAge,600,SOURCED,Millam2010; Brenton; JPS1917,"Table 7 p. 37 Noah row (Flood endpoint, despite fatherhood heading); Genesis 7:6"
+mt,arpachshad,yearsAfterFlood,2,SOURCED,Smith2018; Brenton; JPS1917,Tables 1/3/4 Flood and Arpachshad coordinates; Genesis 11:10
+sp,noah,floodAge,600,SOURCED,Millam2010; Brenton; JPS1917,"Table 7 p. 37 Noah row (Flood endpoint, despite fatherhood heading); Genesis 7:6"
+sp,arpachshad,yearsAfterFlood,2,SOURCED,Smith2018; Brenton; JPS1917,Tables 1/3/4 Flood and Arpachshad coordinates; Genesis 11:10
+lxxSmith,noah,floodAge,600,SOURCED,Millam2010; Brenton; JPS1917,"Table 7 p. 37 Noah row (Flood endpoint, despite fatherhood heading); Genesis 7:6"
+lxxSmith,arpachshad,yearsAfterFlood,2,SOURCED,Smith2018; Brenton; JPS1917,Tables 1/3/4 Flood and Arpachshad coordinates; Genesis 11:10
+lxxBrenton,noah,floodAge,600,SOURCED,Millam2010; Brenton; JPS1917,"Table 7 p. 37 Noah row (Flood endpoint, despite fatherhood heading); Genesis 7:6"
+lxxBrenton,arpachshad,yearsAfterFlood,2,SOURCED,Smith2018; Brenton; JPS1917,Tables 1/3/4 Flood and Arpachshad coordinates; Genesis 11:10
+lxxArp330,noah,floodAge,600,SOURCED,Millam2010; Brenton; JPS1917,"Table 7 p. 37 Noah row (Flood endpoint, despite fatherhood heading); Genesis 7:6"
+lxxArp330,arpachshad,yearsAfterFlood,2,SOURCED,Smith2018; Brenton; JPS1917,Tables 1/3/4 Flood and Arpachshad coordinates; Genesis 11:10
+lxxShelah330,noah,floodAge,600,SOURCED,Millam2010; Brenton; JPS1917,"Table 7 p. 37 Noah row (Flood endpoint, despite fatherhood heading); Genesis 7:6"
+lxxShelah330,arpachshad,yearsAfterFlood,2,SOURCED,Smith2018; Brenton; JPS1917,Tables 1/3/4 Flood and Arpachshad coordinates; Genesis 11:10
