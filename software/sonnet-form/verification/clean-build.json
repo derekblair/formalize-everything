@@ -1,0 +1,15 @@
+{
+  "toolchain": "leanprover/lean4:v4.34.1",
+  "commands": [
+    {
+      "command": "lake clean",
+      "exit_code": 0,
+      "elapsed_seconds": 0.06
+    },
+    {
+      "command": "lake build",
+      "exit_code": 0,
+      "elapsed_seconds": 22.1
+    }
+  ]
+}

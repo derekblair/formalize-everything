@@ -1,0 +1,22 @@
+[
+  {
+    "command": "python3 tools/import_corpus.py --check",
+    "exit_code": 0
+  },
+  {
+    "command": "python3 tools/generate.py --check",
+    "exit_code": 0
+  },
+  {
+    "command": "python3 tools/validate_scansion.py --check",
+    "exit_code": 0
+  },
+  {
+    "command": "python3 tools/check_model.py",
+    "exit_code": 0
+  },
+  {
+    "command": "python3 tools/audit_axioms.py --write",
+    "exit_code": 0
+  }
+]

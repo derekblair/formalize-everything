@@ -1,0 +1,4 @@
+$ python3 tools/audit_axioms.py
+PASS: 206 theorems audited; axioms used: ['Quot.sound', 'propext']; no prohibited source tokens
+
+exit_code=0

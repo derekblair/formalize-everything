@@ -1,0 +1,3882 @@
+{
+  "hand_source_sha256": "a6b57916618c23d9699c79c3e1fc5d2fed5b5e185ca7a497b1784e85d46fafbb",
+  "annotations_sha256": "045f381f66c977bb07fbe399506992c60000c5e1da860e71f0db1e651215f521",
+  "counts": {
+    "baseline_syllables": {
+      "agree": 132,
+      "total": 154
+    },
+    "candidate_syllables": {
+      "agree": 138,
+      "total": 154
+    },
+    "baseline_stress": {
+      "agree": 71,
+      "total": 154
+    },
+    "candidate_stress": {
+      "agree": 73,
+      "total": 154
+    },
+    "selected_stress": {
+      "agree": 71,
+      "total": 154
+    },
+    "fixed_stress_compatible": {
+      "agree": 121,
+      "total": 154
+    },
+    "meter_family": {
+      "agree": 140,
+      "total": 154
+    }
+  },
+  "poem_verdict": {
+    "agree": 5,
+    "total": 11
+  },
+  "sonnets": [
+    {
+      "number": 2,
+      "lines": 14,
+      "metrics": {
+        "baseline_syllables": 14,
+        "candidate_syllables": 14,
+        "baseline_stress": 4,
+        "candidate_stress": 4,
+        "selected_stress": 4,
+        "fixed_stress_compatible": 14,
+        "meter_family": 14
+      },
+      "expected_pentameter": true,
+      "observed_licensed_meter": true,
+      "poem_verdict_agrees": true
+    },
+    {
+      "number": 18,
+      "lines": 14,
+      "metrics": {
+        "baseline_syllables": 12,
+        "candidate_syllables": 12,
+        "baseline_stress": 8,
+        "candidate_stress": 8,
+        "selected_stress": 8,
+        "fixed_stress_compatible": 11,
+        "meter_family": 12
+      },
+      "expected_pentameter": true,
+      "observed_licensed_meter": false,
+      "poem_verdict_agrees": false
+    },
+    {
+      "number": 19,
+      "lines": 14,
+      "metrics": {
+        "baseline_syllables": 11,
+        "candidate_syllables": 12,
+        "baseline_stress": 4,
+        "candidate_stress": 4,
+        "selected_stress": 4,
+        "fixed_stress_compatible": 11,
+        "meter_family": 12
+      },
+      "expected_pentameter": true,
+      "observed_licensed_meter": false,
+      "poem_verdict_agrees": false
+    },
+    {
+      "number": 20,
+      "lines": 14,
+      "metrics": {
+        "baseline_syllables": 14,
+        "candidate_syllables": 14,
+        "baseline_stress": 9,
+        "candidate_stress": 9,
+        "selected_stress": 9,
+        "fixed_stress_compatible": 14,
+        "meter_family": 14
+      },
+      "expected_pentameter": true,
+      "observed_licensed_meter": true,
+      "poem_verdict_agrees": true
+    },
+    {
+      "number": 29,
+      "lines": 14,
+      "metrics": {
+        "baseline_syllables": 12,
+        "candidate_syllables": 13,
+        "baseline_stress": 5,
+        "candidate_stress": 5,
+        "selected_stress": 5,
+        "fixed_stress_compatible": 9,
+        "meter_family": 14
+      },
+      "expected_pentameter": true,
+      "observed_licensed_meter": true,
+      "poem_verdict_agrees": true
+    },
+    {
+      "number": 55,
+      "lines": 14,
+      "metrics": {
+        "baseline_syllables": 10,
+        "candidate_syllables": 10,
+        "baseline_stress": 3,
+        "candidate_stress": 3,
+        "selected_stress": 3,
+        "fixed_stress_compatible": 6,
+        "meter_family": 10
+      },
+      "expected_pentameter": true,
+      "observed_licensed_meter": false,
+      "poem_verdict_agrees": false
+    },
+    {
+      "number": 60,
+      "lines": 14,
+      "metrics": {
+        "baseline_syllables": 11,
+        "candidate_syllables": 12,
+        "baseline_stress": 6,
+        "candidate_stress": 6,
+        "selected_stress": 6,
+        "fixed_stress_compatible": 10,
+        "meter_family": 12
+      },
+      "expected_pentameter": true,
+      "observed_licensed_meter": false,
+      "poem_verdict_agrees": false
+    },
+    {
+      "number": 73,
+      "lines": 14,
+      "metrics": {
+        "baseline_syllables": 13,
+        "candidate_syllables": 13,
+        "baseline_stress": 7,
+        "candidate_stress": 7,
+        "selected_stress": 7,
+        "fixed_stress_compatible": 11,
+        "meter_family": 14
+      },
+      "expected_pentameter": true,
+      "observed_licensed_meter": true,
+      "poem_verdict_agrees": true
+    },
+    {
+      "number": 116,
+      "lines": 14,
+      "metrics": {
+        "baseline_syllables": 10,
+        "candidate_syllables": 11,
+        "baseline_stress": 6,
+        "candidate_stress": 6,
+        "selected_stress": 6,
+        "fixed_stress_compatible": 9,
+        "meter_family": 11
+      },
+      "expected_pentameter": true,
+      "observed_licensed_meter": false,
+      "poem_verdict_agrees": false
+    },
+    {
+      "number": 130,
+      "lines": 14,
+      "metrics": {
+        "baseline_syllables": 12,
+        "candidate_syllables": 13,
+        "baseline_stress": 9,
+        "candidate_stress": 10,
+        "selected_stress": 9,
+        "fixed_stress_compatible": 12,
+        "meter_family": 13
+      },
+      "expected_pentameter": true,
+      "observed_licensed_meter": false,
+      "poem_verdict_agrees": false
+    },
+    {
+      "number": 145,
+      "lines": 14,
+      "metrics": {
+        "baseline_syllables": 13,
+        "candidate_syllables": 14,
+        "baseline_stress": 10,
+        "candidate_stress": 11,
+        "selected_stress": 10,
+        "fixed_stress_compatible": 14,
+        "meter_family": 14
+      },
+      "expected_pentameter": false,
+      "observed_licensed_meter": false,
+      "poem_verdict_agrees": true
+    }
+  ],
+  "lines": [
+    {
+      "number": 2,
+      "line": 1,
+      "text": "When forty winters shall besiege thy brow,",
+      "hand_stress": "uSuSuuuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 2,
+      "text": "And dig deep trenches in thy beauty’s field,",
+      "hand_stress": "uSSSuuuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 3,
+      "text": "Thy youth’s proud livery so gazed on now,",
+      "hand_stress": "uSSSuuuSSS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuuuSuS",
+      "candidate_stresses": [
+        "uSuSuuuSuS"
+      ],
+      "selected_stress": "uSuSuuuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "PYRRHIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 4,
+      "text": "Will be a tatter’d weed of small worth held:",
+      "hand_stress": "uSuSuSuSSS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 5,
+      "text": "Then being asked, where all thy beauty lies,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 6,
+      "text": "Where all the treasure of thy lusty days;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 7,
+      "text": "To say, within thine own deep sunken eyes,",
+      "hand_stress": "uSuSuSSSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 8,
+      "text": "Were an all-eating shame, and thriftless praise.",
+      "hand_stress": "uuSSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 9,
+      "text": "How much more praise deserv’d thy beauty’s use,",
+      "hand_stress": "uSSSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 10,
+      "text": "If thou couldst answer ‘This fair child of mine",
+      "hand_stress": "uSuSuSSSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 11,
+      "text": "Shall sum my count, and make my old excuse,’",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 12,
+      "text": "Proving his beauty by succession thine!",
+      "hand_stress": "SuuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "SuuSuSuSuS",
+      "candidate_stresses": [
+        "SuuSuSuSuS"
+      ],
+      "selected_stress": "SuuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "INITIAL_TROCHAIC_INVERSION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 13,
+      "text": "This were to be new made when thou art old,",
+      "hand_stress": "uSuSSSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 2,
+      "line": 14,
+      "text": "And see thy blood warm when thou feel’st it cold.",
+      "hand_stress": "uSuSSuuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 1,
+      "text": "Shall I compare thee to a summer’s day?",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 2,
+      "text": "Thou art more lovely and more temperate:",
+      "hand_stress": "uSuSuSuSuu",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSu",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 18,
+      "line": 3,
+      "text": "Rough winds do shake the darling buds of May,",
+      "hand_stress": "SSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 4,
+      "text": "And summer’s lease hath all too short a date:",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 5,
+      "text": "Sometime too hot the eye of heaven shines,",
+      "hand_stress": "SuuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "SSuSuSuSuS",
+      "candidate_stresses": [
+        "SSuSuSuSuS",
+        "SSuSuSuSu"
+      ],
+      "selected_stress": "SSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 6,
+      "text": "And often is his gold complexion dimm’d,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 7,
+      "text": "And every fair from fair sometime declines,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuuuSuSSuS",
+      "candidate_stresses": [
+        "uSuuuSuSSuS"
+      ],
+      "selected_stress": "uSuuuSuSSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 18,
+      "line": 8,
+      "text": "By chance, or nature’s changing course untrimm’d:",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 9,
+      "text": "But thy eternal summer shall not fade,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 10,
+      "text": "Nor lose possession of that fair thou ow’st,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 11,
+      "text": "Nor shall death brag thou wander’st in his shade,",
+      "hand_stress": "uSSSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 12,
+      "text": "When in eternal lines to time thou grow’st,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 13,
+      "text": "So long as men can breathe, or eyes can see,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 18,
+      "line": 14,
+      "text": "So long lives this, and this gives life to thee.",
+      "hand_stress": "uSSSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 1,
+      "text": "Devouring Time, blunt thou the lion’s paws,",
+      "hand_stress": "uSuSSuuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuuuSuSSuu",
+      "candidate_stresses": [
+        "uSuuuSuSSuu"
+      ],
+      "selected_stress": "uSuuuSuSSuu",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 19,
+      "line": 2,
+      "text": "And make the earth devour her own sweet brood;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 3,
+      "text": "Pluck the keen teeth from the fierce tiger’s jaws,",
+      "hand_stress": "SuSSuuSSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 4,
+      "text": "And burn the long-liv’d phoenix, in her blood;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 5,
+      "text": "Make glad and sorry seasons as thou fleets,",
+      "hand_stress": "SSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 6,
+      "text": "And do whate’er thou wilt, swift-footed Time,",
+      "hand_stress": "uSuSuSSSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 7,
+      "text": "To the wide world and all her fading sweets;",
+      "hand_stress": "uuSSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 8,
+      "text": "But I forbid thee one most heinous crime:",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 9,
+      "text": "O! carve not with thy hours my love’s fair brow,",
+      "hand_stress": "uSuSuSuSSS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu",
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 10,
+      "text": "Nor draw no lines there with thine antique pen;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuuSS",
+      "candidate_stresses": [
+        "uSuSuSuuSS"
+      ],
+      "selected_stress": "uSuSuSuuSS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "PYRRHIC_SUBSTITUTION",
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 11,
+      "text": "Him in thy course untainted do allow",
+      "hand_stress": "SuuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 12,
+      "text": "For beauty’s pattern to succeeding men.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 13,
+      "text": "Yet do thy worst, old Time; despite thy wrong,",
+      "hand_stress": "uSuSSSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 19,
+      "line": 14,
+      "text": "My love shall in my verse ever live young.",
+      "hand_stress": "uSuSuSSuuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSSuuS",
+      "candidate_stresses": [
+        "uSuSuSSuuS"
+      ],
+      "selected_stress": "uSuSuSSuuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 20,
+      "line": 1,
+      "text": "A woman’s face with nature’s own hand painted,",
+      "hand_stress": "uSuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 2,
+      "text": "Hast thou, the master mistress of my passion;",
+      "hand_stress": "SuuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 3,
+      "text": "A woman’s gentle heart, but not acquainted",
+      "hand_stress": "uSuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 4,
+      "text": "With shifting change, as is false women’s fashion:",
+      "hand_stress": "uSuSuSSSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 5,
+      "text": "An eye more bright than theirs, less false in rolling,",
+      "hand_stress": "uSuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 6,
+      "text": "Gilding the object whereupon it gazeth;",
+      "hand_stress": "SuuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "SuuSuSuSuSu",
+      "candidate_stresses": [
+        "SuuSuSuSuSu"
+      ],
+      "selected_stress": "SuuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "INITIAL_TROCHAIC_INVERSION",
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 7,
+      "text": "A man in hue all ‘hues’ in his controlling,",
+      "hand_stress": "uSuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 8,
+      "text": "Which steals men’s eyes and women’s souls amazeth.",
+      "hand_stress": "uSSSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 9,
+      "text": "And for a woman wert thou first created;",
+      "hand_stress": "uSuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 10,
+      "text": "Till Nature, as she wrought thee, fell a-doting,",
+      "hand_stress": "uSuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 11,
+      "text": "And by addition me of thee defeated,",
+      "hand_stress": "uSuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 12,
+      "text": "By adding one thing to my purpose nothing.",
+      "hand_stress": "uSuSSuuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 13,
+      "text": "But since she prick’d thee out for women’s pleasure,",
+      "hand_stress": "uSuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 20,
+      "line": 14,
+      "text": "Mine be thy love and thy love’s use their treasure.",
+      "hand_stress": "SuuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 1,
+      "text": "When in disgrace with fortune and men’s eyes",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 2,
+      "text": "I all alone beweep my outcast state,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSSS",
+      "candidate_stresses": [
+        "uSuSuSuSSS"
+      ],
+      "selected_stress": "uSuSuSuSSS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 3,
+      "text": "And trouble deaf heaven with my bootless cries,",
+      "hand_stress": "uSuSSuuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSSuuSSuu",
+      "candidate_stresses": [
+        "uSuSSuuSSuu",
+        "uSuSSSuSuS"
+      ],
+      "selected_stress": "uSuSSSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "SPONDAIC_SUBSTITUTION",
+        "UNSTRESSED_ELISION"
+      ],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 4,
+      "text": "And look upon myself, and curse my fate,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSSSuSuS",
+      "candidate_stresses": [
+        "uSuSSSuSuS"
+      ],
+      "selected_stress": "uSuSSSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 5,
+      "text": "Wishing me like to one more rich in hope,",
+      "hand_stress": "SuuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "SuuSuSuSuS",
+      "candidate_stresses": [
+        "SuuSuSuSuS"
+      ],
+      "selected_stress": "SuuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "INITIAL_TROCHAIC_INVERSION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 6,
+      "text": "Featur’d like him, like him with friends possess’d,",
+      "hand_stress": "SuuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "SuuSuSuSuS",
+      "candidate_stresses": [
+        "SuuSuSuSuS"
+      ],
+      "selected_stress": "SuuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "INITIAL_TROCHAIC_INVERSION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 7,
+      "text": "Desiring this man’s art, and that man’s scope,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuuuSuSuSu",
+      "candidate_stresses": [
+        "uSuuuSuSuSu"
+      ],
+      "selected_stress": "uSuuuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING",
+        "PYRRHIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 8,
+      "text": "With what I most enjoy contented least;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSSSuSuS",
+      "candidate_stresses": [
+        "uSuSSSuSuS"
+      ],
+      "selected_stress": "uSuSSSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 9,
+      "text": "Yet in these thoughts my self almost despising,",
+      "hand_stress": "uSuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSSSuSu",
+      "candidate_stresses": [
+        "uSuSuSSSuSu"
+      ],
+      "selected_stress": "uSuSuSSSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING",
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 10,
+      "text": "Haply I think on thee, and then my state,",
+      "hand_stress": "SuuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "SuuSuSuSuS",
+      "candidate_stresses": [
+        "SuuSuSuSuS"
+      ],
+      "selected_stress": "SuuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "INITIAL_TROCHAIC_INVERSION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 11,
+      "text": "Like to the lark at break of day arising",
+      "hand_stress": "SuuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 12,
+      "text": "From sullen earth, sings hymns at heaven’s gate;",
+      "hand_stress": "uSuSSSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS",
+        "uSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 13,
+      "text": "For thy sweet love remember’d such wealth brings",
+      "hand_stress": "uSSSuSuSSS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 29,
+      "line": 14,
+      "text": "That then I scorn to change my state with kings.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 55,
+      "line": 1,
+      "text": "Not marble, nor the gilded monuments",
+      "hand_stress": "uSuSuSuSuu",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuu",
+      "candidate_stresses": [
+        "uSuSuSuSuu"
+      ],
+      "selected_stress": "uSuSuSuSuu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "PYRRHIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 55,
+      "line": 2,
+      "text": "Of princes, shall outlive this powerful rhyme;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSSSuSuuu",
+      "candidate_stresses": [
+        "uSuSSSuSuuu"
+      ],
+      "selected_stress": "uSuSSSuSuuu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING",
+        "PYRRHIC_SUBSTITUTION",
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 55,
+      "line": 3,
+      "text": "But you shall shine more bright in these contents",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSSu",
+      "candidate_stresses": [
+        "uSuSuSuSSu"
+      ],
+      "selected_stress": "uSuSuSuSSu",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 55,
+      "line": 4,
+      "text": "Than unswept stone, besmear’d with sluttish time.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uuSSuSuSuS",
+      "candidate_stresses": [
+        "uuSSuSuSuS"
+      ],
+      "selected_stress": "uuSSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "PYRRHIC_SUBSTITUTION",
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 55,
+      "line": 5,
+      "text": "When wasteful war shall statues overturn,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSSSuS",
+      "candidate_stresses": [
+        "uSuSuSSSuS"
+      ],
+      "selected_stress": "uSuSuSSSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 55,
+      "line": 6,
+      "text": "And broils root out the work of masonry,",
+      "hand_stress": "uSSSuSuSuu",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuu",
+      "candidate_stresses": [
+        "uSuSuSuSuu"
+      ],
+      "selected_stress": "uSuSuSuSuu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "PYRRHIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 55,
+      "line": 7,
+      "text": "Nor Mars his sword, nor war’s quick fire shall burn",
+      "hand_stress": "uSuSuSSSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 55,
+      "line": 8,
+      "text": "The living record of your memory.",
+      "hand_stress": "uSuSuSuSuu",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuuSSuSuu",
+      "candidate_stresses": [
+        "uSuuSSuSuu"
+      ],
+      "selected_stress": "uSuuSSuSuu",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 55,
+      "line": 9,
+      "text": "’Gainst death, and all-oblivious enmity",
+      "hand_stress": "uSuSuSuSuu",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuuSuu",
+      "candidate_stresses": [
+        "uSuSuSuuSuu"
+      ],
+      "selected_stress": "uSuSuSuuSuu",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 55,
+      "line": 10,
+      "text": "Shall you pace forth; your praise shall still find room",
+      "hand_stress": "uSSSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 55,
+      "line": 11,
+      "text": "Even in the eyes of all posterity",
+      "hand_stress": "SuuSuSuSuu",
+      "hand_syllables": 10,
+      "baseline_stress": "SuuSuSuuSuu",
+      "candidate_stresses": [
+        "SuuSuSuuSuu"
+      ],
+      "selected_stress": "SuuSuSuuSuu",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 55,
+      "line": 12,
+      "text": "That wear this world out to the ending doom.",
+      "hand_stress": "uSuSSuuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 55,
+      "line": 13,
+      "text": "So, till the judgement that yourself arise,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 55,
+      "line": 14,
+      "text": "You live in this, and dwell in lovers’ eyes.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 1,
+      "text": "Like as the waves make towards the pebbled shore,",
+      "hand_stress": "SuuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuuSSSuu",
+      "candidate_stresses": [
+        "uSuSuuSSSuu"
+      ],
+      "selected_stress": "uSuSuuSSSuu",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 60,
+      "line": 2,
+      "text": "So do our minutes hasten to their end;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSSuSuSuuSu",
+      "candidate_stresses": [
+        "uSSuSuSuuSu",
+        "uSSSuSuSuS"
+      ],
+      "selected_stress": "uSSSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "SPONDAIC_SUBSTITUTION",
+        "UNSTRESSED_ELISION"
+      ],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 3,
+      "text": "Each changing place with that which goes before,",
+      "hand_stress": "SSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 4,
+      "text": "In sequent toil all forwards do contend.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 5,
+      "text": "Nativity, once in the main of light,",
+      "hand_stress": "uSuuSuuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuuuSuSuS",
+      "candidate_stresses": [
+        "uSuuuSuSuS"
+      ],
+      "selected_stress": "uSuuuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "PYRRHIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 6,
+      "text": "Crawls to maturity, wherewith being crown’d,",
+      "hand_stress": "SuuSuuuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuuuSSuu",
+      "candidate_stresses": [
+        "uSuSuuuSSuu"
+      ],
+      "selected_stress": "uSuSuuuSSuu",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 60,
+      "line": 7,
+      "text": "Crooked eclipses ’gainst his glory fight,",
+      "hand_stress": "SuuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "SuuSuSuSuS",
+      "candidate_stresses": [
+        "SuuSuSuSuS"
+      ],
+      "selected_stress": "SuuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "INITIAL_TROCHAIC_INVERSION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 8,
+      "text": "And Time that gave doth now his gift confound.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 9,
+      "text": "Time doth transfix the flourish set on youth",
+      "hand_stress": "SuuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 10,
+      "text": "And delves the parallels in beauty’s brow,",
+      "hand_stress": "uSuSuuuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 11,
+      "text": "Feeds on the rarities of nature’s truth,",
+      "hand_stress": "SuuSuuuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuuuSuS",
+      "candidate_stresses": [
+        "uSuSuuuSuS"
+      ],
+      "selected_stress": "uSuSuuuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "PYRRHIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 12,
+      "text": "And nothing stands but for his scythe to mow:",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 13,
+      "text": "And yet to times in hope, my verse shall stand.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 60,
+      "line": 14,
+      "text": "Praising thy worth, despite his cruel hand.",
+      "hand_stress": "SuuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "SuuSuSuSuS",
+      "candidate_stresses": [
+        "SuuSuSuSuS"
+      ],
+      "selected_stress": "SuuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "INITIAL_TROCHAIC_INVERSION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 1,
+      "text": "That time of year thou mayst in me behold",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 2,
+      "text": "When yellow leaves, or none, or few, do hang",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 3,
+      "text": "Upon those boughs which shake against the cold,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 4,
+      "text": "Bare ruin’d choirs, where late the sweet birds sang.",
+      "hand_stress": "SSuSuSuSSS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 5,
+      "text": "In me thou see’st the twilight of such day",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSSSuS",
+      "candidate_stresses": [
+        "uSuSuSSSuS"
+      ],
+      "selected_stress": "uSuSuSSSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 6,
+      "text": "As after sunset fadeth in the west;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSSSuSuS",
+      "candidate_stresses": [
+        "uSuSSSuSuS"
+      ],
+      "selected_stress": "uSuSSSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 7,
+      "text": "Which by and by black night doth take away,",
+      "hand_stress": "uSuSSSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 8,
+      "text": "Death’s second self, that seals up all in rest.",
+      "hand_stress": "SSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 9,
+      "text": "In me thou see’st the glowing of such fire,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 10,
+      "text": "That on the ashes of his youth doth lie,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 11,
+      "text": "As the death-bed, whereon it must expire,",
+      "hand_stress": "uuSSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 12,
+      "text": "Consum’d with that which it was nourish’d by.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 13,
+      "text": "This thou perceiv’st, which makes thy love more strong,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 73,
+      "line": 14,
+      "text": "To love that well, which thou must leave ere long.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 116,
+      "line": 1,
+      "text": "Let me not to the marriage of true minds",
+      "hand_stress": "SuSuuSuuSS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 116,
+      "line": 2,
+      "text": "Admit impediments. Love is not love",
+      "hand_stress": "uSuSuuSuSS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSSSuuuSuS",
+      "candidate_stresses": [
+        "uSSSuuuSuS"
+      ],
+      "selected_stress": "uSSSuuuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "PYRRHIC_SUBSTITUTION",
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 116,
+      "line": 3,
+      "text": "Which alters when it alteration finds,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 116,
+      "line": 4,
+      "text": "Or bends with the remover to remove:",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 116,
+      "line": 5,
+      "text": "O, no! it is an ever-fixed mark,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSu",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 116,
+      "line": 6,
+      "text": "That looks on tempests and is never shaken;",
+      "hand_stress": "uSuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 116,
+      "line": 7,
+      "text": "It is the star to every wandering bark,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuuSuuS",
+      "candidate_stresses": [
+        "uSuSuSuuSuuS"
+      ],
+      "selected_stress": "uSuSuSuuSuuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 116,
+      "line": 8,
+      "text": "Whose worth’s unknown, although his height be taken.",
+      "hand_stress": "uSuSuSuSuSu",
+      "hand_syllables": 11,
+      "baseline_stress": "uSuSSSuSuSu",
+      "candidate_stresses": [
+        "uSuSSSuSuSu"
+      ],
+      "selected_stress": "uSuSSSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING",
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 116,
+      "line": 9,
+      "text": "Love’s not Time’s fool, though rosy lips and cheeks",
+      "hand_stress": "SSSSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 116,
+      "line": 10,
+      "text": "Within his bending sickle’s compass come;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 116,
+      "line": 11,
+      "text": "Love alters not with his brief hours and weeks,",
+      "hand_stress": "SSuSuSSSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu",
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 116,
+      "line": 12,
+      "text": "But bears it out even to the edge of doom.",
+      "hand_stress": "uSuSSuuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSSuuSuSu",
+      "candidate_stresses": [
+        "uSuSSuuSuSu"
+      ],
+      "selected_stress": "uSuSSuuSuSu",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 116,
+      "line": 13,
+      "text": "If this be error and upon me prov’d,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 116,
+      "line": 14,
+      "text": "I never writ, nor no man ever lov’d.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 1,
+      "text": "My mistress’ eyes are nothing like the sun;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 2,
+      "text": "Coral is far more red, than her lips red:",
+      "hand_stress": "SuuSuSuSSS",
+      "hand_syllables": 10,
+      "baseline_stress": "SuuSuSuSuS",
+      "candidate_stresses": [
+        "SuuSuSuSuS"
+      ],
+      "selected_stress": "SuuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "INITIAL_TROCHAIC_INVERSION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 3,
+      "text": "If snow be white, why then her breasts are dun;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 4,
+      "text": "If hairs be wires, black wires grow on her head.",
+      "hand_stress": "uSuSSSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSSuuSuS",
+      "candidate_stresses": [
+        "uSuSuSSuuSuS"
+      ],
+      "selected_stress": "uSuSuSSuuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": false,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": false
+      }
+    },
+    {
+      "number": 130,
+      "line": 5,
+      "text": "I have seen roses damask’d, red and white,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 6,
+      "text": "But no such roses see I in her cheeks;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 7,
+      "text": "And in some perfumes is there more delight",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuuSSuSuS",
+      "candidate_stresses": [
+        "uSuuSSuSuS"
+      ],
+      "selected_stress": "uSuuSSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "PYRRHIC_SUBSTITUTION",
+        "SPONDAIC_SUBSTITUTION"
+      ],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": false,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 8,
+      "text": "Than in the breath that from my mistress reeks.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 9,
+      "text": "I love to hear her speak, yet well I know",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 10,
+      "text": "That music hath a far more pleasing sound:",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 11,
+      "text": "I grant I never saw a goddess go;",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 12,
+      "text": "My mistress, when she walks, treads on the ground:",
+      "hand_stress": "uSuSuSSuuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 13,
+      "text": "And yet by heaven, I think my love as rare,",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuSu",
+      "candidate_stresses": [
+        "uSuSuSuSuSu",
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuSu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "FEMININE_ENDING"
+      ],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": true,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 130,
+      "line": 14,
+      "text": "As any she belied with false compare.",
+      "hand_stress": "uSuSuSuSuS",
+      "hand_syllables": 10,
+      "baseline_stress": "uSuSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 1,
+      "text": "Those lips that Love’s own hand did make,",
+      "hand_stress": "uSuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 2,
+      "text": "Breathed forth the sound that said ‘I hate’,",
+      "hand_stress": "SSuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 3,
+      "text": "To me that languish’d for her sake:",
+      "hand_stress": "uSuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 4,
+      "text": "But when she saw my woeful state,",
+      "hand_stress": "uSuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 5,
+      "text": "Straight in her heart did mercy come,",
+      "hand_stress": "SuuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 6,
+      "text": "Chiding that tongue that ever sweet",
+      "hand_stress": "SuuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "SuuSuSuS",
+      "candidate_stresses": [
+        "SuuSuSuS"
+      ],
+      "selected_stress": "SuuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 7,
+      "text": "Was us’d in giving gentle doom;",
+      "hand_stress": "uSuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 8,
+      "text": "And taught it thus anew to greet;",
+      "hand_stress": "uSuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 9,
+      "text": "‘I hate’ she alter’d with an end,",
+      "hand_stress": "uSuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 10,
+      "text": "That followed it as gentle day,",
+      "hand_stress": "uSuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 11,
+      "text": "Doth follow night, who like a fiend",
+      "hand_stress": "uSuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 12,
+      "text": "From heaven to hell is flown away.",
+      "hand_stress": "uSuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuuS",
+      "candidate_stresses": [
+        "uSuSuSuuS",
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": false,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": true,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 13,
+      "text": "‘I hate’, from hate away she threw,",
+      "hand_stress": "uSuSuSuS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSuSuS",
+      "candidate_stresses": [
+        "uSuSuSuS"
+      ],
+      "selected_stress": "uSuSuSuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    },
+    {
+      "number": 145,
+      "line": 14,
+      "text": "And sav’d my life, saying ‘not you’.",
+      "hand_stress": "uSuSSuSS",
+      "hand_syllables": 8,
+      "baseline_stress": "uSuSSuuS",
+      "candidate_stresses": [
+        "uSuSSuuS"
+      ],
+      "selected_stress": "uSuSSuuS",
+      "model_meter_licensed": false,
+      "model_licenses": [],
+      "agreement": {
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": false,
+        "candidate_stress": false,
+        "selected_stress": false,
+        "fixed_stress_compatible": true,
+        "meter_family": true
+      }
+    }
+  ]
+}

@@ -231,4 +231,40 @@ theorem three_substitutions_fail : scanLicensed
     ⟨[false, false, true, true, false, false, false, true, false, true], none⟩ = false := by
   decide
 
+/- Rhyme boundary fixtures use arbitrary class names, not literary assertions. -/
+private def rhymeFixture (classes : List (Option String)) : Sonnet :=
+  ⟨0, classes.map fun c => ⟨"fixture", c, [⟨pentameter, none⟩]⟩⟩
+
+private def exactRhymeFixture : List (Option String) :=
+  [some "a", some "b", some "a", some "b", some "c", some "d", some "c", some "d",
+   some "e", some "f", some "e", some "f", some "g", some "g"]
+
+theorem exact_rhyme_passes : rhymeScheme (rhymeFixture exactRhymeFixture) = true := by
+  decide
+
+/-- Merely matching each expected pair is insufficient when differently named
+signature classes coincide. -/
+theorem repeated_cross_letter_rhyme_fails : rhymeScheme (rhymeFixture
+    [some "a", some "b", some "a", some "b", some "a", some "d", some "a", some "d",
+     some "e", some "f", some "e", some "f", some "g", some "g"]) = false := by
+  decide
+
+theorem missing_rhyme_class_fails : rhymeScheme (rhymeFixture
+    (none :: exactRhymeFixture.drop 1)) = false := by decide
+
+theorem empty_rhyme_class_fails : rhymeScheme (rhymeFixture
+    (some "" :: exactRhymeFixture.drop 1)) = false := by decide
+
+theorem fifteenth_line_rhyme_fails :
+    rhymeScheme (rhymeFixture (exactRhymeFixture ++ [some "g"])) = false := by decide
+
+theorem twelve_line_rhyme_fails :
+    rhymeScheme (rhymeFixture (exactRhymeFixture.take 12)) = false := by decide
+
+theorem empty_poem_fails_all_components : verdict ⟨0, []⟩ =
+    ⟨0, false, false, false, false⟩ := by decide
+
+theorem one_pentameter_is_not_sonnet : verdict
+    (rhymeFixture [some "a"]) = ⟨0, false, false, true, true⟩ := by decide
+
 end SonnetForm
