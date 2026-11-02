@@ -18,21 +18,15 @@ labelled correction using nonnegative extended thresholds. The original
 node remains held; no downstream node is counted complete using an
 unannounced correction. Coordinator ruling is pending.
 
-## Chapter 2 continuation — 17 original items pending
+## Chapter 2 continuation — 11 original items pending
 
 These are explicit implementation boundaries, not assertions that the
 printed statements are false. See the per-node claims check for evidence.
 
 | Node | Remaining work |
 |---|---|
-| 2.1 | Formalize the vector-space/linear-functional interface. |
-| 2.2 | State the integration functional examples and positivity. |
-| 2.3 | Package the topological definitions and their precise neighborhood convention. |
-| 2.8 | Package semicontinuity, indicators and arbitrary extrema. |
-| 2.9 | State the compact-support definition and its representation bridge. |
+| 2.2 | Complete the integration-functional examples, positivity, and interval-length approximation discussion. |
 | 2.14 | Complete complex Riesz representation on the completed sigma algebra, including uniqueness and all regularity clauses. |
-| 2.15 | Bridge Rudin regularity on all Borel sets; Mathlib Regular alone is insufficient. |
-| 2.16 | State sigma-compact/sigma-finite definitions and implications under 2.14. |
 | 2.17 | Closed/open and Fσ/Gδ approximations on the completed measure space. |
 | 2.18 | Automatic regularity under exactly the book's topological assumptions. |
 | 2.19 | Euclidean cells and half-open dyadic decompositions. |
@@ -42,6 +36,11 @@ printed statements are false. See the per-node claims check for evidence.
 | 2.23 | All determinant scaling cases, including singular maps. |
 | 2.24 | Full Lusin statement and bounded a.e. approximation corollary; exact Mathlib theorem not found. |
 | 2.25 | Full non-strict Vitali–Carathéodory statement without introducing sigma-finiteness. |
+
+The definitions in 2.15 and the consequences in 2.16 are now represented.
+The latter assume the relevant properties of the measure in 2.14, which
+remains pending; they do not establish existence of that measure. In
+particular, regularity in 2.15 explicitly quantifies over every Borel set.
 
 ## Chapter 3 continuation
 

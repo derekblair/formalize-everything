@@ -109,9 +109,25 @@ clauses (2.4, 2.5(a,b), 2.10) are included. The declarations are
 The definition-bearing notation node **2.11** is also implemented by
 `IsCutoff`, `CompactCutoff` and `OpenCutoff`; the chained relation is their
 conjunction. `ofRealCutoff` supplies the explicit real-to-complex bridge
-used in 2.12 and 2.13. Thus **8/25 numbered items are represented fully,
-17/25 remain**; the theorem-only count is **7 proved / 7 remaining**.
-The other definition/exposition entries remain inventoried, even where
-their vocabulary is already present in Mathlib. They are not counted as
-completed merely because Mathlib was imported. No measure-theoretic
-numbered theorem from 2.14 onward is claimed proved in this module.
+used in 2.12 and 2.13.
+
+The resumed implementation also covers all six definition nodes, including
+their accompanying assertions:
+
+| Node | Declaration coverage in `RudinRCA.Chapter02` |
+|---|---|
+| 2.1 | `ComplexVectorSpace`, `LinearFunctional`, `definition_2_1_*`: vector-space laws and the exact linear-map identity |
+| 2.3 | `BookNeighborhood`, `BookLocallyCompact`, `definition_2_3_*`, `proposition_2_3_*`: closedness, closure, compactness, open neighborhoods, Hausdorff/local compactness, and metric/Euclidean reminders |
+| 2.8 | `BookLowerSemicontinuous`, `BookUpperSemicontinuous`, `definition_2_8_*`, `proposition_2_8*`: real-threshold definitions, real/extended endpoints, continuity, indicators, arbitrary extrema |
+| 2.9 | `BookSupport`, `BookCc`, `compactlySupportedSubmodule`, `definition_2_9_*`, `proposition_2_9_*`: exact support, bundled/unbundled Cc bridge, vector-space and continuity assertions |
+| 2.15 | `BookPositiveBorelMeasure`, `BookComplexBorelMeasure`, `BookOuterRegularSet`, `BookInnerRegularSet`, `BookRegularBorelMeasure`, `definition_2_15_regular`: Borel domain and both regularity formulas on every Borel set |
+| 2.16 | `BookSigmaFiniteSet`, `definition_2_16_*`, `proposition_2_16_*`: sigma-compact/sigma-finite definitions, sigma-finite measurable covers, and both consequences of 2.14's measure properties |
+
+Thus **14/25 numbered items are represented fully, 11/25 remain**:
+2.1, 2.3–2.13, and 2.15–2.16 are covered. The theorem-only count is still
+**7 proved / 7 remaining**. The 2.16 consequences take compact finiteness
+and inner regularity on finite measurable sets as explicit hypotheses;
+they do not prove the existence/uniqueness assertion in 2.14. No global
+sigma-finiteness is introduced. The full 2.2 discussion, representation
+theorem 2.14, and 2.17–2.25 remain queued. No measure-theoretic numbered
+theorem from 2.14 onward is claimed proved in this module.
