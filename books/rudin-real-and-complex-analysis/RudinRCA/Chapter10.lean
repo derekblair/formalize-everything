@@ -1,5 +1,7 @@
 import Mathlib.Analysis.Complex.AbsMax
 import Mathlib.Analysis.Analytic.Uniqueness
+import Mathlib.Analysis.Analytic.IsolatedZeros
+import Mathlib.Topology.Compactness.Lindelof
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Analysis.Complex.TaylorSeries
 import Mathlib.Analysis.Complex.Liouville
@@ -8,6 +10,7 @@ import Mathlib.Analysis.Complex.RemovableSingularity
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.Analysis.Complex.Exponential
 import Mathlib.Analysis.Calculus.Deriv.Slope
+import Mathlib.Analysis.Calculus.ContDiff.RCLike
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 import Mathlib.Analysis.Analytic.OfScalars
 import Mathlib.Topology.Connected.LocallyConnected
@@ -45,6 +48,216 @@ theorem mem_puncturedDisc {a z : ℂ} {r : ℝ} :
   simp only [puncturedDisc, Set.mem_sdiff, mem_disc, mem_singleton_iff,
     norm_pos_iff, sub_ne_zero]
   exact and_comm
+
+/-- 10.1: the closed disc is the closure of the open disc. -/
+def closedDisc (a : ℂ) (r : ℝ) : Set ℂ := closure (disc a r)
+
+theorem closedDisc_eq_closedBall (a : ℂ) {r : ℝ} (hr : 0 < r) :
+    closedDisc a r = Metric.closedBall a r := by
+  simp [closedDisc, disc, closure_ball, hr.ne']
+
+theorem mem_closedDisc {a z : ℂ} {r : ℝ} (hr : 0 < r) :
+    z ∈ closedDisc a r ↔ ‖z - a‖ ≤ r := by
+  rw [closedDisc_eq_closedBall a hr]
+  exact mem_closedBall_iff_norm
+
+section ConnectedSets
+variable {X : Type*} [TopologicalSpace X]
+
+/-- 10.1: Rudin's connectedness convention permits the empty set. -/
+def BookConnected (E : Set X) : Prop :=
+  ¬ ∃ A B : Set X, E = A ∪ B ∧ A.Nonempty ∧ B.Nonempty ∧
+    Disjoint (closure A) B ∧ Disjoint A (closure B)
+
+theorem bookConnected_iff_isPreconnected (E : Set X) :
+    BookConnected E ↔ IsPreconnected E := by
+  classical
+  constructor
+  · intro h U V hU hV hcover hEU hEV
+    by_contra hnone
+    have hdisj : Disjoint (E ∩ U) V := by
+      refine Set.disjoint_left.mpr ?_
+      intro x hx hxV
+      exact hnone ⟨x, hx.1, hx.2, hxV⟩
+    have hdisj' : Disjoint U (E ∩ V) := by
+      refine Set.disjoint_left.mpr ?_
+      intro x hxU hx
+      exact hnone ⟨x, hx.1, hxU, hx.2⟩
+    apply h
+    refine ⟨E ∩ U, E ∩ V, ?_, hEU, hEV,
+      (hdisj.closure_left hV).mono_right inter_subset_right,
+      (hdisj'.closure_right hU).mono_left inter_subset_right⟩
+    exact (inter_union_distrib_left E U V).symm.trans (inter_eq_left.mpr hcover) |>.symm
+  · intro h
+    rintro ⟨A, B, rfl, hA, hB, hAB, hAB'⟩
+    have hAsub : A ⊆ (closure B)ᶜ := by
+      intro x hx hxB
+      exact Set.disjoint_left.mp hAB' hx hxB
+    have hBsub : B ⊆ (closure A)ᶜ := by
+      intro x hx hxA
+      exact Set.disjoint_left.mp hAB hxA hx
+    obtain ⟨x, hx, hxU, hxV⟩ := h (closure B)ᶜ (closure A)ᶜ
+      isClosed_closure.isOpen_compl isClosed_closure.isOpen_compl
+      (union_subset_union hAsub hBsub)
+      (hA.mono (fun _ hx ↦ ⟨Or.inl hx, hAsub hx⟩))
+      (hB.mono (fun _ hx ↦ ⟨Or.inr hx, hBsub hx⟩))
+    rcases hx with hx | hx
+    · exact hxV (subset_closure hx)
+    · exact hxU (subset_closure hx)
+
+theorem not_bookConnected_iff_open_separation (E : Set X) :
+    ¬ BookConnected E ↔ ∃ U V : Set X,
+      IsOpen U ∧ IsOpen V ∧ E ⊆ U ∪ V ∧
+      (E ∩ U).Nonempty ∧ (E ∩ V).Nonempty ∧ E ∩ (U ∩ V) = ∅ := by
+  classical
+  rw [bookConnected_iff_isPreconnected]
+  simp only [IsPreconnected, not_forall, exists_prop, Set.not_nonempty_iff_eq_empty]
+
+theorem closed_disconnected_decomposition {E : Set X} (hE : IsClosed E)
+    (h : ¬ BookConnected E) :
+    ∃ A B : Set X, IsClosed A ∧ IsClosed B ∧ A.Nonempty ∧ B.Nonempty ∧
+      Disjoint A B ∧ E = A ∪ B := by
+  classical
+  obtain ⟨A, B, hEq, hA, hB, hAB, hAB'⟩ := not_not.mp h
+  have hclA : closure A ⊆ E := closure_minimal (hEq ▸ subset_union_left) hE
+  have hclB : closure B ⊆ E := closure_minimal (hEq ▸ subset_union_right) hE
+  have hAc : IsClosed A := by
+    apply closure_subset_iff_isClosed.mp
+    intro x hx
+    rcases hEq ▸ hclA hx with hxa | hxb
+    · exact hxa
+    · exact (Set.disjoint_left.mp hAB hx hxb).elim
+  have hBc : IsClosed B := by
+    apply closure_subset_iff_isClosed.mp
+    intro x hx
+    rcases hEq ▸ hclB hx with hxa | hxb
+    · exact (Set.disjoint_left.mp hAB' hxa hx).elim
+    · exact hxb
+  exact ⟨A, B, hAc, hBc, hA, hB, hAB.mono_left subset_closure, hEq⟩
+
+theorem open_disconnected_decomposition {E : Set X} (hE : IsOpen E)
+    (h : ¬ BookConnected E) :
+    ∃ A B : Set X, IsOpen A ∧ IsOpen B ∧ A.Nonempty ∧ B.Nonempty ∧
+      Disjoint A B ∧ E = A ∪ B := by
+  obtain ⟨U, V, hU, hV, hcover, hEU, hEV, hempty⟩ :=
+    (not_bookConnected_iff_open_separation E).mp h
+  refine ⟨E ∩ U, E ∩ V, hE.inter hU, hE.inter hV, hEU, hEV, ?_, ?_⟩
+  · refine Set.disjoint_left.mpr ?_
+    intro x hx hy
+    have : x ∈ E ∩ (U ∩ V) := ⟨hx.1, hx.2, hy.2⟩
+    rw [hempty] at this
+    exact this
+  · exact (inter_union_distrib_left E U V).symm.trans (inter_eq_left.mpr hcover) |>.symm
+
+theorem bookConnected_empty : BookConnected (∅ : Set X) :=
+  (bookConnected_iff_isPreconnected _).mpr isPreconnected_empty
+
+theorem bookConnected_singleton (x : X) : BookConnected ({x} : Set X) :=
+  (bookConnected_iff_isPreconnected _).mpr isPreconnected_singleton
+
+/-- The component in 10.1 is the union of all connected subsets containing the point. -/
+def bookComponent (E : Set X) (x : X) : Set X :=
+  ⋃₀ {C : Set X | C ⊆ E ∧ BookConnected C ∧ x ∈ C}
+
+theorem connectedSubsets_containing_nonempty {E : Set X} {x : X} (hx : x ∈ E) :
+    {C : Set X | C ⊆ E ∧ BookConnected C ∧ x ∈ C}.Nonempty := by
+  exact ⟨{x}, singleton_subset_iff.mpr hx, bookConnected_singleton x, mem_singleton x⟩
+
+theorem bookComponent_eq_connectedComponentIn (E : Set X) (x : X) :
+    bookComponent E x = connectedComponentIn E x := by
+  apply Set.Subset.antisymm
+  · rintro y ⟨C, ⟨hCE, hC, hxC⟩, hyC⟩
+    exact ((bookConnected_iff_isPreconnected C).mp hC).subset_connectedComponentIn
+      hxC hCE hyC
+  · intro y hy
+    have hxE : x ∈ E := connectedComponentIn_nonempty_iff.mp ⟨y, hy⟩
+    exact Set.mem_sUnion.mpr ⟨connectedComponentIn E x,
+      ⟨connectedComponentIn_subset E x,
+        (bookConnected_iff_isPreconnected _).mpr isPreconnected_connectedComponentIn,
+        mem_connectedComponentIn hxE⟩, hy⟩
+
+theorem bookComponent_connected (E : Set X) (x : X) :
+    BookConnected (bookComponent E x) := by
+  rw [bookComponent_eq_connectedComponentIn, bookConnected_iff_isPreconnected]
+  exact isPreconnected_connectedComponentIn
+
+theorem bookComponent_maximal {E C : Set X} {x : X} (hCE : C ⊆ E)
+    (hC : BookConnected C) (hxC : x ∈ C) : C ⊆ bookComponent E x := by
+  intro y hy
+  exact Set.mem_sUnion.mpr ⟨C, ⟨hCE, hC, hxC⟩, hy⟩
+
+theorem mem_bookComponent {E : Set X} {x : X} (hx : x ∈ E) : x ∈ bookComponent E x := by
+  rw [bookComponent_eq_connectedComponentIn]
+  exact mem_connectedComponentIn hx
+
+theorem bookComponent_subset (E : Set X) (x : X) : bookComponent E x ⊆ E := by
+  rw [bookComponent_eq_connectedComponentIn]
+  exact connectedComponentIn_subset E x
+
+theorem bookComponent_maximal_connected_subset {E : Set X} {x : X} (hx : x ∈ E) :
+    BookConnected (bookComponent E x) ∧ bookComponent E x ⊆ E ∧
+      ∀ C, C ⊆ E → BookConnected C → bookComponent E x ⊆ C → C = bookComponent E x := by
+  refine ⟨bookComponent_connected E x, bookComponent_subset E x, ?_⟩
+  intro C hCE hC hcompC
+  exact Set.Subset.antisymm (bookComponent_maximal hCE hC (hcompC (mem_bookComponent hx)))
+    hcompC
+
+/-- The set of components, without duplicate indexing by points. -/
+def bookComponents (E : Set X) : Set (Set X) :=
+  {C | ∃ x ∈ E, C = bookComponent E x}
+
+theorem sUnion_bookComponents (E : Set X) : ⋃₀ bookComponents E = E := by
+  apply Set.Subset.antisymm
+  · rintro y ⟨C, ⟨x, hx, rfl⟩, hy⟩
+    rw [bookComponent_eq_connectedComponentIn] at hy
+    exact connectedComponentIn_subset E x hy
+  · intro y hy
+    refine Set.mem_sUnion.mpr ⟨bookComponent E y, ⟨y, hy, rfl⟩, ?_⟩
+    rw [bookComponent_eq_connectedComponentIn]
+    exact mem_connectedComponentIn hy
+
+theorem bookComponents_pairwise_disjoint (E : Set X) :
+    (bookComponents E).Pairwise Disjoint := by
+  rintro C ⟨x, hx, rfl⟩ D ⟨y, hy, rfl⟩ hne
+  refine Set.disjoint_left.mpr ?_
+  intro z hzx hzy
+  apply hne
+  simp only [bookComponent_eq_connectedComponentIn] at hzx hzy ⊢
+  exact (connectedComponentIn_eq hzx).trans (connectedComponentIn_eq hzy).symm
+
+end ConnectedSets
+
+theorem disc_isRegion (a : ℂ) {r : ℝ} (hr : 0 < r) : IsRegion (disc a r) := by
+  exact ⟨Metric.isOpen_ball, (convex_ball a r).isConnected ⟨a, Metric.mem_ball_self hr⟩⟩
+
+theorem isRegion_iff_bookConnected (Ω : Set ℂ) :
+    IsRegion Ω ↔ Ω.Nonempty ∧ BookConnected Ω ∧ IsOpen Ω := by
+  simp only [IsRegion, IsConnected, bookConnected_iff_isPreconnected]
+  tauto
+
+/-- 10.1: the open discs contained in an open set cover that set. -/
+theorem open_eq_sUnion_discs {Ω : Set ℂ} (hΩ : IsOpen Ω) :
+    Ω = ⋃₀ {D : Set ℂ | ∃ a r, 0 < r ∧ D = disc a r ∧ D ⊆ Ω} := by
+  apply Set.Subset.antisymm
+  · intro z hz
+    obtain ⟨r, hr, hsub⟩ := Metric.isOpen_iff.mp hΩ z hz
+    exact Set.mem_sUnion.mpr ⟨disc z r, ⟨z, r, hr, rfl, hsub⟩,
+      Metric.mem_ball_self hr⟩
+  · rintro z ⟨D, ⟨a, r, hr, rfl, hsub⟩, hz⟩
+    exact hsub hz
+
+theorem bookComponent_isRegion {Ω : Set ℂ} (hΩ : IsOpen Ω) {z : ℂ} (hz : z ∈ Ω) :
+    IsRegion (bookComponent Ω z) := by
+  rw [bookComponent_eq_connectedComponentIn]
+  exact ⟨hΩ.connectedComponentIn, isConnected_connectedComponentIn_iff.mpr hz⟩
+
+/-- 10.1: every open plane set is the union of pairwise disjoint regions. -/
+theorem open_eq_sUnion_disjoint_regions {Ω : Set ℂ} (hΩ : IsOpen Ω) :
+    ∃ ℛ : Set (Set ℂ), (∀ R ∈ ℛ, IsRegion R) ∧ ℛ.Pairwise Disjoint ∧ Ω = ⋃₀ ℛ := by
+  refine ⟨bookComponents Ω, ?_, bookComponents_pairwise_disjoint Ω,
+    (sUnion_bookComponents Ω).symm⟩
+  rintro R ⟨z, hz, rfl⟩
+  exact bookComponent_isRegion hΩ hz
 
 /-- 10.2: complex differentiability at every point of the open domain. -/
 def HolomorphicOn (f : ℂ → ℂ) (Ω : Set ℂ) : Prop :=
@@ -156,6 +369,198 @@ theorem holomorphicOn_deriv {f : ℂ → ℂ} {Ω : Set ℂ}
     (hΩ : IsOpen Ω) (hf : HolomorphicOn f Ω) : HolomorphicOn (deriv f) Ω := by
   have ha := ((holomorphicOn_iff_differentiableOn hΩ).mp hf).analyticOnNhd hΩ
   exact fun z hz => (ha.deriv z hz).differentiableAt
+
+/-- 10.18: the zeros in the stated domain. -/
+def zeroSet (f : ℂ → ℂ) (Ω : Set ℂ) : Set ℂ := {z ∈ Ω | f z = 0}
+
+/-- 10.18: a holomorphic function on a region is identically zero or its zero set has
+no limit point in that region. -/
+theorem zeroSet_eq_or_no_accumulation {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsRegion Ω) (hf : HolomorphicOn f Ω) :
+    zeroSet f Ω = Ω ∨ ∀ z ∈ Ω, ¬ AccPt z (𝓟 (zeroSet f Ω)) := by
+  have ha : AnalyticOnNhd ℂ f Ω :=
+    ((holomorphicOn_iff_differentiableOn hΩ.1).mp hf).analyticOnNhd hΩ.1
+  rcases ha.eqOn_zero_or_eventually_ne_zero_of_preconnected hΩ.2.isPreconnected with hzero | hne
+  · left
+    ext z
+    simp only [zeroSet, mem_ofPred_eq, and_iff_left_iff_imp]
+    exact fun hz => hzero hz
+  · right
+    have hcod : {z | f z ≠ 0} ∈ codiscreteWithin Ω := hne
+    have heq : Ω \ {z | f z ≠ 0} = zeroSet f Ω := by ext z; simp [zeroSet]
+    rw [mem_codiscreteWithin_accPt, heq] at hcod
+    exact hcod
+
+/-- 10.18: the nontrivial zero set is at most countable. -/
+theorem zeroSet_countable {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsRegion Ω) (hf : HolomorphicOn f Ω) (hne : ¬ Set.EqOn f 0 Ω) :
+    (zeroSet f Ω).Countable := by
+  have ha : AnalyticOnNhd ℂ f Ω :=
+    ((holomorphicOn_iff_differentiableOn hΩ.1).mp hf).analyticOnNhd hΩ.1
+  have hcod := (ha.eqOn_zero_or_eventually_ne_zero_of_preconnected
+    hΩ.2.isPreconnected).resolve_left hne
+  have hd : IsDiscrete (zeroSet f Ω) := by
+    have hd' := isDiscrete_of_codiscreteWithin (s := {z | f z = 0}) hcod
+    simpa only [zeroSet, Set.inter_comm, Set.inter_ofPred_eq_sep] using hd'
+  exact (HereditarilyLindelofSpace.isLindelof _).countable_of_isDiscrete hd
+
+/-- 10.18: each compact subset of the region contains only finitely many zeros
+of a holomorphic function which is not identically zero. -/
+theorem zeroSet_inter_compact_finite {f : ℂ → ℂ} {Ω K : Set ℂ}
+    (hΩ : IsRegion Ω) (hf : HolomorphicOn f Ω) (hne : ¬ Set.EqOn f 0 Ω)
+    (hK : IsCompact K) (hsub : K ⊆ Ω) :
+    (zeroSet f Ω ∩ K).Finite := by
+  have ha : AnalyticOnNhd ℂ f Ω :=
+    ((holomorphicOn_iff_differentiableOn hΩ.1).mp hf).analyticOnNhd hΩ.1
+  have hcod := (ha.eqOn_zero_or_eventually_ne_zero_of_preconnected
+    hΩ.2.isPreconnected).resolve_left hne
+  have hfin := hK.finite_sdiff_of_mem_codiscreteWithin
+    (Filter.codiscreteWithin_mono hsub hcod)
+  have heq : K \ {z | f z ≠ 0} = zeroSet f Ω ∩ K := by
+    ext z
+    simp only [Set.mem_sdiff, mem_ofPred_eq, not_not, zeroSet, mem_inter_iff]
+    exact ⟨fun hz => ⟨⟨hsub hz.1, hz.2⟩, hz.1⟩, fun hz => ⟨hz.2, hz.1.2⟩⟩
+  rwa [heq] at hfin
+
+/-- 10.18: a zero of a nonzero holomorphic function has a unique positive order,
+with its holomorphic factor defined on the whole original region. -/
+theorem existsUnique_zero_order {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsRegion Ω) (hf : HolomorphicOn f Ω) (hne : ¬ Set.EqOn f 0 Ω)
+    {a : ℂ} (ha : a ∈ Ω) (hfa : f a = 0) :
+    ∃! m : ℕ, 0 < m ∧ ∃ g : ℂ → ℂ, HolomorphicOn g Ω ∧ g a ≠ 0 ∧
+      ∀ z ∈ Ω, f z = (z - a) ^ m * g z := by
+  have han : AnalyticOnNhd ℂ f Ω :=
+    ((holomorphicOn_iff_differentiableOn hΩ.1).mp hf).analyticOnNhd hΩ.1
+  obtain ⟨p, hp⟩ := han a ha
+  have hpne : p ≠ 0 := by
+    intro hp0
+    exact hne (han.eqOn_zero_of_preconnected_of_eventuallyEq_zero hΩ.2.isPreconnected ha
+      (hp.locally_zero_iff.mpr hp0))
+  let g : ℂ → ℂ := (Function.swap dslope a)^[p.order] f
+  have hga : g a ≠ 0 := hp.iterate_dslope_fslope_ne_zero hpne
+  have hfg : ∀ z : ℂ, f z = (z - a) ^ p.order * g z := by
+    intro z
+    simpa only [smul_eq_mul] using hp.eq_pow_order_mul_iterate_dslope z
+  have hg : HolomorphicOn g Ω := by
+    have hi : ∀ n : ℕ, DifferentiableOn ℂ ((Function.swap dslope a)^[n] f) Ω := by
+      intro n
+      induction n with
+      | zero => exact (holomorphicOn_iff_differentiableOn hΩ.1).mp hf
+      | succ n ih =>
+        rw [Function.iterate_succ_apply']
+        exact (Complex.differentiableOn_dslope (hΩ.1.mem_nhds ha)).mpr ih
+    exact (holomorphicOn_iff_differentiableOn hΩ.1).mpr (hi p.order)
+  have hpos : 0 < p.order := by
+    apply Nat.pos_of_ne_zero
+    intro hzero
+    have he := hfg a
+    simp only [hfa, hzero, pow_zero, one_mul] at he
+    exact hga he.symm
+  refine ⟨p.order, ⟨hpos, g, hg, hga, fun z _ => hfg z⟩, ?_⟩
+  rintro m ⟨_, j, hj, hja, hjf⟩
+  apply AnalyticAt.unique_eventuallyEq_pow_smul_nonzero (f := f) (z₀ := a)
+  · refine ⟨j, ((holomorphicOn_iff_differentiableOn hΩ.1).mp hj).analyticOnNhd hΩ.1 a ha,
+      hja, ?_⟩
+    filter_upwards [hΩ.1.mem_nhds ha] with z hz
+    simpa only [smul_eq_mul] using hjf z hz
+  · refine ⟨g, ((holomorphicOn_iff_differentiableOn hΩ.1).mp hg).analyticOnNhd hΩ.1 a ha,
+      hga, ?_⟩
+    exact Filter.Eventually.of_forall fun z => by simpa only [smul_eq_mul] using hfg z
+
+/-- The identity-theorem corollary to 10.18, with an arbitrary agreement set
+having a limit point in the region. -/
+theorem eqOn_of_accumulation {f g : ℂ → ℂ} {Ω E : Set ℂ}
+    (hΩ : IsRegion Ω) (hf : HolomorphicOn f Ω) (hg : HolomorphicOn g Ω)
+    (hE : Set.EqOn f g E) {a : ℂ} (ha : a ∈ Ω) (hacc : AccPt a (𝓟 E)) :
+    Set.EqOn f g Ω := by
+  have hfan : AnalyticOnNhd ℂ f Ω :=
+    ((holomorphicOn_iff_differentiableOn hΩ.1).mp hf).analyticOnNhd hΩ.1
+  have hgan : AnalyticOnNhd ℂ g Ω :=
+    ((holomorphicOn_iff_differentiableOn hΩ.1).mp hg).analyticOnNhd hΩ.1
+  apply hfan.eqOn_of_preconnected_of_frequently_eq hgan hΩ.2.isPreconnected ha
+  rw [accPt_iff_frequently_nhdsNE] at hacc
+  exact hacc.mono hE
+
+
+/-- Rudin 10.18, gathering the zero-set dichotomy, global factorization with unique
+positive order, and countability in the printed statement. -/
+theorem theorem10_18 {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsRegion Ω) (hf : HolomorphicOn f Ω) :
+    zeroSet f Ω = Ω ∨
+      (∀ z ∈ Ω, ¬ AccPt z (𝓟 (zeroSet f Ω))) ∧
+      (∀ a ∈ zeroSet f Ω, ∃! m : ℕ, 0 < m ∧
+        ∃ g : ℂ → ℂ, HolomorphicOn g Ω ∧ g a ≠ 0 ∧
+          ∀ z ∈ Ω, f z = (z - a) ^ m * g z) ∧
+      (zeroSet f Ω).Countable := by
+  by_cases hzero : Set.EqOn f 0 Ω
+  · left
+    ext z
+    simp only [zeroSet, mem_ofPred_eq, and_iff_left_iff_imp]
+    exact fun hz => hzero hz
+  · right
+    have hnot : zeroSet f Ω ≠ Ω := by
+      intro h
+      apply hzero
+      intro z hz
+      have hz' : z ∈ zeroSet f Ω := h.symm ▸ hz
+      exact hz'.2
+    refine ⟨(zeroSet_eq_or_no_accumulation hΩ hf).resolve_left hnot, ?_,
+      zeroSet_countable hΩ hf hzero⟩
+    intro a ha
+    exact existsUnique_zero_order hΩ hf hzero ha.1 ha.2
+
+/-- 10.18's observation for arbitrary values: apply the zero-set theorem to `f - c`. -/
+theorem theorem10_18_levelSet {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsRegion Ω) (hf : HolomorphicOn f Ω) (c : ℂ) :
+    {z ∈ Ω | f z = c} = Ω ∨
+      (∀ z ∈ Ω, ¬ AccPt z (𝓟 {w ∈ Ω | f w = c})) ∧
+      (∀ a ∈ {z ∈ Ω | f z = c}, ∃! m : ℕ, 0 < m ∧
+        ∃ g : ℂ → ℂ, HolomorphicOn g Ω ∧ g a ≠ 0 ∧
+          ∀ z ∈ Ω, f z - c = (z - a) ^ m * g z) ∧
+      {z ∈ Ω | f z = c}.Countable := by
+  simpa only [zeroSet, sub_eq_zero] using
+    theorem10_18 (f := fun z => f z - c) hΩ
+      (fun z hz => (hf z hz).sub_const c)
+
+/-- The note after 10.18: on a disjoint union of two nonempty open sets, the
+function which is zero on the first and one on the second is holomorphic and
+has zeros accumulating in its domain without being identically zero. -/
+theorem disconnected_open_zeroSet_example {U V : Set ℂ}
+    (hU : IsOpen U) (hV : IsOpen V) (hUne : U.Nonempty) (hVne : V.Nonempty)
+    (hdis : Disjoint U V) :
+    ∃ f : ℂ → ℂ, HolomorphicOn f (U ∪ V) ∧ zeroSet f (U ∪ V) = U ∧
+      (∃ a ∈ U ∪ V, AccPt a (𝓟 (zeroSet f (U ∪ V)))) ∧
+      ¬ Set.EqOn f 0 (U ∪ V) := by
+  classical
+  let f : ℂ → ℂ := fun z => if z ∈ U then 0 else 1
+  have hfu : ∀ z ∈ U, f z = 0 := by intro z hz; simp [f, hz]
+  have hfv : ∀ z ∈ V, f z = 1 := by
+    intro z hz
+    have hzU : z ∉ U := fun hzu => Set.disjoint_left.mp hdis hzu hz
+    simp [f, hzU]
+  have heq : zeroSet f (U ∪ V) = U := by
+    ext z
+    constructor
+    · intro hz
+      rcases hz.1 with hzu | hzv
+      · exact hzu
+      · have : (1 : ℂ) = 0 := (hfv z hzv).symm.trans hz.2
+        exact (one_ne_zero this).elim
+    · exact fun hz => ⟨Or.inl hz, hfu z hz⟩
+  refine ⟨f, ?_, heq, ?_, ?_⟩
+  · intro z hz
+    rcases hz with hzu | hzv
+    · apply (differentiableAt_const (c := (0 : ℂ))).congr_of_eventuallyEq
+      filter_upwards [hU.mem_nhds hzu] with w hw
+      exact hfu w hw
+    · apply (differentiableAt_const (c := (1 : ℂ))).congr_of_eventuallyEq
+      filter_upwards [hV.mem_nhds hzv] with w hw
+      exact hfv w hw
+  · obtain ⟨a, ha⟩ := hUne
+    exact ⟨a, Or.inl ha, heq.symm ▸ hU.preperfect a ha⟩
+  · intro hz
+    obtain ⟨b, hb⟩ := hVne
+    exact one_ne_zero ((hfv b hb).symm.trans (hz (Or.inr hb)))
 
 /-- 10.19: an isolated singularity, including the domain and openness convention. -/
 def HasIsolatedSingularity (f : ℂ → ℂ) (Ω : Set ℂ) (a : ℂ) : Prop :=
@@ -561,5 +966,74 @@ theorem powers_not_uniform_on_unitDisc :
 
 
 end CompactConvergence
+
+/-- 10.29: the divided difference is the derivative on the diagonal. -/
+def dividedDifference (f : ℂ → ℂ) (z w : ℂ) : ℂ :=
+  if z = w then deriv f z else (f z - f w) / (z - w)
+
+@[simp] theorem dividedDifference_self (f : ℂ → ℂ) (z : ℂ) :
+    dividedDifference f z z = deriv f z := by
+  simp [dividedDifference]
+
+theorem dividedDifference_of_ne {f : ℂ → ℂ} {z w : ℂ} (h : z ≠ w) :
+    dividedDifference f z w = (f z - f w) / (z - w) := by
+  simp [dividedDifference, h]
+
+private theorem continuousAt_dividedDifference_diagonal {f : ℂ → ℂ} {a : ℂ}
+    (hs : HasStrictDerivAt f (deriv f a) a)
+    (hc : ContinuousAt (deriv f) a) :
+    ContinuousAt (fun p : ℂ × ℂ ↦ dividedDifference f p.1 p.2) (a, a) := by
+  have hr := (hasDerivAtFilter_iff_isLittleO.mp hs).tendsto_div_nhds_zero
+  have hr' : Tendsto (fun p : ℂ × ℂ ↦
+      (f p.1 - f p.2 - (p.1 - p.2) * deriv f a) / (p.1 - p.2) + deriv f a)
+      (𝓝 (a, a)) (𝓝 (deriv f a)) := by
+    simpa only [smul_eq_mul, zero_add] using hr.add_const (deriv f a)
+  have hd : Tendsto (fun p : ℂ × ℂ ↦ deriv f p.1) (𝓝 (a, a)) (𝓝 (deriv f a)) :=
+    hc.tendsto.comp continuousAt_fst.tendsto
+  have hlim := hd.if' (p := fun p : ℂ × ℂ ↦ p.1 = p.2) hr'
+  simp only [ContinuousAt, dividedDifference_self]
+  convert hlim using 1
+  funext p
+  dsimp [dividedDifference]
+  split_ifs with hp
+  · rfl
+  · have hn : p.1 - p.2 ≠ 0 := sub_ne_zero.mpr hp
+    field_simp
+    ring
+
+/-- Rudin 10.29: continuity is joint on the product of the open domain with itself. -/
+theorem node10_29_jointly_continuous {f : ℂ → ℂ} {Ω : Set ℂ}
+    (hΩ : IsOpen Ω) (hf : HolomorphicOn f Ω) :
+    ContinuousOn (fun p : ℂ × ℂ ↦ dividedDifference f p.1 p.2) (Ω ×ˢ Ω) := by
+  rintro ⟨z, w⟩ ⟨hz, hw⟩
+  apply ContinuousAt.continuousWithinAt
+  by_cases hzw : z = w
+  · subst w
+    apply continuousAt_dividedDifference_diagonal
+    · have ha := ((holomorphicOn_iff_differentiableOn hΩ).mp hf).analyticAt (hΩ.mem_nhds hz)
+      exact (ha.contDiffAt (n := 1)).hasStrictDerivAt one_ne_zero
+    · exact (holomorphicOn_deriv hΩ hf z hz).continuousAt
+  · have hc : ContinuousAt (fun p : ℂ × ℂ ↦
+        (f p.1 - f p.2) / (p.1 - p.2)) (z, w) :=
+      ((hf z hz).continuousAt.comp continuousAt_fst).sub
+        ((hf w hw).continuousAt.comp continuousAt_snd) |>.div
+        (continuousAt_fst.sub continuousAt_snd) (sub_ne_zero.mpr hzw)
+    apply hc.congr_of_eventuallyEq
+    filter_upwards [(isOpen_ne_fun continuous_fst continuous_snd).mem_nhds hzw] with p hp
+    exact dividedDifference_of_ne hp
+
+/-- The literal free-`z` conclusion printed in 10.37 cannot hold: choose `z = w`.
+This obstruction is independent of any properties of the index map. It does not
+supply the path geometry or prove the intended corrected geometric theorem. -/
+theorem node10_37_literal_conclusion_counterexample
+    (index : ℂ → ℂ) {Dplus Dminus : Set ℂ}
+    (hplus : Dplus.Nonempty) (hminus : Dminus.Nonempty) :
+    ∃ x ∈ Dplus, ∃ w ∈ Dminus, ∃ z : ℂ, index z ≠ 1 + index w := by
+  obtain ⟨x, hx⟩ := hplus
+  obtain ⟨w, hw⟩ := hminus
+  refine ⟨x, hx, w, hw, w, ?_⟩
+  intro h
+  have hzero : (0 : ℂ) = 1 := add_right_cancel (by simpa only [zero_add] using h)
+  exact zero_ne_one hzero
 
 end RudinRCA.Chapter10
