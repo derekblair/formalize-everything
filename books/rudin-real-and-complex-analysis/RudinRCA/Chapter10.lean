@@ -1,5 +1,6 @@
 import Mathlib.Analysis.Complex.AbsMax
 import Mathlib.Analysis.Analytic.Uniqueness
+import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Analysis.Complex.TaylorSeries
 import Mathlib.Analysis.Complex.Liouville
 import Mathlib.Analysis.Complex.LocallyUniformLimit
@@ -498,5 +499,67 @@ theorem hasSum_deriv_powerSeries {f : ℂ → ℂ} {Ω : Set ℂ}
       Nat.cast_add, Nat.cast_one]
   · simp
 
+
+section CompactConvergence
+open Metric
+
+/-- 10.27: the compact-uniform definition in the book's epsilon/N form,
+including the strict index inequality `j > N`. -/
+theorem convergesOnCompactSubsets_iff_epsilon {F : ℕ → ℂ → ℂ}
+    {f : ℂ → ℂ} {Ω : Set ℂ} :
+    ConvergesOnCompactSubsets F f Ω ↔
+      ∀ K ⊆ Ω, IsCompact K → ∀ ε > 0, ∃ N : ℕ,
+        ∀ j > N, ∀ z ∈ K, ‖F j z - f z‖ < ε := by
+  constructor
+  · intro h K hK hcompact ε hε
+    obtain ⟨N, hN⟩ := eventually_atTop.mp
+      (Metric.tendstoUniformlyOn_iff.mp (h K hK hcompact) ε hε)
+    refine ⟨N, fun j hj z hz => ?_⟩
+    have hbound := hN j hj.le z hz
+    rwa [dist_eq_norm, norm_sub_rev] at hbound
+  · intro h K hK hcompact
+    apply Metric.tendstoUniformlyOn_iff.mpr
+    intro ε hε
+    obtain ⟨N, hN⟩ := h K hK hcompact ε hε
+    apply eventually_atTop.mpr
+    refine ⟨N + 1, fun j hj z hz => ?_⟩
+    have hbound := hN j (Nat.lt_of_succ_le hj) z hz
+    rwa [dist_eq_norm, norm_sub_rev]
+
+/-- 10.27's example: the powers converge uniformly on every compact subset
+of the open unit disk. -/
+theorem powers_convergeOnCompactSubsets :
+    ConvergesOnCompactSubsets (fun n (z : ℂ) => z ^ n) (fun _ => 0) (disc 0 1) := by
+  intro K hK hcompact
+  rcases K.eq_empty_or_nonempty with rfl | hne
+  · exact tendstoUniformlyOn_empty
+  · obtain ⟨w, hw, hmax⟩ := hcompact.exists_isMaxOn hne continuous_norm.continuousOn
+    have hnorm : ‖w‖ < 1 := mem_ball_zero_iff.mp (hK hw)
+    have ht := tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg w) hnorm
+    apply Metric.tendstoUniformlyOn_iff.mpr
+    intro ε hε
+    filter_upwards [ht.eventually (gt_mem_nhds hε)] with n hn
+    intro z hz
+    have hbound := (pow_le_pow_left₀ (norm_nonneg z) (hmax hz) n).trans_lt hn
+    simpa only [dist_zero_left, norm_pow] using hbound
+
+/-- 10.27's example: convergence is not uniform on the whole open disk. -/
+theorem powers_not_uniform_on_unitDisc :
+    ¬ TendstoUniformlyOn (fun n (z : ℂ) => z ^ n) (fun _ => 0) atTop (disc 0 1) := by
+  intro h
+  obtain ⟨n, hn⟩ := (Metric.tendstoUniformlyOn_iff.mp h (1 / 2) (by norm_num)).exists
+  have hclosed : IsClosed {z : ℂ | ‖z ^ n‖ ≤ (1 : ℝ) / 2} :=
+    isClosed_le (continuous_pow n).norm continuous_const
+  have hsub : closure (disc (0 : ℂ) 1) ⊆ {z : ℂ | ‖z ^ n‖ ≤ (1 : ℝ) / 2} := by
+    apply closure_minimal ?_ hclosed
+    intro z hz
+    exact le_of_lt (by simpa only [dist_zero_left] using hn z hz)
+  have h1 : (1 : ℂ) ∈ closure (disc (0 : ℂ) 1) := by
+    simp [disc, closure_ball]
+  have hbad := hsub h1
+  norm_num at hbad
+
+
+end CompactConvergence
 
 end RudinRCA.Chapter10

@@ -2,8 +2,8 @@
 
 Inventory date: 2026-10-27. All **32 numbered entries, 11.1–11.32**, are
 accounted for. Numbered expository and definition-bearing entries count;
-exercises do not. **Numbered nodes proved on this branch: 1 (11.2);
-remaining: 31.** The
+exercises do not. **Numbered nodes proved on this branch: 4 (11.1–11.4);
+remaining: 28.** The
 counterexample and corrected subclaim for 11.5 do not complete that node.
 
 Numbering and page references were checked in the third-edition printed
@@ -63,9 +63,23 @@ packaging. Source keys below refer to exact pinned files.
 | 11.32 | 249 | H∞ boundary uniqueness | M | No matching radial-limit isometry and boundary-arc uniqueness theorem located. | 11.16, 11.23, 11.30 |
 
 The table has 2 A, 13 V, and 17 M rows (F is additional to V).
-Node 11.2 is proved by `node11_2_holomorphic_iff` and `node11_2_deriv` in
-`Chapter11.lean`, using explicit Wirtinger definitions. The other 31 rows
-remain uncompleted at the full-node bar. The file compiles with
+Nodes 11.1–11.4 are proved in `Chapter11.lean`:
+
+- 11.1: actual directional partials, real differential decomposition,
+  small-error expansion and converse, quotient identity, and the pointwise
+  complex-differentiability criterion (`node11_1_*`).
+- 11.2: `node11_2_holomorphic_iff`, `node11_2_deriv`, and
+  `node11_2_real_imag`, including the pair of real partial-derivative equations.
+- 11.3: `partialX`, `partialY`, `laplacian`, `HasPureSecondPartialsAt`, and
+  `HarmonicOn`; `node11_3_components` under the node's standing pure-second-partial
+  existence assumption; `node11_3_laplacian_wirtinger` under existence and equality
+  of the mixed partials; and `node11_3_mixed_partials` for C² functions.
+  The partial-based operators `wirtingerPartial`/`wirtingerBarPartial` are linked
+  to the Fréchet-based operators by `wirtinger_eq_partial` under real differentiability.
+- 11.4: `node11_4_holomorphic_harmonic`, whose conclusion uses the weak
+  `HarmonicOn` definition, via the proved one-way `harmonicOn_of_mathlib` bridge.
+
+The other 28 rows remain uncompleted at the full-node bar. The file compiles with
 `lake env lean RudinRCA/Chapter11.lean` (exit 0); the cluster audit and
 clean-slate build are tracked in the lane report.
 
@@ -81,7 +95,9 @@ clean-slate build are tracked in the lane report.
    Rudin assumes continuity and existence of the two pure second partials,
    with their sum zero. Mathlib's `HarmonicAt` assumes `ContDiffAt ℝ 2`.
    Proving results under the latter hypothesis alone does not establish
-   the corresponding book node. No unproved equivalence may be introduced.
+   the corresponding book node. Nodes 11.3–11.4 preserve the weak definition
+   and prove the direction from Mathlib harmonicity to it; the reverse
+   regularity implication needed later is still unproved and is not assumed.
 3. **11.27: terminology bridge.** The book's global epsilon–delta condition
    corresponds to Mathlib's `UniformEquicontinuous`. Its weaker pointwise
    `Equicontinuous` notion is not a definitional replacement.
