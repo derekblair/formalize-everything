@@ -1,10 +1,14 @@
 import RudinRCA.Chapter04
 import RudinRCA.Chapter05
+import RudinRCA.Chapter10
+import RudinRCA.Chapter11
+import RudinRCA.Chapter12
+import RudinRCA.AuditE
 
 /-
   Rudin, *Real and Complex Analysis* (3rd edition, McGraw-Hill, 1987).
 
-  A complete formalization at the programme bar: every numbered node of
+  The programme target is a complete formalization: every numbered node of
   Chapters 1–20, zero sorries, axioms only propext / Classical.choice /
   Quot.sound, statements faithful to the printed text.
 
@@ -14,5 +18,6 @@ import RudinRCA.Chapter05
   in any proof assistant. Record:
   research/prior-art-rca.md in the programme's files (ticket umbrella).
 
+  Current coverage is partial; see PROGRESS.md and inventory/README.md.
   Chapter modules are added under RudinRCA/ as their lanes land them.
 -/
