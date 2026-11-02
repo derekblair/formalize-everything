@@ -1,6 +1,6 @@
 # Rule provenance and fidelity record
 
-Sources were inspected on 2026-10-27. This is a computational model of a
+Sources were inspected on 2026-10-27 (America/Los_Angeles). This is a computational model of a
 specified Sunni fara'id ruleset, with named alternatives where implemented;
 it is not a statement that every historical school gives identical answers.
 The input estate is the distributable balance after prior obligations.
@@ -49,6 +49,13 @@ not establish marriage, identity, survival or legal eligibility from external
 evidence.
 
 ## Variants and excluded disputes
+
+| Configuration field | Default | Explicit alternative | Provenance |
+| --- | --- | --- | --- |
+| `raddPolicy` | `.excludeSpouses` | `.includeSpouses` | IQ4855; OM2017 p.636 |
+| `paternalGrandmotherPolicy` | `.blockedByFather` | `.inheritsWithFather` | M-mother case 7 and footnote 1; U p.7 |
+| `motherSiblingPolicy` | `.allSiblings` | `.ignoreFatherBlockedSiblings` | B13632's two positions |
+| `surplusPolicy` | `.returnToHeirs` | `.publicTreasury` | IQ4855 |
 
 The default spouse policy excludes spouses from radd. IQ4855 describes this as
 the general position among those who apply radd; it reports a contrary act by
@@ -113,3 +120,16 @@ funeral costs and wasiyya before the distributable estate is computed.
 8. Every selected numerical worked example is traceable in CASE-SOURCES.md.
    Candidate cases lacking a checked expected distribution are explicitly
    separated there; they cannot be promoted to sourced tests by computation.
+9. An initial generalized eligible-sibling variant would have extrapolated
+   B13632's father-blocking example to additional blocking relations. Before
+   delivery it was narrowed to `.ignoreFatherBlockedSiblings`, and the broader
+   helper was removed. C30/C31 exercise the two explicitly sourced outcomes.
+10. Recovery on 2026-11-01 rechecked all 31 worked-case vectors against the
+    live sources. C30/C31's specialization of the source's unspecified brothers
+    to full brothers is now explicit in CASE-SOURCES.md; the case-module
+    preamble was corrected to credit B13632 for those two cases. C01's generic
+    “spouse” wording is identified as the husband by the source's half-share.
+11. U p.7 also gives an inconsistent remote-grandmother example involving a
+    male link. U pp.3,18 classify that person as maternal kin instead. The
+    model represents only the two immediate grandmothers, so that contradictory
+    remote example is not adopted and supplies no rule or case expectation.
