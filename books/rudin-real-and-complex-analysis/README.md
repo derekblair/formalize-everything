@@ -30,7 +30,7 @@ review (reviewer pool ≠ author pool) and merges only on PASS.
 
 ## Cluster A development
 
-The current branch adds Chapter 1 and the topological beginning of Chapter
+The current branch adds Chapter 1 and 14 foundational items from Chapter
 2. See [PROGRESS.md](PROGRESS.md), the three chapter inventories and
 [SCOPING-A.md](SCOPING-A.md) for exact coverage. The printed definition
 3.7 has a zero-measure fidelity hold in [QUEUE.md](QUEUE.md); its repair is
@@ -41,6 +41,7 @@ From this directory, with the already provisioned pinned Lean toolchain:
 ```sh
 lake exe cache get
 lake build
+python3 scripts/check_clean_build.py
 python3 scripts/check_audit.py
 ```
 
@@ -54,3 +55,10 @@ The regression harness uses isolated fresh fixture builds, checks one
 nonvacuous pass plus rejection of a sorry, an explicit axiom, a private
 foreign-namespace axiom, and an unimported source, and never changes the
 live chapter sources. It tests audit enforcement, not book fidelity.
+
+`check_clean_build.py` copies the current Lean sources and pinned package
+configuration into a fresh temporary directory, shares only the provisioned
+dependency cache, and runs `lake build` with no existing project outputs.
+It records source hashes, verifies that the live inputs remained unchanged,
+and retains the snapshot for inspection. The checkout's sources and build
+outputs are preserved.

@@ -1,0 +1,16 @@
+Snapshot: /tmp/rca-a-clean-build-v60ok86n
+Fresh project output directory: absent before build
+Command: /home/derekblair/.elan/bin/lake build (cwd=/tmp/rca-a-clean-build-v60ok86n)
+Dependency revision: d13f23b723b8a846827a245b89c10fc7d3f11612
+Input SHA256: {"RudinRCA.lean": "8bad990d0f3d6855025cd9ca1b1cf97ff67028a77ea8d99064db1f047d875a9d", "RudinRCA/AuditA.lean": "1e9baed44f06e62455a117d41188a72ecb2e5e4f9dabab7d7b69c1603399aa1e", "RudinRCA/Chapter01.lean": "5456be705f07ef63a3b7877e5c79d39690dad003f33be688376d9becdcbdf100", "RudinRCA/Chapter02.lean": "96480b2b16f34c12dbaa04820069a426b1b6b9ff2df495eda386008ad7658ba1", "RudinRCA/Chapter03.lean": "4cdffb14a55971c8ab0ecc996775e03da9431d46b9986a33b51507066dafbcbb", "lake-manifest.json": "3d3476c312fb2220e92334726052c3b23080ad1f97c3db6cfceedc9a90466d1b", "lakefile.toml": "5e51d1d26493d4c05b322b6c339b31391b31d4751b417f1fe40bc0b5723f54a5", "lean-toolchain": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b"}
+✔ [8924/8929] Built RudinRCA.Chapter03 (762ms)
+✔ [8925/8929] Built RudinRCA.Chapter02 (2.7s)
+✔ [8926/8929] Built RudinRCA.Chapter01 (3.4s)
+✔ [8927/8929] Built RudinRCA (1.7s)
+ℹ [8929/8929] Built RudinRCA.AuditA (8.6s)
+info: RudinRCA/AuditA.lean:64:0: Axiom audit passed for 263 project declarations (including private/generated) across 4 audited project modules; the package source tree holds 5 project modules, all imported into the audited graph and all present in the expected inventory; used: [propext,
+ Classical.choice,
+ Quot.sound].
+Build completed successfully (8929 jobs).
+Build exit code: 0
+Live inputs still match the validated snapshot; snapshot retained.
