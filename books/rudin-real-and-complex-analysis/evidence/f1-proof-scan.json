@@ -1,0 +1,9 @@
+{
+  "files": [
+    "RudinRCA/Chapter04.lean",
+    "RudinRCA/Chapter05.lean"
+  ],
+  "pattern": "\\b(sorry|admit|axiom|native_decide)\\b",
+  "matches": [],
+  "exit_status": 0
+}

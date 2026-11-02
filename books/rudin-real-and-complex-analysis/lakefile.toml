@@ -1,6 +1,8 @@
 name = "rudinRCA"
 version = "0.1.0"
 defaultTargets = ["RudinRCA"]
+# Keep chapter elaboration serialized on shared build machines.
+weakLeanArgs = ["-j1"]
 
 [[lean_lib]]
 name = "RudinRCA"

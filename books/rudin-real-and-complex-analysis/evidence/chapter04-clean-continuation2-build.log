@@ -1,0 +1,294 @@
+⚠ [3046/3048] Built RudinRCA.Chapter04 (101s)
+warning: RudinRCA/Chapter04.lean:1480:20: `if_neg` has been deprecated: Use `ite_eq_right` instead
+warning: RudinRCA/Chapter04.lean:1480:42: `if_pos` has been deprecated: Use `ite_eq_left` instead
+warning: RudinRCA/Chapter04.lean:1483:20: `if_neg` has been deprecated: Use `ite_eq_right` instead
+warning: RudinRCA/Chapter04.lean:1483:60: `if_neg` has been deprecated: Use `ite_eq_right` instead
+warning: RudinRCA/Chapter04.lean:1486:12: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: RudinRCA/Chapter04.lean:1726:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter04.fejerKernel_nonneg`:
+  [Fact (0 < T)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fact (0 < T)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter04.lean:1730:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter04.continuous_fejerGeometric`:
+  [Fact (0 < T)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fact (0 < T)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter04.lean:1737:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter04.fejerDirichlet_pair`:
+  [Fact (0 < T)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fact (0 < T)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter04.lean:1741:34: This simp argument is unused:
+  fourier_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [fejerDirichlet]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter04.lean:1748:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter04.fejerGeometric_cross`:
+  [Fact (0 < T)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fact (0 < T)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter04.lean:1766:50: This simp argument is unused:
+  fourier_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [fejerGeometric, fejerDirichlet]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter04.lean:1775:12: This simp argument is unused:
+  fourier_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter04.lean:1825:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter04.fejerFourier_nat`:
+  [Fact (0 < T)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fact (0 < T)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter04.lean:1828:18: This simp argument is unused:
+  fourier_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter04.lean:1831:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter04.fejerFourier_norm`:
+  [Fact (0 < T)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fact (0 < T)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter04.lean:1895:8: automatically included section variable(s) unused in theorem `RudinRCA.Chapter04.fejerTranslation_apply`:
+  [Fact (0 < T)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fact (0 < T)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter04.lean:1898:8: automatically included section variable(s) unused in theorem `RudinRCA.Chapter04.fejerTranslation_zero`:
+  [Fact (0 < T)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fact (0 < T)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter04.lean:1919:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter04.fejerFourier_argument_sub`:
+  [Fact (0 < T)]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Fact (0 < T)] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter04.lean:2024:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: RudinRCA/Chapter04.lean:2035:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: RudinRCA/Chapter04.lean:2036:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+info: RudinRCA/Chapter04.lean:2050:0: 'RudinRCA.Chapter04.inner_conjugate_symmetry' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2051:0: 'RudinRCA.Chapter04.inner_add_first' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2052:0: 'RudinRCA.Chapter04.inner_smul_first' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2053:0: 'RudinRCA.Chapter04.inner_self_real_nonnegative' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2054:0: 'RudinRCA.Chapter04.inner_zero_first' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2055:0: 'RudinRCA.Chapter04.inner_smul_second' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2056:0: 'RudinRCA.Chapter04.inner_add_second' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2057:0: 'RudinRCA.Chapter04.norm_from_inner' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2058:0: 'RudinRCA.Chapter04.norm_squared_inner' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2059:0: 'RudinRCA.Chapter04.innerFunctional_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2060:0: 'RudinRCA.Chapter04.schwarz' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2061:0: 'RudinRCA.Chapter04.triangle' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2062:0: 'RudinRCA.Chapter04.inner_self_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2063:0: 'RudinRCA.Chapter04.hilbert_distance' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2064:0: 'RudinRCA.Chapter04.difference_triangle' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2065:0: 'RudinRCA.Chapter04.hilbert_cauchy' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2066:0: 'RudinRCA.Chapter04.continuous_inner_and_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2067:0: 'RudinRCA.Chapter04.inner_first_lipschitz' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2068:0: 'RudinRCA.Chapter04.inner_second_lipschitz' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2069:0: 'RudinRCA.Chapter04.norm_lipschitz' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2070:0: 'RudinRCA.Chapter04.finite_euclidean_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2071:0: 'RudinRCA.Chapter04.finite_euclidean_inner' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2072:0: 'RudinRCA.Chapter04.l2_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2073:0: 'RudinRCA.Chapter04.l2_inner' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2074:0: 'RudinRCA.Chapter04.l2_product_integrable' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2075:0: 'RudinRCA.Chapter04.subspace_criterion' depends on axioms: [propext, Quot.sound]
+info: RudinRCA/Chapter04.lean:2076:0: 'RudinRCA.Chapter04.empty_set_not_subspace' depends on axioms: [propext, Quot.sound]
+info: RudinRCA/Chapter04.lean:2077:0: 'RudinRCA.Chapter04.unit_bounded_not_subspace' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2078:0: 'RudinRCA.Chapter04.real_three_subspace_dimensions' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2079:0: 'RudinRCA.Chapter04.real_three_subspace_classification' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2080:0: 'RudinRCA.Chapter04.closure_subspace' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2081:0: 'RudinRCA.Chapter04.convex_criterion' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2082:0: 'RudinRCA.Chapter04.subspace_convex' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2083:0: 'RudinRCA.Chapter04.convex_translate' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2084:0: 'RudinRCA.Chapter04.complex_subspace_convex_combinations' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2085:0: 'RudinRCA.Chapter04.orthogonal_symmetric' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2086:0: 'RudinRCA.Chapter04.orthogonal_complement_closed' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2087:0: 'RudinRCA.Chapter04.orthogonal_complement_membership' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2088:0: 'RudinRCA.Chapter04.vectorOrthogonal_carrier' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2089:0: 'RudinRCA.Chapter04.vectorOrthogonal_closed' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2090:0: 'RudinRCA.Chapter04.orthogonal_as_intersection' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2091:0: 'RudinRCA.Chapter04.intervalToL2_injective' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2092:0: 'RudinRCA.Chapter04.continuousIntervalIntegralEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2093:0: 'RudinRCA.Chapter04.interval_integral_inner' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2094:0: 'RudinRCA.Chapter04.intervalSpike_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2095:0: 'RudinRCA.Chapter04.intervalSpike_L2_norm_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2096:0: 'RudinRCA.Chapter04.continuous_interval_integral_not_complete' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter04.lean:2097:0: 'RudinRCA.Chapter04.theorem_4_10' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2098:0: 'RudinRCA.Chapter04.theorem_4_11' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2099:0: 'RudinRCA.Chapter04.corollary_4_11' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2100:0: 'RudinRCA.Chapter04.theorem_4_11_nearest_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2101:0: 'RudinRCA.Chapter04.theorem_4_12' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2102:0: 'RudinRCA.Chapter04.span_least' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2103:0: 'RudinRCA.Chapter04.span_iff_finite_linear_combination' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2104:0: 'RudinRCA.Chapter04.independent_iff_finite_combinations' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2105:0: 'RudinRCA.Chapter04.orthonormal_iff_rudin' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2106:0: 'RudinRCA.Chapter04.finiteLinearCombination_mem' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2107:0: 'RudinRCA.Chapter04.theorem_4_14a_coefficients' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2108:0: 'RudinRCA.Chapter04.theorem_4_14a_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2109:0: 'RudinRCA.Chapter04.theorem_4_14b_bessel' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2110:0: 'RudinRCA.Chapter04.finiteFourierSum_residual_orthogonal' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2111:0: 'RudinRCA.Chapter04.theorem_4_14b_remainder' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2112:0: 'RudinRCA.Chapter04.theorem_4_14b_best' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2113:0: 'RudinRCA.Chapter04.theorem_4_15_nonnegative_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2114:0: 'RudinRCA.Chapter04.theorem_4_15_counting_integral' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2115:0: 'RudinRCA.Chapter04.theorem_4_15_membership' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2116:0: 'RudinRCA.Chapter04.theorem_4_15_membership_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2117:0: 'RudinRCA.Chapter04.theorem_4_15_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2118:0: 'RudinRCA.Chapter04.theorem_4_15_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2119:0: 'RudinRCA.Chapter04.theorem_4_15_inner' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2120:0: 'RudinRCA.Chapter04.theorem_4_15_countable_support' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2121:0: 'RudinRCA.Chapter04.theorem_4_15_finite_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2122:0: 'RudinRCA.Chapter04.theorem_4_16' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2123:0: 'RudinRCA.Chapter04.fourierAnalysis_coefficient' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2124:0: 'RudinRCA.Chapter04.fourierAnalysis_synthesis' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2125:0: 'RudinRCA.Chapter04.fourierSynthesis_range' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2126:0: 'RudinRCA.Chapter04.theorem_4_17' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2127:0: 'RudinRCA.Chapter04.dense_span_of_fourier_detection' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2128:0: 'RudinRCA.Chapter04.theorem_4_18_maximal_iff_dense' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2129:0: 'RudinRCA.Chapter04.theorem_4_18_dense_iff_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2130:0: 'RudinRCA.Chapter04.theorem_4_18_dense_iff_parseval' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2131:0: 'RudinRCA.Chapter04.theorem_4_18' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2132:0: 'RudinRCA.Chapter04.hilbertBasis_isomorphism' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2133:0: 'RudinRCA.Chapter04.maximal_orthonormal_coefficient_isomorphism' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter04.lean:2134:0: 'RudinRCA.Chapter04.hilbert_isomorphism_preserves_inner' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2135:0: 'RudinRCA.Chapter04.hilbertSpace_exists_l2_isomorphism' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2136:0: 'RudinRCA.Chapter04.hilbertBasis_coefficients_countable' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2137:0: 'RudinRCA.Chapter04.hilbertBasis_card_le_infinite' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2138:0: 'RudinRCA.Chapter04.hilbertBasis_card_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2139:0: 'RudinRCA.Chapter04.l2_isomorphism_of_equiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2140:0: 'RudinRCA.Chapter04.l2_isomorphism_iff_card_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2141:0: 'RudinRCA.Chapter04.partialOrder_laws' does not depend on any axioms
+info: RudinRCA/Chapter04.lean:2142:0: 'RudinRCA.Chapter04.originDiscChain_isChain' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2143:0: 'RudinRCA.Chapter04.empty_not_mem_originDiscChain' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2144:0: 'RudinRCA.Chapter04.univ_not_mem_originDiscChain' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2145:0: 'RudinRCA.Chapter04.originDiscChain_not_maximal' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2146:0: 'RudinRCA.Chapter04.originDiscChain_extend_by_empty' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2147:0: 'RudinRCA.Chapter04.originDiscChain_extend_by_univ' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2148:0: 'RudinRCA.Chapter04.hausdorff_maximality' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2149:0: 'RudinRCA.Chapter04.exists_maximal_chain' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2150:0: 'RudinRCA.Chapter04.exists_unit_vector' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2151:0: 'RudinRCA.Chapter04.orthonormal_set_extension' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2152:0: 'RudinRCA.Chapter04.fourierCircleHomeomorphism_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2153:0: 'RudinRCA.Chapter04.circleFunction_periodic' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2154:0: 'RudinRCA.Chapter04.periodicFunction_descends' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2155:0: 'RudinRCA.Chapter04.continuous_circleFunction' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2156:0: 'RudinRCA.Chapter04.continuous_periodicFunction_descends' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2157:0: 'RudinRCA.Chapter04.circleIntegral_interval' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2158:0: 'RudinRCA.Chapter04.circleLp_norm_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2159:0: 'RudinRCA.Chapter04.circleLp_infty_norm_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2160:0: 'RudinRCA.Chapter04.circleContinuous_norm_formula' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2161:0: 'RudinRCA.Chapter04.circleLp_constant_one_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2162:0: 'RudinRCA.Chapter04.circleL2_integrable' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2163:0: 'RudinRCA.Chapter04.trigMonomial_apply_real' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2164:0: 'RudinRCA.Chapter04.trigonometricSystem_orthonormal' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2165:0: 'RudinRCA.Chapter04.trigonometricSystem_inner' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2166:0: 'RudinRCA.Chapter04.circleL2_inner' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2167:0: 'RudinRCA.Chapter04.circleContinuous_dense_L2' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2168:0: 'RudinRCA.Chapter04.circleContinuous_L2_norm_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2169:0: 'RudinRCA.Chapter04.trigonometricSystem_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2170:0: 'RudinRCA.Chapter04.trigonometricSystem_dense_Lp' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2171:0: 'RudinRCA.Chapter04.uniform_trigonometric_approximation' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2172:0: 'RudinRCA.Chapter04.uniform_trigonometric_approximation_pointwise' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter04.lean:2173:0: 'RudinRCA.Chapter04.trigPolynomial_symmetric_form' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2174:0: 'RudinRCA.Chapter04.uniform_trigonometric_approximation_exp' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2175:0: 'RudinRCA.Chapter04.sum_symmetric_modes' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2176:0: 'RudinRCA.Chapter04.paired_exponentials_eq_cos_sin' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2177:0: 'RudinRCA.Chapter04.trigPolynomial_sineCosine_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2178:0: 'RudinRCA.Chapter04.circleFourierCoeff_integral' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2179:0: 'RudinRCA.Chapter04.circleFourierPartialSum_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2180:0: 'RudinRCA.Chapter04.circleFourierPartialSum_toLp' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2181:0: 'RudinRCA.Chapter04.fourierPartialSum_ae' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2182:0: 'RudinRCA.Chapter04.circleFourierIsometry_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2183:0: 'RudinRCA.Chapter04.fourier_riesz_fischer' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2184:0: 'RudinRCA.Chapter04.fourier_parseval' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2185:0: 'RudinRCA.Chapter04.fourier_parseval_absolute' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2186:0: 'RudinRCA.Chapter04.fourier_parseval_integral' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2187:0: 'RudinRCA.Chapter04.fourier_expansion' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2188:0: 'RudinRCA.Chapter04.fourierPartialSum_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2189:0: 'RudinRCA.Chapter04.fourierPartialSum_error_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2190:0: 'RudinRCA.Chapter04.circleFourierIsometry_monomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2191:0: 'RudinRCA.Chapter04.fourier_parseval_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2192:0: 'RudinRCA.Chapter04.circleFourierIsometry_partialSum' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2193:0: 'RudinRCA.Chapter04.fourierPartialSum_error_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2194:0: 'RudinRCA.Chapter04.fourierPartialSum_error_tail' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2195:0: 'RudinRCA.Chapter04.fejerKernel_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2196:0: 'RudinRCA.Chapter04.continuous_fejerGeometric' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2197:0: 'RudinRCA.Chapter04.continuous_fejerKernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2198:0: 'RudinRCA.Chapter04.fejerDirichlet_pair' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2199:0: 'RudinRCA.Chapter04.fejerGeometric_cross' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2200:0: 'RudinRCA.Chapter04.fejerGeometric_mul_conj' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2201:0: 'RudinRCA.Chapter04.fejerKernel_complex' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2202:0: 'RudinRCA.Chapter04.fejer_integrable_of_continuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2203:0: 'RudinRCA.Chapter04.integral_fourier_monomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2204:0: 'RudinRCA.Chapter04.integral_fejerDirichlet' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2205:0: 'RudinRCA.Chapter04.integral_fejerKernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2206:0: 'RudinRCA.Chapter04.fejerFourier_nat' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2207:0: 'RudinRCA.Chapter04.fejerFourier_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2208:0: 'RudinRCA.Chapter04.fejerGeometric_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2209:0: 'RudinRCA.Chapter04.fejerFourier_one_eq_one_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2210:0: 'RudinRCA.Chapter04.fejerKernel_tendstoUniformly_away' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2211:0: 'RudinRCA.Chapter04.fejerTranslation_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2212:0: 'RudinRCA.Chapter04.fejerTranslation_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2213:0: 'RudinRCA.Chapter04.fejerConvolution_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2214:0: 'RudinRCA.Chapter04.fejerFourier_argument_sub' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2215:0: 'RudinRCA.Chapter04.integral_fejerFourier_translate' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2216:0: 'RudinRCA.Chapter04.integral_fejerDirichlet_translate' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2217:0: 'RudinRCA.Chapter04.fejerConvolution_eq_mean' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2218:0: 'RudinRCA.Chapter04.fejerMean_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2219:0: 'RudinRCA.Chapter04.fejerMean_error_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2220:0: 'RudinRCA.Chapter04.schwarz_from_axioms' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter04.lean:2221:0: 'RudinRCA.Chapter04.triangle_from_axioms' depends on axioms: [propext, Classical.choice, Quot.sound]
+✔ [3047/3048] Built RudinRCA (3.2s)
+Build completed successfully (3048 jobs).

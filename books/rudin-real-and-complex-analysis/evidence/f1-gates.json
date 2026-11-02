@@ -1,0 +1,64 @@
+{
+  "checked_at_utc": "2026-11-01T12:05:28.557525+00:00",
+  "base_commit": "653e691f67b3d48afacf3c153d6540f1e58ada9d",
+  "branch": "f1-printed-bound-main",
+  "lean": "v4.34.1",
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "project_cwd": "/home/derekblair/lane-work/codex-fix-fe-pr48-f1-main-20261101/formalize-everything/books/rudin-real-and-complex-analysis",
+  "cache": {
+    "command": "lake exe cache get",
+    "exit_status": 0,
+    "log": "evidence/f1-cache.log"
+  },
+  "build": {
+    "command": "LEAN_NUM_THREADS=1 lake build",
+    "exit_status": 0,
+    "log": "evidence/f1-build.log",
+    "notes": "Full default book target, 3197 jobs. Fresh lane .lake populated by pinned cache; Chapter04 compiled in initial attempt and replayed in final build. Chapter05 and umbrella compiled in final build. Earlier attempts exited 1 while developing proofs; logs retained in workdir."
+  },
+  "axiom_audits": [
+    {
+      "command": [
+        "python3",
+        "evidence/check_axiom_audit.py",
+        "RudinRCA/Chapter04.lean",
+        "evidence/f1-build.log"
+      ],
+      "exit_status": 0,
+      "log": "evidence/f1-Chapter04-axioms.log"
+    },
+    {
+      "command": [
+        "python3",
+        "evidence/check_axiom_audit.py",
+        "RudinRCA/Chapter05.lean",
+        "evidence/f1-build.log"
+      ],
+      "exit_status": 0,
+      "log": "evidence/f1-Chapter05-axioms.log"
+    }
+  ],
+  "scan": {
+    "files": [
+      "RudinRCA/Chapter04.lean",
+      "RudinRCA/Chapter05.lean"
+    ],
+    "pattern": "\\b(sorry|admit|axiom|native_decide)\\b",
+    "matches": [],
+    "exit_status": 0
+  },
+  "sha256": {
+    "RudinRCA/Chapter04.lean": "d71fb2f7202629914f1773382b9a8448c462a29d27fc1ff300ff8f17100c4b45",
+    "RudinRCA/Chapter05.lean": "3ac16b5d68358a2a1e7e7609b154bfbe13ffa6ac5a70c17ab17a48ec492d7b4c",
+    "lean-toolchain": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+    "lakefile.toml": "5891835867714a57568c217bcae78911549ea06bd0896de174d2bdb13eeab5b6",
+    "lake-manifest.json": "3d3476c312fb2220e92334726052c3b23080ad1f97c3db6cfceedc9a90466d1b",
+    "evidence/check_axiom_audit.py": "77fc3046d08dd121f1745bc5a208c9dcab97fc4f8b22f7f760296424780b5cdb",
+    "evidence/f1-cache.log": "31a59f2c1632616d8bfc588daa8a059bbcdf793634e8fb36b512bb1c99d5344c",
+    "evidence/f1-build.log": "1c31a5740541a45d8329413789d15ebe6c4847f63fbdb2d893d9033bf33d12a3",
+    "evidence/f1-Chapter04-axioms.log": "1d031ce8639b17120970d2b9d17947b6b914d42582bd110ffdfe387d97813b66",
+    "evidence/f1-Chapter05-axioms.log": "1675e8602e9d6a58f379d48bdbb4413ad7ef775d9d3806cd96e0495e4f1a165d",
+    "evidence/f1-proof-scan.json": "41892ab2dba76ec9f7f9fc304e4ac67ccd429efc88f584de4f2c8b2a76cad1e6",
+    "evidence/f1-new-axioms.log": "fb37b692e68a46fc3ec7e5b7695ba16d1ec3299b3e582e58f2ab2a12d5b83c52"
+  }
+}
