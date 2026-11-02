@@ -1,6 +1,7 @@
 import BibleNumbers.Data
 import BibleNumbers.Totals
 import BibleNumbers.Divergence
+import BibleNumbers.Jubilee
 
 /-
   The Bible's numerical systems: the Genesis 5 and 11 genealogies

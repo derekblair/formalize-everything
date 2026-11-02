@@ -11,10 +11,30 @@ appoint a reviewer or merge.
 - `74da011`: sourced datasets/provenance committed and pushed. Verified 360
   provenance coordinates against generated Lean; `lake build BibleNumbers.Data`
   exited 0. All 298 populated cells and twelve bridge inputs have sources.
-- Totals and divergence: six profiles, both Terah endpoint scenarios, exact
+- `5f8ff66`: totals and divergence committed and pushed: six profiles, both Terah endpoint scenarios, exact
   lists for all fifteen unordered profile pairs, and the systematic offsets.
   Missing requested ages are proved to invalidate a sum. No data were changed
   to reproduce a printed source total.
+- Jubilee arithmetic: both period readings, recursive sabbatical counting,
+  drift/alignment, the common-multiple characterization and minimum 2450.
+  Numbered jubilee years start at 50; their next shared label is 2500.
+  The requested drift model uses a continuous sabbatical reference grid and
+  does not claim to implement a calendar that restarts the grid after jubilee.
+- The complete fidelity-event record is in `PROVENANCE.md` and
+  `JUBILEE-SOURCES.md`; the final checkout report is `../../REPORT.md`.
+- Resumed 2026-11-02 UTC after the reboot. The required checkpoint matched
+  exactly: branch `texts/bible-numbers-m1`, HEAD `5f8ff66`, eight dirty entries.
+  The session transcript confirmed `gpt-6-astra` at `ultra` effort. All
+  preserved changes were read before new edits; no work was discarded and
+  main was neither merged nor rebased into this branch.
+- Final validation 2026-11-02 UTC: `python3 scripts/generate_data.py --check`
+  exited 0. The previous `.lake` directory was moved intact to
+  `/tmp/bible-numbers-validation-20261102-szprwzff/preserved-lake`; with no
+  package build cache present, `lake build` exited 0 (8 jobs) under Lean
+  4.34.1. The default-target audit passed for 733 declarations across five
+  imported project modules plus the import-only audit entrypoint (six source
+  modules total), using only `propext`, `Classical.choice`, and `Quot.sound`.
+  The build log and exit code are preserved in that validation directory.
 
 ## Implementation sequence
 
