@@ -26,7 +26,7 @@ Every formalization target, its status, and where it lives. A target is **done**
 | Target | Status | Home |
 |---|---|---|
 | The Bible's numerical systems (Genesis 5 & 11; Leviticus 25) | Milestone 1 landed: six sourced witness profiles, totals, exhaustive divergence, both jubilee periods, environment axiom audit; crossed review PASS (Argon, google-ai-ultra) (ticket #47) | here, [software/bible-numbers/](software/bible-numbers/) |
-| Quranic inheritance (mirath, An-Nisa 4:11–12, 4:176) | Started 2026-10-27 — novelty gate CLEAN (no formalization in any proof assistant; field is unverified calculators); milestone 1 in flight (ticket #46) | here, [software/mirath/](software/mirath/) |
+| Quranic inheritance (mirath, An-Nisa 4:11–12, 4:176) | Milestone 1 landed: rational inheritance schedule, whole-estate conservation proof, 31 sourced cases; crossed review PASS (Argon, google-ai-ultra) (ticket #46) | here, [software/mirath/](software/mirath/) |
 | Shakespeare, the Sonnets (form spec + corpus) | Started 2026-10-27 — novelty gate PARTIAL (estimators exist; no formal spec or checked conformance); milestone 1 in flight (ticket #45) | here, [software/sonnet-form/](software/sonnet-form/) |
 
 ## Proposing a target
