@@ -18,6 +18,13 @@ The closure bars on the earlier `a ± bi` membership conditions were
 also checked visually and are present; those conditions are not errors.
 Source: [printed p.221](https://djvu.online/jpg/N/K/m/NKmAEzkLVs8Io/233.webp).
 
+`node10_37_literal_conclusion_counterexample` now proves the algebraic
+obstruction for every complex-valued index map and nonempty side sets:
+choose the unconstrained `z` equal to `w`, and the displayed identity
+would imply `0 = 1`. This is a counterexample to the literal conclusion
+schema; it neither constructs a path satisfying the printed geometry nor
+proves the intended index-jump theorem. The full node remains queued.
+
 ### E-11.5 — false strict inequality at radius zero
 
 Printed p. 233, equation (4), allows `0 ≤ r < 1` while claiming strict
@@ -51,3 +58,9 @@ Source: [printed p.233](https://djvu.online/jpg/N/K/m/NKmAEzkLVs8Io/245.webp).
 These gaps require further proof development, not pin changes or imports
 of unfinished Chapters 1–9. This lane's delivery remains a draft until
 the Chapter 10 coverage and fidelity requirements are resolved.
+
+Checkpoint 2026-11-01: all 67 incomplete nodes remain accounted for:
+10.5, 10.7–10.15, 10.17, 10.21–10.22, 10.30–10.44;
+11.5–11.32; and 12.1, 12.4–12.8, 12.10–12.14. In particular, the
+newly proved isolated-zero and joint-continuity results do not discharge
+the general path/index obligations or the 10.37 fidelity hold.

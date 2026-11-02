@@ -30,6 +30,46 @@ definition being available does not establish all the claims surrounding it.
 None of these classifications is a claim that the book module already proves
 the node; branch proof coverage is recorded in the progress report.
 
+## Implementation accounting (2026-11-01)
+
+The branch proves **16 complete numbered nodes; 28 remain incomplete**.
+This counts all assertions and unnumbered corollaries attached to a node,
+not the number of Lean declarations. The upstream claims-check labels below
+remain a record of what the pinned Mathlib supplies, including where the
+local proofs have now supplied the missing translation.
+
+| Complete node | Local declarations / content |
+|---|---|
+| 10.1 | `closedDisc`, `BookConnected`, `bookComponent`, `bookComponents`; separated-set equivalence, open/closed decompositions, maximal components, disc cover, and `open_eq_sUnion_disjoint_regions`. Empty-set connectedness is retained; regions are nonempty. |
+| 10.2 | `HolomorphicOn`, `hasDerivAt_iff_difference_quotient`, `hasFDerivAt_real_of_hasDerivAt`. |
+| 10.3 | `holomorphicOn_add`, `_mul`, `_const`, `_neg`, `_comp`; derivative rules and `continuousOn_of_holomorphicOn`. |
+| 10.4 | `holomorphicOn_pow`, `_polynomial`, `_inv`, `_div`, `_exp`, and `deriv_exp`. |
+| 10.6 | `holomorphicOn_of_representableByPowerSeries`, `representableByPowerSeries_deriv`, `hasSum_deriv_powerSeries`; all-order expansion, factorial coefficient identity, and uniqueness. |
+| 10.16 | `representableByPowerSeries_of_holomorphicOn` on every contained disc, and `holomorphicOn_deriv`. |
+| 10.18 | `theorem10_18`, `existsUnique_zero_order`, `zeroSet_countable`, `zeroSet_inter_compact_finite`, `eqOn_of_accumulation`; whole-domain factorization, level sets, and the printed disconnected-domain example. |
+| 10.19 | `HasIsolatedSingularity` and `HasRemovableSingularity`, permitting a changed value at the exceptional point. |
+| 10.20 | `removable_of_bounded`. |
+| 10.23 | `liouville`. |
+| 10.24 | Attained circle extrema, `maximum_modulus`, `maximum_modulus_eq_iff`, `constant_of_local_maximum`, and `minimum_modulus` allowing boundary zeros. |
+| 10.25 | `number_of_polynomial_zeros` and `nonconstant_polynomial_has_zero`, with multiplicities. |
+| 10.26 | `cauchy_estimate` from an open-disc bound, and `cauchy_estimate_sharp`. |
+| 10.27 | `ConvergesOnCompactSubsets`, its epsilon/index characterization, `powers_convergeOnCompactSubsets`, and `powers_not_uniform_on_unitDisc`. |
+| 10.28 | `holomorphicOn_limit_and_deriv` and `convergesOnCompactSubsets_iteratedDeriv`. |
+| 10.29 | `dividedDifference` and `node10_29_jointly_continuous`; the diagonal is handled by strict differentiability, giving joint continuity on the product domain. |
+
+Incomplete nodes, with no omissions: **10.5, 10.7–10.15, 10.17,
+10.21–10.22, 10.30–10.44**. The definition in 10.5 is implemented, but
+its root-test and uniform-convergence assertions are not counted as proved.
+The fidelity hold on 10.37 remains unresolved. The algebraic counterexample
+`node10_37_literal_conclusion_counterexample` handles the unconstrained-`z`
+conclusion schema; neither the corrected theorem nor a complete geometric
+counterexample is claimed. The chapter is partial.
+
+The recovered 10.27 additions and new 10.1, 10.18, and 10.29 proofs are
+included in the integrated build and environment audit reported in the
+clone-root `REPORT.md`. Sources were rechecked for the new nodes against
+printed pp. 196–197, 208–210, and 214–215.
+
 ## Node-by-node check
 
 | Node | Printed page | Content and fidelity obligations | Mathlib result / remaining bridge | Claim |
@@ -102,9 +142,10 @@ Fidelity event **E-10.37**: printed p. 221 has a variable-name mismatch between
 the displayed index assertion and the final side-membership hypothesis. The
 scan was checked visually; this is not an OCR-only artifact. The intended
 `z ∈ D₊` reading is an **explicit proposed correction**, not silently accepted
-as the literal text. No counterexample or corrected-form proof is claimed
-by the inventory. The implementation must keep the node queued until that
-event is handled under the brief's fidelity rule. The closure bars on
+as the literal text. The implementation proves the algebraic counterexample
+to its unconstrained-`z` conclusion (choose `z = w`); a path witness for the
+full geometric hypotheses and the corrected-form proof remain absent.
+The node stays queued. The closure bars on
 `D₊` and `D₋` in the side-label assumptions are present in print and are not
 errors.
 
