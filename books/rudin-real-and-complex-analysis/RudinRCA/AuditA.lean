@@ -5,12 +5,12 @@ import Lean.Elab.Command
 /-!
 Build-enforced, transitive axiom audit over every module whose
 source belongs to this package, in the style of the sibling
-targets (Merkle's `Checks.lean`, Bech32's `AuditA.lean`).
+targets (Merkle's `Checks.lean`, Bech32's `Audit.lean`).
 
 This entrypoint imports the umbrella module `RudinRCA`, so the
 environment it audits is the library's import graph. Declarations
-are selected by their originating project module, not just their
-public namespace: private helpers and generated
+are selected by their originating project module, together with every
+`RudinRCA.*` constant in the environment: private helpers and generated
 equations/termination declarations are included. No local axiom
 declarations are allowed, and dependencies may use only the
 standard three axioms below.

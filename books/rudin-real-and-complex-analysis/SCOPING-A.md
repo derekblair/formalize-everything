@@ -10,7 +10,7 @@ contain per-item pinned-Mathlib claims checks. Numbering and statements
 were checked against a public scan of the 1987 third edition; the publisher
 contents independently checks chapter identity. All numbering is verified.
 
-The 48 result-bearing numbered groups include 1.9, 1.15 and 1.24, which
+The 49 result-bearing numbered groups include 1.9, 1.15, 1.22 and 1.24, which
 contain explicit propositions without a theorem heading. Definition and
 exposition entries still remain in the 83-item denominator. A result group
 is complete only when all its clauses and attached corollaries are covered.
@@ -38,3 +38,17 @@ to the book. A compilation of a partial chapter does not certify chapter
 completion. Claims of new mathematics or absence of all prior work are
 not made by this lane. The inherited README novelty claim is programme
 background, not a conclusion re-established here.
+
+## Delivered proof scope
+
+Chapter 1 covers all 41 numbered items (25 result groups, with corollaries).
+Chapter 2 covers seven result nodes and notation 2.11: eight of 25 items.
+Chapter 3 proves only the disclosed 3.7 counterexample and explicit repair;
+none of its 17 original items is counted complete. Total branch coverage is
+49/83 items; 34 remain. Main acceptance stays at zero pending review.
+
+`AuditA` checks every declaration originating in the book's imported
+modules, including private/generated declarations, and all `RudinRCA.*`
+constants. Its independent source-tree inventory rejects unimported modules.
+The audit is a default build target. Its regression harness checks a
+nonvacuous baseline and four distinct expected rejections.

@@ -59,18 +59,34 @@ continues to count only independently reviewed work landed on main.
 ## Cluster A inventory (branch `books/rca-foundations`)
 
 The complete verified ranges are 1.1–1.41, 2.1–2.25, and 3.1–3.17: **83
-numbered items**, including definitions and exposition. Of these, **48 are
-result-bearing numbered groups** (24 / 14 / 10). Attached unnumbered
+numbered items**, including definitions and exposition. Of these, **49 are
+result-bearing numbered groups** (25 / 14 / 10). Attached unnumbered
 corollaries are obligations of the parent group, not extra numbered items.
 The `Done` column above continues to mean accepted on main; branch proofs
 are reported separately and never equated with accepted completion.
 
 | Chapter | Inventoried | Result groups | Numbering unverified | Inventory and claims |
 |---|---:|---:|---:|---|
-| 1 | 41 | 24 | 0 | [Chapter 1](INVENTORY-CH01.md) |
+| 1 | 41 | 25 | 0 | [Chapter 1](INVENTORY-CH01.md) |
 | 2 | 25 | 14 | 0 | [Chapter 2](INVENTORY-CH02.md) |
 | 3 | 17 | 10 | 0 | [Chapter 3](INVENTORY-CH03.md) |
 
 These counts verify identifiers, not the correctness or formalization of
 every statement. Section 3.7 has a disclosed zero-measure fidelity hold;
 see [QUEUE.md](QUEUE.md). No exercise is included.
+
+## Cluster A formalization on this branch (independent review pending)
+
+| Chapter | Inventoried | Formalized items | Remaining original items | Proved result groups / total |
+|---|---:|---:|---:|---:|
+| 1 | 41 | 41 | 0 | 25 / 25 |
+| 2 | 25 | 8 | 17 | 7 / 14 |
+| 3 | 17 | 0 | 17 | 0 / 10 |
+| Total | 83 | 49 | 34 | 32 / 49 |
+
+Chapter 2 covers 2.4–2.7 and 2.10–2.13, including notation 2.11 and
+attached corollaries; it does not claim a representation theorem. Chapter 3
+contains four proved results: a counterexample and three facts about the
+explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
+remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
+The `Done` column in the main table remains zero because no merge occurred.

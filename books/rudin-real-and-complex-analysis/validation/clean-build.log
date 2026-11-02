@@ -1,0 +1,9 @@
+✔ [8924/8929] Built RudinRCA.Chapter03 (1.5s)
+✔ [8925/8929] Built RudinRCA.Chapter02 (3.0s)
+✔ [8926/8929] Built RudinRCA.Chapter01 (7.1s)
+✔ [8927/8929] Built RudinRCA (3.4s)
+ℹ [8929/8929] Built RudinRCA.AuditA (15s)
+info: RudinRCA/AuditA.lean:64:0: Axiom audit passed for 207 project declarations (including private/generated) across 4 audited project modules; the package source tree holds 5 project modules, all imported into the audited graph and all present in the expected inventory; used: [propext,
+ Classical.choice,
+ Quot.sound].
+Build completed successfully (8929 jobs).

@@ -27,3 +27,30 @@ per node by each chapter's claims check.
 counts; `QUEUE.md` tracks stuck nodes. Work is ticketed per chapter
 cluster in this repo's issues; every PR takes an independent crossed
 review (reviewer pool ≠ author pool) and merges only on PASS.
+
+## Cluster A development
+
+The current branch adds Chapter 1 and the topological beginning of Chapter
+2. See [PROGRESS.md](PROGRESS.md), the three chapter inventories and
+[SCOPING-A.md](SCOPING-A.md) for exact coverage. The printed definition
+3.7 has a zero-measure fidelity hold in [QUEUE.md](QUEUE.md); its repair is
+explicit and does not count as a completed original item.
+
+From this directory, with the already provisioned pinned Lean toolchain:
+
+```sh
+lake exe cache get
+lake build
+python3 scripts/check_audit.py
+```
+
+`lake build` includes `RudinRCA.AuditA`. The audit checks transitive axioms,
+project ownership (including private/generated declarations), namespace
+coverage, and source-module coverage. Only `propext`, `Classical.choice`
+and `Quot.sound` are permitted. When adding a chapter, update the umbrella
+and the audit's expected-module inventory together.
+
+The regression harness uses isolated fresh fixture builds, checks one
+nonvacuous pass plus rejection of a sorry, an explicit axiom, a private
+foreign-namespace axiom, and an unimported source, and never changes the
+live chapter sources. It tests audit enforcement, not book fidelity.

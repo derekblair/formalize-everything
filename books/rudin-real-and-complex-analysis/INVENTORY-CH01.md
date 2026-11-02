@@ -51,3 +51,84 @@ Mathlib checkout inspected: `d13f23b723b8a846827a245b89c10fc7d3f11612`. **U** = 
 | 1.41 | 31 | Theorem: finite occurrence | U | `MeasureTheory.ae_eventually_notMem` |
 
 The source and numbering check found no false printed statement. The M entry is a library coverage gap, not a fidelity correction. Partially represented groups must remain incomplete until every clause and attached corollary is covered.
+
+## Branch declaration coverage
+
+All **41/41 numbered items** have a formal representation and proofs of
+their assertions in `RudinRCA/Chapter01.lean`; all **25/25 result groups**
+and their attached corollaries are proved. This is the author's coverage
+claim, pending the coordinator's independent review, not acceptance on
+main. Definitions and vocabulary are represented, not mislabeled as new
+mathematical theorems. The U/V/M table above records the initial library
+claims check; the M result 1.40 is now proved in the book module.
+
+All names below are in `RudinRCA.Chapter01`. A suffix `*` denotes the
+explicit family of declarations in that numbered section.
+
+| Node | Declaration coverage |
+|---|---|
+| 1.1 | `proposition_1_1`; `Set`/function vocabulary documented in module |
+| 1.2 | `definition_1_2_topology`, `definition_1_2_continuous` |
+| 1.3 | `definition_1_3_sigma`, `definition_1_3_measurable` |
+| 1.4 | `definition_1_4_metric`, `definition_1_4_local`, `proposition_1_4_*` |
+| 1.5 | `theorem_1_5` |
+| 1.6 | `proposition_1_6` |
+| 1.7 | `theorem_1_7a`, `theorem_1_7b` |
+| 1.8 | `theorem_1_8` |
+| 1.9 | `proposition_1_9a`–`proposition_1_9e` |
+| 1.10 | `theorem_1_10` |
+| 1.11 | `IsFSigma`, `definition_1_11_borel`, `definition_1_11_halfOpen`, `definition_1_11_continuous` |
+| 1.12 | `pullbackSigma`, `theorem_1_12a`–`theorem_1_12d` |
+| 1.13 | `definition_1_13_*`, `pointwiseSup`, `pointwiseLimsup`, `IsPointwiseLimit` |
+| 1.14 | `theorem_1_14`, `theorem_1_14_inf`, `corollary_1_14a`, `corollary_1_14b` |
+| 1.15 | `definition_1_15`, `proposition_1_15` |
+| 1.16 | `IsSimple`, `IsNonnegativeSimple`, `definition_1_16_*` |
+| 1.17 | `theorem_1_17` |
+| 1.18 | `BookPositiveMeasure`, `BookComplexMeasure` and their conversion/value theorems |
+| 1.19 | `theorem_1_19a`–`theorem_1_19e` and complex-measure addenda |
+| 1.20 | `example_1_20a_finite`, `example_1_20a_infinite`, `example_1_20b`, `example_1_20c` |
+| 1.21 | `BookMeasureSpaceData`, `measureSpaceData` |
+| 1.22 | `definition_1_22`, `proposition_1_22`, cancellation and measurability wrappers |
+| 1.23 | `definition_1_23`, `definition_1_23_simple` |
+| 1.24 | `proposition_1_24a`–`proposition_1_24f` |
+| 1.25 | `proposition_1_25` |
+| 1.26 | `theorem_1_26` |
+| 1.27 | `theorem_1_27`, `corollary_1_27` |
+| 1.28 | `theorem_1_28` |
+| 1.29 | `theorem_1_29` |
+| 1.30 | `BookL1`, `definition_1_30` |
+| 1.31 | `BookComplexIntegral`, `definition_1_31_finite`, `definition_1_31`, `ExtendedIntegralDefined`, `BookExtendedIntegral` |
+| 1.32 | `theorem_1_32` |
+| 1.33 | `theorem_1_33` |
+| 1.34 | `theorem_1_34` |
+| 1.35 | `BookAEOn`, `definition_1_35`, `proposition_1_35_*` |
+| 1.36 | `completionSigma`, `completedMeasure`, `theorem_1_36` |
+| 1.37 | `proposition_1_37` |
+| 1.38 | `theorem_1_38` |
+| 1.39 | `theorem_1_39a`–`theorem_1_39c` |
+| 1.40 | `theorem_1_40`; measurable-representative helper |
+| 1.41 | `theorem_1_41` |
+
+### Representation boundaries
+
+- The Borel-target convention is proved equivalent to the book's open-set
+  definition in 1.3. Sequences use natural indices starting at zero.
+- Nonnegative simple functions are finite-valued; 1.17 explicitly excludes
+  infinity, and 1.23 proves that these finite-valued approximants suffice.
+- 1.18 reconstructs measures from exactly the book's countable-additivity
+  and finite-somewhere data, preserving every measurable-set value.
+- Before 1.37, `BookL1` includes ordinary measurability. Its bridge to
+  Mathlib `Integrable` and the four-term integral identity are proved in
+  1.30–1.31. After 1.37, null modifications/partially defined functions are
+  handled by measurable representatives; 1.40 does not impose extra
+  ordinary measurability on the supplied integrable function.
+- 1.15 is valid even with Mathlib's totalized extended subtraction; it
+  therefore adds no exclusion of simultaneous infinities. The book's
+  explicitly restricted extended integral in 1.31 has an explicit domain.
+- `Set`, interval, image/preimage, and function vocabulary in 1.1, and the
+  typed ordered-triple convention in 1.21, are representation choices.
+  Historical discussion and examples of applications in later chapters
+  are not asserted as new theorems here.
+
+No Chapter 1 printed statement was corrected or weakened. The counting-tail
+counterexample in 1.20(c) is the book's own example, not a fidelity event.
