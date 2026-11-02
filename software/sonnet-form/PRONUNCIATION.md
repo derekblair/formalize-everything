@@ -14,6 +14,15 @@ English dictionary, not reconstructed Elizabethan pronunciation. Its first
 listed pronunciation is selected deterministically. A resulting rhyme failure
 is a failure under this model, not a proof that Shakespeare did not rhyme.
 
+The snapshot is commit
+[`74790861f652b15e4ac49015a90074ad62a27690`](https://github.com/cmusphinx/cmudict/tree/74790861f652b15e4ac49015a90074ad62a27690),
+retrieved 2026-10-27 (America/Los_Angeles). The dictionary is 3,618,488 bytes,
+SHA-256 `81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22`.
+The accompanying Carnegie Mellon University license permits redistribution
+subject to retention of its notice, conditions, and disclaimer; it is retained
+in full as [`data/cmudict-LICENSE`](data/cmudict-LICENSE). This licensed
+pronunciation resource is separate from the public-domain poem edition.
+
 ## Explicit lookup decisions
 
 1. Tokenization extracts ASCII alphabetic words with internal, leading, or
@@ -88,3 +97,41 @@ and verdicts are defined in the Lean spec and corpus generator. Coverage does
 not establish accuracy. In particular, author-supplied OOV entries, a single
 pronunciation per word, modern rhotic vowels, and full syllabic archaic endings
 can all create model-specific deviations.
+
+## From phonemes to meter and rhyme
+
+Each ARPAbet vowel with a final `0`, `1`, or `2` contributes one lexical
+syllable. In a word with more than one syllable, `0` becomes weak and both
+`1` (primary stress) and `2` (secondary stress) become strong. Every
+monosyllabic word contributes one flexible stress mask instead. This applies
+to content words as well as function words; it is a broad, explicit metrical
+modeling decision. The Lean realization procedure places those flexible
+syllables in the alternating iambic positions of the candidate scan. Its
+success therefore means compatibility with those choices, not independent
+measurement of spoken stress. Explicitly licensed elision candidates may
+remove a designated unstressed syllable of a small named word set; they do
+not alter the poem's spelling.
+
+Rhyme classes are phoneme suffixes starting at the **last vowel carrying
+primary or secondary stress** (`1` or `2`); if no vowel is marked stressed,
+the last vowel is used. Stress digits are erased from the suffix before
+comparison. A rhyme class therefore contains the stressed nucleus and
+everything after it, including any following unstressed syllables. Unlike
+metrical monosyllables, rhyme phonemes are never made flexible. A single
+dictionary pronunciation is used even when an alternate pronunciation or
+historical accent would produce a rhyme. The distinction between lexical
+stress masks and fixed phonetic rhyme classes is intentional.
+
+## MD-ELISION-SITES: eligible lexical contractions
+
+Only the second, explicitly weak syllable of a two-syllable reading of the
+following forms can supply an elision candidate: `heaven`, `heavens`,
+`heaven's`, `power`, `powers`, `power's`, `flower`, `flowers`, `flower's`,
+`hour`, `hours`, `hour's`, and `our`. The list models conventional poetic
+contraction/synizesis of these forms as deletion of one weak syllable. It is
+an author-specified approximation, not a phonetic derivation; consonantal
+realization is not reconstructed. Only one site can be used in a reading.
+The baseline remains first, so a passing feminine-ending reading takes
+precedence over a later elision candidate. No contraction is inferred from
+line length, sonnet number, or rhyme partner. Other possible contractions
+remain model failures and are visible in the validation sample.

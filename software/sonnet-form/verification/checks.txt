@@ -1,0 +1,64 @@
+$ python3 tools/import_corpus.py --check
+PASS: 154 sonnets; 2155 verse lines; source SHA-256 and every normalized verse line verified
+Line-count distribution: 152 × 14; sonnet 99 = 15; sonnet 126 = 12
+exit_code=0
+$ python3 tools/generate.py --check
+{
+  "sonnets": 154,
+  "lines": 2155,
+  "line_count": {
+    "pass": 152,
+    "fail": 2
+  },
+  "rhyme": {
+    "pass": 21,
+    "fail": 133
+  },
+  "strict_meter": {
+    "pass": 1,
+    "fail": 153
+  },
+  "licensed_meter": {
+    "pass": 28,
+    "fail": 126
+  },
+  "line_strict": {
+    "pass": 1228,
+    "fail": 927
+  },
+  "line_licensed": {
+    "pass": 1883,
+    "fail": 272
+  },
+  "unresolved_lines": 1,
+  "licenses": {
+    "INITIAL_TROCHAIC_INVERSION": 92,
+    "FEMININE_ENDING": 250,
+    "PYRRHIC_SUBSTITUTION": 257,
+    "SPONDAIC_SUBSTITUTION": 229,
+    "UNSTRESSED_ELISION": 33
+  }
+}
+CHECKED 16 files
+exit_code=0
+$ python3 tools/validate_scansion.py --check
+Hand fixture: 11 complete sonnets, 154 lines
+Baseline syllable count: 132/154
+Any supplied reading: syllable count: 138/154
+Baseline complete stress sequence: 71/154
+Any supplied reading: complete stress sequence: 73/154
+Selected reading: complete stress sequence: 71/154
+Fixed lexical stresses compatible with hand reading: 121/154
+Licensed-meter verdict versus hand verse family: 140/154
+Whole-poem verdict agreement: 5/11
+exit_code=0
+$ python3 tools/check_model.py
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.001s
+
+OK
+exit_code=0
+$ python3 tools/audit_axioms.py --write
+PASS: 206 theorems audited; axioms used: ['Quot.sound', 'propext']; no prohibited source tokens
+exit_code=0

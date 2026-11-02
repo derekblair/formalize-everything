@@ -1,0 +1,1567 @@
+{
+  "authors": "Codex author-agent, manual literary reading; not independent human review",
+  "annotation_method": "Syllable-by-syllable reading with rhetorical stress; one defensible reading per line, not all possible performances",
+  "sample_sonnets": [
+    2,
+    18,
+    19,
+    20,
+    29,
+    55,
+    60,
+    73,
+    116,
+    130,
+    145
+  ],
+  "sample_lines": 154,
+  "hand_source_sha256": "a6b57916618c23d9699c79c3e1fc5d2fed5b5e185ca7a497b1784e85d46fafbb",
+  "annotation_blinding": "Hand TSV authored before examining machine annotation output; no retuning to increase agreement",
+  "sources": [
+    "https://www.folger.edu/explore/shakespeares-works/shakespeares-sonnets/reading-shakespeares-language-sonnets/",
+    "https://www.folger.edu/explore/write-a-sonnet/",
+    "https://github.com/cmusphinx/cmudict"
+  ],
+  "lines": [
+    {
+      "number": 2,
+      "line": 1,
+      "text": "When forty winters shall besiege thy brow,",
+      "syllables": 10,
+      "stress": "uSuSuuuSuS",
+      "hand_scansion": "when FOR | ty WIN | ters shall | be SIEGE | thy BROW",
+      "intended_family": "pentameter",
+      "note": "Folger editors explicitly give the pyrrhic third foot."
+    },
+    {
+      "number": 2,
+      "line": 2,
+      "text": "And dig deep trenches in thy beauty’s field,",
+      "syllables": 10,
+      "stress": "uSSSuuuSuS",
+      "hand_scansion": "and DIG | DEEP TRENCH | es in | thy BEAU | ty's FIELD",
+      "intended_family": "pentameter",
+      "note": "Folger editors explicitly give spondee then pyrrhic."
+    },
+    {
+      "number": 2,
+      "line": 3,
+      "text": "Thy youth’s proud livery so gazed on now,",
+      "syllables": 10,
+      "stress": "uSSSuuuSSS",
+      "hand_scansion": "thy YOUTH'S | PROUD LIV | er y | so GAZED | ON NOW",
+      "intended_family": "pentameter",
+      "note": "Folger editors give three-stress groups; livery has three syllables."
+    },
+    {
+      "number": 2,
+      "line": 4,
+      "text": "Will be a tatter’d weed of small worth held:",
+      "syllables": 10,
+      "stress": "uSuSuSuSSS",
+      "hand_scansion": "will BE | a TAT | ter'd WEED | of SMALL | WORTH HELD",
+      "intended_family": "pentameter",
+      "note": "Folger editors give the final spondee; tatter'd is two syllables."
+    },
+    {
+      "number": 2,
+      "line": 5,
+      "text": "Then being asked, where all thy beauty lies,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "then BE | ing ASKED | where ALL | thy BEAU | ty LIES",
+      "intended_family": "pentameter",
+      "note": "Being is two syllables."
+    },
+    {
+      "number": 2,
+      "line": 6,
+      "text": "Where all the treasure of thy lusty days;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "where ALL | the TREA | sure OF | thy LUS | ty DAYS",
+      "intended_family": "pentameter",
+      "note": "Promotion of of is a metrical reading, not lexical stress."
+    },
+    {
+      "number": 2,
+      "line": 7,
+      "text": "To say, within thine own deep sunken eyes,",
+      "syllables": 10,
+      "stress": "uSuSuSSSuS",
+      "hand_scansion": "to SAY | with IN | thine OWN | DEEP SUNK | en EYES",
+      "intended_family": "pentameter",
+      "note": "Emphatic deep sunken gives a spondee."
+    },
+    {
+      "number": 2,
+      "line": 8,
+      "text": "Were an all-eating shame, and thriftless praise.",
+      "syllables": 10,
+      "stress": "uuSSuSuSuS",
+      "hand_scansion": "were an | ALL EAT | ing SHAME | and THRIFT | less PRAISE",
+      "intended_family": "pentameter",
+      "note": "Pyrrhic before emphatic all-eating."
+    },
+    {
+      "number": 2,
+      "line": 9,
+      "text": "How much more praise deserv’d thy beauty’s use,",
+      "syllables": 10,
+      "stress": "uSSSuSuSuS",
+      "hand_scansion": "how MUCH | MORE PRAISE | de SERV'D | thy BEAU | ty's USE",
+      "intended_family": "pentameter",
+      "note": "Second-foot spondee."
+    },
+    {
+      "number": 2,
+      "line": 10,
+      "text": "If thou couldst answer ‘This fair child of mine",
+      "syllables": 10,
+      "stress": "uSuSuSSSuS",
+      "hand_scansion": "if THOU | couldst AN | swer THIS | FAIR CHILD | of MINE",
+      "intended_family": "pentameter",
+      "note": "Fourth-foot spondee."
+    },
+    {
+      "number": 2,
+      "line": 11,
+      "text": "Shall sum my count, and make my old excuse,’",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "shall SUM | my COUNT | and MAKE | my OLD | ex CUSE",
+      "intended_family": "pentameter",
+      "note": "Regular metrical reading."
+    },
+    {
+      "number": 2,
+      "line": 12,
+      "text": "Proving his beauty by succession thine!",
+      "syllables": 10,
+      "stress": "SuuSuSuSuS",
+      "hand_scansion": "PROV ing | his BEAU | ty BY | suc CESS | ion THINE",
+      "intended_family": "pentameter",
+      "note": "Initial inversion; succession three syllables."
+    },
+    {
+      "number": 2,
+      "line": 13,
+      "text": "This were to be new made when thou art old,",
+      "syllables": 10,
+      "stress": "uSuSSSuSuS",
+      "hand_scansion": "this WERE | to BE | NEW MADE | when THOU | art OLD",
+      "intended_family": "pentameter",
+      "note": "Third-foot spondee."
+    },
+    {
+      "number": 2,
+      "line": 14,
+      "text": "And see thy blood warm when thou feel’st it cold.",
+      "syllables": 10,
+      "stress": "uSuSSuuSuS",
+      "hand_scansion": "and SEE | thy BLOOD | WARM when | thou FEEL'ST | it COLD",
+      "intended_family": "pentameter",
+      "note": "Natural emphasis produces an interior inversion."
+    },
+    {
+      "number": 18,
+      "line": 1,
+      "text": "Shall I compare thee to a summer’s day?",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "shall I | com PARE | thee TO | a SUM | mer's DAY",
+      "intended_family": "pentameter",
+      "note": "Metrical promotion of to."
+    },
+    {
+      "number": 18,
+      "line": 2,
+      "text": "Thou art more lovely and more temperate:",
+      "syllables": 10,
+      "stress": "uSuSuSuSuu",
+      "hand_scansion": "thou ART | more LOVE | ly AND | more TEM | per ate",
+      "intended_family": "pentameter",
+      "note": "Temperate three syllables; weak final foot in this reading."
+    },
+    {
+      "number": 18,
+      "line": 3,
+      "text": "Rough winds do shake the darling buds of May,",
+      "syllables": 10,
+      "stress": "SSuSuSuSuS",
+      "hand_scansion": "ROUGH WINDS | do SHAKE | the DAR | ling BUDS | of MAY",
+      "intended_family": "pentameter",
+      "note": "Emphatic opening spondee."
+    },
+    {
+      "number": 18,
+      "line": 4,
+      "text": "And summer’s lease hath all too short a date:",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "and SUM | mer's LEASE | hath ALL | too SHORT | a DATE",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 18,
+      "line": 5,
+      "text": "Sometime too hot the eye of heaven shines,",
+      "syllables": 10,
+      "stress": "SuuSuSuSuS",
+      "hand_scansion": "SOME time | too HOT | the EYE | of HEAV | en SHINES",
+      "intended_family": "pentameter",
+      "note": "Initial inversion; heaven two syllables."
+    },
+    {
+      "number": 18,
+      "line": 6,
+      "text": "And often is his gold complexion dimm’d,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "and OF | ten IS | his GOLD | com PLEX | ion DIMM'D",
+      "intended_family": "pentameter",
+      "note": "Complexion three syllables."
+    },
+    {
+      "number": 18,
+      "line": 7,
+      "text": "And every fair from fair sometime declines,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "and EV | ery FAIR | from FAIR | some TIME | de CLINES",
+      "intended_family": "pentameter",
+      "note": "Every two syllables; sometime has metrical second stress."
+    },
+    {
+      "number": 18,
+      "line": 8,
+      "text": "By chance, or nature’s changing course untrimm’d:",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "by CHANCE | or NA | ture's CHANG | ing COURSE | un TRIMM'D",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 18,
+      "line": 9,
+      "text": "But thy eternal summer shall not fade,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "but THY | e TER | nal SUM | mer SHALL | not FADE",
+      "intended_family": "pentameter",
+      "note": "Promotion of shall."
+    },
+    {
+      "number": 18,
+      "line": 10,
+      "text": "Nor lose possession of that fair thou ow’st,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "nor LOSE | pos SESS | ion OF | that FAIR | thou OW'ST",
+      "intended_family": "pentameter",
+      "note": "Ow'st one syllable."
+    },
+    {
+      "number": 18,
+      "line": 11,
+      "text": "Nor shall death brag thou wander’st in his shade,",
+      "syllables": 10,
+      "stress": "uSSSuSuSuS",
+      "hand_scansion": "nor SHALL | DEATH BRAG | thou WAN | der'st IN | his SHADE",
+      "intended_family": "pentameter",
+      "note": "Death brag spondee; wander'st two syllables."
+    },
+    {
+      "number": 18,
+      "line": 12,
+      "text": "When in eternal lines to time thou grow’st,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "when IN | e TER | nal LINES | to TIME | thou GROW'ST",
+      "intended_family": "pentameter",
+      "note": "Grow'st one syllable."
+    },
+    {
+      "number": 18,
+      "line": 13,
+      "text": "So long as men can breathe, or eyes can see,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "so LONG | as MEN | can BREATHE | or EYES | can SEE",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 18,
+      "line": 14,
+      "text": "So long lives this, and this gives life to thee.",
+      "syllables": 10,
+      "stress": "uSSSuSuSuS",
+      "hand_scansion": "so LONG | LIVES THIS | and THIS | gives LIFE | to THEE",
+      "intended_family": "pentameter",
+      "note": "Emphatic second foot."
+    },
+    {
+      "number": 19,
+      "line": 1,
+      "text": "Devouring Time, blunt thou the lion’s paws,",
+      "syllables": 10,
+      "stress": "uSuSSuuSuS",
+      "hand_scansion": "de VOUR | ing TIME | BLUNT thou | the LI | on's PAWS",
+      "intended_family": "pentameter",
+      "note": "Lion two syllables; rhetorical interior inversion."
+    },
+    {
+      "number": 19,
+      "line": 2,
+      "text": "And make the earth devour her own sweet brood;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "and MAKE | the EARTH | de VOUR | her OWN | sweet BROOD",
+      "intended_family": "pentameter",
+      "note": "Devour two syllables."
+    },
+    {
+      "number": 19,
+      "line": 3,
+      "text": "Pluck the keen teeth from the fierce tiger’s jaws,",
+      "syllables": 10,
+      "stress": "SuSSuuSSuS",
+      "hand_scansion": "PLUCK the | KEEN TEETH | from the | FIERCE TI | ger's JAWS",
+      "intended_family": "pentameter",
+      "note": "Several emphatic substitutions; not within a two-substitution bound."
+    },
+    {
+      "number": 19,
+      "line": 4,
+      "text": "And burn the long-liv’d phoenix, in her blood;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "and BURN | the LONG | liv'd PHOE | nix IN | her BLOOD",
+      "intended_family": "pentameter",
+      "note": "Phoenix two syllables."
+    },
+    {
+      "number": 19,
+      "line": 5,
+      "text": "Make glad and sorry seasons as thou fleets,",
+      "syllables": 10,
+      "stress": "SSuSuSuSuS",
+      "hand_scansion": "MAKE GLAD | and SOR | ry SEA | sons AS | thou FLEETS",
+      "intended_family": "pentameter",
+      "note": "Initial spondee."
+    },
+    {
+      "number": 19,
+      "line": 6,
+      "text": "And do whate’er thou wilt, swift-footed Time,",
+      "syllables": 10,
+      "stress": "uSuSuSSSuS",
+      "hand_scansion": "and DO | what E'ER | thou WILT | SWIFT FOOT | ed TIME",
+      "intended_family": "pentameter",
+      "note": "Whate'er two syllables; fourth-foot spondee."
+    },
+    {
+      "number": 19,
+      "line": 7,
+      "text": "To the wide world and all her fading sweets;",
+      "syllables": 10,
+      "stress": "uuSSuSuSuS",
+      "hand_scansion": "to the | WIDE WORLD | and ALL | her FAD | ing SWEETS",
+      "intended_family": "pentameter",
+      "note": "Opening pyrrhic and spondee."
+    },
+    {
+      "number": 19,
+      "line": 8,
+      "text": "But I forbid thee one most heinous crime:",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "but I | for BID | thee ONE | most HEI | nous CRIME",
+      "intended_family": "pentameter",
+      "note": "Heinous two syllables."
+    },
+    {
+      "number": 19,
+      "line": 9,
+      "text": "O! carve not with thy hours my love’s fair brow,",
+      "syllables": 10,
+      "stress": "uSuSuSuSSS",
+      "hand_scansion": "o CARVE | not WITH | thy HOURS | my LOVE'S | FAIR BROW",
+      "intended_family": "pentameter",
+      "note": "Hours one syllable; final spondee."
+    },
+    {
+      "number": 19,
+      "line": 10,
+      "text": "Nor draw no lines there with thine antique pen;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "nor DRAW | no LINES | there WITH | thine AN | tique PEN",
+      "intended_family": "pentameter",
+      "note": "Historical initial stress on antique is an interpretive choice."
+    },
+    {
+      "number": 19,
+      "line": 11,
+      "text": "Him in thy course untainted do allow",
+      "syllables": 10,
+      "stress": "SuuSuSuSuS",
+      "hand_scansion": "HIM in | thy COURSE | un TAIN | ted DO | al LOW",
+      "intended_family": "pentameter",
+      "note": "Initial inversion."
+    },
+    {
+      "number": 19,
+      "line": 12,
+      "text": "For beauty’s pattern to succeeding men.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "for BEAU | ty's PATT | ern TO | suc CEED | ing MEN",
+      "intended_family": "pentameter",
+      "note": "Succeeding three syllables."
+    },
+    {
+      "number": 19,
+      "line": 13,
+      "text": "Yet do thy worst, old Time; despite thy wrong,",
+      "syllables": 10,
+      "stress": "uSuSSSuSuS",
+      "hand_scansion": "yet DO | thy WORST | OLD TIME | de SPITE | thy WRONG",
+      "intended_family": "pentameter",
+      "note": "Third-foot spondee."
+    },
+    {
+      "number": 19,
+      "line": 14,
+      "text": "My love shall in my verse ever live young.",
+      "syllables": 10,
+      "stress": "uSuSuSSuuS",
+      "hand_scansion": "my LOVE | shall IN | my VERSE | EV er | live YOUNG",
+      "intended_family": "pentameter",
+      "note": "Interior inversion on ever."
+    },
+    {
+      "number": 20,
+      "line": 1,
+      "text": "A woman’s face with nature’s own hand painted,",
+      "syllables": 11,
+      "stress": "uSuSuSuSuSu",
+      "hand_scansion": "a WO | man's FACE | with NA | ture's OWN | hand PAINT | ed",
+      "intended_family": "pentameter",
+      "note": "Feminine ending."
+    },
+    {
+      "number": 20,
+      "line": 2,
+      "text": "Hast thou, the master mistress of my passion;",
+      "syllables": 11,
+      "stress": "SuuSuSuSuSu",
+      "hand_scansion": "HAST thou | the MAS | ter MIS | tress OF | my PASS | ion",
+      "intended_family": "pentameter",
+      "note": "Initial inversion and feminine ending."
+    },
+    {
+      "number": 20,
+      "line": 3,
+      "text": "A woman’s gentle heart, but not acquainted",
+      "syllables": 11,
+      "stress": "uSuSuSuSuSu",
+      "hand_scansion": "a WO | man's GEN | tle HEART | but NOT | ac QUAINT | ed",
+      "intended_family": "pentameter",
+      "note": "Feminine ending."
+    },
+    {
+      "number": 20,
+      "line": 4,
+      "text": "With shifting change, as is false women’s fashion:",
+      "syllables": 11,
+      "stress": "uSuSuSSSuSu",
+      "hand_scansion": "with SHIFT | ing CHANGE | as IS | FALSE WO | men's FASH | ion",
+      "intended_family": "pentameter",
+      "note": "Spondee and feminine ending."
+    },
+    {
+      "number": 20,
+      "line": 5,
+      "text": "An eye more bright than theirs, less false in rolling,",
+      "syllables": 11,
+      "stress": "uSuSuSuSuSu",
+      "hand_scansion": "an EYE | more BRIGHT | than THEIRS | less FALSE | in ROLL | ing",
+      "intended_family": "pentameter",
+      "note": "Feminine ending."
+    },
+    {
+      "number": 20,
+      "line": 6,
+      "text": "Gilding the object whereupon it gazeth;",
+      "syllables": 11,
+      "stress": "SuuSuSuSuSu",
+      "hand_scansion": "GILD ing | the OB | ject WHERE | up ON | it GAZ | eth",
+      "intended_family": "pentameter",
+      "note": "Initial inversion and feminine ending; gazeth two syllables."
+    },
+    {
+      "number": 20,
+      "line": 7,
+      "text": "A man in hue all ‘hues’ in his controlling,",
+      "syllables": 11,
+      "stress": "uSuSuSuSuSu",
+      "hand_scansion": "a MAN | in HUE | all HUES | in HIS | con TROLL | ing",
+      "intended_family": "pentameter",
+      "note": "Feminine ending."
+    },
+    {
+      "number": 20,
+      "line": 8,
+      "text": "Which steals men’s eyes and women’s souls amazeth.",
+      "syllables": 11,
+      "stress": "uSSSuSuSuSu",
+      "hand_scansion": "which STEALS | MEN'S EYES | and WO | men's SOULS | a MAZ | eth",
+      "intended_family": "pentameter",
+      "note": "Spondee and feminine ending; amazeth three syllables."
+    },
+    {
+      "number": 20,
+      "line": 9,
+      "text": "And for a woman wert thou first created;",
+      "syllables": 11,
+      "stress": "uSuSuSuSuSu",
+      "hand_scansion": "and FOR | a WO | man WERT | thou FIRST | cre A | ted",
+      "intended_family": "pentameter",
+      "note": "Feminine ending; created three syllables."
+    },
+    {
+      "number": 20,
+      "line": 10,
+      "text": "Till Nature, as she wrought thee, fell a-doting,",
+      "syllables": 11,
+      "stress": "uSuSuSuSuSu",
+      "hand_scansion": "till NA | ture AS | she WROUGHT | thee FELL | a DOT | ing",
+      "intended_family": "pentameter",
+      "note": "Feminine ending."
+    },
+    {
+      "number": 20,
+      "line": 11,
+      "text": "And by addition me of thee defeated,",
+      "syllables": 11,
+      "stress": "uSuSuSuSuSu",
+      "hand_scansion": "and BY | ad DI | tion ME | of THEE | de FEAT | ed",
+      "intended_family": "pentameter",
+      "note": "Feminine ending."
+    },
+    {
+      "number": 20,
+      "line": 12,
+      "text": "By adding one thing to my purpose nothing.",
+      "syllables": 11,
+      "stress": "uSuSSuuSuSu",
+      "hand_scansion": "by ADD | ing ONE | THING to | my PUR | pose NO | thing",
+      "intended_family": "pentameter",
+      "note": "Interior inversion plus feminine ending in this emphatic reading."
+    },
+    {
+      "number": 20,
+      "line": 13,
+      "text": "But since she prick’d thee out for women’s pleasure,",
+      "syllables": 11,
+      "stress": "uSuSuSuSuSu",
+      "hand_scansion": "but SINCE | she PRICK'D | thee OUT | for WO | men's PLEA | sure",
+      "intended_family": "pentameter",
+      "note": "Feminine ending."
+    },
+    {
+      "number": 20,
+      "line": 14,
+      "text": "Mine be thy love and thy love’s use their treasure.",
+      "syllables": 11,
+      "stress": "SuuSuSuSuSu",
+      "hand_scansion": "MINE be | thy LOVE | and THY | love's USE | their TREA | sure",
+      "intended_family": "pentameter",
+      "note": "Initial inversion and feminine ending."
+    },
+    {
+      "number": 29,
+      "line": 1,
+      "text": "When in disgrace with fortune and men’s eyes",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "when IN | dis GRACE | with FOR | tune AND | men's EYES",
+      "intended_family": "pentameter",
+      "note": "Regular metrical reading."
+    },
+    {
+      "number": 29,
+      "line": 2,
+      "text": "I all alone beweep my outcast state,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "i ALL | a LONE | be WEEP | my OUT | cast STATE",
+      "intended_family": "pentameter",
+      "note": "Outcast two syllables."
+    },
+    {
+      "number": 29,
+      "line": 3,
+      "text": "And trouble deaf heaven with my bootless cries,",
+      "syllables": 10,
+      "stress": "uSuSSuuSuS",
+      "hand_scansion": "and TROUB | le DEAF | HEAV'N with | my BOOT | less CRIES",
+      "intended_family": "pentameter",
+      "note": "Heaven contracted to one syllable; interior inversion."
+    },
+    {
+      "number": 29,
+      "line": 4,
+      "text": "And look upon myself, and curse my fate,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "and LOOK | up ON | my SELF | and CURSE | my FATE",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 29,
+      "line": 5,
+      "text": "Wishing me like to one more rich in hope,",
+      "syllables": 10,
+      "stress": "SuuSuSuSuS",
+      "hand_scansion": "WISH ing | me LIKE | to ONE | more RICH | in HOPE",
+      "intended_family": "pentameter",
+      "note": "Initial inversion."
+    },
+    {
+      "number": 29,
+      "line": 6,
+      "text": "Featur’d like him, like him with friends possess’d,",
+      "syllables": 10,
+      "stress": "SuuSuSuSuS",
+      "hand_scansion": "FEA tur'd | like HIM | like HIM | with FRIENDS | pos SESS'D",
+      "intended_family": "pentameter",
+      "note": "Initial inversion; featured two syllables."
+    },
+    {
+      "number": 29,
+      "line": 7,
+      "text": "Desiring this man’s art, and that man’s scope,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "de SIR | ing THIS | man's ART | and THAT | man's SCOPE",
+      "intended_family": "pentameter",
+      "note": "Desiring three syllables."
+    },
+    {
+      "number": 29,
+      "line": 8,
+      "text": "With what I most enjoy contented least;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "with WHAT | i MOST | en JOY | con TENT | ed LEAST",
+      "intended_family": "pentameter",
+      "note": "Contented three syllables."
+    },
+    {
+      "number": 29,
+      "line": 9,
+      "text": "Yet in these thoughts my self almost despising,",
+      "syllables": 11,
+      "stress": "uSuSuSuSuSu",
+      "hand_scansion": "yet IN | these THOUGHTS | my SELF | al MOST | de SPIS | ing",
+      "intended_family": "pentameter",
+      "note": "Feminine ending."
+    },
+    {
+      "number": 29,
+      "line": 10,
+      "text": "Haply I think on thee, and then my state,",
+      "syllables": 10,
+      "stress": "SuuSuSuSuS",
+      "hand_scansion": "HAP ly | i THINK | on THEE | and THEN | my STATE",
+      "intended_family": "pentameter",
+      "note": "Initial inversion."
+    },
+    {
+      "number": 29,
+      "line": 11,
+      "text": "Like to the lark at break of day arising",
+      "syllables": 11,
+      "stress": "SuuSuSuSuSu",
+      "hand_scansion": "LIKE to | the LARK | at BREAK | of DAY | a RIS | ing",
+      "intended_family": "pentameter",
+      "note": "Initial inversion and feminine ending."
+    },
+    {
+      "number": 29,
+      "line": 12,
+      "text": "From sullen earth, sings hymns at heaven’s gate;",
+      "syllables": 10,
+      "stress": "uSuSSSuSuS",
+      "hand_scansion": "from SUL | len EARTH | SINGS HYMNS | at HEAV | en's GATE",
+      "intended_family": "pentameter",
+      "note": "Heaven two syllables; spondee."
+    },
+    {
+      "number": 29,
+      "line": 13,
+      "text": "For thy sweet love remember’d such wealth brings",
+      "syllables": 10,
+      "stress": "uSSSuSuSSS",
+      "hand_scansion": "for THY | SWEET LOVE | re MEM | ber'd SUCH | WEALTH BRINGS",
+      "intended_family": "pentameter",
+      "note": "Two emphatic spondees; remembered three syllables."
+    },
+    {
+      "number": 29,
+      "line": 14,
+      "text": "That then I scorn to change my state with kings.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "that THEN | i SCORN | to CHANGE | my STATE | with KINGS",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 55,
+      "line": 1,
+      "text": "Not marble, nor the gilded monuments",
+      "syllables": 10,
+      "stress": "uSuSuSuSuu",
+      "hand_scansion": "not MAR | ble NOR | the GILD | ed MON | u ments",
+      "intended_family": "pentameter",
+      "note": "Monuments three syllables; weak final foot."
+    },
+    {
+      "number": 55,
+      "line": 2,
+      "text": "Of princes, shall outlive this powerful rhyme;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "of PRIN | ces SHALL | out LIVE | this POW'R | ful RHYME",
+      "intended_family": "pentameter",
+      "note": "Powerful contracted to two syllables."
+    },
+    {
+      "number": 55,
+      "line": 3,
+      "text": "But you shall shine more bright in these contents",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "but YOU | shall SHINE | more BRIGHT | in THESE | con TENTS",
+      "intended_family": "pentameter",
+      "note": "Final stress on contents."
+    },
+    {
+      "number": 55,
+      "line": 4,
+      "text": "Than unswept stone, besmear’d with sluttish time.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "than UN | swept STONE | be SMEAR'D | with SLUT | tish TIME",
+      "intended_family": "pentameter",
+      "note": "Unswept two syllables."
+    },
+    {
+      "number": 55,
+      "line": 5,
+      "text": "When wasteful war shall statues overturn,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "when WASTE | ful WAR | shall STAT | ues O | ver TURN",
+      "intended_family": "pentameter",
+      "note": "Statues two; overturn three with secondary first stress."
+    },
+    {
+      "number": 55,
+      "line": 6,
+      "text": "And broils root out the work of masonry,",
+      "syllables": 10,
+      "stress": "uSSSuSuSuu",
+      "hand_scansion": "and BROILS | ROOT OUT | the WORK | of MA | son ry",
+      "intended_family": "pentameter",
+      "note": "Spondee; masonry three syllables with weak final foot."
+    },
+    {
+      "number": 55,
+      "line": 7,
+      "text": "Nor Mars his sword, nor war’s quick fire shall burn",
+      "syllables": 10,
+      "stress": "uSuSuSSSuS",
+      "hand_scansion": "nor MARS | his SWORD | nor WAR'S | QUICK FIRE | shall BURN",
+      "intended_family": "pentameter",
+      "note": "Fire one syllable; spondee."
+    },
+    {
+      "number": 55,
+      "line": 8,
+      "text": "The living record of your memory.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuu",
+      "hand_scansion": "the LIV | ing RE | cord OF | your MEM | o ry",
+      "intended_family": "pentameter",
+      "note": "Record noun initial stress; memory three with weak final foot."
+    },
+    {
+      "number": 55,
+      "line": 9,
+      "text": "’Gainst death, and all-oblivious enmity",
+      "syllables": 10,
+      "stress": "uSuSuSuSuu",
+      "hand_scansion": "'gainst DEATH | and ALL | ob LIV | ious EN | mi ty",
+      "intended_family": "pentameter",
+      "note": "Oblivious contracted to three syllables; weak final foot."
+    },
+    {
+      "number": 55,
+      "line": 10,
+      "text": "Shall you pace forth; your praise shall still find room",
+      "syllables": 10,
+      "stress": "uSSSuSuSuS",
+      "hand_scansion": "shall YOU | PACE FORTH | your PRAISE | shall STILL | find ROOM",
+      "intended_family": "pentameter",
+      "note": "Second-foot spondee."
+    },
+    {
+      "number": 55,
+      "line": 11,
+      "text": "Even in the eyes of all posterity",
+      "syllables": 10,
+      "stress": "SuuSuSuSuu",
+      "hand_scansion": "EV'N in | the EYES | of ALL | pos TER | i ty",
+      "intended_family": "pentameter",
+      "note": "Even contracted to one; initial inversion; weak final foot."
+    },
+    {
+      "number": 55,
+      "line": 12,
+      "text": "That wear this world out to the ending doom.",
+      "syllables": 10,
+      "stress": "uSuSSuuSuS",
+      "hand_scansion": "that WEAR | this WORLD | OUT to | the END | ing DOOM",
+      "intended_family": "pentameter",
+      "note": "Interior inversion in emphatic reading."
+    },
+    {
+      "number": 55,
+      "line": 13,
+      "text": "So, till the judgement that yourself arise,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "so TILL | the JUDGE | ment THAT | your SELF | a RISE",
+      "intended_family": "pentameter",
+      "note": "Judgement two syllables."
+    },
+    {
+      "number": 55,
+      "line": 14,
+      "text": "You live in this, and dwell in lovers’ eyes.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "you LIVE | in THIS | and DWELL | in LOV | ers' EYES",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 60,
+      "line": 1,
+      "text": "Like as the waves make towards the pebbled shore,",
+      "syllables": 10,
+      "stress": "SuuSuSuSuS",
+      "hand_scansion": "LIKE as | the WAVES | make TOW'RDS | the PEB | bled SHORE",
+      "intended_family": "pentameter",
+      "note": "Initial inversion; towards one syllable."
+    },
+    {
+      "number": 60,
+      "line": 2,
+      "text": "So do our minutes hasten to their end;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "so DO | our MIN | utes HAS | ten TO | their END",
+      "intended_family": "pentameter",
+      "note": "Our one syllable."
+    },
+    {
+      "number": 60,
+      "line": 3,
+      "text": "Each changing place with that which goes before,",
+      "syllables": 10,
+      "stress": "SSuSuSuSuS",
+      "hand_scansion": "EACH CHANG | ing PLACE | with THAT | which GOES | be FORE",
+      "intended_family": "pentameter",
+      "note": "Initial spondee."
+    },
+    {
+      "number": 60,
+      "line": 4,
+      "text": "In sequent toil all forwards do contend.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "in SE | quent TOIL | all FOR | wards DO | con TEND",
+      "intended_family": "pentameter",
+      "note": "Sequent two syllables."
+    },
+    {
+      "number": 60,
+      "line": 5,
+      "text": "Nativity, once in the main of light,",
+      "syllables": 10,
+      "stress": "uSuuSuuSuS",
+      "hand_scansion": "na TIV | i ty | ONCE in | the MAIN | of LIGHT",
+      "intended_family": "pentameter",
+      "note": "Pyrrhic and interior inversion in rhetorical reading."
+    },
+    {
+      "number": 60,
+      "line": 6,
+      "text": "Crawls to maturity, wherewith being crown’d,",
+      "syllables": 10,
+      "stress": "SuuSuuuSuS",
+      "hand_scansion": "CRAWLS to | ma TUR | i ty | where WITH | being CROWN'D",
+      "intended_family": "pentameter",
+      "note": "Being contracted to one; initial inversion; pyrrhic."
+    },
+    {
+      "number": 60,
+      "line": 7,
+      "text": "Crooked eclipses ’gainst his glory fight,",
+      "syllables": 10,
+      "stress": "SuuSuSuSuS",
+      "hand_scansion": "CROOK ed | e CLIP | ses 'GAINST | his GLO | ry FIGHT",
+      "intended_family": "pentameter",
+      "note": "Crooked two syllables; initial inversion."
+    },
+    {
+      "number": 60,
+      "line": 8,
+      "text": "And Time that gave doth now his gift confound.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "and TIME | that GAVE | doth NOW | his GIFT | con FOUND",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 60,
+      "line": 9,
+      "text": "Time doth transfix the flourish set on youth",
+      "syllables": 10,
+      "stress": "SuuSuSuSuS",
+      "hand_scansion": "TIME doth | trans FIX | the FLOUR | ish SET | on YOUTH",
+      "intended_family": "pentameter",
+      "note": "Initial inversion."
+    },
+    {
+      "number": 60,
+      "line": 10,
+      "text": "And delves the parallels in beauty’s brow,",
+      "syllables": 10,
+      "stress": "uSuSuuuSuS",
+      "hand_scansion": "and DELVES | the PAR | al lels | in BEAU | ty's BROW",
+      "intended_family": "pentameter",
+      "note": "Parallels three syllables; pyrrhic third foot."
+    },
+    {
+      "number": 60,
+      "line": 11,
+      "text": "Feeds on the rarities of nature’s truth,",
+      "syllables": 10,
+      "stress": "SuuSuuuSuS",
+      "hand_scansion": "FEEDS on | the RAR | i ties | of NA | ture's TRUTH",
+      "intended_family": "pentameter",
+      "note": "Initial inversion; pyrrhic third foot."
+    },
+    {
+      "number": 60,
+      "line": 12,
+      "text": "And nothing stands but for his scythe to mow:",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "and NO | thing STANDS | but FOR | his SCYTHE | to MOW",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 60,
+      "line": 13,
+      "text": "And yet to times in hope, my verse shall stand.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "and YET | to TIMES | in HOPE | my VERSE | shall STAND",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 60,
+      "line": 14,
+      "text": "Praising thy worth, despite his cruel hand.",
+      "syllables": 10,
+      "stress": "SuuSuSuSuS",
+      "hand_scansion": "PRAIS ing | thy WORTH | de SPITE | his CRU | el HAND",
+      "intended_family": "pentameter",
+      "note": "Initial inversion; cruel two syllables."
+    },
+    {
+      "number": 73,
+      "line": 1,
+      "text": "That time of year thou mayst in me behold",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "that TIME | of YEAR | thou MAYST | in ME | be HOLD",
+      "intended_family": "pentameter",
+      "note": "Mayst one syllable."
+    },
+    {
+      "number": 73,
+      "line": 2,
+      "text": "When yellow leaves, or none, or few, do hang",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "when YEL | low LEAVES | or NONE | or FEW | do HANG",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 73,
+      "line": 3,
+      "text": "Upon those boughs which shake against the cold,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "up ON | those BOUGHS | which SHAKE | a GAINST | the COLD",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 73,
+      "line": 4,
+      "text": "Bare ruin’d choirs, where late the sweet birds sang.",
+      "syllables": 10,
+      "stress": "SSuSuSuSSS",
+      "hand_scansion": "BARE RU | in'd CHOIRS | where LATE | the SWEET | BIRDS SANG",
+      "intended_family": "pentameter",
+      "note": "Ruined two; choirs one; opening and closing spondees."
+    },
+    {
+      "number": 73,
+      "line": 5,
+      "text": "In me thou see’st the twilight of such day",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "in ME | thou SEE'ST | the TWI | light OF | such DAY",
+      "intended_family": "pentameter",
+      "note": "See'st one syllable."
+    },
+    {
+      "number": 73,
+      "line": 6,
+      "text": "As after sunset fadeth in the west;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "as AF | ter SUN | set FAD | eth IN | the WEST",
+      "intended_family": "pentameter",
+      "note": "Fadeth two syllables."
+    },
+    {
+      "number": 73,
+      "line": 7,
+      "text": "Which by and by black night doth take away,",
+      "syllables": 10,
+      "stress": "uSuSSSuSuS",
+      "hand_scansion": "which BY | and BY | BLACK NIGHT | doth TAKE | a WAY",
+      "intended_family": "pentameter",
+      "note": "Third-foot spondee."
+    },
+    {
+      "number": 73,
+      "line": 8,
+      "text": "Death’s second self, that seals up all in rest.",
+      "syllables": 10,
+      "stress": "SSuSuSuSuS",
+      "hand_scansion": "DEATH'S SE | cond SELF | that SEALS | up ALL | in REST",
+      "intended_family": "pentameter",
+      "note": "Opening spondee."
+    },
+    {
+      "number": 73,
+      "line": 9,
+      "text": "In me thou see’st the glowing of such fire,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "in ME | thou SEE'ST | the GLOW | ing OF | such FIRE",
+      "intended_family": "pentameter",
+      "note": "Fire one syllable."
+    },
+    {
+      "number": 73,
+      "line": 10,
+      "text": "That on the ashes of his youth doth lie,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "that ON | the ASH | es OF | his YOUTH | doth LIE",
+      "intended_family": "pentameter",
+      "note": "Ashes two syllables."
+    },
+    {
+      "number": 73,
+      "line": 11,
+      "text": "As the death-bed, whereon it must expire,",
+      "syllables": 10,
+      "stress": "uuSSuSuSuS",
+      "hand_scansion": "as the | DEATH BED | where ON | it MUST | ex PIRE",
+      "intended_family": "pentameter",
+      "note": "Pyrrhic and spondee; expire two syllables."
+    },
+    {
+      "number": 73,
+      "line": 12,
+      "text": "Consum’d with that which it was nourish’d by.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "con SUM'D | with THAT | which IT | was NOUR | ish'd BY",
+      "intended_family": "pentameter",
+      "note": "Nourished two syllables."
+    },
+    {
+      "number": 73,
+      "line": 13,
+      "text": "This thou perceiv’st, which makes thy love more strong,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "this THOU | per CEIV'ST | which MAKES | thy LOVE | more STRONG",
+      "intended_family": "pentameter",
+      "note": "Perceiv'st two syllables."
+    },
+    {
+      "number": 73,
+      "line": 14,
+      "text": "To love that well, which thou must leave ere long.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "to LOVE | that WELL | which THOU | must LEAVE | ere LONG",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 116,
+      "line": 1,
+      "text": "Let me not to the marriage of true minds",
+      "syllables": 10,
+      "stress": "SuSuuSuuSS",
+      "hand_scansion": "LET me | NOT to | the MARR | iage of | TRUE MINDS",
+      "intended_family": "pentameter",
+      "note": "Rhetorical stress has two inversions, a pyrrhic and a spondee."
+    },
+    {
+      "number": 116,
+      "line": 2,
+      "text": "Admit impediments. Love is not love",
+      "syllables": 10,
+      "stress": "uSuSuuSuSS",
+      "hand_scansion": "ad MIT | im PED | i ments | LOVE is | NOT LOVE",
+      "intended_family": "pentameter",
+      "note": "Rhetorical stress includes interior inversion and final spondee."
+    },
+    {
+      "number": 116,
+      "line": 3,
+      "text": "Which alters when it alteration finds,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "which AL | ters WHEN | it AL | ter A | tion FINDS",
+      "intended_family": "pentameter",
+      "note": "Alteration four syllables with secondary initial stress."
+    },
+    {
+      "number": 116,
+      "line": 4,
+      "text": "Or bends with the remover to remove:",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "or BENDS | with THE | re MOV | er TO | re MOVE",
+      "intended_family": "pentameter",
+      "note": "Promotion of the and to is metrical."
+    },
+    {
+      "number": 116,
+      "line": 5,
+      "text": "O, no! it is an ever-fixed mark,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "o NO | it IS | an EV | er FIX | ed MARK",
+      "intended_family": "pentameter",
+      "note": "Fixed is disyllabic, an explicit poetic pronunciation."
+    },
+    {
+      "number": 116,
+      "line": 6,
+      "text": "That looks on tempests and is never shaken;",
+      "syllables": 11,
+      "stress": "uSuSuSuSuSu",
+      "hand_scansion": "that LOOKS | on TEMP | ests AND | is NEV | er SHA | ken",
+      "intended_family": "pentameter",
+      "note": "Feminine ending."
+    },
+    {
+      "number": 116,
+      "line": 7,
+      "text": "It is the star to every wandering bark,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "it IS | the STAR | to EV | 'ry WAND | 'ring BARK",
+      "intended_family": "pentameter",
+      "note": "Every and wandering both contracted to two syllables."
+    },
+    {
+      "number": 116,
+      "line": 8,
+      "text": "Whose worth’s unknown, although his height be taken.",
+      "syllables": 11,
+      "stress": "uSuSuSuSuSu",
+      "hand_scansion": "whose WORTH'S | un KNOWN | al THOUGH | his HEIGHT | be TA | ken",
+      "intended_family": "pentameter",
+      "note": "Feminine ending."
+    },
+    {
+      "number": 116,
+      "line": 9,
+      "text": "Love’s not Time’s fool, though rosy lips and cheeks",
+      "syllables": 10,
+      "stress": "SSSSuSuSuS",
+      "hand_scansion": "LOVE'S NOT | TIME'S FOOL | though RO | sy LIPS | and CHEEKS",
+      "intended_family": "pentameter",
+      "note": "Two opening spondees."
+    },
+    {
+      "number": 116,
+      "line": 10,
+      "text": "Within his bending sickle’s compass come;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "with IN | his BEND | ing SICK | le's COM | pass COME",
+      "intended_family": "pentameter",
+      "note": "Compass two syllables."
+    },
+    {
+      "number": 116,
+      "line": 11,
+      "text": "Love alters not with his brief hours and weeks,",
+      "syllables": 10,
+      "stress": "SSuSuSSSuS",
+      "hand_scansion": "LOVE AL | ters NOT | with HIS | BRIEF HOURS | and WEEKS",
+      "intended_family": "pentameter",
+      "note": "Hours one syllable; two spondees."
+    },
+    {
+      "number": 116,
+      "line": 12,
+      "text": "But bears it out even to the edge of doom.",
+      "syllables": 10,
+      "stress": "uSuSSuuSuS",
+      "hand_scansion": "but BEARS | it OUT | EV'N to | the EDGE | of DOOM",
+      "intended_family": "pentameter",
+      "note": "Even contracted to one; interior inversion."
+    },
+    {
+      "number": 116,
+      "line": 13,
+      "text": "If this be error and upon me prov’d,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "if THIS | be ER | ror AND | up ON | me PROV'D",
+      "intended_family": "pentameter",
+      "note": "Proved one syllable."
+    },
+    {
+      "number": 116,
+      "line": 14,
+      "text": "I never writ, nor no man ever lov’d.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "i NEV | er WRIT | nor NO | man EV | er LOV'D",
+      "intended_family": "pentameter",
+      "note": "Loved one syllable."
+    },
+    {
+      "number": 130,
+      "line": 1,
+      "text": "My mistress’ eyes are nothing like the sun;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "my MIS | tress' EYES | are NO | thing LIKE | the SUN",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 130,
+      "line": 2,
+      "text": "Coral is far more red, than her lips red:",
+      "syllables": 10,
+      "stress": "SuuSuSuSSS",
+      "hand_scansion": "COR al | is FAR | more RED | than HER | LIPS RED",
+      "intended_family": "pentameter",
+      "note": "Initial inversion and final spondee."
+    },
+    {
+      "number": 130,
+      "line": 3,
+      "text": "If snow be white, why then her breasts are dun;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "if SNOW | be WHITE | why THEN | her BREASTS | are DUN",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 130,
+      "line": 4,
+      "text": "If hairs be wires, black wires grow on her head.",
+      "syllables": 10,
+      "stress": "uSuSSSuSuS",
+      "hand_scansion": "if HAIRS | be WIRES | BLACK WIRES | grow ON | her HEAD",
+      "intended_family": "pentameter",
+      "note": "Wires one syllable in both occurrences; third-foot spondee."
+    },
+    {
+      "number": 130,
+      "line": 5,
+      "text": "I have seen roses damask’d, red and white,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "i HAVE | seen RO | ses DAM | ask'd RED | and WHITE",
+      "intended_family": "pentameter",
+      "note": "Damasked two syllables."
+    },
+    {
+      "number": 130,
+      "line": 6,
+      "text": "But no such roses see I in her cheeks;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "but NO | such RO | ses SEE | i IN | her CHEEKS",
+      "intended_family": "pentameter",
+      "note": "Two syllables at I in; no elision."
+    },
+    {
+      "number": 130,
+      "line": 7,
+      "text": "And in some perfumes is there more delight",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "and IN | some PER | fumes IS | there MORE | de LIGHT",
+      "intended_family": "pentameter",
+      "note": "Perfumes noun initial stress is interpretive."
+    },
+    {
+      "number": 130,
+      "line": 8,
+      "text": "Than in the breath that from my mistress reeks.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "than IN | the BREATH | that FROM | my MIS | tress REEKS",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 130,
+      "line": 9,
+      "text": "I love to hear her speak, yet well I know",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "i LOVE | to HEAR | her SPEAK | yet WELL | i KNOW",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 130,
+      "line": 10,
+      "text": "That music hath a far more pleasing sound:",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "that MU | sic HATH | a FAR | more PLEAS | ing SOUND",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 130,
+      "line": 11,
+      "text": "I grant I never saw a goddess go;",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "i GRANT | i NEV | er SAW | a GOD | dess GO",
+      "intended_family": "pentameter",
+      "note": "Regular reading."
+    },
+    {
+      "number": 130,
+      "line": 12,
+      "text": "My mistress, when she walks, treads on the ground:",
+      "syllables": 10,
+      "stress": "uSuSuSSuuS",
+      "hand_scansion": "my MIS | tress WHEN | she WALKS | TREADS on | the GROUND",
+      "intended_family": "pentameter",
+      "note": "Interior inversion in emphatic reading."
+    },
+    {
+      "number": 130,
+      "line": 13,
+      "text": "And yet by heaven, I think my love as rare,",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "and YET | by HEAV'N | i THINK | my LOVE | as RARE",
+      "intended_family": "pentameter",
+      "note": "Heaven contracted to one syllable."
+    },
+    {
+      "number": 130,
+      "line": 14,
+      "text": "As any she belied with false compare.",
+      "syllables": 10,
+      "stress": "uSuSuSuSuS",
+      "hand_scansion": "as AN | y SHE | be LIED | with FALSE | com PARE",
+      "intended_family": "pentameter",
+      "note": "Belied two syllables."
+    },
+    {
+      "number": 145,
+      "line": 1,
+      "text": "Those lips that Love’s own hand did make,",
+      "syllables": 8,
+      "stress": "uSuSuSuS",
+      "hand_scansion": "those LIPS | that LOVE'S | own HAND | did MAKE",
+      "intended_family": "tetrameter",
+      "note": "Four feet."
+    },
+    {
+      "number": 145,
+      "line": 2,
+      "text": "Breathed forth the sound that said ‘I hate’,",
+      "syllables": 8,
+      "stress": "SSuSuSuS",
+      "hand_scansion": "BREATHED FORTH | the SOUND | that SAID | i HATE",
+      "intended_family": "tetrameter",
+      "note": "Four feet with opening spondee; breathed one syllable."
+    },
+    {
+      "number": 145,
+      "line": 3,
+      "text": "To me that languish’d for her sake:",
+      "syllables": 8,
+      "stress": "uSuSuSuS",
+      "hand_scansion": "to ME | that LAN | guish'd FOR | her SAKE",
+      "intended_family": "tetrameter",
+      "note": "Four feet; languished two syllables."
+    },
+    {
+      "number": 145,
+      "line": 4,
+      "text": "But when she saw my woeful state,",
+      "syllables": 8,
+      "stress": "uSuSuSuS",
+      "hand_scansion": "but WHEN | she SAW | my WOE | ful STATE",
+      "intended_family": "tetrameter",
+      "note": "Four feet."
+    },
+    {
+      "number": 145,
+      "line": 5,
+      "text": "Straight in her heart did mercy come,",
+      "syllables": 8,
+      "stress": "SuuSuSuS",
+      "hand_scansion": "STRAIGHT in | her HEART | did MER | cy COME",
+      "intended_family": "tetrameter",
+      "note": "Four feet with initial inversion."
+    },
+    {
+      "number": 145,
+      "line": 6,
+      "text": "Chiding that tongue that ever sweet",
+      "syllables": 8,
+      "stress": "SuuSuSuS",
+      "hand_scansion": "CHID ing | that TONGUE | that EV | er SWEET",
+      "intended_family": "tetrameter",
+      "note": "Four feet with initial inversion."
+    },
+    {
+      "number": 145,
+      "line": 7,
+      "text": "Was us’d in giving gentle doom;",
+      "syllables": 8,
+      "stress": "uSuSuSuS",
+      "hand_scansion": "was US'D | in GIV | ing GEN | tle DOOM",
+      "intended_family": "tetrameter",
+      "note": "Four feet."
+    },
+    {
+      "number": 145,
+      "line": 8,
+      "text": "And taught it thus anew to greet;",
+      "syllables": 8,
+      "stress": "uSuSuSuS",
+      "hand_scansion": "and TAUGHT | it THUS | a NEW | to GREET",
+      "intended_family": "tetrameter",
+      "note": "Four feet."
+    },
+    {
+      "number": 145,
+      "line": 9,
+      "text": "‘I hate’ she alter’d with an end,",
+      "syllables": 8,
+      "stress": "uSuSuSuS",
+      "hand_scansion": "i HATE | she AL | ter'd WITH | an END",
+      "intended_family": "tetrameter",
+      "note": "Four feet; altered two syllables."
+    },
+    {
+      "number": 145,
+      "line": 10,
+      "text": "That followed it as gentle day,",
+      "syllables": 8,
+      "stress": "uSuSuSuS",
+      "hand_scansion": "that FOL | lowed IT | as GEN | tle DAY",
+      "intended_family": "tetrameter",
+      "note": "Four feet; followed two syllables."
+    },
+    {
+      "number": 145,
+      "line": 11,
+      "text": "Doth follow night, who like a fiend",
+      "syllables": 8,
+      "stress": "uSuSuSuS",
+      "hand_scansion": "doth FOL | low NIGHT | who LIKE | a FIEND",
+      "intended_family": "tetrameter",
+      "note": "Four feet; fiend one syllable."
+    },
+    {
+      "number": 145,
+      "line": 12,
+      "text": "From heaven to hell is flown away.",
+      "syllables": 8,
+      "stress": "uSuSuSuS",
+      "hand_scansion": "from HEAV'N | to HELL | is FLOWN | a WAY",
+      "intended_family": "tetrameter",
+      "note": "Four feet; heaven contracted to one syllable."
+    },
+    {
+      "number": 145,
+      "line": 13,
+      "text": "‘I hate’, from hate away she threw,",
+      "syllables": 8,
+      "stress": "uSuSuSuS",
+      "hand_scansion": "i HATE | from HATE | a WAY | she THREW",
+      "intended_family": "tetrameter",
+      "note": "Four feet."
+    },
+    {
+      "number": 145,
+      "line": 14,
+      "text": "And sav’d my life, saying ‘not you’.",
+      "syllables": 8,
+      "stress": "uSuSSuSS",
+      "hand_scansion": "and SAV'D | my LIFE | SAY ing | NOT YOU",
+      "intended_family": "tetrameter",
+      "note": "Four feet with interior inversion and spondee; saying two syllables."
+    }
+  ]
+}

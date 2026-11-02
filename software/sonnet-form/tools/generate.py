@@ -108,6 +108,20 @@ def leanlist(items):
     return '[' + ', '.join(items) + ']'
 
 
+def diagnostic_literal(line):
+    license_map = {name: ctor for ctor, name in LICENSES}
+    rhyme = '(some ' + leanstr(line['rhyme']) + ')' if line['rhyme'] else 'none'
+    scan = line['selected_scan']
+    if scan is None:
+        selected = 'none'
+    else:
+        elision = 'none' if scan['elision'] is None else '(some ' + str(scan['elision']) + ')'
+        selected = '(some ⟨' + leanlist(boolstr(v) for v in scan['stress']) + ', ' + elision + '⟩)'
+    return '⟨' + ', '.join([boolstr(line['strict']), boolstr(line['licensed']),
+                            leanlist('.' + license_map[name] for name in line['licenses']),
+                            rhyme, selected]) + '⟩'
+
+
 def generate():
     raw = json.loads((ROOT / 'data/sonnets.json').read_text())
     annotated = []
@@ -154,7 +168,7 @@ def generate():
         for s in part:
             n = s['number']
             v = ', '.join([str(n)] + [boolstr(s[k]) for k in ['line_count', 'rhyme', 'strict_meter', 'licensed_meter']])
-            ds = leanlist('⟨' + ', '.join([boolstr(l['strict']), boolstr(l['licensed']), leanlist('.' + license_map[name] for name in l['licenses'])]) + '⟩' for l in s['lines'])
+            ds = leanlist(diagnostic_literal(l) for l in s['lines'])
             contents.append(f'\ndef expected{n:03} : AuditRow := ⟨⟨{v}⟩, {ds}⟩\n')
             name = f'sonnet{n:03}_checked'
             theorem_names.append(name)
@@ -169,8 +183,20 @@ def generate():
               '\ntheorem corpus_complete : corpus.length = 154 ∧ (corpus.map (·.number)) = List.range\' 1 154 := by decide\n',
               '\ntheorem calibration_99 : sonnet099.lines.length = 15 ∧ lineCount sonnet099 = false := by decide\n',
               '\ntheorem calibration_126 : sonnet126.lines.length = 12 ∧ lineCount sonnet126 = false := by decide\n',
-              '\ntheorem calibration_145 : sonnet145.lines.length = 14 ∧ meterLicensed sonnet145 = false ∧\n    sonnet145.lines.all (fun l => l.scans.all (fun s => s.stress.length == 8)) = true := by decide\n',
-              '\nend SonnetForm\n']
+              '\ntheorem calibration_145 : sonnet145.lines.length = 14 ∧ meterLicensed sonnet145 = false ∧\n    sonnet145.lines.all (fun l => !lineMeterLicensed l && l.scans.any (fun s => (afterElision s).length == 8)) = true := by decide\n',
+              ]
+    component_fields = [('line_count', 'lineCount'), ('rhyme', 'rhyme'),
+                        ('strict_meter', 'strictMeter'), ('licensed_meter', 'licensedMeter')]
+    for key, field in component_fields:
+        passing = counts[key]['pass']
+        failures = leanlist(str(s['number']) for s in annotated if not s[key])
+        audit.append(f'\ntheorem count_{key}_checked : (fullTable.filter (fun r => r.components.{field})).length = {passing} := by\n  rw [full_table_checked]\n  decide\n')
+        audit.append(f'\ntheorem failures_{key}_checked : ((fullTable.filter (fun r => !r.components.{field})).map (fun r => r.components.number)) = {failures} := by\n  rw [full_table_checked]\n  decide\n')
+    for key in ['strict', 'licensed']:
+        audit.append(f'\ntheorem count_line_{key}_checked : ((fullTable.flatMap (·.lines)).filter (·.{key})).length = {counts["line_"+key]["pass"]} := by\n  rw [full_table_checked]\n  decide\n')
+    for ctor, name in LICENSES:
+        audit.append(f'\ntheorem count_{ctor}_checked : ((fullTable.flatMap (·.lines)).filter (fun l => l.licenses.contains .{ctor})).length = {counts["licenses"][name]} := by\n  rw [full_table_checked]\n  decide\n')
+    audit.append('\nend SonnetForm\n')
     outputs['SonnetForm/Audit.lean'] = ''.join(audit)
     outputs['DEVIATIONS.md'] = catalogue(annotated, counts)
     return outputs, counts

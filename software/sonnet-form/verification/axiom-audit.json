@@ -1,0 +1,636 @@
+{
+  "theorems_audited": 206,
+  "method": "Lean #print axioms for every theorem declared in SonnetForm/*.lean",
+  "axioms_used": [
+    "Quot.sound",
+    "propext"
+  ],
+  "allowed_axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "forbidden_source_tokens": [],
+  "per_theorem": {
+    "SonnetForm.full_table_checked": [
+      "propext"
+    ],
+    "SonnetForm.corpus_complete": [
+      "propext"
+    ],
+    "SonnetForm.calibration_99": [
+      "propext"
+    ],
+    "SonnetForm.calibration_126": [
+      "propext"
+    ],
+    "SonnetForm.calibration_145": [
+      "propext"
+    ],
+    "SonnetForm.count_line_count_checked": [
+      "propext"
+    ],
+    "SonnetForm.failures_line_count_checked": [
+      "propext"
+    ],
+    "SonnetForm.count_rhyme_checked": [
+      "propext"
+    ],
+    "SonnetForm.failures_rhyme_checked": [
+      "propext"
+    ],
+    "SonnetForm.count_strict_meter_checked": [
+      "propext"
+    ],
+    "SonnetForm.failures_strict_meter_checked": [
+      "propext"
+    ],
+    "SonnetForm.count_licensed_meter_checked": [
+      "propext"
+    ],
+    "SonnetForm.failures_licensed_meter_checked": [
+      "propext"
+    ],
+    "SonnetForm.count_line_strict_checked": [
+      "propext"
+    ],
+    "SonnetForm.count_line_licensed_checked": [
+      "propext"
+    ],
+    "SonnetForm.count_initialTrochaicInversion_checked": [
+      "propext"
+    ],
+    "SonnetForm.count_feminineEnding_checked": [
+      "propext"
+    ],
+    "SonnetForm.count_pyrrhicSubstitution_checked": [
+      "propext"
+    ],
+    "SonnetForm.count_spondaicSubstitution_checked": [
+      "propext"
+    ],
+    "SonnetForm.count_unstressedElision_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet001_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet002_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet003_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet004_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet005_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet006_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet007_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet008_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet009_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet010_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet011_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet012_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet013_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet014_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet015_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet016_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet017_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet018_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet019_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet020_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet021_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet022_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet023_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet024_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet025_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet026_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet027_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet028_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet029_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet030_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet031_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet032_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet033_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet034_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet035_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet036_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet037_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet038_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet039_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet040_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet041_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet042_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet043_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet044_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet045_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet046_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet047_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet048_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet049_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet050_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet051_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet052_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet053_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet054_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet055_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet056_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet057_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet058_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet059_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet060_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet061_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet062_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet063_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet064_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet065_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet066_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet067_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet068_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet069_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet070_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet071_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet072_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet073_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet074_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet075_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet076_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet077_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet078_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet079_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet080_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet081_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet082_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet083_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet084_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet085_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet086_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet087_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet088_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet089_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet090_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet091_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet092_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet093_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet094_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet095_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet096_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet097_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet098_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet099_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet100_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet101_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet102_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet103_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet104_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet105_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet106_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet107_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet108_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet109_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet110_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet111_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet112_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet113_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet114_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet115_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet116_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet117_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet118_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet119_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet120_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet121_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet122_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet123_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet124_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet125_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet126_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet127_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet128_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet129_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet130_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet131_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet132_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet133_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet134_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet135_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet136_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet137_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet138_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet139_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet140_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet141_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet142_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet143_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet144_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet145_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet146_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet147_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet148_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet149_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet150_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet151_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet152_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet153_checked": [
+      "propext"
+    ],
+    "SonnetForm.sonnet154_checked": [
+      "propext"
+    ],
+    "SonnetForm.realizeFrom_compatible": [
+      "propext",
+      "Quot.sound"
+    ],
+    "SonnetForm.realizeStress_compatible": [
+      "propext",
+      "Quot.sound"
+    ],
+    "SonnetForm.realizeFrom_length": [
+      "propext"
+    ],
+    "SonnetForm.realizeStress_length": [
+      "propext"
+    ],
+    "SonnetForm.flexible_pentameter_passes": [
+      "propext"
+    ],
+    "SonnetForm.flexible_tetrameter_fails": [
+      "propext"
+    ],
+    "SonnetForm.fixed_medial_inversion_not_overwritten": [
+      "propext"
+    ],
+    "SonnetForm.fixed_initial_inversion_licensed": [
+      "propext"
+    ],
+    "SonnetForm.unknown_annotation_fails": [
+      "propext"
+    ],
+    "SonnetForm.supplied_weak_elision_licenses": [
+      "propext"
+    ],
+    "SonnetForm.flexible_elision_rejected": [
+      "propext"
+    ],
+    "SonnetForm.stressed_elision_rejected": [
+      "propext"
+    ],
+    "SonnetForm.out_of_range_elision_rejected": [
+      "propext"
+    ],
+    "SonnetForm.canonical_passes": [
+      "propext"
+    ],
+    "SonnetForm.tetrameter_fails": [
+      "propext"
+    ],
+    "SonnetForm.initial_inversion_passes": [
+      "propext"
+    ],
+    "SonnetForm.feminine_ending_passes": [
+      "propext"
+    ],
+    "SonnetForm.pyrrhic_passes": [
+      "propext"
+    ],
+    "SonnetForm.spondaic_passes": [
+      "propext"
+    ],
+    "SonnetForm.elision_passes": [
+      "propext"
+    ],
+    "SonnetForm.stressed_elision_fails": [
+      "propext"
+    ],
+    "SonnetForm.invalid_elision_fails": [
+      "propext"
+    ],
+    "SonnetForm.medial_trochee_fails": [
+      "propext"
+    ],
+    "SonnetForm.three_substitutions_fail": [
+      "propext"
+    ],
+    "SonnetForm.exact_rhyme_passes": [
+      "propext"
+    ],
+    "SonnetForm.repeated_cross_letter_rhyme_fails": [
+      "propext"
+    ],
+    "SonnetForm.missing_rhyme_class_fails": [
+      "propext"
+    ],
+    "SonnetForm.empty_rhyme_class_fails": [
+      "propext"
+    ],
+    "SonnetForm.fifteenth_line_rhyme_fails": [
+      "propext"
+    ],
+    "SonnetForm.twelve_line_rhyme_fails": [
+      "propext"
+    ],
+    "SonnetForm.empty_poem_fails_all_components": [
+      "propext"
+    ],
+    "SonnetForm.one_pentameter_is_not_sonnet": [
+      "propext"
+    ]
+  }
+}

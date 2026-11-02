@@ -1,0 +1,12 @@
+{
+  "verified_branch": "texts/sonnet-form",
+  "verified_head": "8b70ae520423221c592ab965d22767dfc6eeda0f",
+  "verified_dirty_entries": 28,
+  "transcript_thread": "01a199c9-9404-7900-a077-c9985c588df9",
+  "transcript_turn_utc": "2026-11-02T01:07:18.135Z",
+  "model": "gpt-6-astra",
+  "effort": "ultra",
+  "prior_build_preserved_at": "/home/derekblair/.cache/sonnet-form-lake-before-resume-2026-11-01-01a199c9",
+  "method": "Moved ignored .lake aside intact; no source cleanup, reset, stash, rebase, or merge.",
+  "setup_note": "Initial rename to /tmp failed with EXDEV without moving any files; used same-filesystem ~/.cache instead."
+}

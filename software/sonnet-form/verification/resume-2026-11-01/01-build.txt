@@ -1,0 +1,21 @@
+$ lake --no-cache build
+✔ [2/19] Built SonnetForm.Spec (695ms)
+✔ [3/19] Built SonnetForm.Phonology (718ms)
+✔ [4/19] Built SonnetForm.Corpus (10s)
+✔ [5/19] Built SonnetForm.AuditTypes (435ms)
+✔ [6/19] Built SonnetForm.AuditPart01 (10s)
+✔ [7/19] Built SonnetForm.AuditPart04 (10s)
+✔ [8/19] Built SonnetForm.AuditPart03 (10s)
+✔ [9/19] Built SonnetForm.AuditPart10 (10s)
+✔ [10/19] Built SonnetForm.AuditPart05 (10s)
+✔ [11/19] Built SonnetForm.AuditPart11 (10s)
+✔ [12/19] Built SonnetForm.AuditPart02 (11s)
+✔ [13/19] Built SonnetForm.AuditPart08 (11s)
+✔ [14/19] Built SonnetForm.AuditPart06 (11s)
+✔ [15/19] Built SonnetForm.AuditPart07 (11s)
+✔ [16/19] Built SonnetForm.AuditPart09 (11s)
+✔ [17/19] Built SonnetForm.Audit (3.5s)
+✔ [18/19] Built SonnetForm (340ms)
+Build completed successfully (19 jobs).
+
+exit_code=0
