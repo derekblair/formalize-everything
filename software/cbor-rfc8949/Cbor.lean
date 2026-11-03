@@ -5,3 +5,5 @@ import Cbor.Rfc8949.Grammar
 import Cbor.Rfc8949.Lex
 import Cbor.Rfc8949.Deterministic
 import Cbor.Rfc8949.Bignum
+import Cbor.Rfc8949.Equiv
+import Cbor.Rfc8949.Duplicates
