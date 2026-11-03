@@ -2,3 +2,6 @@ import Cbor.Rfc8949.Head
 import Cbor.Rfc8949.Item
 import Cbor.Rfc8949.Parse
 import Cbor.Rfc8949.Grammar
+import Cbor.Rfc8949.Lex
+import Cbor.Rfc8949.Deterministic
+import Cbor.Rfc8949.Bignum

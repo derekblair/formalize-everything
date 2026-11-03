@@ -360,6 +360,86 @@ theorem toRawPairs_eq (kvs : List (Item × Item)) :
 
 end Item
 
+/-! ## Decidable equality
+
+The derive handler does not cover this nested type, so equality is decided by
+a structural Boolean comparison, proved correct below. -/
+
+namespace Item
+
+mutual
+/-- Structural Boolean equality. -/
+def beq : Item → Item → Bool
+  | .uint a, .uint b => a == b
+  | .nint a, .nint b => a == b
+  | .bytes p, .bytes q => p == q
+  | .text p, .text q => p == q
+  | .bytesIndef cs, .bytesIndef ds => cs == ds
+  | .textIndef cs, .textIndef ds => cs == ds
+  | .array xs, .array ys => beqList xs ys
+  | .arrayIndef xs, .arrayIndef ys => beqList xs ys
+  | .map kvs, .map lws => beqPairs kvs lws
+  | .mapIndef kvs, .mapIndef lws => beqPairs kvs lws
+  | .tag t x, .tag u y => t == u && beq x y
+  | .simple v, .simple w => v == w
+  | _, _ => false
+def beqList : List Item → List Item → Bool
+  | [], [] => true
+  | x :: xs, y :: ys => beq x y && beqList xs ys
+  | _, _ => false
+def beqPairs : List (Item × Item) → List (Item × Item) → Bool
+  | [], [] => true
+  | (k, v) :: kvs, (l, w) :: lws => beq k l && beq v w && beqPairs kvs lws
+  | _, _ => false
+end
+
+theorem beqList_iff {xs : List Item} (ih : ∀ x ∈ xs, ∀ y, beq x y = true ↔ x = y) :
+    ∀ ys, beqList xs ys = true ↔ xs = ys := by
+  induction xs with
+  | nil => intro ys; cases ys <;> simp [beqList]
+  | cons x xs ihxs =>
+    intro ys
+    cases ys with
+    | nil => simp [beqList]
+    | cons y ys =>
+      simp only [beqList, Bool.and_eq_true, List.cons.injEq]
+      rw [ih x (by simp) y, ihxs (fun z hz => ih z (by simp [hz])) ys]
+
+theorem beqPairs_iff {kvs : List (Item × Item)}
+    (ih : ∀ kv ∈ kvs, (∀ y, beq kv.1 y = true ↔ kv.1 = y) ∧ (∀ y, beq kv.2 y = true ↔ kv.2 = y)) :
+    ∀ lws, beqPairs kvs lws = true ↔ kvs = lws := by
+  induction kvs with
+  | nil => intro lws; cases lws <;> simp [beqPairs]
+  | cons kv kvs ihkvs =>
+    intro lws
+    obtain ⟨k, v⟩ := kv
+    cases lws with
+    | nil => simp [beqPairs]
+    | cons lw lws =>
+      obtain ⟨l, w⟩ := lw
+      simp only [beqPairs, Bool.and_eq_true, List.cons.injEq, Prod.mk.injEq]
+      rw [(ih (k, v) (by simp)).1 l, (ih (k, v) (by simp)).2 w,
+        ihkvs (fun z hz => ih z (by simp [hz])) lws, and_assoc]
+
+theorem beq_iff (x : Item) : ∀ y, beq x y = true ↔ x = y := by
+  induction x using Item.rec' with
+  | uint a => intro y; cases y <;> simp [beq]
+  | nint a => intro y; cases y <;> simp [beq]
+  | bytes p => intro y; cases y <;> simp [beq]
+  | text p => intro y; cases y <;> simp [beq]
+  | bytesIndef cs => intro y; cases y <;> simp [beq]
+  | textIndef cs => intro y; cases y <;> simp [beq]
+  | array xs ih => intro y; cases y <;> simp [beq, beqList_iff ih]
+  | arrayIndef xs ih => intro y; cases y <;> simp [beq, beqList_iff ih]
+  | map kvs ih => intro y; cases y <;> simp [beq, beqPairs_iff ih]
+  | mapIndef kvs ih => intro y; cases y <;> simp [beq, beqPairs_iff ih]
+  | tag t x ih => intro y; cases y <;> simp [beq, ih]
+  | simple v => intro y; cases y <;> simp [beq]
+
+instance : DecidableEq Item := fun x y => decidable_of_iff _ (beq_iff x y)
+
+end Item
+
 /-- Preferred serialization of an item (§4.1): shortest arguments, and the
 item's own definite/indefinite choice. -/
 def encodePreferred (x : Item) : List UInt8 := x.toRaw.encode
