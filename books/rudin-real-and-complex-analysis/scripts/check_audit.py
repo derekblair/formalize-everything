@@ -89,7 +89,7 @@ def write_fixture(root: Path, snapshot: dict[str, bytes], packages: Path, case: 
         destination.write_bytes(content)
     (root / ".lake").mkdir()
     (root / ".lake" / "packages").symlink_to(packages, target_is_directory=True)
-    for chapter in (1, 2, 3):
+    for chapter in (1, 2, 3, 4, 5):
         source = f"theorem RudinRCA.fixtureChapter{chapter} : True := True.intro\n"
         if chapter == 1:
             source += case.injection
@@ -105,7 +105,14 @@ def run_case(lake: str, root: Path, case: Case, timeout: float) -> None:
     output_root = root / ".lake" / "build" / "lib" / "lean"
     # Compile every project import explicitly. The empty, per-case output tree
     # prevents a successful audit of stale oleans from masquerading as rejection.
-    for module in ("RudinRCA/Chapter01", "RudinRCA/Chapter02", "RudinRCA/Chapter03", "RudinRCA"):
+    for module in (
+        "RudinRCA/Chapter01",
+        "RudinRCA/Chapter02",
+        "RudinRCA/Chapter03",
+        "RudinRCA/Chapter04",
+        "RudinRCA/Chapter05",
+        "RudinRCA",
+    ):
         output = output_root / f"{module}.olean"
         output.parent.mkdir(parents=True, exist_ok=True)
         result = invoke(lake, root, ["-o", str(output), f"{module}.lean"], timeout)
@@ -118,7 +125,7 @@ def run_case(lake: str, root: Path, case: Case, timeout: float) -> None:
             raise Failure(f"{case.name}: compiler did not produce {output}")
     result = invoke(lake, root, ["RudinRCA/AuditA.lean"], timeout)
     if not case.expected:
-        if result.returncode != 0 or "Axiom audit passed for 3 project declarations" not in result.stdout:
+        if result.returncode != 0 or "Axiom audit passed for 5 project declarations" not in result.stdout:
             raise Failure(f"baseline audit did not pass nonvacuously; exit {result.returncode}\n{result.stdout}")
         diagnostic = next(line for line in result.stdout.splitlines() if "Axiom audit passed" in line)
         print(f"PASS {case.name}: exit 0; {diagnostic}", flush=True)

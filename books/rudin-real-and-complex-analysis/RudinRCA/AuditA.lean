@@ -70,7 +70,7 @@ run_cmd do
   -- contribute no declarations of their own.
   let expectedModules : Array Name :=
     #[`RudinRCA, `RudinRCA.Chapter01, `RudinRCA.Chapter02, `RudinRCA.Chapter03,
-      `RudinRCA.AuditA]
+      `RudinRCA.Chapter04, `RudinRCA.Chapter05, `RudinRCA.AuditA]
   let entrypoint : Name := `RudinRCA.AuditA
   -- Resolve the package root from this audit module's own source
   -- position, anchored to the file actually being elaborated.
