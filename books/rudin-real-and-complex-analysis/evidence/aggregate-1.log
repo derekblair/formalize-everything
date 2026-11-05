@@ -1,0 +1,570 @@
+'RudinRCA.Chapter06.complex_variation_le_re_add_im' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_variation_univ_lt_top' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasureNorm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasure_add_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasure_smul_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_norm_eq_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasureNormedSpace' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_measure_norm_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positive_add_negative_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positive_sub_negative_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.positiveVariation_real_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.negativeVariation_real_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+DevelopmentAggregate.lean:317:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.absolutelyContinuous_iff_null_sets`:
+  [T2Space V]
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+DevelopmentAggregate.lean:330:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.mutuallySingular_iff_concentrated`:
+  [T2Space V]
+  [ContinuousAdd V]
+  [T2Space W]
+  [ContinuousAdd W]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] [ContinuousAdd V] [T2Space W] [ContinuousAdd W] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+DevelopmentAggregate.lean:354:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.concentratedOn_iff_inter`:
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+DevelopmentAggregate.lean:372:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.variation_concentratedOn`:
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+DevelopmentAggregate.lean:382:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.variations_mutuallySingular`:
+  [ContinuousAdd V]
+  [ContinuousAdd W]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] [ContinuousAdd W] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+DevelopmentAggregate.lean:389:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.singular_add`:
+  [T2Space V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+DevelopmentAggregate.lean:394:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.absolutelyContinuous_add`:
+  [T2Space V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+DevelopmentAggregate.lean:399:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.variation_absolutelyContinuous`:
+  [ContinuousAdd V]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [ContinuousAdd V] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+DevelopmentAggregate.lean:411:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter06.mutuallySingular_of_ac_of_singular`:
+  [T2Space V]
+  [ContinuousAdd V]
+  [T2Space W]
+  [ContinuousAdd W]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [T2Space V] [ContinuousAdd V] [T2Space W] [ContinuousAdd W] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+'RudinRCA.Chapter06.complexMeasure_hasSum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complexMeasure_summable_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.enorm_le_totalVariation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.totalVariation_minimal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_positive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_positive_extended' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.totalVariation_empty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.totalVariation_iUnion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_eq_iSup_countablePartitions' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.absolutelyContinuous_iff_null_sets' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.mutuallySingular_iff_concentrated' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.concentratedOn_iff_inter' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_concentratedOn' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variations_mutuallySingular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.singular_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.absolutelyContinuous_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.variation_absolutelyContinuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.mutuallySingular_of_ac_of_singular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.eq_zero_of_ac_of_singular' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.hilbert_lp_duality' depends on axioms: [propext, Classical.choice, Quot.sound]
+DevelopmentAggregate.lean:600:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+DevelopmentAggregate.lean:631:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+DevelopmentAggregate.lean:666:2: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+'RudinRCA.Chapter06.lemma_6_9' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.lemma_6_9_equivalent_finite_measure' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.complex_rn_reconstruction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_10_lebesgue' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_10_positive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_10_radon_nikodym' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_11_of_finite_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_11_real_of_finite_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_11' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_12_of_finite_variation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_12' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_13' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_13_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_14' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_14_minimal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_15' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_indicator' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.theorem_6_18_polar_functional' depends on axioms: [propext, Classical.choice, Quot.sound]
+DevelopmentAggregate.lean:986:6: error: Type mismatch: After simplification, term
+  intervalIntegral.integral_comp_sub_right (fun t => max (Real.cos t) 0) a
+ has type
+  ∫ (x : ℝ) in 0..2 * π, max (Real.cos (x + -a)) 0 = ∫ (x : ℝ) in -a + 0..-a + 2 * π, max (Real.cos x) 0
+but is expected to have type
+  ∫ (t : ℝ) in 0..2 * π, max (Real.cos (t + -a)) 0 = ∫ (t : ℝ) in -a..-a + 2 * π, max (Real.cos t) 0
+DevelopmentAggregate.lean:1053:21: error: typeclass instance problem is stuck
+  IsLocallyFiniteMeasure ?m.328
+
+Note: Lean will not try to resolve this typeclass instance problem because the fourth type argument to `IsLocallyFiniteMeasure` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+'RCA63.exists_subset_sum_norm' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+DevelopmentAggregate.lean:1095:4: error: Type mismatch: After simplification, term
+  HasCompactSupport.smul_left hf
+ has type
+  HasCompactSupport ((fun x => c) • ⇑f)
+but is expected to have type
+  c • f ∈ {f | HasCompactSupport ⇑f}
+DevelopmentAggregate.lean:1100:0: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+DevelopmentAggregate.lean:1136:8: error: (kernel) unknown constant 'RCA618.exists_compactSupport_approx'
+DevelopmentAggregate.lean:1148:59: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  Norm (↥(compactSupportSubmodule X) →L[ℂ] ℂ)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+'RCA618.exists_unique_extension' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound,
+ dense_compactSupport]
+DevelopmentAggregate.lean:1207:51: error: unsolved goals
+X : Type u_1
+inst✝ : MeasurableSpace X
+c : ComplexMeasure X
+h : X → ℂ
+hm : Measurable h
+hn : ∀ (x : X), ‖h x‖ = 1
+hi : Integrable h (VectorMeasure.variation c)
+hr : (VectorMeasure.variation c).withDensityᵥ h = c
+f : X → ℂ
+hf : Integrable f (VectorMeasure.variation c)
+B : ℂ →L[ℝ] ℂ →L[ℝ] ℂ := ContinuousLinearMap.mul ℝ ℂ
+hb : ∀ᵐ (x : X) ∂VectorMeasure.variation c, ‖h x‖ ≤ 1
+htop : MemLp h ∞ (VectorMeasure.variation c)
+H : ↥(Lp ℂ ∞ (VectorMeasure.variation c)) := MemLp.toLp h htop
+hH : ↑↑H =ᵐ[VectorMeasure.variation c] h
+hmul :
+  ∀ {f : X → ℂ}, Integrable f (VectorMeasure.variation c) → Integrable (fun x => f x * h x) (VectorMeasure.variation c)
+hcont : Continuous fun f => ∫ (x : X), ↑↑f x * h x ∂VectorMeasure.variation c
+z : ℂ
+E : Set X
+hE : MeasurableSet E
+a✝ : (VectorMeasure.variation c) E < ∞
+⊢ ∫ (x : X) in E, h x ∂VectorMeasure.variation c =
+    ∫ (x : X) in E, h x ∂((VectorMeasure.variation c).withDensityᵥ h).variation
+'RudinRCA.Chapter06.vectorIntegral_eq_polar' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+DevelopmentAggregate.lean:1264:4: error: Type mismatch: After simplification, term
+  hi
+ has type
+  Integrable (fun x => x⁻¹) (volume.restrict (Ioo 0 a))
+but is expected to have type
+  IntegrableOn (fun x => x⁻¹) (Ioo 0 a) volume
+'RudinRCA.Chapter06.inverseDensity_absolutelyContinuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.inverseDensity_Ioo' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.inverseDensity_fails_uniform_absoluteContinuity' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+DevelopmentAggregate.lean:1314:2: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  Decidable (MeasurableSet E)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+DevelopmentAggregate.lean:1320:32: warning: `dif_pos` has been deprecated: Use `dite_eq_left` instead
+DevelopmentAggregate.lean:1319:78: error: unsolved goals
+X : Type u_1
+inst✝² : MeasurableSpace X
+μ : Measure X
+inst✝¹ : IsFiniteMeasure μ
+p : ℝ≥0∞
+inst✝ : Fact (1 ≤ p)
+E : Set X
+hE : MeasurableSet E
+⊢ sorry = indicatorConstLp p hE ⋯ 1
+DevelopmentAggregate.lean:1320:13: warning: declaration uses `sorry`
+DevelopmentAggregate.lean:1320:32: warning: This simp argument is unused:
+  dif_pos hE
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [finiteLpIndicator]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+DevelopmentAggregate.lean:1417:53: error: Application type mismatch: The argument
+  hE
+has type
+  ℕ → Set X
+of sort `Type u_1` but is expected to have type
+  ∀ (i : ℕ), MeasurableSet (?m.37 i)
+of sort `Prop` in the application
+  finiteLpIndicator_hasSum μ p hp hE
+DevelopmentAggregate.lean:1416:57: warning: `dif_neg` has been deprecated: Use `dite_eq_right` instead
+DevelopmentAggregate.lean:1416:65: error: Application type mismatch: The argument
+  hE
+has type
+  Set X
+of sort `Type u_1` but is expected to have type
+  ¬?m.40
+of sort `Prop` in the application
+  @dif_neg ?m.40 ?m.41 hE
+DevelopmentAggregate.lean:1416:24: error: unsolved goals
+X : Type u_1
+inst✝² : MeasurableSpace X
+μ : Measure X
+inst✝¹ : IsFiniteMeasure μ
+p : ℝ≥0∞
+inst✝ : Fact (1 ≤ p)
+hp : p ≠ ∞
+hE : Set X
+⊢ ¬MeasurableSet hE → sorry = 0
+DevelopmentAggregate.lean:1416:38: warning: declaration uses `sorry`
+'RudinRCA.Chapter06.finiteLpIndicator_hasSum' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.finiteLpFunctionalMeasure_norm_le' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter06.finiteLpFunctionalMeasure_absolutelyContinuous' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+DevelopmentAggregate.lean:1498:2: error: Too many variable names provided at alternative `const`: 3 provided, but 2 expected
+DevelopmentAggregate.lean:1500:29: error: Application type mismatch: The argument
+  E
+has type
+  MeasurableSet s✝
+of sort `Prop` but is expected to have type
+  Set X
+of sort `Type u_1` in the application
+  SimpleFunc.piecewise E
+DevelopmentAggregate.lean:1500:31: error(lean.unknownIdentifier): Unknown identifier `hE`
+DevelopmentAggregate.lean:1502:33: error(lean.unknownIdentifier): Unknown identifier `hE`
+DevelopmentAggregate.lean:1502:54: error: Application type mismatch: The argument
+  E
+has type
+  MeasurableSet s✝
+of sort `Prop` but is expected to have type
+  Set X
+of sort `Type u_1` in the application
+  measure_ne_top μ E
+DevelopmentAggregate.lean:1506:50: error(lean.unknownIdentifier): Unknown identifier `hE`
+DevelopmentAggregate.lean:1507:37: error: Application type mismatch: The argument
+  E
+has type
+  MeasurableSet s✝
+of sort `Prop` but is expected to have type
+  Set X
+of sort `Type u_1` in the application
+  measure_ne_top μ E
+DevelopmentAggregate.lean:1505:46: error(lean.unknownIdentifier): Unknown identifier `hE`
+DevelopmentAggregate.lean:1505:67: error: Application type mismatch: The argument
+  E
+has type
+  MeasurableSet s✝
+of sort `Prop` but is expected to have type
+  Set X
+of sort `Type u_1` in the application
+  measure_ne_top μ E
+DevelopmentAggregate.lean:1509:26: error: Application type mismatch: The argument
+  E
+has type
+  MeasurableSet s✝
+of sort `Prop` but is expected to have type
+  ?m.288
+of sort `Type ?u.138` in the application
+  Membership.mem E
+DevelopmentAggregate.lean:1510:6: error: 'change' tactic failed, pattern
+  Φ (MemLp.toLp ⇑k ⋯) = ?m.314
+is not definitionally equal to target
+  Φ (MemLp.toLp ⇑(SimpleFunc.piecewise s✝ E (SimpleFunc.const X c) (SimpleFunc.const X 0)) ⋯) =
+    ∫ (x : X), (SimpleFunc.piecewise s✝ E (SimpleFunc.const X c) (SimpleFunc.const X 0)) x * g x ∂μ
+'RudinRCA.Chapter06.lpFunctional_eq_simple_of_indicator' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter06.lpFunctional_eq_bounded_of_indicator' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+DevelopmentAggregate.lean:1610:22: warning: This simp argument is unused:
+  norm_div
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [dualityPhase, norm_ne_zero_iff.mpr hz]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+DevelopmentAggregate.lean:1661:15: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ‖↑?r‖
+in the target expression
+  ∫ (x : X) in E, ‖g x‖ ∂μ = ‖∫ (x : X) in E, ↑‖g x‖ ∂μ‖
+
+X : Type u_1
+inst✝¹ : MeasurableSpace X
+μ : Measure X
+inst✝ : IsFiniteMeasure μ
+Φ : ↥(Lp ℂ 1 μ) →L[ℂ] ℂ
+g : X → ℂ
+hgm : Measurable g
+hg : Integrable g μ
+hind : ∀ (E : Set X) (hE : MeasurableSet E), Φ (indicatorConstLp 1 hE ⋯ 1) = ∫ (x : X) in E, g x ∂μ
+E : Set X
+hE : MeasurableSet E
+hμE : μ E < ∞
+f : X → ℂ := E.indicator fun x => dualityPhase (g x)
+hfm : Measurable f
+hfbound : ∀ (x : X), ‖f x‖ ≤ 1
+hfp : MemLp f 1 μ
+F : ↥(Lp ℂ 1 μ) := MemLp.toLp f hfp
+hFnorm : ‖F‖ ≤ μ.real E
+hΦF : Φ F = ∫ (x : X) in E, ↑‖g x‖ ∂μ
+hnonneg : 0 ≤ ∫ (x : X) in E, ‖g x‖ ∂μ
+⊢ ∫ (x : X) in E, ‖g x‖ ∂μ = ‖∫ (x : X) in E, ↑‖g x‖ ∂μ‖
+'RudinRCA.Chapter06.dualityPhase_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.lpOneFunctional_density_ae_bound' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter06.lpOneFunctional_density_memLp_top' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+DevelopmentAggregate.lean:1706:4: error: invalid 'calc' step, left-hand side is
+  A ^ r⁻¹ * A ^ s⁻¹ : ℝ
+but is expected to be
+  A ^ s⁻¹ * A ^ r⁻¹ : ℝ
+DevelopmentAggregate.lean:1709:4: error: invalid 'calc' step, right-hand side is
+  A ^ r⁻¹ * C : ℝ
+but is expected to be
+  C * A ^ r⁻¹ : ℝ
+DevelopmentAggregate.lean:1712:22: warning: This simp argument is unused:
+  norm_div
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [dualityPhase, norm_ne_zero_iff.mpr hz]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+DevelopmentAggregate.lean:1733:4: warning: Try `simp at hqpos` instead of `simpa using hqpos`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+DevelopmentAggregate.lean:1742:6: error: Type mismatch: After simplification, term
+  hx
+ has type
+  x ∈ E n
+but is expected to have type
+  ‖g x‖ ≤ ↑n
+DevelopmentAggregate.lean:1747:5: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  HPow ℂ ℝ ?m.259
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+DevelopmentAggregate.lean:1750:4: error: Type mismatch
+  Measurable.mul (Measurable.complex_ofReal (Measurable.pow_const (Measurable.norm (hUm n)) ?m.293))
+    (Measurable.comp measurable_dualityPhase (hUm n))
+has type
+  Measurable ((fun x => ↑(‖U n x‖ ^ ?m.293)) * dualityPhase ∘ U n)
+but is expected to have type
+  Measurable (F n)
+DevelopmentAggregate.lean:1756:10: error: Invalid rewrite argument: Expected an equality or iff proof or definition name, but `F ?a✝ ?a✝¹` is a value of type
+  ℂ
+DevelopmentAggregate.lean:1768:37: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  HPow ℂ ℝ ?m.479
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+DevelopmentAggregate.lean:1777:4: error: unsolved goals
+case neg
+X : Type u_1
+inst✝³ : MeasurableSpace X
+μ : Measure X
+inst✝² : IsFiniteMeasure μ
+p q : ℝ≥0∞
+inst✝¹ : Fact (1 ≤ p)
+inst✝ : p.HolderConjugate q
+hp : p ≠ ∞
+hq : q ≠ ∞
+Φ : ↥(Lp ℂ p μ) →L[ℂ] ℂ
+g : X → ℂ
+hgm : Measurable g
+hg : Integrable g μ
+hind : ∀ (E : Set X) (hE : MeasurableSet E), Φ (indicatorConstLp p hE ⋯ 1) = ∫ (x : X) in E, g x ∂μ
+hconj : p.toReal.HolderConjugate q.toReal
+hp0 : p ≠ 0
+hq0 : q ≠ 0
+E : ℕ → Set X := fun n => {x | ‖g x‖ ≤ ↑n}
+hE : ∀ (n : ℕ), MeasurableSet (E n)
+U : ℕ → X → ℂ := fun n => (E n).indicator g
+hUm : ∀ (n : ℕ), Measurable (U n)
+hUnorm : ∀ (n : ℕ) (x : X), ‖U n x‖ ≤ ↑n
+hUq : ∀ (n : ℕ), MemLp (U n) q μ
+F : ℕ → X → ℂ := fun n x => sorry * dualityPhase (U n x)
+hFm : ∀ (n : ℕ), Measurable (F n)
+hFnorm : ∀ (n : ℕ) (x : X), ‖F n x‖ = ‖U n x‖ ^ (q.toReal - 1)
+hFbound : ∀ (n : ℕ) (x : X), ‖F n x‖ ≤ ↑n ^ (q.toReal - 1)
+hFp : ∀ (n : ℕ), MemLp (F n) p μ
+hpower : ∀ (n : ℕ) (x : X), ‖F n x‖ ^ p.toReal = ‖U n x‖ ^ q.toReal
+n : ℕ
+x : X
+hx : x ∉ E n
+⊢ 0 = sorry ()
+DevelopmentAggregate.lean:1810:34: error(lean.invalidField): Invalid field notation: Field projection operates on types of the form `C ...` where C is a constant. The expression
+  hevent
+has type
+  atTop.1 {x_1 | (fun n => U n x = g x) x_1}
+which does not have the necessary form.
+DevelopmentAggregate.lean:1725:42: error: unsolved goals
+X : Type u_1
+inst✝³ : MeasurableSpace X
+μ : Measure X
+inst✝² : IsFiniteMeasure μ
+p q : ℝ≥0∞
+inst✝¹ : Fact (1 ≤ p)
+inst✝ : p.HolderConjugate q
+hp : p ≠ ∞
+hq : q ≠ ∞
+Φ : ↥(Lp ℂ p μ) →L[ℂ] ℂ
+g : X → ℂ
+hgm : Measurable g
+hg : Integrable g μ
+hind : ∀ (E : Set X) (hE : MeasurableSet E), Φ (indicatorConstLp p hE ⋯ 1) = ∫ (x : X) in E, g x ∂μ
+hconj : p.toReal.HolderConjugate q.toReal
+hp0 : p ≠ 0
+hq0 : q ≠ 0
+E : ℕ → Set X := fun n => {x | ‖g x‖ ≤ ↑n}
+hE : ∀ (n : ℕ), MeasurableSet (E n)
+U : ℕ → X → ℂ := fun n => (E n).indicator g
+hUm : ∀ (n : ℕ), Measurable (U n)
+hUnorm : ∀ (n : ℕ) (x : X), ‖U n x‖ ≤ ↑n
+hUq : ∀ (n : ℕ), MemLp (U n) q μ
+F : ℕ → X → ℂ := fun n x => sorry * dualityPhase (U n x)
+hFm : ∀ (n : ℕ), Measurable (F n)
+hFnorm : ∀ (n : ℕ) (x : X), ‖F n x‖ = ‖U n x‖ ^ (q.toReal - 1)
+hFbound : ∀ (n : ℕ) (x : X), ‖F n x‖ ≤ ↑n ^ (q.toReal - 1)
+hFp : ∀ (n : ℕ), MemLp (F n) p μ
+hpower : ∀ (n : ℕ) (x : X), ‖F n x‖ ^ p.toReal = ‖U n x‖ ^ q.toReal
+hprod : ∀ (n : ℕ) (x : X), F n x * g x = sorry
+hUbound : ∀ (n : ℕ), eLpNorm (U n) q μ ≤ ENNReal.ofReal ‖Φ‖
+x : X
+hevent : ∀ᶠ (n : ℕ) in atTop, U n x = g x
+⊢ Tendsto (fun x_1 => U x_1 x) ?m.882 (𝓝 (g x))
+
+X : Type u_1
+inst✝³ : MeasurableSpace X
+μ : Measure X
+inst✝² : IsFiniteMeasure μ
+p q : ℝ≥0∞
+inst✝¹ : Fact (1 ≤ p)
+inst✝ : p.HolderConjugate q
+hp : p ≠ ∞
+hq : q ≠ ∞
+Φ : ↥(Lp ℂ p μ) →L[ℂ] ℂ
+g : X → ℂ
+hgm : Measurable g
+hg : Integrable g μ
+hind : ∀ (E : Set X) (hE : MeasurableSet E), Φ (indicatorConstLp p hE ⋯ 1) = ∫ (x : X) in E, g x ∂μ
+hconj : p.toReal.HolderConjugate q.toReal
+hp0 : p ≠ 0
+hq0 : q ≠ 0
+E : ℕ → Set X := ⋯
+hE : ∀ (n : ℕ), MeasurableSet (E n)
+U : ℕ → X → ℂ := ⋯
+hUm : ∀ (n : ℕ), Measurable (U n)
+hUnorm : ∀ (n : ℕ) (x : X), ‖U n x‖ ≤ ↑n
+hUq : ∀ (n : ℕ), MemLp (U n) q μ
+F : ℕ → X → ℂ := ⋯
+hFm : ∀ (n : ℕ), Measurable (F n)
+hFnorm : ∀ (n : ℕ) (x : X), ‖F n x‖ = ‖U n x‖ ^ (q.toReal - 1)
+hFbound : ∀ (n : ℕ) (x : X), ‖F n x‖ ≤ ↑n ^ (q.toReal - 1)
+hFp : ∀ (n : ℕ), MemLp (F n) p μ
+hpower : ∀ (n : ℕ) (x : X), ‖F n x‖ ^ p.toReal = ‖U n x‖ ^ q.toReal
+hprod : ∀ (n : ℕ) (x : X), F n x * g x = sorry
+hUbound : ∀ (n : ℕ), eLpNorm (U n) q μ ≤ ENNReal.ofReal ‖Φ‖
+⊢ NeBot ?m.882
+
+X : Type u_1
+inst✝³ : MeasurableSpace X
+μ : Measure X
+inst✝² : IsFiniteMeasure μ
+p q : ℝ≥0∞
+inst✝¹ : Fact (1 ≤ p)
+inst✝ : p.HolderConjugate q
+hp : p ≠ ∞
+hq : q ≠ ∞
+Φ : ↥(Lp ℂ p μ) →L[ℂ] ℂ
+g : X → ℂ
+hgm : Measurable g
+hg : Integrable g μ
+hind : ∀ (E : Set X) (hE : MeasurableSet E), Φ (indicatorConstLp p hE ⋯ 1) = ∫ (x : X) in E, g x ∂μ
+hconj : p.toReal.HolderConjugate q.toReal
+hp0 : p ≠ 0
+hq0 : q ≠ 0
+E : ℕ → Set X := ⋯
+hE : ∀ (n : ℕ), MeasurableSet (E n)
+U : ℕ → X → ℂ := ⋯
+hUm : ∀ (n : ℕ), Measurable (U n)
+hUnorm : ∀ (n : ℕ) (x : X), ‖U n x‖ ≤ ↑n
+hUq : ∀ (n : ℕ), MemLp (U n) q μ
+F : ℕ → X → ℂ := ⋯
+hFm : ∀ (n : ℕ), Measurable (F n)
+hFnorm : ∀ (n : ℕ) (x : X), ‖F n x‖ = ‖U n x‖ ^ (q.toReal - 1)
+hFbound : ∀ (n : ℕ) (x : X), ‖F n x‖ ≤ ↑n ^ (q.toReal - 1)
+hFp : ∀ (n : ℕ), MemLp (F n) p μ
+hpower : ∀ (n : ℕ) (x : X), ‖F n x‖ ^ p.toReal = ‖U n x‖ ^ q.toReal
+hprod : ∀ (n : ℕ) (x : X), F n x * g x = sorry
+hUbound : ∀ (n : ℕ), eLpNorm (U n) q μ ≤ ENNReal.ofReal ‖Φ‖
+⊢ IsCountablyGenerated ?m.882
+DevelopmentAggregate.lean:1777:36: warning: This simp argument is unused:
+  Real.zero_rpow hconj.symm.ne_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [F, U, hx, dualityPhase]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+DevelopmentAggregate.lean:1818:2: error: Invalid `⟨...⟩` notation: The expected type `WithTop.LT (eLpNorm g q μ) ∞` has more than one constructor
+
+Note: This notation can only be used when the expected type is an inductive type with a single constructor
+'RudinRCA.Chapter06.duality_root_bound' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter06.lpFunctional_density_eLpNorm_le_of_finite_conjugates' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter06.lpFunctional_density_memLp_of_finite_conjugates' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]

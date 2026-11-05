@@ -1,0 +1,9 @@
+{
+  "kind": "development_only",
+  "exit_code": 1,
+  "completion_observed_utc": "2026-10-29T18:38:47.676466+00:00",
+  "source_sha256": "91692423015108fc5f017a34418204ef028901c91c6eedafbc11ad7035ac6ecb",
+  "allowed_family_audits": 85,
+  "failed_or_tainted_family_audits": 19,
+  "whole_aggregate_passed": false
+}
