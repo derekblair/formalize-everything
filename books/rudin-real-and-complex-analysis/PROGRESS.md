@@ -15,9 +15,9 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 7 | Differentiation | TBD | 0 |
 | 8 | Integration on Product Spaces | TBD | 0 |
 | 9 | Fourier Transforms | TBD | 0 |
-| 10 | Elementary Properties of Holomorphic Functions | TBD | 0 |
-| 11 | Harmonic Functions | TBD | 0 |
-| 12 | The Maximum Modulus Principle | TBD | 0 |
+| 10 | Elementary Properties of Holomorphic Functions | 44 | 0 |
+| 11 | Harmonic Functions | 32 | 0 |
+| 12 | The Maximum Modulus Principle | 14 | 0 |
 | 13 | Approximation by Rational Functions | TBD | 0 |
 | 14 | Conformal Mapping | TBD | 0 |
 | 15 | Zeros of Holomorphic Functions | TBD | 0 |
@@ -55,3 +55,26 @@ have zero proof placeholders and only `propext`, `Classical.choice`, and
 PR: [#48](https://github.com/derekblair/formalize-everything/pull/48).
 Coordinator-appointed crossed review is still required. The main table above
 continues to count only independently reviewed work landed on main.
+
+Cluster E's [inventory](inventory/README.md) verifies all 90 numbered nodes
+of Chapters 10–12 against the third-edition scan. Unnumbered corollaries and
+assertions belong to their numbered parent; exercises are excluded.
+The `Done` column continues to mean accepted on main, so it is not advanced
+by unreviewed work on `books/rca-holomorphic`. Branch proof coverage and
+fidelity stops are recorded separately in the inventory and `QUEUE.md`.
+
+Branch checkpoint, 2026-11-01 (unreviewed; ticket #41):
+
+| Chapter | Inventoried | Complete nodes proved on branch | Remaining |
+|---|---:|---:|---:|
+| 10 | 44 | 16 | 28 |
+| 11 | 32 | 4 | 28 |
+| 12 | 14 | 3 | 11 |
+| **Cluster E** | **90** | **23** | **67** |
+
+Chapter 10 completion is enumerated in its inventory; Chapter 11 covers
+11.1–11.4, and Chapter 12 covers 12.2, 12.3, and 12.9. Partial nodes and
+the corrected subclaim of 11.5 do not inflate these counts. This is a
+draft delivery: the Chapter 10 path/index machinery and the 10.37 fidelity
+hold remain open. `scripts/build-cluster-e-clean.py` verifies the current
+sources in a fresh output directory, retaining existing work and artifacts.
