@@ -1,0 +1,4 @@
+Theorem/lemma declarations: 136; audit records: 140
+Missing records: []
+Disallowed axioms: {}
+Observed axiom union: ['Classical.choice', 'Quot.sound', 'propext']
