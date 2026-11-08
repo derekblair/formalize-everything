@@ -134,4 +134,6 @@ No chapter is complete. Nodes 15.3 and 15.4 have passed separate Lean checks wit
 
 The corresponding theorem families are `finite_product_estimates` (15.3), `uniform_product_of_uniform_norm_series`, `product_eq_zero_iff_of_uniform_norm_series`, and `uniform_product_reindex_of_uniform_norm_series` (15.4). The latter retains uniform convergence of the norm series and boundedness of each summand on an arbitrary underlying set; it does not replace those hypotheses by summable sup norms.
 
+2026-11-07 checkpoint: The 15.3 and 15.4 theorem families listed above are now integrated in `RudinRCA/Chapter15.lean`. The crossed review passed the clean-slate builds with exit status 0: 3,364 jobs for the full build and 3,014 jobs for the Chapter 15 module build. This updates the integration and build status only; the historical Stage 2 account and the chapter-completion and Done claims above are unchanged.
+
 The upstream progress table defines Done as merged on main. Its Done column remains zero until independently reviewed code lands.
