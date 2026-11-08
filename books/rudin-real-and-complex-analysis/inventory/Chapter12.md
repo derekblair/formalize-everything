@@ -37,7 +37,7 @@ All node statuses below concern source coverage, not a Lean proof count.
 | 12.6 | 255 | Theorem: classification of disk automorphisms | M | No classification found in `UnitDisc/Basic.lean` or `Schwarz.lean`. Requires inversion, 12.4, and 12.5; upper-half-plane Möbius actions are not this classification. |
 | 12.7 | 256 | Examples: unbounded-strip failure; sublinear entire-function rigidity | V | `Complex.norm_deriv_le_of_forall_mem_sphere_norm_le` in `Analysis/Complex/Liouville.lean` plus `Complex.exp` calculus. Both examples require new calculations and a limiting argument. |
 | 12.8 | 257 | Theorem: three-lines inequality; logarithmic convexity corollary | V | `Complex.HadamardThreeLines.norm_le_interp_of_mem_verticalClosedStrip'` and `norm_le_interpStrip_of_mem_verticalClosedStrip` in `Analysis/Complex/Hadamard.lean`. Convert pointwise bounds into line suprema and normalize real powers. Handle zero boundary supremum and the zero-function case explicitly. |
-| 12.9 | 258 | Theorem: strip growth condition implies boundary bound | V | `PhragmenLindelof.horizontal_strip` in `Analysis/Complex/PhragmenLindelof.lean`. Its arbitrary strip and big-O assumption specialize to the displayed strip and pointwise growth condition. |
+| 12.9 | 258 | Theorem: strip growth condition implies boundary bound; sharpness at `α = 1` | V | `PhragmenLindelof.horizontal_strip` in `Analysis/Complex/PhragmenLindelof.lean`. Its arbitrary strip and big-O assumption specialize to the displayed strip and pointwise growth condition. The printed sharpness witness `exp (exp z)` requires direct exponential calculations: boundary modulus one on `Im z = ±π/2`, strict growth with `A = 2`, and modulus `e > 1` at zero. |
 | 12.10 | 259 | Lindelöf theorem: curve limit determines radial limit | M | `PhragmenLindelof.lean` contains strip/quadrant/half-plane growth estimates, not this boundary curve theorem. No radial-limit theorem found. |
 | 12.11 | 260 | Setup: bounded orthonormal coefficients and endpoint estimates | V | `Orthonormal.sum_inner_products_le` and `Orthonormal.tsum_inner_products_le` in `Analysis/InnerProductSpace/Orthonormal.lean`; Bochner integral bounds provide the other endpoint. Need measure-function representatives and coefficient summability/integrability bridges. |
 | 12.12 | 261 | Hausdorff–Young theorem for the preceding coefficient system | M | No Hausdorff–Young or Riesz–Thorin theorem found in `Analysis`, `MeasureTheory`, or file names. `Hadamard.lean` supplies the analytic interpolation ingredient, not the complete operator estimate. |
@@ -58,16 +58,22 @@ which are not evidence for 12.14.
 
 `RudinRCA/Chapter12.lean` states the complete Schwarz lemma as
 `RudinRCA.Chapter12.theorem12_2`, the definition in 12.3 as `phi`,
-and the strip theorem in 12.9 as `theorem12_9`.
+and both parts of 12.9 as `theorem12_9` and `theorem12_9_sharpness`.
+The latter proves that `exp (exp z)` is entire, has modulus one on both
+boundary lines, satisfies the strict interior growth inequality with
+`α = 1` and `A = 2`, and has modulus `Real.exp 1 > 1` at zero.
 The two `theorem12_1_boundary_*` declarations cover the continuous-boundary
 portion of 12.1 only; **12.1 remains incomplete** because its recalled
 `H∞` boundary-value assertion is absent. Thus **3 nodes are covered,
-11 remain incomplete**. No other node is claimed proved.
+11 remain incomplete**. No other node is claimed proved. The sharpness
+proof keeps 12.9 complete, so the counts remain 3/11 rather than dropping
+to the pre-proof 2/12; 12.9 is not added to the stuck-node queue.
 `lake env lean RudinRCA/Chapter12.lean` exited 0 with no warnings after
-the last proof change; the integrated clean build and audit belong to
-the lane report.
+the sharpness proof; the integrated clean build and audit belong to the
+lane report.
 
-No printed statement has been silently changed. No counterexample or
-correction was required by this source pass. In particular, the excluded
-zero point in the Schwarz equality alternative and both derivative and
-value equality alternatives were checked against the scan.
+No printed statement has been silently changed. The p. 258 sharpness
+remark is now represented explicitly rather than omitted from the `α < 1`
+strip theorem. In particular, the excluded zero point in the Schwarz
+equality alternative and both derivative and value equality alternatives
+were checked against the scan.

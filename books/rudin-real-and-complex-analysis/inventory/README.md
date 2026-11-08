@@ -41,10 +41,13 @@ Two source issues require explicit tracking: the variable mismatch in
 10.37 and the false radius-zero strict inequality in 11.5(4). See
 `QUEUE.md`; neither is silently repaired or counted as a completed node.
 
-At the resumed branch checkpoint (2026-11-01), **23 of 90 complete nodes
-are proved; 67 remain**: Chapter 10 has 16/44, Chapter 11 has 4/32, and
-Chapter 12 has 3/14. Each chapter's implementation accounting identifies
-the exact complete nodes. The inventory is complete; the formalization is
-partial and remains a draft. `RudinRCA/AuditE.lean` checks all project
-declarations transitively, including private/generated declarations; an
-axiom audit establishes proof dependencies, not book coverage.
+At the 12.9 sharpness-remedy checkpoint (2026-11-07), **23 of 90 complete
+nodes are proved; 67 remain**: Chapter 10 has 16/44, Chapter 11 has 4/32,
+and Chapter 12 has 3/14. The completed 12.9 node includes the printed
+sharpness example, proved as `theorem12_9_sharpness`; the temporary
+pre-proof accounting of 22/68 no longer applies. Each chapter's
+implementation accounting identifies the exact complete nodes. The
+inventory is complete; the formalization is partial and remains a draft.
+`RudinRCA/AuditE.lean` checks all project declarations transitively,
+including private/generated declarations; an axiom audit establishes proof
+dependencies, not book coverage.

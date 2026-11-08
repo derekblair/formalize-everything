@@ -139,7 +139,7 @@ The `Done` column continues to mean accepted on main, so it is not advanced
 by unreviewed work on `books/rca-holomorphic`. Branch proof coverage and
 fidelity stops are recorded separately in the inventory and `QUEUE.md`.
 
-Branch checkpoint, 2026-11-01 (unreviewed; ticket #41):
+Branch checkpoint, 2026-11-07 (unreviewed; ticket #41):
 
 | Chapter | Inventoried | Complete nodes proved on branch | Remaining |
 |---|---:|---:|---:|
@@ -149,8 +149,11 @@ Branch checkpoint, 2026-11-01 (unreviewed; ticket #41):
 | **Cluster E** | **90** | **23** | **67** |
 
 Chapter 10 completion is enumerated in its inventory; Chapter 11 covers
-11.1–11.4, and Chapter 12 covers 12.2, 12.3, and 12.9. Partial nodes and
-the corrected subclaim of 11.5 do not inflate these counts. This is a
-draft delivery: the Chapter 10 path/index machinery and the 10.37 fidelity
-hold remain open. `scripts/build-cluster-e-clean.py` verifies the current
-sources in a fresh output directory, retaining existing work and artifacts.
+11.1–11.4, and Chapter 12 covers 12.2, 12.3, and 12.9. The latter includes
+the p. 258 sharpness example as `theorem12_9_sharpness`, so the justified
+counts remain 3/11 and 23/67 rather than the pre-proof 2/12 and 22/68.
+Partial nodes and the corrected subclaim of 11.5 do not inflate these
+counts. This is a draft delivery: the Chapter 10 path/index machinery and
+the 10.37 fidelity hold remain open. `scripts/build-cluster-e-clean.py`
+verifies the current sources in a fresh output directory, retaining
+existing work and artifacts.

@@ -7,7 +7,7 @@ import Mathlib.Analysis.Complex.PhragmenLindelof
 The number labels refer to the third edition. `DifferentiableOn ℂ` on the
 open sets below is equivalent to complex differentiability at every point.
 The boundary maximum portion of 12.1, all of 12.2, the definition in 12.3,
-and the strip theorem 12.9 are formalized here.
+and the strip theorem and sharpness example in 12.9 are formalized here.
 The radial-boundary-value assertion recalled in 12.1 is not yet formalized.
 -/
 
@@ -106,5 +106,45 @@ theorem theorem12_9 {f : ℂ → ℂ} {α A : ℝ}
   · apply Filter.eventually_inf_principal.mpr
     exact Filter.Eventually.of_forall fun w hw => by
       simpa only [Real.norm_eq_abs, Real.abs_exp] using (hg w (by simpa [S, abs_lt] using hw)).le
+
+/-- 12.9, sharpness on the closed strip: `exp (exp z)` has boundary modulus
+one, satisfies the growth hypothesis with `α = 1` and `A = 2`, and has
+modulus greater than one at the interior point zero. -/
+theorem theorem12_9_sharpness :
+    let f : ℂ → ℂ := fun z => Complex.exp (Complex.exp z)
+    Differentiable ℂ f ∧
+    (∀ z : ℂ, z.im = -(Real.pi / 2) → ‖f z‖ = 1) ∧
+    (∀ z : ℂ, z.im = Real.pi / 2 → ‖f z‖ = 1) ∧
+    (∀ z : ℂ, |z.im| < Real.pi / 2 →
+      ‖f z‖ < Real.exp (2 * Real.exp (1 * |z.re|))) ∧
+    ‖f 0‖ = Real.exp 1 ∧ 1 < ‖f 0‖ := by
+  dsimp only
+  have hexp_norm (z : ℂ) :
+      ‖Complex.exp (Complex.exp z)‖ =
+        Real.exp (Real.exp z.re * Real.cos z.im) := by
+    rw [Complex.norm_exp, Complex.exp_re]
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+  · simpa only [Function.comp_def] using
+      (Complex.differentiable_exp.comp Complex.differentiable_exp)
+  · intro z hz
+    rw [hexp_norm, hz, Real.cos_neg, Real.cos_pi_div_two, mul_zero, Real.exp_zero]
+  · intro z hz
+    rw [hexp_norm, hz, Real.cos_pi_div_two, mul_zero, Real.exp_zero]
+  · intro z hz
+    rw [hexp_norm]
+    apply Real.exp_lt_exp.mpr
+    calc
+      Real.exp z.re * Real.cos z.im ≤ Real.exp z.re * 1 :=
+        mul_le_mul_of_nonneg_left (Real.cos_le_one _) (Real.exp_pos _).le
+      _ = Real.exp z.re := mul_one _
+      _ ≤ Real.exp |z.re| := Real.exp_le_exp.mpr (le_abs_self _)
+      _ < 2 * Real.exp (1 * |z.re|) := by
+        simp only [one_mul]
+        nlinarith [Real.exp_pos |z.re|]
+  · rw [Complex.exp_zero]
+    exact Complex.norm_exp (1 : ℂ)
+  · rw [Complex.exp_zero, Complex.norm_exp]
+    simpa only [Complex.one_re, Real.exp_zero] using
+      (Real.exp_lt_exp.mpr (show (0 : ℝ) < 1 from zero_lt_one))
 
 end RudinRCA.Chapter12
