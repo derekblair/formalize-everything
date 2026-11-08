@@ -92,7 +92,7 @@ Note: This linter can be disabled with `set_option linter.unusedSectionVars fals
 'RudinRCA.Chapter06.mutuallySingular_of_ac_of_singular' depends on axioms: [propext, Classical.choice, Quot.sound]
 'RudinRCA.Chapter06.eq_zero_of_ac_of_singular' depends on axioms: [propext, Classical.choice, Quot.sound]
 'RudinRCA.Chapter06.hilbert_lp_duality' depends on axioms: [propext, Classical.choice, Quot.sound]
-DevelopmentAggregate.lean:615:2: warning: Try this: 
+DevelopmentAggregate.lean:615:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -100,7 +100,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-DevelopmentAggregate.lean:646:2: warning: Try this: 
+DevelopmentAggregate.lean:646:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -160,7 +160,7 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 DevelopmentAggregate.lean:1383:4: warning: Try `simp at h` instead of `simpa using h`
 
 Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
-DevelopmentAggregate.lean:1443:2: warning: Try this: 
+DevelopmentAggregate.lean:1443:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -230,7 +230,7 @@ but is expected to have type
  sorryAx,
  Classical.choice,
  Quot.sound]
-DevelopmentAggregate.lean:2082:4: warning: Try this: 
+DevelopmentAggregate.lean:2082:4: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -326,7 +326,7 @@ Hint: Type class instance resolution failures can be inspected with the `set_opt
 DevelopmentAggregate.lean:2412:55: warning: `Set.diff_subset` has been deprecated: Use `Set.sdiff_subset` instead
 'RudinRCA.Chapter06.lpFunctional_eq_of_finite_indicator' depends on axioms: [propext, Classical.choice, Quot.sound]
 DevelopmentAggregate.lean:2418:14: error(lean.unknownIdentifier): Unknown constant `tendsto_indicatorConstLp_spanningSets`
-DevelopmentAggregate.lean:2456:4: warning: Try this: 
+DevelopmentAggregate.lean:2456:4: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -334,7 +334,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-DevelopmentAggregate.lean:2462:4: warning: Try this: 
+DevelopmentAggregate.lean:2462:4: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -342,7 +342,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-DevelopmentAggregate.lean:2470:4: warning: Try this: 
+DevelopmentAggregate.lean:2470:4: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -361,7 +361,7 @@ in the application
   Eq.trans (ae_restrict_of_ae (MemLp.coeFn_toLp hgp)) (hglocal n)
 DevelopmentAggregate.lean:2531:17: error(lean.unknownIdentifier): Unknown identifier `tendsto_indicatorConstLp_spanningSets`
 'RudinRCA.Chapter06.theorem_6_16' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
-DevelopmentAggregate.lean:2573:2: warning: Try this: 
+DevelopmentAggregate.lean:2573:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -369,7 +369,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-DevelopmentAggregate.lean:2595:2: warning: Try this: 
+DevelopmentAggregate.lean:2595:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -377,7 +377,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-DevelopmentAggregate.lean:2606:2: warning: Try this: 
+DevelopmentAggregate.lean:2606:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -471,7 +471,7 @@ but is expected to have type
   ‖@OfNat.ofNat ((X →C₀ ℂ) →L[ℂ] ℂ) 0 (@Zero.toOfNat0 ((X →C₀ ℂ) →L[ℂ] ℂ) ContinuousLinearMap.zero)‖ = 0
 in the application
   Eq.trans (Eq.symm (theorem_6_19_norm c 0 fun f => Eq.symm (hc f))) norm_zero
-DevelopmentAggregate.lean:2953:2: warning: Try this: 
+DevelopmentAggregate.lean:2953:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -679,7 +679,7 @@ in the application
 'RCA619PositivePart.posSup_add' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
 'RCA619PositivePart.posSup_smul' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
 'RCA619PositivePart.exists_positive_decomposition' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
-DevelopmentAggregate.lean:3242:2: warning: Try this: 
+DevelopmentAggregate.lean:3242:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -687,7 +687,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-DevelopmentAggregate.lean:3243:2: warning: Try this: 
+DevelopmentAggregate.lean:3243:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -695,7 +695,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-DevelopmentAggregate.lean:3260:2: warning: Try this: 
+DevelopmentAggregate.lean:3260:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -703,7 +703,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-DevelopmentAggregate.lean:3261:2: warning: Try this: 
+DevelopmentAggregate.lean:3261:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.

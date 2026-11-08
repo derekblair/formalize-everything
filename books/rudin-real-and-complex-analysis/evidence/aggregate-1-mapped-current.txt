@@ -92,7 +92,7 @@ Note: This linter can be disabled with `set_option linter.unusedSectionVars fals
 'RudinRCA.Chapter06.mutuallySingular_of_ac_of_singular' depends on axioms: [propext, Classical.choice, Quot.sound]
 'RudinRCA.Chapter06.eq_zero_of_ac_of_singular' depends on axioms: [propext, Classical.choice, Quot.sound]
 'RudinRCA.Chapter06.hilbert_lp_duality' depends on axioms: [propext, Classical.choice, Quot.sound]
-Scratch69.lean:111:2: warning: Try this: 
+Scratch69.lean:111:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -100,7 +100,7 @@ The difference between `let` and `letI` is that `letI` inlines the value.
 But this is not relevant for proofs because of proof irrelevance.
 
 Note: This linter can be disabled with `set_option linter.style.haveILetI false`
-Scratch69.lean:142:2: warning: Try this: 
+Scratch69.lean:142:2: warning: Try this:
   letI̵
 
 The goal is a proposition, so `let` is preferred over `letI`.
@@ -568,4 +568,3 @@ Note: This notation can only be used when the expected type is an inductive type
  sorryAx,
  Classical.choice,
  Quot.sound]
-
