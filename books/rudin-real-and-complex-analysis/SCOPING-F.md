@@ -126,7 +126,8 @@ Checked 2026-10-29 against the actual checkout at
 `git rev-parse HEAD` returned **d13f23b723b8a846827a245b89c10fc7d3f11612**.
 The project toolchain is **leanprover/lean4:v4.34.1**. This is a source-level
 claims audit, not a claim that any new book module has passed a build or axiom audit.
-Printed scope is supplied by `inventory-ch13.md` and `inventory-ch14.md` in this directory:
+Printed scope is supplied by the Chapter 13 and Chapter 14 printed-node inventories
+in the preceding sections of this file (`SCOPING-F.md`):
 **12 + 22 = 34 numbered nodes**. In particular Runge is 13.6/13.9,
 13.10 is Mittag-Leffler, and 13.12 is harmonicity of log modulus.
 
