@@ -199,4 +199,3 @@ run_cmd do
         logInfo m!"AUDIT {name}: {axioms}"
       count := count + 1
   logInfo m!"Axiom audit passed for {count} project declarations (including private/generated) across {audited.size} audited project modules; the package source tree holds {discovered.size} project modules, all imported into the audited graph and all present in the expected inventory; used: {used.qsort Name.lt}."
-
