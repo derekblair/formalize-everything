@@ -3,8 +3,9 @@
 
 Usage: python3 check_axiom_audit.py SOURCE.lean BUILD_LOG
 Requires an explicit audit command for every theorem/lemma in the source and
-an exact fully qualified record for every explicit audit command. Records from
-other chapters do not inflate this chapter's count or satisfy its audits.
+an exact fully qualified record for every explicit audit command, accepting
+Lean's `_private.<module>.0.<name>` spelling for private declarations. Records
+from other chapters do not inflate this chapter's count or satisfy its audits.
 Disallowed axioms and conflicting duplicate records anywhere in the log fail.
 This checks evidence, not Lean itself; the logged build must separately exit 0.
 """
@@ -96,17 +97,21 @@ def source_inventory(source):
 
 
 def main():
-    source = Path(sys.argv[1]).read_text()
+    source_path = Path(sys.argv[1])
+    source = source_path.read_text()
     log = Path(sys.argv[2]).read_text()
     names, audit_commands, source_errors = source_inventory(source)
     expected = set(audit_commands)
     missing_commands = sorted(set(names) - expected)
     duplicate_declarations = sorted(name for name in set(names) if names.count(name) > 1)
     records, variants = {}, {}
+    source_module = '.'.join(source_path.with_suffix('').parts)
+    private_names = {f'_private.{source_module}.0.{name}': name for name in expected}
     entries = [(name, set(filter(None, re.split(r'[,\s]+', axioms))))
                for name, axioms in re.findall(r"'([^']+)' depends on axioms:\s*\[([^]]*)\]", log)]
     entries += [(name, set()) for name in
                 re.findall(r"'([^']+)' does not depend on any axioms", log)]
+    entries = [(private_names.get(name, name), axioms) for name, axioms in entries]
     for name, axioms in entries:
         variants.setdefault(name, set()).add(tuple(sorted(axioms)))
         # Retain the union so an unsafe duplicate cannot be hidden by an allowed one.
