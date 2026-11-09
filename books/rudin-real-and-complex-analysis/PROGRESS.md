@@ -6,9 +6,9 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 
 | Chapter | Title | Nodes (total) | Done |
 |---|---|---|---|
-| 1 | Abstract Integration | TBD | 0 |
-| 2 | Positive Borel Measures | TBD | 0 |
-| 3 | Lp-Spaces | TBD | 0 |
+| 1 | Abstract Integration | 41 | 0 |
+| 2 | Positive Borel Measures | 25 | 0 |
+| 3 | Lp-Spaces | 17 | 0 |
 | 4 | Elementary Hilbert Space Theory | 26 | 0 |
 | 5 | Examples of Banach Space Techniques | 25 | 0 |
 | 6 | Complex Measures | TBD | 0 |
@@ -55,3 +55,41 @@ have zero proof placeholders and only `propext`, `Classical.choice`, and
 PR: [#48](https://github.com/derekblair/formalize-everything/pull/48).
 Coordinator-appointed crossed review is still required. The main table above
 continues to count only independently reviewed work landed on main.
+
+## Cluster A inventory (branch `books/rca-foundations`)
+
+The complete verified ranges are 1.1–1.41, 2.1–2.25, and 3.1–3.17: **83
+numbered items**, including definitions and exposition. Of these, **49 are
+tracked theorem/proposition groups** (25 / 14 / 10). Assertions accompanying
+definitions are also obligations of their numbered items. Attached unnumbered
+corollaries are obligations of the parent group, not extra numbered items.
+The `Done` column above continues to mean accepted on main; branch proofs
+are reported separately and never equated with accepted completion.
+
+| Chapter | Inventoried | Result groups | Numbering unverified | Inventory and claims |
+|---|---:|---:|---:|---|
+| 1 | 41 | 25 | 0 | [Chapter 1](INVENTORY-CH01.md) |
+| 2 | 25 | 14 | 0 | [Chapter 2](INVENTORY-CH02.md) |
+| 3 | 17 | 10 | 0 | [Chapter 3](INVENTORY-CH03.md) |
+
+These counts verify identifiers, not the correctness or formalization of
+every statement. Section 3.7 has a disclosed zero-measure fidelity hold;
+see [QUEUE.md](QUEUE.md). No exercise is included.
+
+## Cluster A formalization on this branch (independent review pending)
+
+| Chapter | Inventoried | Formalized items | Remaining original items | Proved result groups / total |
+|---|---:|---:|---:|---:|
+| 1 | 41 | 41 | 0 | 25 / 25 |
+| 2 | 25 | 14 | 11 | 7 / 14 |
+| 3 | 17 | 0 | 17 | 0 / 10 |
+| Total | 83 | 55 | 28 | 32 / 49 |
+
+Chapter 2 covers 2.1, 2.3–2.13, and 2.15–2.16, including definition
+assertions, notation 2.11, and attached corollaries. The consequences in
+2.16 retain the required measure hypotheses from 2.14 explicitly; the
+representation theorem 2.14 remains pending. Chapter 3
+contains four proved results: a counterexample and three facts about the
+explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
+remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
+The `Done` column in the main table remains zero because no merge occurred.
