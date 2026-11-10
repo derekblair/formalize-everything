@@ -80,16 +80,26 @@ python3 tools/pronunciations.py
 ```
 
 This regenerates [`data/pronunciation-unknowns.json`](data/pronunciation-unknowns.json)
-with every unresolved token and its sonnet/line location. At the recorded
-corpus version, all 2,155 line endings resolve. One interior token remains
-unresolved: **`respose`, sonnet 27, line 2**. That is the exact edition's
-spelling. It is not silently changed to _repose_, and its line cannot receive
-an unconditional successful metrical verdict from missing pronunciation data.
+with every unresolved token and its sonnet/line location. All 2,155 line
+endings and all interior tokens now resolve. Coverage remains distinct from
+linguistic accuracy.
 
-The edition's `debarre’d` is preserved as text and has an explicit pronunciation
-annotation corresponding to _debarred_. These two different treatments are
-visible decisions: ordinary morphological interpretation for `debarre’d`,
-an unresolved apparent lexical error for `respose`.
+### MD-SOURCE-ALIAS: `respose` → `repose`
+
+The frozen Gutenberg string **`respose` (27.2)** is unchanged. The
+[Folger Shakespeare Library edition, sonnet 27, line 2](https://www.folger.edu/explore/shakespeares-works/shakespeares-sonnets/read/27/)
+(accessed 2026-11-10) reads _repose_ at the corresponding position. The explicit
+override now interprets that exact token as _repose_ for pronunciation lookup,
+using the pinned CMU first entry `R IY0 P OW1 Z`. This is a documented editorial
+alias supported by a named comparison edition, not evidence for a historically
+pronounced word _respose_. It is lexical, applies wherever the token occurs,
+and uses neither sonnet number nor metrical/rhyme fit. The annotation records
+the source and derivation; the source text is never repaired. No generalized
+spell-correction rule is introduced. Unknown tokens still produce no scans.
+
+The edition's `debarre’d` likewise remains textually preserved with an explicit
+pronunciation annotation corresponding to _debarred_; that is a morphological
+interpretation, distinct from the editorial alias above.
 
 CMU lexical stress is not sentence stress or a complete poetic scansion.
 Stress flexibility, syllable contraction licenses, rhyme-class extraction,

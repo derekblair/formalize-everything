@@ -2296,5 +2296,16 @@
       "D"
     ],
     "note": "Archaic recure meaning cure again, two syllables; not modern recur."
+  },
+  "respose": {
+    "phonemes": [
+      "R",
+      "IY0",
+      "P",
+      "OW1",
+      "Z"
+    ],
+    "note": "Explicit editorial lookup alias to repose: Folger Sonnet 27 line 2 reads repose (accessed 2026-11-10). The frozen Gutenberg token respose is preserved in poem text; phones are the pinned CMU first entry for repose, not a historical respose reconstruction. This exact lexical alias applies independently of sonnet number, meter or rhyme.",
+    "source": "https://www.folger.edu/explore/shakespeares-works/shakespeares-sonnets/read/27/"
   }
 }

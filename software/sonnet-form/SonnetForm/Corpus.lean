@@ -476,7 +476,7 @@ def sonnet026 : Sonnet :=
 def sonnet027 : Sonnet :=
   ⟨27, [
     lineFromMasks "Weary with toil, I haste me to my bed," (some "EH D") [some true, some false, none, none, none, none, none, none, none, none] [],
-    lineFromMasks "The dear respose for limbs with travel tir’d;" (some "AY ER D") [] [],
+    lineFromMasks "The dear respose for limbs with travel tir’d;" (some "AY ER D") [none, none, some false, some true, none, none, none, some true, some false, some true, some false] [],
     lineFromMasks "But then begins a journey in my head" (some "EH D") [none, none, some false, some true, none, some true, some false, none, none, none] [],
     lineFromMasks "To work my mind, when body’s work’s expired:" (some "AY R D") [none, none, none, none, none, some true, some false, none, some false, some true] [],
     lineFromMasks "For then my thoughts, from far where I abide," (some "AY D") [none, none, none, none, none, none, none, none, some false, some true] [],

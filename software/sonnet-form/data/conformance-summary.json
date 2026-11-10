@@ -14,21 +14,21 @@
     "fail": 153
   },
   "licensed_meter": {
-    "pass": 28,
-    "fail": 126
+    "pass": 29,
+    "fail": 125
   },
   "line_strict": {
     "pass": 1228,
     "fail": 927
   },
   "line_licensed": {
-    "pass": 1883,
-    "fail": 272
+    "pass": 1884,
+    "fail": 271
   },
-  "unresolved_lines": 1,
+  "unresolved_lines": 0,
   "licenses": {
     "INITIAL_TROCHAIC_INVERSION": 92,
-    "FEMININE_ENDING": 250,
+    "FEMININE_ENDING": 251,
     "PYRRHIC_SUBSTITUTION": 257,
     "SPONDAIC_SUBSTITUTION": 229,
     "UNSTRESSED_ELISION": 33

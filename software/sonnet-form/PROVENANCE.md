@@ -74,3 +74,12 @@ strings alone cannot prove that they match an Internet edition.
 
 Pronunciation-token normalization and any lexical aliases belong to the
 separate scansion model. They must not mutate these recorded verse strings.
+
+## Editorial annotation without source emendation
+
+On 2026-11-10, `respose` at 27.2 was compared with the
+[Folger edition's corresponding line](https://www.folger.edu/explore/shakespeares-works/shakespeares-sonnets/read/27/),
+which reads _repose_. This supports an explicitly labeled pronunciation lookup
+alias, recorded in PRONUNCIATION.md and pronunciation-overrides.json. It does
+not replace the Gutenberg token, raw file, extracted corpus, manifest, or Lean
+source text. The Folger text is comparison evidence, not a second corpus edition.

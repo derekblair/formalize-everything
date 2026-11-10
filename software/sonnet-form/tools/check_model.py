@@ -93,6 +93,16 @@ class AnnotationBoundaryChecks(unittest.TestCase):
         self.assertEqual(result['eligible_elisions'], [2])
         self.assertEqual(len(result['scans']), 2)
 
+    def test_editorial_alias_preserves_source_and_does_not_guess_other_words(self):
+        from pronunciations import resolve
+        original = 'The dear respose for limbs with travel tired;'
+        result = annotate(original)
+        self.assertEqual(result['text'], original)
+        self.assertEqual(result['words'][2]['token'], 'respose')
+        self.assertEqual(result['words'][2]['phonemes'], resolve('repose')[0])
+        self.assertIn('Folger', result['words'][2]['derivation'])
+        self.assertIsNone(resolve('respoze'))
+
     def test_empty_text_cannot_pass(self):
         result = annotate('')
         self.assertEqual(result['scans'], [])

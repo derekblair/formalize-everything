@@ -61,7 +61,7 @@ make the model look more accurate.
 | Strict meter | 1 | 153 |
 | Meter with licenses | 28 | 126 |
 
-At line level, 1,228/2,155 pass strict meter and 1,883/2,155 pass with licenses.
+At line level, 1,228/2,155 pass strict meter and 1,884/2,155 pass with licenses.
 A failed check is catalogued as **ANOMALOUS under this model**, not automatically
 as a literary anomaly. Every strict meter failure rescued by a named rule is
 **LICENSED**, including licensed lines inside otherwise failing sonnets.
@@ -77,7 +77,7 @@ text was changed to obtain these results.
 - [PROVENANCE.md](PROVENANCE.md): sole edition, frozen bytes, retrieval date,
   source hash, extraction rules, and all fidelity events.
 - [PRONUNCIATION.md](PRONUNCIATION.md): pinned CMU source, explicit lexical
-  overrides, modern pronunciation assumptions, and remaining unknown token.
+  overrides, modern pronunciation assumptions, and explicit source-token interpretations.
 - [DEVIATIONS.md](DEVIATIONS.md): all 154 rows, complete anomaly lists, and every
   failing component/line with a LICENSED or ANOMALOUS classification.
 - [VALIDATION.md](VALIDATION.md): 11 full sonnets / 154 hand-scanned lines,
@@ -101,7 +101,8 @@ Modern American first-pronunciation rhyme classes also reject 133 sonnets;
 these are not established historical rhyme anomalies. A contextual/historical
 pronunciation and stress annotation pass, with justified additional licenses
 where needed, is required before claiming reliable literary conformance.
-The edition's `respose` at 27.2 remains a visible unresolved lexical item.
+The edition's `respose` at 27.2 is preserved and has an explicit, sourced
+pronunciation alias to _repose_; see PRONUNCIATION.md.
 The complete formal baseline is supplied for coordinator-appointed review;
 this author lane neither arranges that review nor merges.
 

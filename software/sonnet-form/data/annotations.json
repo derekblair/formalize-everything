@@ -61432,8 +61432,19 @@
           },
           {
             "token": "respose",
-            "phonemes": null,
-            "derivation": "UNRESOLVED"
+            "phonemes": [
+              "R",
+              "IY0",
+              "P",
+              "OW1",
+              "Z"
+            ],
+            "derivation": "explicit override: Explicit editorial lookup alias to repose: Folger Sonnet 27 line 2 reads repose (accessed 2026-11-10). The frozen Gutenberg token respose is preserved in poem text; phones are the pinned CMU first entry for repose, not a historical respose reconstruction. This exact lexical alias applies independently of sonnet number, meter or rhyme.",
+            "syllables": 2,
+            "masks": [
+              false,
+              true
+            ]
           },
           {
             "token": "for",
@@ -61508,17 +61519,61 @@
             ]
           }
         ],
-        "masks": [],
-        "eligible_elisions": [],
-        "unknown": [
-          "respose"
+        "masks": [
+          null,
+          null,
+          false,
+          true,
+          null,
+          null,
+          null,
+          true,
+          false,
+          true,
+          false
         ],
+        "eligible_elisions": [],
+        "unknown": [],
         "rhyme": "AY ER D",
-        "scans": [],
+        "scans": [
+          {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          }
+        ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
-        "selected_scan": null
+        "licensed": true,
+        "licenses": [
+          "FEMININE_ENDING"
+        ],
+        "selected_scan": {
+          "stress": [
+            false,
+            true,
+            false,
+            true,
+            false,
+            true,
+            false,
+            true,
+            false,
+            true,
+            false
+          ],
+          "elision": null
+        }
       },
       {
         "text": "But then begins a journey in my head",
@@ -63492,7 +63547,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 28,

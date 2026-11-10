@@ -148,3 +148,13 @@ hand-scanned validation sample are separate evidence for those boundaries.
 Boundary theorems cover ordinary pentameter, each named license, tetrameter,
 medial inversion, excess substitutions, invalid or stressed elisions, missing
 annotations, and preservation of fixed stresses.
+
+## MD-SOURCE-ALIAS: editorial interpretation is explicit
+
+The pronunciation model may supply a narrowly enumerated lexical alias with a
+named textual witness, without changing the encoded source string. The first
+such source-error annotation is `respose` → `repose`, supported by
+[Folger's sonnet 27, line 2](https://www.folger.edu/explore/shakespeares-works/shakespeares-sonnets/read/27/)
+(accessed 2026-11-10); its phones come from the pinned CMU entry for _repose_.
+The proof therefore remains conditional on that interpretation, not a proof
+that the Gutenberg token is historically attested. See PRONUNCIATION.md.

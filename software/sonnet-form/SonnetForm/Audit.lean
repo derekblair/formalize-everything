@@ -212,11 +212,11 @@ theorem failures_strict_meter_checked : ((fullTable.filter (fun r => !r.componen
   rw [full_table_checked]
   decide
 
-theorem count_licensed_meter_checked : (fullTable.filter (fun r => r.components.licensedMeter)).length = 28 := by
+theorem count_licensed_meter_checked : (fullTable.filter (fun r => r.components.licensedMeter)).length = 29 := by
   rw [full_table_checked]
   decide
 
-theorem failures_licensed_meter_checked : ((fullTable.filter (fun r => !r.components.licensedMeter)).map (fun r => r.components.number)) = [1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 23, 24, 25, 27, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 58, 59, 60, 61, 63, 66, 67, 69, 70, 71, 72, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 103, 104, 105, 106, 107, 108, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 132, 133, 135, 137, 140, 141, 142, 144, 145, 146, 147, 149, 151, 153, 154] := by
+theorem failures_licensed_meter_checked : ((fullTable.filter (fun r => !r.components.licensedMeter)).map (fun r => r.components.number)) = [1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 23, 24, 25, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 58, 59, 60, 61, 63, 66, 67, 69, 70, 71, 72, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 88, 89, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 103, 104, 105, 106, 107, 108, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 132, 133, 135, 137, 140, 141, 142, 144, 145, 146, 147, 149, 151, 153, 154] := by
   rw [full_table_checked]
   decide
 
@@ -224,7 +224,7 @@ theorem count_line_strict_checked : ((fullTable.flatMap (·.lines)).filter (·.s
   rw [full_table_checked]
   decide
 
-theorem count_line_licensed_checked : ((fullTable.flatMap (·.lines)).filter (·.licensed)).length = 1883 := by
+theorem count_line_licensed_checked : ((fullTable.flatMap (·.lines)).filter (·.licensed)).length = 1884 := by
   rw [full_table_checked]
   decide
 
@@ -232,7 +232,7 @@ theorem count_initialTrochaicInversion_checked : ((fullTable.flatMap (·.lines))
   rw [full_table_checked]
   decide
 
-theorem count_feminineEnding_checked : ((fullTable.flatMap (·.lines)).filter (fun l => l.licenses.contains .feminineEnding)).length = 250 := by
+theorem count_feminineEnding_checked : ((fullTable.flatMap (·.lines)).filter (fun l => l.licenses.contains .feminineEnding)).length = 251 := by
   rw [full_table_checked]
   decide
 
