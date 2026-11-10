@@ -271614,7 +271614,7 @@
               "IH0",
               "D"
             ],
-            "derivation": "contextual override (ever_fixed): Syllabic -ed in ever-fixed: Poetry Foundation's Sonnet 116 text explicitly prints ever-fixèd. Author ARPAbet representation uses fix plus unstressed IH0 D. Scoped to adjacent ever + fixed tokens (hyphen and space are not distinguished); no expansion rule for other -ed words and no sonnet/line-number selection.",
+            "derivation": "contextual override (ever_fixed): Syllabic -ed in ever-fixed: Poetry Foundation's Sonnet 116 text explicitly prints ever-fixèd. Author ARPAbet representation uses fix plus unstressed IH0 D. Scoped to determiner + ever + fixed + following-token frames (hyphen and space are not distinguished), approximating an attributive adjective; no expansion rule for other -ed words and no sonnet/line-number selection.",
             "syllables": 2,
             "masks": [
               true,

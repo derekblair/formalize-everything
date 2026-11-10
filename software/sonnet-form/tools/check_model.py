@@ -122,9 +122,12 @@ class AnnotationBoundaryChecks(unittest.TestCase):
         for text, index in [('to record voices', 1), ('songs that record voices', 2),
                             ('saw her record voices', 2), ('record', 0)]:
             self.assertEqual(resolve_in_context(tokenize(text), index), resolve('record'))
-        for text in ['ever-fixed', 'ever fixed', 'EVER-FIXED']:
-            self.assertEqual(resolve_in_context(tokenize(text), 1)[0],
+        for text in ['an ever-fixed mark', 'the ever fixed point', 'AN EVER-FIXED MARK']:
+            self.assertEqual(resolve_in_context(tokenize(text), 2)[0],
                              ['F', 'IH1', 'K', 'S', 'IH0', 'D'])
+        for text, index in [('have you ever fixed this', 3), ('ever fixed', 1),
+                            ('an ever fixed', 2)]:
+            self.assertEqual(resolve_in_context(tokenize(text), index), resolve('fixed'))
         self.assertEqual(resolve_in_context(tokenize('a fixed point'), 1), resolve('fixed'))
         self.assertEqual(resolve_in_context(tokenize('ever fix’d'), 1), resolve('fix’d'))
         with self.assertRaises(IndexError):

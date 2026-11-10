@@ -204,7 +204,10 @@ occurrence. Several are literal alternatives in the frozen
 The marked `wand'ring` and syllabic `ever-fixèd` in
 [Poetry Foundation's edition of 116](https://www.poetryfoundation.org/poems/45106/sonnet-116-let-me-not-to-the-marriage-of-true-minds)
 support those two author phoneme annotations. The `fixed` expansion applies
-only after adjacent `ever`; other participles are unaffected.
+only in determiner + `ever` + `fixed` + following-token frames, approximating
+an attributive adjective. A verbal frame such as `have you ever fixed this`
+retains the default pronunciation. This finite cue cannot certify a noun head;
+other participles are unaffected.
 
 Initial stress of `antique` is supported by Alexander Schmidt,
 *Shakespeare-Lexicon*, vol. I, p. 43, *Antic* entry

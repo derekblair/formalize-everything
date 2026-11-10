@@ -90,8 +90,9 @@ def resolve_in_context(tokens, index):
     This deliberately small heuristic is not a general part-of-speech parser.
     The only prenominal modifier recognized for record is living. Bare record
     and verbal contexts such as to record keep the first CMU pronunciation.
-    The ever + fixed cue operates on adjacent tokens, including ever-fixed;
-    tokenization does not distinguish a hyphen from a space.
+    The ever + fixed cue additionally requires a preceding determiner and a
+    following token, approximating an adjectival frame such as an ever-fixed
+    mark. Tokenization does not distinguish a hyphen from a space.
     """
     if not 0 <= index < len(tokens):
         raise IndexError("pronunciation token index out of range")
@@ -109,7 +110,8 @@ def resolve_in_context(tokens, index):
             cue = "noun_after_determiner"
         elif previous in {"this", "that"} and following in RECORD_NOUN_CONTINUATIONS:
             cue = "noun_after_determiner"
-    elif word == "fixed" and previous == "ever":
+    elif (word == "fixed" and previous == "ever" and index >= 2 and
+          normalized[index - 2] in RECORD_NOUN_DETERMINERS and following is not None):
         cue = "ever_fixed"
     if cue is not None:
         entry = overrides()[word]["context_variants"][cue]

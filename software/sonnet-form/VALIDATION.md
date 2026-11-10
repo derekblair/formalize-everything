@@ -141,4 +141,4 @@ Consulted 2026-10-27 (America/Los_Angeles). The corpus edition is exclusively th
 
 Hand-source SHA-256: `a6b57916618c23d9699c79c3e1fc5d2fed5b5e185ca7a497b1784e85d46fafbb`.
 
-Compared annotation SHA-256: `fdfebb44cb96cfa51d76b77db4042c6b370e1e55efeafff353d98ab6ae61fa6a`.
+Compared annotation SHA-256: `a1ada37e538b2c4bd2ef1e8d4775f71068f6edbe43242a21fd6040acbe8c0269`.

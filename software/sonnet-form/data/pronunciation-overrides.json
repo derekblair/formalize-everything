@@ -2414,7 +2414,7 @@
     }
   },
   "fixed": {
-    "note": "No global override: bare fixed retains the first CMU entry. The adjacent ever + fixed cue selects syllabic -ed independently of metrical fit.",
+    "note": "No global override: unclassified fixed retains the first CMU entry. Syllabic -ed requires a listed determiner before ever + fixed and a following head token, independently of metrical fit.",
     "context_variants": {
       "ever_fixed": {
         "phonemes": [
@@ -2425,7 +2425,7 @@
           "IH0",
           "D"
         ],
-        "note": "Syllabic -ed in ever-fixed: Poetry Foundation's Sonnet 116 text explicitly prints ever-fixèd. Author ARPAbet representation uses fix plus unstressed IH0 D. Scoped to adjacent ever + fixed tokens (hyphen and space are not distinguished); no expansion rule for other -ed words and no sonnet/line-number selection.",
+        "note": "Syllabic -ed in ever-fixed: Poetry Foundation's Sonnet 116 text explicitly prints ever-fixèd. Author ARPAbet representation uses fix plus unstressed IH0 D. Scoped to determiner + ever + fixed + following-token frames (hyphen and space are not distinguished), approximating an attributive adjective; no expansion rule for other -ed words and no sonnet/line-number selection.",
         "sources": [
           "https://www.poetryfoundation.org/poems/45106/sonnet-116-let-me-not-to-the-marriage-of-true-minds"
         ]

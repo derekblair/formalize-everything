@@ -94,7 +94,7 @@ are retained in the JSON entries, including contextual variants.
 | `wires`, every occurrence | one syllable | Exactly pinned CMU `wires(2)`, `W AY1 R Z`. Both occurrences receive the same lexical reading. |
 | `antique`, every occurrence | `AN-tique`, two syllables (`Su`) | Alexander Schmidt, *Shakespeare-Lexicon*, vol. I, p. 43, entry *Antic*, treats the old `antic`/`antique` spellings together and gives initial stress; *Antique* cross-refers there ([publisher scan](https://api.pageplace.de/preview/DT0400.9783112315330_A39774742/preview-9783112315330_A39774742.pdf), fifth unchanged edition, 1962). Only the stress marks of the modern CMU segments are adapted. This is a historically informed stress annotation, **not** a reconstruction of historical vowel quality. |
 | `contents`, every occurrence | `con-TENTS`, two syllables (`uS`) | Phones equal pinned CMU `contents(2)`. The [Audio Shakespeare Pronunciation Dictionary's guide](https://www.audioshakespearepronunciationapp.com/shakespeare-pronunciation-dictionary/) documents final stress for the word in *Cymbeline* II.2.27, *King Lear* II.4.33 and other plays. This supports a Shakespearean prosodic convention beyond the sampled sonnet; it does not establish a unique performance of that sonnet. |
-| `fixed` after adjacent `ever` | `FIX-ed`, two syllables (`Su`) | The same Poetry Foundation text marks `ever-fixèd`. Author ARPAbet is `F IH1 K S IH0 D`. Bare `fixed` retains CMU's one syllable. Because tokenization separates hyphens, this finite cue matches both `ever-fixed` and `ever fixed`; it cannot parse compound syntax and must not be generalized to other participles. |
+| `fixed` in determiner + `ever fixed` + head-token frame | `FIX-ed`, two syllables (`Su`) | The same Poetry Foundation text marks `ever-fixèd`. Author ARPAbet is `F IH1 K S IH0 D`. Unclassified `fixed` retains CMU's one syllable. The preceding determiner and following token approximate an attributive adjective: `an ever-fixed mark` qualifies; `have you ever fixed this` and bare `ever fixed` do not. Hyphen and space are not distinguished. This is a finite cue, not a full syntactic parser, and does not generalize to other participles. |
 | noun `record` in the finite frames below | `REC-ord`, two syllables (`Su`) | [Cambridge's pronunciation entry](https://dictionary.cambridge.org/pronunciation/english/record) distinguishes initial-stressed noun from final-stressed verb. The selected phones are exactly pinned CMU `record(2)`. This is contextual modern lexical disambiguation, not evidence that all historical noun uses had this stress. |
 
 The specialist guide belongs to the pronunciation project of Shane Ann Younts
@@ -124,7 +124,11 @@ record voices` unchanged. `Her` is deliberately excluded because `saw her
 record` can contain a verb. Bare `record`, `to record`, and unclassified frames
 retain the first CMU reading; no general part-of-speech accuracy is claimed.
 Each match reports its named cue and source-backed variant in the derivation.
-The adjacent `ever` + `fixed` rule is the only other contextual choice.
+The only other contextual rule is the `fixed` expansion. It requires the
+previous token `ever`, one of the same listed determiners immediately before
+`ever`, and at least one following token. This excludes the observed verbal
+false positive `have you ever fixed this`, although the rule still does not
+prove that the following token is a noun.
 Context does not cross a verse-line boundary.
 
 Lexical syncope for `every`, `wandering`, and `wires` is part of the selected
