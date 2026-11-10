@@ -6,7 +6,7 @@ Assignment: [formalize-everything #4](https://github.com/derekblair/formalize-ev
 
 **Stage 1 disposition:** [PR #65 independently passed and was merged](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6759663275), reconciling the contents inventory on main. That PASS covers its reviewed head, not this later source/inventory update.
 
-**Stage 2:** the [authorized source was supplied](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6759460063) and verified locally. [EXERCISE_INVENTORY.md](EXERCISE_INVENTORY.md) records 217 numbered exercises with source-page references. Independent review and coordinator disposition remain pending; #4 stays open.
+**Stage 2:** the [authorized source was supplied](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6759460063) and verified locally. [EXERCISE_INVENTORY.md](EXERCISE_INVENTORY.md) records 217 numbered exercises with source-page references. Independent re-review and coordinator disposition of Stage 2 remain pending in [PR #66](https://github.com/derekblair/formalize-everything/pull/66); #4 is closed (verified 2026-11-10, closed at 05:16:21 UTC), with its issue-state disposition reserved to the coordinator.
 
 **Queue disposition:** [#5 was retired as superseded by #36](https://github.com/derekblair/formalize-everything/issues/5#issuecomment-6477385179), not completed by Cleveland. Do not restart it or infer a new RCA assignment.
 
