@@ -1,29 +1,29 @@
-# Atiyah–Macdonald: Stage 1 scoping for acceptance
+# Atiyah–Macdonald: scoping report
 
-**Status: DRAFT — updated Stage 1 inventory, not accepted.**
+**Status: Stage 1 reconciliation merged; Stage 2 inventory is a new draft for independent review.**
 
 Assignment: [formalize-everything #4](https://github.com/derekblair/formalize-everything/issues/4). Author: Cleveland (Bunny). Mathlib evidence assessment: 2026-10-28. Inventory reconciliation: 2026-11-10.
 
-**Stage 1 residual blocker:** the coordinator [reported the inventory resolved on 2026-11-08](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6724755965); integrating that evidence does not grant Stage 1 acceptance.
+**Stage 1 disposition:** [PR #65 independently passed and was merged](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6759663275), reconciling the contents inventory on main. That PASS covers its reviewed head, not this later source/inventory update.
 
-**Stage 2 pending:** exercise-by-exercise inventory requires an authorized book copy supplied by the coordinator/Derek.
+**Stage 2:** the [authorized source was supplied](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6759460063) and verified locally. [EXERCISE_INVENTORY.md](EXERCISE_INVENTORY.md) records 217 numbered exercises with source-page references. Independent review and coordinator disposition remain pending; #4 stays open.
 
 **Queue disposition:** [#5 was retired as superseded by #36](https://github.com/derekblair/formalize-everything/issues/5#issuecomment-6477385179), not completed by Cleveland. Do not restart it or infer a new RCA assignment.
 
-This report implements the bounded evidence work allowed by the [Stage 1/Stage 2 ruling](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6457673203) and preserves the [section-inventory checkpoint](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6457827716). It is a documentation deliverable only. Independent review and coordinator disposition are still required; a draft PR is not Stage 1 acceptance.
+This report implements the bounded evidence work allowed by the [Stage 1/Stage 2 ruling](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6457673203) and preserves the [section-inventory checkpoint](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6457827716). It is a documentation deliverable only. Independent review and coordinator disposition are required for this new revision; source availability and a draft inventory do not authorize implementation.
 
 ## Completion matrix
 
 | Requirement | Status | Evidence / exact limit |
 |---|---|---|
-| Bibliographic identification | Supported, with format/printing limits | WorldCat, publisher search-indexed metadata, and CUTN MARC below support the 1969 work. No original printing or authorized source copy was inspected. |
-| Introduction and eleven chapters in book order | Supported | CUTN MARC field 505; ordered list below. |
-| Complete within-chapter section inventory | Coordinator-verified contents inventory; acceptance pending | [2026-11-08 coordinator verification](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6724755965) records 36 unnumbered topics and no numbered sections. Its publisher/library provenance caveat is retained below; the author did not independently inspect the source pages. |
+| Bibliographic identification | Authorized supplied copy inspected; printing/errata limits remain | Source S1 title/copyright pages, PDF 2-3, match the assigned title, authors, publisher, and 1969 copyright. Exact hashes and limits are in [the source record](EXERCISE_INVENTORY.md#source-identity-and-verification). |
+| Introduction and eleven chapters in book order | Supported | CUTN MARC field 505 and the supplied source S1 contents, printed v-vi / PDF 4-5. |
+| Complete within-chapter contents inventory | Stage 1 reconciliation reviewed and merged; direct source reconciliation added here | The 36 unnumbered topics agree with S1 contents, printed v-vi / PDF 4-5. Chapter 1 page numbers are now added from S1. The new source reconciliation still needs review. |
 | Per-chapter Mathlib assessment on bakkie | Completed as a bounded source-level audit | Eleven rows below, pinned commit, exact declarations, and hypotheses. Not exhaustive theorem coverage. |
 | Scaffold requirements and candidate dependency pin | Documented, not implemented or tested | Lean 4.34.1; candidate Mathlib commit below. No book Lake project was created. |
 | Milestones and effort/risk | Proposed, judgment-based | Representative pilot estimates only; no whole-book completion estimate. |
-| Exercise inventory | **Stage 2 pending — source-gated** | Requires coordinator/Derek-supplied authorized text; no alternate copy used. |
-| Compilation, axiom audit, formalization, independent acceptance | No execution; no acceptance for this update | The earlier partial report passed independent review and merged as PR #35. This revision has not been independently reviewed or accepted. No Lean code, builds, or tests were run. |
+| Exercise inventory | **217 numbered units inventoried; draft review pending** | [Exercise-by-exercise inventory](EXERCISE_INVENTORY.md#exercise-by-exercise-inventory), in book order, with printed/PDF start pages and short editorial labels. Subparts remain within their parent exercise. |
+| Compilation, axiom audit, formalization, independent acceptance | No Lean execution; no acceptance for this update | PRs #35 and #65 independently passed and merged within their respective scopes. Their PASSes do not cover this new Stage 2/source revision. No Lean code, builds, or proof tests were run. |
 
 ## Bibliographic evidence and its limits
 
@@ -33,19 +33,19 @@ The coordinator supplied the following verified bibliographic findings for integ
 - The search-indexed [Routledge publisher listing](https://www.routledge.com/Introduction-To-Commutative-Algebra/Atiyah-MacDonald/p/book/9780429493638) says first edition / copyright 1969. Direct retrieval returned **403**. This is a current electronic-format listing, not inspection of an original 1969 printing.
 - [CUTN library MARC record 39898](https://library.cutn.ac.in/cgi-bin/koha/opac-MARCdetail.pl?biblionumber=39898), field **505**, supplies the ordered chapter contents below. Field **260** records the 1969 imprint, but field **020** contains the later-format ISBN **9781138329607**. These fields must not be conflated into evidence that an original printing or a particular physical copy was inspected.
 
-The bibliographic target is therefore the 1969 work, identified as first edition by the publisher’s indexed metadata. The exact authorized source file, printing/reprint, pagination, and errata baseline remain unverified. No ISBN has been promoted to an exact-copy identifier, and no edition substitution is authorized by this report.
+The bibliographic target is the 1969 work, identified as first edition by the publisher's indexed metadata. The [November 10 source handoff](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6759460063) supplied the private copy now designated S1. Its title and copyright pages were visually inspected; its 137 pages, 2,883,599 bytes, MD5 handoff match, SHA-256, and pagination are recorded in [EXERCISE_INVENTORY.md](EXERCISE_INVENTORY.md#source-identity-and-verification). The title/copyright pages do not identify a separate printing number or establish an errata baseline. No ISBN is promoted to an exact-copy identifier, and no other edition was substituted.
 
 ### Published chapter and within-chapter inventory
 
-The chapter order was initially verified from [CUTN MARC field 505](https://library.cutn.ac.in/cgi-bin/koha/opac-MARCdetail.pl?biblionumber=39898). The [coordinator's 2026-11-08 verification](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6724755965) supplies the within-chapter contents below and reports that the book has **no formal numbered section divisions**. These are 36 unnumbered topic headings, not numbered sections; each chapter also has an Exercises block.
+The chapter order was initially verified from [CUTN MARC field 505](https://library.cutn.ac.in/cgi-bin/koha/opac-MARCdetail.pl?biblionumber=39898). The [coordinator's November 8 verification](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6724755965), integrated by merged PR #65, records 36 unnumbered topic headings and no formal numbered sections. Each chapter has one Exercises block.
 
-This author has reconciled the ticket evidence, not independently inspected its cited source pages. The coordinator reports agreement between the book's contents pages in a public scan, ProofWiki's transcription, Google Books chapter-level pages, and course outlines. The scan's authorization was not established in that record. No scan or book URL was retrieved for this revision.
+The author has now visually inspected S1's own contents pages (printed v-vi / PDF 4-5). They corroborate the 36 topic headings and their order. The source-provenance caveat in the earlier report described the evidence available before the authorized copy was supplied; this revision uses that supplied copy directly. It does not infer a separate printing number or errata baseline.
 
-**Provenance limit:** an authorized publisher/library contents page is still not in hand. The coordinator explicitly relies on convergence of the listed sources and says a later publisher-issued contents page would supersede this finding if it disagreed. This update preserves that caveat for independent review rather than silently promoting the evidence to the original single-source standard. It does not clear Stage 2 or verify the book text, printing, errata, or exercise statements. Page references below are the coordinator's reported contents-page references, not an independently verified authorized-copy baseline.
+**Source correction:** contrary to the November 8 comment's description, S1's contents page prints Chapter 1's start page and topic page numbers. They are included below. The topic count and order do not change. This new source reconciliation is distinct from the head reviewed for PR #65. All page references below now refer to S1.
 
 **Complete within-chapter inventory (contents-page topic lines, in book order):**
 - Introduction (vii) — unnumbered prose, no topics. Notation and Terminology (ix).
-- Ch. 1 Rings and Ideals — Rings and ring homomorphisms; Ideals. Quotient rings; Zero-divisors. Nilpotent elements. Units; Prime ideals and maximal ideals; Nilradical and Jacobson radical; Operations on ideals; Extension and contraction; Exercises. (7 topics)
+- Ch. 1 Rings and Ideals (1) — Rings and ring homomorphisms (1); Ideals. Quotient rings (2); Zero-divisors. Nilpotent elements. Units (2); Prime ideals and maximal ideals (3); Nilradical and Jacobson radical (5); Operations on ideals (6); Extension and contraction (9); Exercises (10). (7 topics)
 - Ch. 2 Modules (17) — Modules and module homomorphisms (17); Submodules and quotient modules (18); Operations on submodules (19); Direct sum and product (20); Finitely generated modules (21); Exact sequences (22); Tensor product of modules (24); Restriction and extension of scalars (27); Exactness properties of the tensor product (28); Algebras (29); Tensor product of algebras (30); Exercises (31). (11 topics)
 - Ch. 3 Rings and Modules of Fractions (36) — Local properties (40); Extended and contracted ideals in rings of fractions (41); Exercises (43). (2 topics)
 - Ch. 4 Primary Decomposition (50) — Exercises (55). (0 topics — no within-chapter divisions)
@@ -59,6 +59,8 @@ This author has reconciled the ticket evidence, not independently inspected its 
 - Index (127).
 
 The topic counts by chapter are 7, 11, 2, 0, 4, 0, 1, 0, 3, 4, and 4, totaling 36. Chapters 4, 6, and 8 have no topic lines in this contents inventory, only their Exercises entry. This does not imply that the chapters have no definitions, propositions, or other mathematical nodes.
+
+The following Mathlib audit and scaffold-design sections retain the October 28 assessment unchanged. References in that historical audit to unavailable book text describe its original evidence limits; the source handoff does not establish new theorem-by-theorem or exercise coverage.
 
 ## Local Mathlib evidence baseline
 
@@ -164,41 +166,36 @@ The [ticket](https://github.com/derekblair/formalize-everything/issues/4) specif
 
 | Milestone | Proposed scope | Evidence-based risk / gate |
 |---|---|---|
-| S1 | Integrate the coordinator's inventory evidence; independent Stage 1 review and acceptance | Inventory integration is included in this draft. Review must assess the stated provenance caveat; no acceptance is claimed. |
+| S1 | Reconcile the contents inventory and source evidence | PR #65's reconciliation independently passed and merged. The later direct-source check and Chapter 1 page additions are part of this new review unit. |
 | M1 | Scaffold plus Chapter 1 | Direct quotient/radical/CRT APIs support a small pilot. Exact book statement ledger and candidate-pin compilation still need validation; no Lean scaffold exists yet. |
 | M2 | Chapters 2–4 | Existing module, localization, and primary-decomposition results reduce new-foundation risk; quotient/scalar-tower/associated-prime translations need explicit statement checks. |
 | M3 | Chapters 5–9 | Strong direct support; normal-domain, finite-type versus finite-module, order-dual, and DVR/Dedekind convention differences are the major translation risks. |
 | M4 | Chapter 10 | Artin–Rees and completion exactness are available under precise hypotheses; completed-ring Noetherianity/dimension links need further investigation. |
 | M5 | Chapter 11 | Investigate graded-module/Hilbert–Samuel links before committing to implementation scope. Existing dimension APIs do not close that gap. |
-| S2 | Exercise-by-exercise inventory | Separate source-gated stage; authorized book must be supplied. No exercise count, statements, or completion estimate is asserted. |
+| S2 | Exercise-by-exercise inventory | Source supplied and verified; 217 numbered units recorded in [EXERCISE_INVENTORY.md](EXERCISE_INVENTORY.md). Independent review remains pending. No proof or whole-book implementation estimate is asserted. |
 
 **Estimates are planning judgments, not measurements or whole-chapter promises.** For representative API/wrapper pilots, Chapter 2 looks like **½–1 focused day**, Chapter 3 **1–2 days**, Chapter 4 **1–3 days**, and Chapter 10 **1–3 days**. Those ranges reflect the specific quotient, localization, lower-set, and finite-module constraints in the linked declarations. Chapter 11 needs a **2–5 day investigation pilot** to settle representations and search for equivalent graded-module/Hilbert–Samuel developments before estimating implementation. Chapters 1 and 5–9 currently support qualitative low-to-medium direct-wrapper risk; a numeric whole-chapter estimate would require an audited statement count.
 
 These estimates exclude source acquisition, full book/section reconciliation, exercise inventory, reviewer time, and any newly discovered mathematics. No sum is offered as a whole-book estimate.
 
-**Provisional decision:** reuse the existing foundational algebra rather than duplicate it. Whether an entire book-ordered formalization adds only an index, or also substantive wrappers/results, is not established by sampled topic support. In particular, the Chapter 11 TODO and the unavailable source-level statement inventory prevent an “all covered” or “index only” verdict.
+**Provisional decision:** reuse the existing foundational algebra rather than duplicate it. Whether an entire book-ordered formalization adds only an index, or also substantive wrappers/results, is not established by sampled topic support. In particular, the Chapter 11 TODO and the unaudited full statement/hypothesis ledger prevent an “all covered” or “index only” verdict.
 
 ## What this does NOT show
 
-- It does not accept Stage 1. The coordinator's inventory verification is integrated with attribution, but this revision has no independent review or acceptance decision.
-- It does not inspect an original printing, establish a particular source copy/ISBN/pagination/errata baseline, or authorize an edition substitution.
-- It does not reproduce, verify, count, or formalize the exercises. **Stage 2 pending** remains a source gate.
-- It does not match every definition, proposition, theorem, corollary, or example to the unavailable book text. Chapter-topic support is not exact node equivalence or a coverage percentage.
-- It does not prove library-wide absence from search misses, or infer textbook coverage from similar names.
-- It does not establish that the book is wholly formalized elsewhere, that no such project exists, or that a new landscape check has been completed.
-- It does not provide a Lean scaffold, compiled wrappers, end-to-end build, executable/version test, or axiom audit. PR #35's independent PASS covered the earlier partial deliverable only, not this revision.
-- It does not mark #4 accepted, reopen retired #5, or assign new RCA work. Only the coordinator can disposition the draft under the existing review gates.
+- It does not accept this new Stage 2/source revision. PR #65's independent PASS applies only to its reviewed head.
+- It does not establish a separate printing number, an errata baseline, or equivalence with later editions. Source S1 and its page references are identified without an edition substitution.
+- It does not reproduce exercise statements, hints, solutions, or extended book text. The 217-row inventory gives IDs, starting pages, and editorial topic labels only.
+- It does not match every definition, proposition, theorem, corollary, example, or exercise part to a Lean declaration. Chapter-topic support is not exact node equivalence or a coverage percentage.
+- It does not prove library-wide absence from search misses, infer textbook coverage from similar names, or independently reproduce the coordinator's November 6 novelty search.
+- It does not provide a Lean scaffold, compiled wrappers, end-to-end build, executable/version test, or axiom audit.
+- It does not close #4, reopen retired #5, assign new RCA work, or authorize formalization. The author must not review or merge this PR.
 
 ## Verification and handoff record
 
-The local audit read applicable machine/project/capability instructions, target-repository README/layout requirements, Git revision/manifests/toolchain text, declaration bodies and surrounding hypotheses, and the named TODOs. It reconciled current issue/PR state; no overlapping #4 scoping PR was found before draft preparation. Existing GitHub issue state, not BOARD/CLAIM/STATUS files, remained the tasking source.
+The earlier Mathlib audit read the applicable instructions, pinned source declarations and hypotheses, and named TODOs. That assessment remains unchanged here. Existing GitHub issue state remains the tasking source; the Cleveland claim is retained.
 
-No book URL was retried, no alternate copy was used, and no builds, tests, installs, toolchain changes, Lean invocation, or credentials changes were performed. The only intended repository change is this documentation file. Publication of a draft, if linked on #4, records a reviewable partial deliverable only; it is not proof acceptance or independent review. No self-review or self-merge is permitted.
+The [coordinator's PR #65 disposition](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6759663275) records independent PASS at head `e709a1eeedd92438505703a1d414c3fbcc384910` and merge `f6f0ae9f554119814d8f3c604c9162c0a7d4efa7`. This update follows that merge rather than altering a head under review. It changes only the scoping documentation and the new exercise inventory.
 
-## Submission reconciliation — 2026-11-10
+The supplied source was read locally, with metadata/hash checks, visual inspection of title/copyright/contents and chapter-ending pages, and explicit resolution of OCR numbering errors. The complete inventory validation record is in [EXERCISE_INVENTORY.md](EXERCISE_INVENTORY.md#validation-and-remaining-work).
 
-GitHub issue #4 remains open. The latest inventory comment was read in full, and bounded searches found no open Atiyah-labelled PR or matching active branch. The existing Cleveland claim is retained; no new book job was created. The earlier partial report on main was the source for this revision (Git blob 8d7cc9f60a2b1dd2b04796c9d191bbb4dbd422b7). This revision changes documentation only and leaves the pinned Mathlib audit text unchanged.
-
-The [coordinator's PR #35 disposition](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6459025156) confirms review/merge of the partial report, not full Stage 1 acceptance. The [#5 retirement](https://github.com/derekblair/formalize-everything/issues/5#issuecomment-6477385179) supersedes historical text saying it merely waits behind #4. The [November 6 novelty report](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6689199512) is coordinator-reported research context; this revision does not independently verify its absence claim or expand it.
-
-Review request: the coordinator should assign independent review of this documentation-only revision, including the stated contents-source provenance limit. Stage 1 remains unaccepted; no self-review, self-merge, or issue closure is authorized. The [source-copy request](https://github.com/derekblair/formalize-everything/issues/4#issuecomment-6759355425) is recorded separately. Stage 2 still needs a coordinator/Derek-supplied authorized copy of the 1969 work with edition/copyright pages and all exercises; no edition substitution or unchanged source retry is authorized by this draft.
+No book URL was retried, alternate copy downloaded, PDF uploaded, Lean code created, build or proof test run, dependency/toolchain changed, or credentials accessed. Source availability and author-side documentation checks do not grant independent acceptance. The coordinator should assign review of this new revision and record the disposition on #4; merge remains separately controlled.
