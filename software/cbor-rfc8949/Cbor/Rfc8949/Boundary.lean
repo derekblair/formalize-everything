@@ -22,7 +22,17 @@ package's own parser and equivalence:
 
 Both wires violate `Item.IndefBounded`; both are left indefinite by
 `deflateIndefinite`. The lists are symbolic: nothing of length 2^63 or 2^64
-is ever evaluated. The grammar-fragment proofs from those comments are kept
+is ever evaluated. Concretely, no proof in this file may use `decide`,
+`native_decide`, a bare `rfl` (definitional equality), or `simp` with a
+definition argument on any goal mentioning `arrayWire`, `arrayItem`,
+`arrayRaw`, `stringWire`, `stringItem`, `stringRaw`, or `chunkPayload`:
+kernel evaluation and definitional unfolding traverse the 2^63/2^64-element
+lists element by element and exhaust memory (Nov 2026: three lanes
+OOM-killed, `lean` at ~53 GB anon RSS on a 61 GiB machine, before this
+file ever elaborated). Lengths are always computed symbolically via
+`List.length_replicate`, `List.length_flatten`, and `List.map_replicate`,
+and equalities between giant lists are proved by rewriting plus `congr`,
+never by `rfl`. The grammar-fragment proofs from those comments are kept
 verbatim (hash-checked) in `Cbor.Rfc8949.Boundary.ArrayCountFragment` and
 `Cbor.Rfc8949.Boundary.ChunkCountFragment`.
 -/
@@ -83,23 +93,32 @@ theorem arrayRaw_WF : arrayRaw.WF := by
 
 theorem arrayRaw_encode : arrayRaw.encode = arrayWire := by
   simp only [arrayRaw, arrayWire, RawItem.encode, RawItem.encodeList_eq, List.map_replicate]
-  rw [show RawItem.encode (.uint .inline 0) = [0x00] from rfl, flatten_replicate_singleton]
+  rw [show encodeHead 0 Width.inline 0 = [0x00] from rfl, flatten_replicate_singleton]
 
 /-- The wire is well-formed: an indefinite array of 2^64 zeros (§3.2.2). -/
 theorem parseWellFormed_arrayWire : parseWellFormed arrayWire = some arrayItem :=
   parseWellFormed_eq_some_iff.2 ⟨arrayRaw, arrayRaw_WF, arrayRaw_encode, by
-    simp [arrayRaw, arrayItem, RawItem.toItem, RawItem.toItemList_eq, List.map_replicate]; rfl⟩
+    show Item.arrayIndef (RawItem.toItemList (List.replicate (2 ^ 64) (.uint .inline 0)))
+        = Item.arrayIndef (List.replicate (2 ^ 64) (.uint 0))
+    rw [RawItem.toItemList_eq, List.map_replicate]
+    congr⟩
 
 /-- It violates the size hypothesis (2^64 elements). -/
 theorem arrayItem_not_indefBounded : ¬ arrayItem.IndefBounded := by
-  simp [arrayItem, IndefBounded]
+  intro h
+  have hlen : (List.replicate (2 ^ 64) (Item.uint 0)).length < 2 ^ 64 := h.1
+  rw [List.length_replicate] at hlen
+  exact Nat.lt_irrefl _ hlen
 
 /-- **No definite encoding exists**: no well-formed wire parses to a definite
 item equivalent to the array. -/
 theorem no_definite_encoding_arrayItem :
     ¬ ∃ bs y, parseWellFormed bs = some y ∧ y.Definite ∧ Equiv arrayItem y := by
   rintro ⟨bs, y, hp, hd, heq⟩
-  exact no_definite_equiv_of_array (by simp) (parseWellFormed_WF hp) hd heq
+  have hlen : 2 ^ 64 ≤ (List.replicate (2 ^ 64) (Item.uint 0)).length := by
+    rw [List.length_replicate]
+    exact Nat.le_refl _
+  exact no_definite_equiv_of_array hlen (parseWellFormed_WF hp) hd heq
 
 /-- Hence no transformation can be both syntax-preserving (∃ form) and
 definite-producing on this input. -/
@@ -125,11 +144,15 @@ def stringItem : Item := .bytesIndef [chunkPayload, chunkPayload]
 
 def stringRaw : RawItem := .bytesIndef [(.w8, chunkPayload), (.w8, chunkPayload)]
 
-theorem chunkPayload_length : chunkPayload.length = 2 ^ 63 := by simp [chunkPayload]
+theorem chunkPayload_length : chunkPayload.length = 2 ^ 63 := by
+  rw [chunkPayload, List.length_replicate]
 
 theorem stringRaw_WF : stringRaw.WF := by
   show ∀ c ∈ [((Width.w8, chunkPayload)), (Width.w8, chunkPayload)], c.1.fits c.2.length = true
-  simp [chunkPayload_length, Width.fits]
+  intro c hc
+  simp only [List.mem_cons, List.not_mem_nil, or_false] at hc
+  rcases hc with rfl | rfl <;> show Width.w8.fits chunkPayload.length = true <;>
+    rw [chunkPayload_length] <;> decide
 
 theorem stringRaw_encode : stringRaw.encode = stringWire := by
   have hhead : encodeHead 2 .w8 (2 ^ 63) = [0x5b, 0x80, 0, 0, 0, 0, 0, 0, 0] := by decide
@@ -147,7 +170,7 @@ theorem stringItem_chunk_count : stringItem = .bytesIndef [chunkPayload, chunkPa
 
 /-- Its concatenated payload has exactly 2^64 bytes. -/
 theorem stringItem_payload_length : [chunkPayload, chunkPayload].flatten.length = 2 ^ 64 := by
-  simp [chunkPayload_length]; decide
+  simp [chunkPayload_length]
 
 /-- It violates the amended size hypothesis (total chunk bytes 2^64). -/
 theorem stringItem_not_indefBounded : ¬ stringItem.IndefBounded := by
@@ -159,8 +182,10 @@ theorem stringItem_not_indefBounded : ¬ stringItem.IndefBounded := by
 theorem no_definite_encoding_stringItem :
     ¬ ∃ bs y, parseWellFormed bs = some y ∧ y.Definite ∧ Equiv stringItem y := by
   rintro ⟨bs, y, hp, hd, heq⟩
-  exact no_definite_equiv_of_bytes (le_of_eq stringItem_payload_length.symm)
-    (parseWellFormed_WF hp) hd heq
+  have hlen : 2 ^ 64 ≤ [chunkPayload, chunkPayload].flatten.length := by
+    rw [stringItem_payload_length]
+    exact Nat.le_refl _
+  exact no_definite_equiv_of_bytes hlen (parseWellFormed_WF hp) hd heq
 
 /-- A chunk-count-only hypothesis would not suffice for definite production. -/
 theorem chunk_count_bound_insufficient :
