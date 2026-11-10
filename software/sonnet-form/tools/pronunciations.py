@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Deterministic, context-free pronunciation model, not historical reconstruction.
+"""Deterministic lexical pronunciation model, not historical reconstruction.
 
 resolve(word) returns (ARPAbet phonemes, derivation) or None.  Dictionary
-alternatives are resolved by their order in the frozen CMU dictionary, never
-by their fit to meter or rhyme.  All spelling transformations affect lookup
-tokens only: the Gutenberg text is never changed.
+alternatives use documented lexical overrides or frozen CMU order, never
+metrical or rhyme fit. resolve_in_context(tokens, index) additionally applies
+the finite local lexical cues documented in PRONUNCIATION.md. Neither API
+receives sonnet/line numbers, target stress, syllable counts, or rhyme partners.
+All spelling transformations affect lookup tokens only: text is never changed.
 """
 
 from functools import lru_cache
@@ -13,6 +15,13 @@ from pathlib import Path
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
+RECORD_NOUN_DETERMINERS = frozenset({
+    "a", "an", "the", "my", "thy", "thine", "your", "our", "his", "its", "their",
+})
+RECORD_NOUN_MODIFIERS = frozenset({"living"})
+RECORD_NOUN_CONTINUATIONS = frozenset({
+    "of", "is", "was", "can", "could", "shall", "should", "may", "might", "must", "will", "would",
+})
 
 
 def tokenize(text):
@@ -75,12 +84,45 @@ def resolve(word):
     return list(phones), prefix + derivation
 
 
+def resolve_in_context(tokens, index):
+    """Apply named local cues, falling back to resolve for unclassified uses.
+
+    This deliberately small heuristic is not a general part-of-speech parser.
+    The only prenominal modifier recognized for record is living. Bare record
+    and verbal contexts such as to record keep the first CMU pronunciation.
+    The ever + fixed cue operates on adjacent tokens, including ever-fixed;
+    tokenization does not distinguish a hyphen from a space.
+    """
+    if not 0 <= index < len(tokens):
+        raise IndexError("pronunciation token index out of range")
+    normalized = [token.lower().replace("’", "'").replace("‘", "'").strip("'")
+                  for token in tokens]
+    word = normalized[index]
+    previous = normalized[index - 1] if index else None
+    following = normalized[index + 1] if index + 1 < len(tokens) else None
+    cue = None
+    if word == "record":
+        if previous in RECORD_NOUN_DETERMINERS:
+            cue = "noun_after_determiner"
+        elif (previous in RECORD_NOUN_MODIFIERS and index >= 2 and
+              normalized[index - 2] in RECORD_NOUN_DETERMINERS):
+            cue = "noun_after_determiner"
+        elif previous in {"this", "that"} and following in RECORD_NOUN_CONTINUATIONS:
+            cue = "noun_after_determiner"
+    elif word == "fixed" and previous == "ever":
+        cue = "ever_fixed"
+    if cue is not None:
+        entry = overrides()[word]["context_variants"][cue]
+        return list(entry["phonemes"]), "contextual override (" + cue + "): " + entry["note"]
+    return resolve(tokens[index])
+
+
 @lru_cache(maxsize=None)
 def _resolve(word, depth):
     if depth > 5 or not word:
         return None
     explicit = overrides().get(word)
-    if explicit:
+    if explicit and "phonemes" in explicit:
         return explicit["phonemes"], "explicit override: " + explicit["note"]
     if word in dictionary():
         return dictionary()[word], "CMU first pronunciation: " + word

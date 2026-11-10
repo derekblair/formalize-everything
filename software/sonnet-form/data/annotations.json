@@ -9494,14 +9494,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -9552,7 +9551,6 @@
           null,
           true,
           false,
-          false,
           null,
           null,
           null
@@ -9570,20 +9568,16 @@
               false,
               true,
               false,
-              false,
-              false,
               true,
-              false
+              false,
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
+        "strict": true,
         "licensed": true,
-        "licenses": [
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION"
-        ],
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
@@ -9593,10 +9587,9 @@
             false,
             true,
             false,
-            false,
-            false,
             true,
-            false
+            false,
+            true
           ],
           "elision": null
         }
@@ -10495,14 +10488,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -10530,7 +10522,6 @@
           false,
           true,
           false,
-          false,
           null
         ],
         "eligible_elisions": [],
@@ -10548,8 +10539,7 @@
               false,
               true,
               false,
-              false,
-              false
+              true
             ],
             "elision": null
           }
@@ -10557,9 +10547,7 @@
         "strict": false,
         "licensed": true,
         "licenses": [
-          "INITIAL_TROCHAIC_INVERSION",
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION"
+          "INITIAL_TROCHAIC_INVERSION"
         ],
         "selected_scan": {
           "stress": [
@@ -10572,8 +10560,7 @@
             false,
             true,
             false,
-            false,
-            false
+            true
           ],
           "elision": null
         }
@@ -19540,14 +19527,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -19626,7 +19612,6 @@
           null,
           true,
           false,
-          false,
           true,
           false,
           true,
@@ -19644,34 +19629,32 @@
               false,
               true,
               false,
-              false,
               true,
               false,
               true,
               false,
-              false,
               true,
-              false
+              false,
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
-        "licensed": false,
+        "strict": true,
+        "licensed": true,
         "licenses": [],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
-            false,
             true,
             false,
             true,
             false,
-            false,
             true,
-            false
+            false,
+            true
           ],
           "elision": null
         }
@@ -39352,17 +39335,17 @@
           {
             "token": "antique",
             "phonemes": [
-              "AE0",
+              "AE1",
               "N",
               "T",
-              "IY1",
+              "IY0",
               "K"
             ],
-            "derivation": "CMU first pronunciation: antique",
+            "derivation": "explicit override: Initial lexical stress follows Alexander Schmidt, Shakespeare-Lexicon, vol. I, p. 43, entry Antic (Antique cross-refers there): early editions use antic/antique spellings with first-syllable accent. Only stress is adapted; the pinned modern antique vowel segments are retained as a modeling approximation, not a full historical phonetic reconstruction. Applies to every occurrence.",
             "syllables": 2,
             "masks": [
-              false,
-              true
+              true,
+              false
             ]
           },
           {
@@ -39386,8 +39369,8 @@
           false,
           null,
           null,
-          false,
           true,
+          false,
           null
         ],
         "eligible_elisions": [],
@@ -39402,8 +39385,8 @@
               false,
               false,
               true,
-              false,
               true,
+              false,
               false
             ],
             "elision": null
@@ -39420,8 +39403,8 @@
             false,
             false,
             true,
-            false,
             true,
+            false,
             false
           ],
           "elision": null
@@ -40040,14 +40023,15 @@
               "EH1",
               "M",
               "P",
-              "R",
+              "ER0",
               "AH0",
               "T"
             ],
-            "derivation": "CMU first pronunciation: temperate",
-            "syllables": 2,
+            "derivation": "explicit override: Selected full three-syllable lexical variant, exactly the pinned CMU temperate(2); applies to every occurrence. Attested modern availability, not proof of an exclusively historical pronunciation or a choice by meter/rhyme.",
+            "syllables": 3,
             "masks": [
               true,
+              false,
               false
             ]
           }
@@ -40061,11 +40045,12 @@
           null,
           null,
           true,
+          false,
           false
         ],
         "eligible_elisions": [],
         "unknown": [],
-        "rhyme": "EH M P R AH T",
+        "rhyme": "EH M P ER AH T",
         "scans": [
           {
             "stress": [
@@ -40077,14 +40062,17 @@
               true,
               false,
               true,
+              false,
               false
             ],
             "elision": null
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "PYRRHIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -40095,6 +40083,7 @@
             true,
             false,
             true,
+            false,
             false
           ],
           "elision": null
@@ -40807,14 +40796,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -40898,7 +40886,6 @@
           null,
           true,
           false,
-          false,
           null,
           null,
           null,
@@ -40916,10 +40903,9 @@
               false,
               true,
               false,
-              false,
-              false,
               true,
               false,
+              true,
               true,
               true,
               false,
@@ -40929,17 +40915,18 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "SPONDAIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
-            false,
-            false,
             true,
             false,
+            true,
             true,
             true,
             false,
@@ -42130,7 +42117,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 19,
@@ -43798,17 +43785,17 @@
           {
             "token": "antique",
             "phonemes": [
-              "AE0",
+              "AE1",
               "N",
               "T",
-              "IY1",
+              "IY0",
               "K"
             ],
-            "derivation": "CMU first pronunciation: antique",
+            "derivation": "explicit override: Initial lexical stress follows Alexander Schmidt, Shakespeare-Lexicon, vol. I, p. 43, entry Antic (Antique cross-refers there): early editions use antic/antique spellings with first-syllable accent. Only stress is adapted; the pinned modern antique vowel segments are retained as a modeling approximation, not a full historical phonetic reconstruction. Applies to every occurrence.",
             "syllables": 2,
             "masks": [
-              false,
-              true
+              true,
+              false
             ]
           },
           {
@@ -43833,8 +43820,8 @@
           null,
           null,
           null,
-          false,
           true,
+          false,
           null
         ],
         "eligible_elisions": [],
@@ -43850,19 +43837,16 @@
               false,
               true,
               false,
-              false,
               true,
+              false,
               true
             ],
             "elision": null
           }
         ],
-        "strict": false,
+        "strict": true,
         "licensed": true,
-        "licenses": [
-          "PYRRHIC_SUBSTITUTION",
-          "SPONDAIC_SUBSTITUTION"
-        ],
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
@@ -43872,8 +43856,8 @@
             false,
             true,
             false,
-            false,
             true,
+            false,
             true
           ],
           "elision": null
@@ -47526,14 +47510,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -47623,7 +47606,6 @@
           null,
           true,
           false,
-          false,
           null,
           null,
           null,
@@ -47641,32 +47623,30 @@
               false,
               true,
               false,
-              false,
-              false,
               true,
               false,
               true,
               false,
+              true,
               false,
               true
             ],
             "elision": null
           }
         ],
-        "strict": false,
-        "licensed": false,
+        "strict": true,
+        "licensed": true,
         "licenses": [],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
-            false,
-            false,
             true,
             false,
             true,
             false,
+            true,
             false,
             true
           ],
@@ -49435,7 +49415,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 22,
@@ -74004,14 +73984,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -74039,7 +74018,6 @@
           null,
           true,
           false,
-          false,
           null
         ],
         "eligible_elisions": [],
@@ -74057,18 +74035,14 @@
               false,
               true,
               false,
-              false,
-              false
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
+        "strict": true,
         "licensed": true,
-        "licenses": [
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION"
-        ],
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
@@ -74080,8 +74054,7 @@
             false,
             true,
             false,
-            false,
-            false
+            true
           ],
           "elision": null
         }
@@ -87785,14 +87758,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -87860,7 +87832,6 @@
           null,
           true,
           false,
-          false,
           true,
           false,
           true,
@@ -87878,32 +87849,30 @@
               false,
               true,
               false,
-              false,
               true,
               false,
               true,
               false,
-              false,
+              true,
               false,
               true
             ],
             "elision": null
           }
         ],
-        "strict": false,
-        "licensed": false,
+        "strict": true,
+        "licensed": true,
         "licenses": [],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
-            false,
             true,
             false,
             true,
             false,
-            false,
+            true,
             false,
             true
           ],
@@ -112239,14 +112208,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -112288,7 +112256,6 @@
           null,
           true,
           false,
-          false,
           true,
           false,
           null
@@ -112306,16 +112273,15 @@
               false,
               true,
               false,
-              false,
               true,
               false,
-              false
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
-        "licensed": false,
+        "strict": true,
+        "licensed": true,
         "licenses": [],
         "selected_scan": {
           "stress": [
@@ -112326,10 +112292,9 @@
             false,
             true,
             false,
-            false,
             true,
             false,
-            false
+            true
           ],
           "elision": null
         }
@@ -120897,14 +120862,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -120945,14 +120909,13 @@
           null,
           true,
           false,
-          false,
           true,
           false,
           false,
           true
         ],
         "eligible_elisions": [
-          9
+          8
         ],
         "unknown": [],
         "rhyme": "EY",
@@ -120965,7 +120928,6 @@
               true,
               false,
               true,
-              false,
               false,
               true,
               false,
@@ -120983,18 +120945,19 @@
               false,
               true,
               false,
-              false,
               true,
               false,
               false,
               true
             ],
-            "elision": 9
+            "elision": 8
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "UNSTRESSED_ELISION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -121004,13 +120967,12 @@
             false,
             true,
             false,
-            false,
             true,
             false,
             false,
             true
           ],
-          "elision": null
+          "elision": 8
         }
       },
       {
@@ -123179,14 +123141,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -123221,14 +123182,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -123276,11 +123236,9 @@
           null,
           true,
           false,
-          false,
           null,
           null,
           true,
-          false,
           false,
           null,
           null,
@@ -123295,11 +123253,9 @@
               false,
               true,
               false,
-              false,
-              false,
-              true,
               true,
               false,
+              true,
               false,
               true,
               false,
@@ -123308,19 +123264,17 @@
             "elision": null
           }
         ],
-        "strict": false,
-        "licensed": false,
+        "strict": true,
+        "licensed": true,
         "licenses": [],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
-            false,
-            false,
-            true,
             true,
             false,
+            true,
             false,
             true,
             false,
@@ -123401,14 +123355,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -123450,7 +123403,6 @@
           null,
           true,
           false,
-          false,
           true,
           true,
           null
@@ -123468,10 +123420,9 @@
               false,
               true,
               false,
-              false,
               true,
               true,
-              false
+              true
             ],
             "elision": null
           }
@@ -123479,8 +123430,6 @@
         "strict": false,
         "licensed": true,
         "licenses": [
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION",
           "SPONDAIC_SUBSTITUTION"
         ],
         "selected_scan": {
@@ -123492,10 +123441,9 @@
             false,
             true,
             false,
-            false,
             true,
             true,
-            false
+            true
           ],
           "elision": null
         }
@@ -124630,14 +124578,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -124700,7 +124647,6 @@
           null,
           true,
           false,
-          false,
           null,
           null,
           null,
@@ -124717,20 +124663,17 @@
               false,
               true,
               false,
-              false,
-              false,
               true,
               false,
-              true
+              true,
+              false
             ],
             "elision": null
           }
         ],
         "strict": false,
-        "licensed": true,
-        "licenses": [
-          "PYRRHIC_SUBSTITUTION"
-        ],
+        "licensed": false,
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
@@ -124738,11 +124681,10 @@
             false,
             true,
             false,
-            false,
-            false,
             true,
             false,
-            true
+            true,
+            false
           ],
           "elision": null
         }
@@ -127857,19 +127799,19 @@
             "token": "contents",
             "phonemes": [
               "K",
-              "AA1",
+              "AH0",
               "N",
               "T",
-              "EH0",
+              "EH1",
               "N",
               "T",
               "S"
             ],
-            "derivation": "CMU first pronunciation: contents",
+            "derivation": "explicit override: Selected final-stressed prosodic reading, with phones exactly pinned CMU contents(2). The Audio Shakespeare Pronunciation Dictionary documents final stress for contents in Cymbeline II.2.27, King Lear II.4.33 and other plays. This is an explicit Shakespearean reading convention applied to all contents tokens, not inferred from a rhyme partner and not claimed to be the only possible performance.",
             "syllables": 2,
             "masks": [
-              true,
-              false
+              false,
+              true
             ]
           }
         ],
@@ -127882,12 +127824,12 @@
           null,
           null,
           null,
-          true,
-          false
+          false,
+          true
         ],
         "eligible_elisions": [],
         "unknown": [],
-        "rhyme": "AA N T EH N T S",
+        "rhyme": "EH N T S",
         "scans": [
           {
             "stress": [
@@ -127899,14 +127841,14 @@
               true,
               false,
               true,
-              true,
-              false
+              false,
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
-        "licensed": false,
+        "strict": true,
+        "licensed": true,
         "licenses": [],
         "selected_scan": {
           "stress": [
@@ -127918,8 +127860,8 @@
             true,
             false,
             true,
-            true,
-            false
+            false,
+            true
           ],
           "elision": null
         }
@@ -128633,17 +128575,16 @@
             "token": "record",
             "phonemes": [
               "R",
-              "AH0",
+              "EH1",
               "K",
-              "AO1",
-              "R",
+              "ER0",
               "D"
             ],
-            "derivation": "CMU first pronunciation: record",
+            "derivation": "contextual override (noun_after_determiner): Noun record after a listed article/possessive (optionally living), or this/that with a listed nominal continuation. Cambridge distinguishes initial-stressed noun record from final-stressed verb record; phones exactly match pinned CMU record(2). Local lexical heuristic only, not general parsing or historical reconstruction.",
             "syllables": 2,
             "masks": [
-              false,
-              true
+              true,
+              false
             ]
           },
           {
@@ -128693,8 +128634,8 @@
           null,
           true,
           false,
-          false,
           true,
+          false,
           null,
           null,
           true,
@@ -128710,8 +128651,8 @@
               false,
               true,
               false,
-              false,
               true,
+              false,
               true,
               false,
               true,
@@ -128722,15 +128663,17 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "PYRRHIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
-            false,
             true,
+            false,
             true,
             false,
             true,
@@ -137586,17 +137529,16 @@
             "token": "record",
             "phonemes": [
               "R",
-              "AH0",
+              "EH1",
               "K",
-              "AO1",
-              "R",
+              "ER0",
               "D"
             ],
-            "derivation": "CMU first pronunciation: record",
+            "derivation": "contextual override (noun_after_determiner): Noun record after a listed article/possessive (optionally living), or this/that with a listed nominal continuation. Cambridge distinguishes initial-stressed noun record from final-stressed verb record; phones exactly match pinned CMU record(2). Local lexical heuristic only, not general parsing or historical reconstruction.",
             "syllables": 2,
             "masks": [
-              false,
-              true
+              true,
+              false
             ]
           },
           {
@@ -137670,8 +137612,8 @@
         "masks": [
           null,
           null,
-          false,
           true,
+          false,
           null,
           null,
           null,
@@ -137687,8 +137629,8 @@
             "stress": [
               false,
               true,
-              false,
               true,
+              false,
               false,
               true,
               false,
@@ -137699,15 +137641,15 @@
             "elision": null
           }
         ],
-        "strict": true,
-        "licensed": true,
+        "strict": false,
+        "licensed": false,
         "licenses": [],
         "selected_scan": {
           "stress": [
             false,
             true,
-            false,
             true,
+            false,
             false,
             true,
             false,
@@ -137971,17 +137913,17 @@
           {
             "token": "antique",
             "phonemes": [
-              "AE0",
+              "AE1",
               "N",
               "T",
-              "IY1",
+              "IY0",
               "K"
             ],
-            "derivation": "CMU first pronunciation: antique",
+            "derivation": "explicit override: Initial lexical stress follows Alexander Schmidt, Shakespeare-Lexicon, vol. I, p. 43, entry Antic (Antique cross-refers there): early editions use antic/antique spellings with first-syllable accent. Only stress is adapted; the pinned modern antique vowel segments are retained as a modeling approximation, not a full historical phonetic reconstruction. Applies to every occurrence.",
             "syllables": 2,
             "masks": [
-              false,
-              true
+              true,
+              false
             ]
           },
           {
@@ -138006,8 +137948,8 @@
           false,
           null,
           null,
-          false,
           true,
+          false,
           null
         ],
         "eligible_elisions": [],
@@ -138023,19 +137965,16 @@
               false,
               true,
               false,
-              false,
               true,
+              false,
               true
             ],
             "elision": null
           }
         ],
-        "strict": false,
+        "strict": true,
         "licensed": true,
-        "licenses": [
-          "PYRRHIC_SUBSTITUTION",
-          "SPONDAIC_SUBSTITUTION"
-        ],
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
@@ -138045,8 +137984,8 @@
             false,
             true,
             false,
-            false,
             true,
+            false,
             true
           ],
           "elision": null
@@ -144206,14 +144145,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -144242,7 +144180,6 @@
           null,
           true,
           false,
-          false,
           null
         ],
         "eligible_elisions": [],
@@ -144260,18 +144197,14 @@
               false,
               true,
               false,
-              false,
-              false
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
+        "strict": true,
         "licensed": true,
-        "licenses": [
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION"
-        ],
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
@@ -144283,8 +144216,7 @@
             false,
             true,
             false,
-            false,
-            false
+            true
           ],
           "elision": null
         }
@@ -159073,17 +159005,17 @@
           {
             "token": "antique",
             "phonemes": [
-              "AE0",
+              "AE1",
               "N",
               "T",
-              "IY1",
+              "IY0",
               "K"
             ],
-            "derivation": "CMU first pronunciation: antique",
+            "derivation": "explicit override: Initial lexical stress follows Alexander Schmidt, Shakespeare-Lexicon, vol. I, p. 43, entry Antic (Antique cross-refers there): early editions use antic/antique spellings with first-syllable accent. Only stress is adapted; the pinned modern antique vowel segments are retained as a modeling approximation, not a full historical phonetic reconstruction. Applies to every occurrence.",
             "syllables": 2,
             "masks": [
-              false,
-              true
+              true,
+              false
             ]
           },
           {
@@ -159132,8 +159064,8 @@
           null,
           true,
           false,
-          false,
           true,
+          false,
           true,
           false,
           null,
@@ -159152,8 +159084,8 @@
               false,
               true,
               false,
-              false,
               true,
+              false,
               true,
               false,
               true,
@@ -159168,8 +159100,8 @@
               false,
               true,
               false,
-              false,
               true,
+              false,
               true,
               false,
               false,
@@ -159181,9 +159113,7 @@
         "strict": false,
         "licensed": true,
         "licenses": [
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION",
-          "SPONDAIC_SUBSTITUTION"
+          "FEMININE_ENDING"
         ],
         "selected_scan": {
           "stress": [
@@ -159192,8 +159122,8 @@
             false,
             true,
             false,
-            false,
             true,
+            false,
             true,
             false,
             true,
@@ -177620,14 +177550,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -177717,7 +177646,6 @@
           null,
           true,
           false,
-          false,
           null,
           null,
           true,
@@ -177735,14 +177663,13 @@
               false,
               true,
               false,
-              false,
-              false,
-              true,
-              true,
               true,
               false,
               true,
-              false
+              true,
+              true,
+              false,
+              true
             ],
             "elision": null
           }
@@ -177750,8 +177677,6 @@
         "strict": false,
         "licensed": true,
         "licenses": [
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION",
           "SPONDAIC_SUBSTITUTION"
         ],
         "selected_scan": {
@@ -177759,14 +177684,13 @@
             false,
             true,
             false,
-            false,
-            false,
-            true,
-            true,
             true,
             false,
             true,
-            false
+            true,
+            true,
+            false,
+            true
           ],
           "elision": null
         }
@@ -181574,14 +181498,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -181671,7 +181594,6 @@
           null,
           true,
           false,
-          false,
           true,
           false,
           false,
@@ -181690,36 +181612,37 @@
               false,
               true,
               false,
-              false,
               true,
               false,
               false,
-              true,
               false,
               true,
               false,
-              true
+              true,
+              false
             ],
             "elision": null
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "FEMININE_ENDING",
+          "PYRRHIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
-            false,
             true,
             false,
             false,
-            true,
             false,
             true,
             false,
-            true
+            true,
+            false
           ],
           "elision": null
         }
@@ -191138,14 +191061,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -191173,7 +191095,6 @@
           false,
           true,
           false,
-          false,
           null
         ],
         "eligible_elisions": [],
@@ -191191,15 +191112,17 @@
               false,
               true,
               false,
-              false,
-              false
+              true
             ],
             "elision": null
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "PYRRHIC_SUBSTITUTION",
+          "SPONDAIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -191211,8 +191134,7 @@
             false,
             true,
             false,
-            false,
-            false
+            true
           ],
           "elision": null
         }
@@ -197148,14 +197070,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -197183,7 +197104,6 @@
           false,
           true,
           false,
-          false,
           null
         ],
         "eligible_elisions": [],
@@ -197201,8 +197121,7 @@
               false,
               true,
               false,
-              false,
-              false
+              true
             ],
             "elision": null
           }
@@ -197210,9 +197129,7 @@
         "strict": false,
         "licensed": true,
         "licenses": [
-          "INITIAL_TROCHAIC_INVERSION",
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION"
+          "INITIAL_TROCHAIC_INVERSION"
         ],
         "selected_scan": {
           "stress": [
@@ -197225,8 +197142,7 @@
             false,
             true,
             false,
-            false,
-            false
+            true
           ],
           "elision": null
         }
@@ -198594,14 +198510,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -198685,7 +198600,6 @@
           null,
           true,
           false,
-          false,
           null,
           null,
           true,
@@ -198704,9 +198618,8 @@
               false,
               true,
               false,
-              false,
-              false,
               true,
+              false,
               true,
               false,
               true,
@@ -198725,9 +198638,8 @@
             false,
             true,
             false,
-            false,
-            false,
             true,
+            false,
             true,
             false,
             true,
@@ -212465,14 +212377,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -212556,7 +212467,6 @@
           null,
           true,
           false,
-          false,
           true,
           false,
           null,
@@ -212575,11 +212485,10 @@
               false,
               true,
               false,
+              true,
               false,
               true,
               false,
-              false,
-              true,
               true,
               true,
               true,
@@ -212589,18 +212498,20 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "FEMININE_ENDING",
+          "SPONDAIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
+            true,
             false,
             true,
             false,
-            false,
-            true,
             true,
             true,
             true,
@@ -222909,14 +222820,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -222945,7 +222855,6 @@
           false,
           true,
           false,
-          false,
           null
         ],
         "eligible_elisions": [],
@@ -222963,18 +222872,14 @@
               false,
               true,
               false,
-              false,
-              false
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
+        "strict": true,
         "licensed": true,
-        "licenses": [
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION"
-        ],
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
@@ -222986,8 +222891,7 @@
             false,
             true,
             false,
-            false,
-            false
+            true
           ],
           "elision": null
         }
@@ -228625,14 +228529,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -228661,7 +228564,6 @@
           null,
           true,
           false,
-          false,
           null
         ],
         "eligible_elisions": [],
@@ -228680,8 +228582,7 @@
               true,
               true,
               false,
-              false,
-              true
+              false
             ],
             "elision": null
           }
@@ -228701,8 +228602,7 @@
             true,
             true,
             false,
-            false,
-            true
+            false
           ],
           "elision": null
         }
@@ -235070,14 +234970,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -235104,7 +235003,6 @@
           true,
           true,
           false,
-          false,
           null
         ],
         "eligible_elisions": [],
@@ -235121,8 +235019,7 @@
               true,
               true,
               false,
-              false,
-              true
+              false
             ],
             "elision": null
           }
@@ -235140,8 +235037,7 @@
             true,
             true,
             false,
-            false,
-            true
+            false
           ],
           "elision": null
         }
@@ -238424,14 +238320,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -238459,7 +238354,6 @@
           false,
           true,
           false,
-          false,
           null
         ],
         "eligible_elisions": [],
@@ -238477,18 +238371,14 @@
               false,
               true,
               false,
-              false,
-              false
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
+        "strict": true,
         "licensed": true,
-        "licenses": [
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION"
-        ],
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
@@ -238500,8 +238390,7 @@
             false,
             true,
             false,
-            false,
-            false
+            true
           ],
           "elision": null
         }
@@ -239646,14 +239535,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -239680,7 +239568,6 @@
           false,
           true,
           false,
-          false,
           null
         ],
         "eligible_elisions": [],
@@ -239698,18 +239585,14 @@
               false,
               true,
               false,
-              false,
-              false
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
+        "strict": true,
         "licensed": true,
-        "licenses": [
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION"
-        ],
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
@@ -239721,8 +239604,7 @@
             false,
             true,
             false,
-            false,
-            false
+            true
           ],
           "elision": null
         }
@@ -248285,17 +248167,17 @@
           {
             "token": "antique",
             "phonemes": [
-              "AE0",
+              "AE1",
               "N",
               "T",
-              "IY1",
+              "IY0",
               "K"
             ],
-            "derivation": "CMU first pronunciation: antique",
+            "derivation": "explicit override: Initial lexical stress follows Alexander Schmidt, Shakespeare-Lexicon, vol. I, p. 43, entry Antic (Antique cross-refers there): early editions use antic/antique spellings with first-syllable accent. Only stress is adapted; the pinned modern antique vowel segments are retained as a modeling approximation, not a full historical phonetic reconstruction. Applies to every occurrence.",
             "syllables": 2,
             "masks": [
-              false,
-              true
+              true,
+              false
             ]
           },
           {
@@ -248361,8 +248243,8 @@
           null,
           null,
           null,
-          false,
           true,
+          false,
           null,
           null,
           null,
@@ -248378,8 +248260,8 @@
               false,
               true,
               false,
-              false,
               true,
+              false,
               true,
               false,
               true,
@@ -248389,19 +248271,16 @@
             "elision": null
           }
         ],
-        "strict": false,
+        "strict": true,
         "licensed": true,
-        "licenses": [
-          "PYRRHIC_SUBSTITUTION",
-          "SPONDAIC_SUBSTITUTION"
-        ],
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
-            false,
             true,
+            false,
             true,
             false,
             true,
@@ -267175,14 +267054,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -267248,7 +267126,6 @@
           false,
           true,
           false,
-          false,
           null,
           null,
           false,
@@ -267266,12 +267143,11 @@
               false,
               true,
               false,
+              true,
               false,
               false,
               true,
-              false,
-              true,
-              false
+              true
             ],
             "elision": null
           }
@@ -267279,8 +267155,8 @@
         "strict": false,
         "licensed": true,
         "licenses": [
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION"
+          "PYRRHIC_SUBSTITUTION",
+          "SPONDAIC_SUBSTITUTION"
         ],
         "selected_scan": {
           "stress": [
@@ -267289,12 +267165,11 @@
             false,
             true,
             false,
+            true,
             false,
             false,
             true,
-            false,
-            true,
-            false
+            true
           ],
           "elision": null
         }
@@ -271622,12 +271497,14 @@
               "IH1",
               "K",
               "S",
-              "T"
+              "IH0",
+              "D"
             ],
-            "derivation": "CMU first pronunciation: fixed",
-            "syllables": 1,
+            "derivation": "contextual override (ever_fixed): Syllabic -ed in ever-fixed: Poetry Foundation's Sonnet 116 text explicitly prints ever-fixèd. Author ARPAbet representation uses fix plus unstressed IH0 D. Scoped to adjacent ever + fixed tokens (hyphen and space are not distinguished); no expansion rule for other -ed words and no sonnet/line-number selection.",
+            "syllables": 2,
             "masks": [
-              null
+              true,
+              false
             ]
           },
           {
@@ -271653,7 +271530,8 @@
           null,
           true,
           false,
-          null,
+          true,
+          false,
           null
         ],
         "eligible_elisions": [],
@@ -271670,13 +271548,14 @@
               true,
               false,
               true,
-              false
+              false,
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
-        "licensed": false,
+        "strict": true,
+        "licensed": true,
         "licenses": [],
         "selected_scan": {
           "stress": [
@@ -271688,7 +271567,8 @@
             true,
             false,
             true,
-            false
+            false,
+            true
           ],
           "elision": null
         }
@@ -271937,14 +271817,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -271955,15 +271834,14 @@
               "AA1",
               "N",
               "D",
-              "ER0",
+              "R",
               "IH0",
               "NG"
             ],
-            "derivation": "CMU first pronunciation: wandering",
-            "syllables": 3,
+            "derivation": "explicit override: Two-syllable wand'ring: Poetry Foundation's Sonnet 116 text explicitly marks this contraction. Author ARPAbet representation retains the pinned CMU segments except unstressed ER0 becomes consonantal R. This named lexical variant applies wherever wandering occurs; source spelling remains unchanged, and no general -ering deletion is licensed.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -271990,9 +271868,7 @@
           null,
           true,
           false,
-          false,
           true,
-          false,
           false,
           null
         ],
@@ -272009,17 +271885,15 @@
               false,
               true,
               false,
-              false,
               true,
-              false,
               false,
               true
             ],
             "elision": null
           }
         ],
-        "strict": false,
-        "licensed": false,
+        "strict": true,
+        "licensed": true,
         "licenses": [],
         "selected_scan": {
           "stress": [
@@ -272030,9 +271904,7 @@
             false,
             true,
             false,
-            false,
             true,
-            false,
             false,
             true
           ],
@@ -286312,17 +286184,16 @@
             "token": "record",
             "phonemes": [
               "R",
-              "AH0",
+              "EH1",
               "K",
-              "AO1",
-              "R",
+              "ER0",
               "D"
             ],
-            "derivation": "CMU first pronunciation: record",
+            "derivation": "contextual override (noun_after_determiner): Noun record after a listed article/possessive (optionally living), or this/that with a listed nominal continuation. Cambridge distinguishes initial-stressed noun record from final-stressed verb record; phones exactly match pinned CMU record(2). Local lexical heuristic only, not general parsing or historical reconstruction.",
             "syllables": 2,
             "masks": [
-              false,
-              true
+              true,
+              false
             ]
           },
           {
@@ -286384,8 +286255,8 @@
           null,
           null,
           null,
-          false,
           true,
+          false,
           true,
           false,
           null,
@@ -286401,8 +286272,8 @@
               false,
               true,
               false,
-              false,
               true,
+              false,
               true,
               false,
               true,
@@ -286412,19 +286283,16 @@
             "elision": null
           }
         ],
-        "strict": false,
+        "strict": true,
         "licensed": true,
-        "licenses": [
-          "PYRRHIC_SUBSTITUTION",
-          "SPONDAIC_SUBSTITUTION"
-        ],
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
-            false,
             true,
+            false,
             true,
             false,
             true,
@@ -298768,14 +298636,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -298864,7 +298731,6 @@
           null,
           true,
           false,
-          false,
           null,
           null,
           true,
@@ -298882,34 +298748,32 @@
               false,
               true,
               false,
-              false,
-              false,
-              true,
               true,
               false,
+              true,
               false,
               true,
-              false
+              false,
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
-        "licensed": false,
+        "strict": true,
+        "licensed": true,
         "licenses": [],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
-            false,
-            false,
-            true,
             true,
             false,
+            true,
             false,
             true,
-            false
+            false,
+            true
           ],
           "elision": null
         }
@@ -304127,14 +303991,13 @@
             "phonemes": [
               "W",
               "AY1",
-              "ER0",
+              "R",
               "Z"
             ],
-            "derivation": "CMU first pronunciation: wires",
-            "syllables": 2,
+            "derivation": "explicit override: Selected monosyllabic lexical variant, exactly the pinned CMU wires(2); applies to every occurrence. Modern variant evidence, not reconstructed Elizabethan vowels. No length-driven selection or new scan-level elision.",
+            "syllables": 1,
             "masks": [
-              true,
-              false
+              null
             ]
           },
           {
@@ -304156,14 +304019,13 @@
             "phonemes": [
               "W",
               "AY1",
-              "ER0",
+              "R",
               "Z"
             ],
-            "derivation": "CMU first pronunciation: wires",
-            "syllables": 2,
+            "derivation": "explicit override: Selected monosyllabic lexical variant, exactly the pinned CMU wires(2); applies to every occurrence. Modern variant evidence, not reconstructed Elizabethan vowels. No length-driven selection or new scan-level elision.",
+            "syllables": 1,
             "masks": [
-              true,
-              false
+              null
             ]
           },
           {
@@ -304221,11 +304083,9 @@
           null,
           null,
           null,
-          true,
-          false,
           null,
-          true,
-          false,
+          null,
+          null,
           null,
           null,
           null,
@@ -304243,8 +304103,6 @@
               true,
               false,
               true,
-              true,
-              false,
               false,
               true,
               false,
@@ -304253,8 +304111,8 @@
             "elision": null
           }
         ],
-        "strict": false,
-        "licensed": false,
+        "strict": true,
+        "licensed": true,
         "licenses": [],
         "selected_scan": {
           "stress": [
@@ -304264,8 +304122,6 @@
             true,
             false,
             true,
-            true,
-            false,
             false,
             true,
             false,
@@ -305999,7 +305855,7 @@
     "line_count": true,
     "rhyme": true,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 131,
@@ -310363,14 +310219,13 @@
             "phonemes": [
               "EH1",
               "V",
-              "ER0",
+              "R",
               "IY0"
             ],
-            "derivation": "CMU first pronunciation: every",
-            "syllables": 3,
+            "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+            "syllables": 2,
             "masks": [
               true,
-              false,
               false
             ]
           },
@@ -310399,7 +310254,6 @@
           null,
           true,
           false,
-          false,
           null
         ],
         "eligible_elisions": [],
@@ -310417,18 +310271,14 @@
               false,
               true,
               false,
-              false,
-              false
+              true
             ],
             "elision": null
           }
         ],
-        "strict": false,
+        "strict": true,
         "licensed": true,
-        "licenses": [
-          "FEMININE_ENDING",
-          "PYRRHIC_SUBSTITUTION"
-        ],
+        "licenses": [],
         "selected_scan": {
           "stress": [
             false,
@@ -310440,8 +310290,7 @@
             false,
             true,
             false,
-            false,
-            false
+            true
           ],
           "elision": null
         }

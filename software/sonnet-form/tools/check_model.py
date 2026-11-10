@@ -62,6 +62,33 @@ class MeterBoundaryChecks(unittest.TestCase):
 
 
 class AnnotationBoundaryChecks(unittest.TestCase):
+    def test_sourced_readings_apply_without_meter_or_poem_identifiers(self):
+        from pronunciations import resolve
+        for token, expected in {'temperate': '100', 'every': '10',
+                                'wandering': '10', 'wires': '1',
+                                'antique': '10', 'contents': '01'}.items():
+            with self.subTest(token=token):
+                phones, note = resolve(token)
+                self.assertEqual(''.join(p[-1] for p in phones if p[-1:] in '012'), expected)
+                self.assertIn('override', note)
+
+    def test_contextual_noun_and_participle_guards(self):
+        from pronunciations import resolve, resolve_in_context, tokenize
+        for text, index in [('the living record endures', 2), ('thy record', 1),
+                            ('that record could endure', 1)]:
+            self.assertEqual(resolve_in_context(tokenize(text), index)[0],
+                             ['R', 'EH1', 'K', 'ER0', 'D'])
+        for text, index in [('to record voices', 1), ('songs that record voices', 2),
+                            ('saw her record voices', 2), ('record', 0)]:
+            self.assertEqual(resolve_in_context(tokenize(text), index), resolve('record'))
+        for text in ['ever-fixed', 'ever fixed', 'EVER-FIXED']:
+            self.assertEqual(resolve_in_context(tokenize(text), 1)[0],
+                             ['F', 'IH1', 'K', 'S', 'IH0', 'D'])
+        self.assertEqual(resolve_in_context(tokenize('a fixed point'), 1), resolve('fixed'))
+        self.assertEqual(resolve_in_context(tokenize('ever fix’d'), 1), resolve('fix’d'))
+        with self.assertRaises(IndexError):
+            resolve_in_context(['record'], -1)
+
     @staticmethod
     def fake_lookup(token):
         phones = {'rose': ['R', 'OW1', 'Z'],
@@ -69,7 +96,7 @@ class AnnotationBoundaryChecks(unittest.TestCase):
         return (phones, 'test fixture') if phones is not None else None
 
     def test_missing_interior_word_cannot_disappear_from_meter(self):
-        with patch('generate.resolve', self.fake_lookup):
+        with patch('pronunciations.resolve', self.fake_lookup):
             result = annotate('rose unknown rose')
         self.assertEqual(result['unknown'], ['unknown'])
         self.assertEqual(result['masks'], [])
@@ -79,14 +106,14 @@ class AnnotationBoundaryChecks(unittest.TestCase):
         self.assertEqual(result['rhyme'], 'OW Z')
 
     def test_missing_end_word_also_has_no_rhyme(self):
-        with patch('generate.resolve', self.fake_lookup):
+        with patch('pronunciations.resolve', self.fake_lookup):
             result = annotate('rose unknown')
         self.assertIsNone(result['rhyme'])
         self.assertEqual(result['scans'], [])
 
     def test_elision_index_counts_syllables_and_text_is_preserved(self):
         original = 'rose heaven rose'
-        with patch('generate.resolve', self.fake_lookup):
+        with patch('pronunciations.resolve', self.fake_lookup):
             result = annotate(original)
         self.assertEqual(result['text'], original)
         self.assertEqual(result['masks'], [None, True, False, None])

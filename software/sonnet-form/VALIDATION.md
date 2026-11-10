@@ -16,36 +16,36 @@ Syllable and stress comparisons apply the candidate's explicitly indexed elision
 
 | Measurement | Agree | Total | Agreement |
 |---|---:|---:|---:|
-| Baseline syllable count | 132 | 154 | 85.7% |
-| Any supplied reading: syllable count | 138 | 154 | 89.6% |
-| Baseline complete stress sequence | 71 | 154 | 46.1% |
-| Any supplied reading: complete stress sequence | 73 | 154 | 47.4% |
-| Selected reading: complete stress sequence | 71 | 154 | 46.1% |
-| Fixed lexical stresses compatible with hand reading | 121 | 154 | 78.6% |
-| Licensed-meter verdict versus hand verse family | 140 | 154 | 90.9% |
-| Whole-poem licensed-meter verdict versus hand family | 5 | 11 | 45.5% |
+| Baseline syllable count | 137 | 154 | 89.0% |
+| Any supplied reading: syllable count | 143 | 154 | 92.9% |
+| Baseline complete stress sequence | 77 | 154 | 50.0% |
+| Any supplied reading: complete stress sequence | 79 | 154 | 51.3% |
+| Selected reading: complete stress sequence | 77 | 154 | 50.0% |
+| Fixed lexical stresses compatible with hand reading | 128 | 154 | 83.1% |
+| Licensed-meter verdict versus hand verse family | 147 | 154 | 95.5% |
+| Whole-poem licensed-meter verdict versus hand family | 7 | 11 | 63.6% |
 
 Low exact stress agreement partly reflects a deliberate model choice: monosyllables are realized in alternating positions, while the hand reading often stresses adjacent content words. Such differences do not by themselves disprove either performance. Syllabification and fixed multisyllabic-stress disagreements are stronger evidence of the current lexical model's limits.
 
 | Sonnet | Baseline syllables | Any-reading syllables | Exact baseline stress | Exact any-reading stress | Fixed-stress compatibility | Line-family agreement | Model poem verdict | Poem-family agreement |
 |---:|---:|---:|---:|---:|---:|---:|---|---|
 | 2 | 14/14 | 14/14 | 4/14 | 4/14 | 14/14 | 14/14 | PASS | agree |
-| 18 | 12/14 | 12/14 | 8/14 | 8/14 | 11/14 | 12/14 | FAIL | disagree |
-| 19 | 11/14 | 12/14 | 4/14 | 4/14 | 11/14 | 12/14 | FAIL | disagree |
+| 18 | 14/14 | 14/14 | 9/14 | 9/14 | 12/14 | 14/14 | PASS | agree |
+| 19 | 11/14 | 12/14 | 5/14 | 5/14 | 12/14 | 12/14 | FAIL | disagree |
 | 20 | 14/14 | 14/14 | 9/14 | 9/14 | 14/14 | 14/14 | PASS | agree |
 | 29 | 12/14 | 13/14 | 5/14 | 5/14 | 9/14 | 14/14 | PASS | agree |
-| 55 | 10/14 | 10/14 | 3/14 | 3/14 | 6/14 | 10/14 | FAIL | disagree |
+| 55 | 10/14 | 10/14 | 5/14 | 5/14 | 8/14 | 12/14 | FAIL | disagree |
 | 60 | 11/14 | 12/14 | 6/14 | 6/14 | 10/14 | 12/14 | FAIL | disagree |
 | 73 | 13/14 | 13/14 | 7/14 | 7/14 | 11/14 | 14/14 | PASS | agree |
-| 116 | 10/14 | 11/14 | 6/14 | 6/14 | 9/14 | 11/14 | FAIL | disagree |
-| 130 | 12/14 | 13/14 | 9/14 | 10/14 | 12/14 | 13/14 | FAIL | disagree |
+| 116 | 12/14 | 13/14 | 8/14 | 8/14 | 11/14 | 13/14 | FAIL | disagree |
+| 130 | 13/14 | 14/14 | 9/14 | 10/14 | 13/14 | 14/14 | PASS | agree |
 | 145 | 13/14 | 14/14 | 10/14 | 11/14 | 14/14 | 14/14 | FAIL | agree |
 
 ## What the discrepancies establish
 
-The hand reading expands `temperate` (18.2) and `fixed` (116.5), contracts `every`/`wandering` (116.7), and uses one syllable for both instances of `wires` (130.4). The context-free first dictionary reading does not supply all those choices. The noun/verb ambiguity of `record` (55.8), the historical stress of `antique` (19.10), and the prosodic reading of `contents` (55.3) also expose the limits of a modern lexicon without contextual disambiguation. The interior inversion on `ever` in 19.14 is outside the named rule set even though its ten syllables agree.
+The hand reading expands `temperate` (18.2) and `fixed` (116.5), contracts `every`/`wandering` (116.7), and uses one syllable for both instances of `wires` (130.4). Those discrepancies motivated the explicit sourced lexical annotations in [PRONUNCIATION.md](PRONUNCIATION.md). The noun/verb ambiguity of `record` (55.8), the historical stress of `antique` (19.10), and the prosodic reading of `contents` (55.3) are now treated by documented lexical/context rules rather than the unqualified first dictionary reading. The interior inversion on `ever` in 19.14 is outside the initial-only rule set at this stage even though its ten syllables agree.
 
-These findings support the implementation as an auditable **conditional baseline**, but do not establish that its extra failures are genuine exceptions to Shakespearean verse. The validation fixture is complete; the remaining literary-model work is to reconcile documented pronunciation/stress discrepancies and justify the scope of permitted substitutions. A claim of reliable full-corpus historical conformance would also require validating historical rhyme classes; this sample is a scansion check only. No independent reviewer was appointed or consulted by the author lane.
+These findings support the implementation as an auditable **conditional baseline**, but do not establish that its extra failures are genuine exceptions to Shakespearean verse. The original hand fixture remains frozen. This is now a development/regression sample because its named discrepancies informed the revisions, not a held-out estimate of generalization. Remaining disagreements and restrictions are listed below; source evidence justifies specific annotations, not a unique performance of every line. A claim of reliable full-corpus historical conformance would also require validating historical rhyme classes; this sample is a scansion check only. No independent reviewer was appointed or consulted by the author lane.
 
 ## Every disagreement
 
@@ -63,10 +63,9 @@ The table includes any line with a disagreement on any metric. `S` means strong 
 | 2.10 | `uSuSuSSSuS` | `uSuSuSuSuS` | realization |
 | 2.13 | `uSuSSSuSuS` | `uSuSuSuSuS` | realization |
 | 2.14 | `uSuSSuuSuS` | `uSuSuSuSuS` | realization |
-| 18.2 | `uSuSuSuSuu` | `uSuSuSuSu` | baseline syllable count; all candidate syllable counts; fixed stress/length; meter family |
 | 18.3 | `SSuSuSuSuS` | `uSuSuSuSuS` | realization |
 | 18.5 | `SuuSuSuSuS` | `SSuSuSuSuS`; `SSuSuSuSu` | fixed stress/length |
-| 18.7 | `uSuSuSuSuS` | `uSuuuSuSSuS` | baseline syllable count; all candidate syllable counts; fixed stress/length; meter family |
+| 18.7 | `uSuSuSuSuS` | `uSuSuSSSuS` | fixed stress/length |
 | 18.11 | `uSSSuSuSuS` | `uSuSuSuSuS` | realization |
 | 18.14 | `uSSSuSuSuS` | `uSuSuSuSuS` | realization |
 | 19.1 | `uSuSSuuSuS` | `uSuuuSuSSuu` | baseline syllable count; all candidate syllable counts; fixed stress/length; meter family |
@@ -76,7 +75,6 @@ The table includes any line with a disagreement on any metric. `S` means strong 
 | 19.6 | `uSuSuSSSuS` | `uSuSuSuSuS` | realization |
 | 19.7 | `uuSSuSuSuS` | `uSuSuSuSuS` | realization |
 | 19.9 | `uSuSuSuSSS` | `uSuSuSuSuSu`; `uSuSuSuSuS` | baseline syllable count; realization |
-| 19.10 | `uSuSuSuSuS` | `uSuSuSuuSS` | fixed stress/length |
 | 19.11 | `SuuSuSuSuS` | `uSuSuSuSuS` | realization |
 | 19.13 | `uSuSSSuSuS` | `uSuSuSuSuS` | realization |
 | 19.14 | `uSuSuSSuuS` | `uSuSuSSuuS` | meter family |
@@ -95,12 +93,10 @@ The table includes any line with a disagreement on any metric. `S` means strong 
 | 29.12 | `uSuSSSuSuS` | `uSuSuSuSuS`; `uSuSuSuSu` | realization |
 | 29.13 | `uSSSuSuSSS` | `uSuSuSuSuS` | realization |
 | 55.2 | `uSuSuSuSuS` | `uSuSSSuSuuu` | baseline syllable count; all candidate syllable counts; fixed stress/length |
-| 55.3 | `uSuSuSuSuS` | `uSuSuSuSSu` | fixed stress/length; meter family |
 | 55.4 | `uSuSuSuSuS` | `uuSSuSuSuS` | fixed stress/length |
 | 55.5 | `uSuSuSuSuS` | `uSuSuSSSuS` | fixed stress/length |
 | 55.6 | `uSSSuSuSuu` | `uSuSuSuSuu` | realization |
 | 55.7 | `uSuSuSSSuS` | `uSuSuSuSuSu` | baseline syllable count; all candidate syllable counts; fixed stress/length |
-| 55.8 | `uSuSuSuSuu` | `uSuuSSuSuu` | fixed stress/length; meter family |
 | 55.9 | `uSuSuSuSuu` | `uSuSuSuuSuu` | baseline syllable count; all candidate syllable counts; fixed stress/length; meter family |
 | 55.10 | `uSSSuSuSuS` | `uSuSuSuSuS` | realization |
 | 55.11 | `SuuSuSuSuu` | `SuuSuSuuSuu` | baseline syllable count; all candidate syllable counts; fixed stress/length; meter family |
@@ -122,14 +118,12 @@ The table includes any line with a disagreement on any metric. `S` means strong 
 | 73.11 | `uuSSuSuSuS` | `uSuSuSuSuS` | realization |
 | 116.1 | `SuSuuSuuSS` | `uSuSuSuSuS` | realization |
 | 116.2 | `uSuSuuSuSS` | `uSSSuuuSuS` | fixed stress/length |
-| 116.5 | `uSuSuSuSuS` | `uSuSuSuSu` | baseline syllable count; all candidate syllable counts; fixed stress/length; meter family |
-| 116.7 | `uSuSuSuSuS` | `uSuSuSuuSuuS` | baseline syllable count; all candidate syllable counts; fixed stress/length; meter family |
 | 116.8 | `uSuSuSuSuSu` | `uSuSSSuSuSu` | fixed stress/length |
 | 116.9 | `SSSSuSuSuS` | `uSuSuSuSuS` | realization |
 | 116.11 | `SSuSuSSSuS` | `uSuSuSuSuSu`; `uSuSuSuSuS` | baseline syllable count; realization |
 | 116.12 | `uSuSSuuSuS` | `uSuSSuuSuSu` | baseline syllable count; all candidate syllable counts; fixed stress/length; meter family |
 | 130.2 | `SuuSuSuSSS` | `SuuSuSuSuS` | realization |
-| 130.4 | `uSuSSSuSuS` | `uSuSuSSuuSuS` | baseline syllable count; all candidate syllable counts; fixed stress/length; meter family |
+| 130.4 | `uSuSSSuSuS` | `uSuSuSuSuS` | realization |
 | 130.7 | `uSuSuSuSuS` | `uSuuSSuSuS` | fixed stress/length |
 | 130.12 | `uSuSuSSuuS` | `uSuSuSuSuS` | realization |
 | 130.13 | `uSuSuSuSuS` | `uSuSuSuSuSu`; `uSuSuSuSuS` | baseline syllable count; baseline stress; another candidate agrees; selected stress |
@@ -148,4 +142,4 @@ Consulted 2026-10-27 (America/Los_Angeles). The corpus edition is exclusively th
 
 Hand-source SHA-256: `a6b57916618c23d9699c79c3e1fc5d2fed5b5e185ca7a497b1784e85d46fafbb`.
 
-Compared annotation SHA-256: `66e812b244795a9c7023293fd87c0b6d1655c9c5e498e8e1ee539d9129f2da66`.
+Compared annotation SHA-256: `a3ae716976239ec19ef742e3bd66e4e98347c328369b2ccdac62162e72bd8290`.

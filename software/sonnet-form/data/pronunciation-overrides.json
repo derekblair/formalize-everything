@@ -2307,5 +2307,129 @@
     ],
     "note": "Explicit editorial lookup alias to repose: Folger Sonnet 27 line 2 reads repose (accessed 2026-11-10). The frozen Gutenberg token respose is preserved in poem text; phones are the pinned CMU first entry for repose, not a historical respose reconstruction. This exact lexical alias applies independently of sonnet number, meter or rhyme.",
     "source": "https://www.folger.edu/explore/shakespeares-works/shakespeares-sonnets/read/27/"
+  },
+  "temperate": {
+    "phonemes": [
+      "T",
+      "EH1",
+      "M",
+      "P",
+      "ER0",
+      "AH0",
+      "T"
+    ],
+    "note": "Selected full three-syllable lexical variant, exactly the pinned CMU temperate(2); applies to every occurrence. Attested modern availability, not proof of an exclusively historical pronunciation or a choice by meter/rhyme.",
+    "sources": [
+      "https://github.com/cmusphinx/cmudict/blob/74790861f652b15e4ac49015a90074ad62a27690/cmudict.dict"
+    ]
+  },
+  "every": {
+    "phonemes": [
+      "EH1",
+      "V",
+      "R",
+      "IY0"
+    ],
+    "note": "Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license.",
+    "sources": [
+      "https://github.com/cmusphinx/cmudict/blob/74790861f652b15e4ac49015a90074ad62a27690/cmudict.dict"
+    ]
+  },
+  "wandering": {
+    "phonemes": [
+      "W",
+      "AA1",
+      "N",
+      "D",
+      "R",
+      "IH0",
+      "NG"
+    ],
+    "note": "Two-syllable wand'ring: Poetry Foundation's Sonnet 116 text explicitly marks this contraction. Author ARPAbet representation retains the pinned CMU segments except unstressed ER0 becomes consonantal R. This named lexical variant applies wherever wandering occurs; source spelling remains unchanged, and no general -ering deletion is licensed.",
+    "sources": [
+      "https://www.poetryfoundation.org/poems/45106/sonnet-116-let-me-not-to-the-marriage-of-true-minds",
+      "https://github.com/cmusphinx/cmudict/blob/74790861f652b15e4ac49015a90074ad62a27690/cmudict.dict"
+    ]
+  },
+  "wires": {
+    "phonemes": [
+      "W",
+      "AY1",
+      "R",
+      "Z"
+    ],
+    "note": "Selected monosyllabic lexical variant, exactly the pinned CMU wires(2); applies to every occurrence. Modern variant evidence, not reconstructed Elizabethan vowels. No length-driven selection or new scan-level elision.",
+    "sources": [
+      "https://github.com/cmusphinx/cmudict/blob/74790861f652b15e4ac49015a90074ad62a27690/cmudict.dict"
+    ]
+  },
+  "antique": {
+    "phonemes": [
+      "AE1",
+      "N",
+      "T",
+      "IY0",
+      "K"
+    ],
+    "note": "Initial lexical stress follows Alexander Schmidt, Shakespeare-Lexicon, vol. I, p. 43, entry Antic (Antique cross-refers there): early editions use antic/antique spellings with first-syllable accent. Only stress is adapted; the pinned modern antique vowel segments are retained as a modeling approximation, not a full historical phonetic reconstruction. Applies to every occurrence.",
+    "sources": [
+      "https://api.pageplace.de/preview/DT0400.9783112315330_A39774742/preview-9783112315330_A39774742.pdf",
+      "https://www.audioshakespearepronunciationapp.com/shakespeare-pronunciation-dictionary/"
+    ]
+  },
+  "contents": {
+    "phonemes": [
+      "K",
+      "AH0",
+      "N",
+      "T",
+      "EH1",
+      "N",
+      "T",
+      "S"
+    ],
+    "note": "Selected final-stressed prosodic reading, with phones exactly pinned CMU contents(2). The Audio Shakespeare Pronunciation Dictionary documents final stress for contents in Cymbeline II.2.27, King Lear II.4.33 and other plays. This is an explicit Shakespearean reading convention applied to all contents tokens, not inferred from a rhyme partner and not claimed to be the only possible performance.",
+    "sources": [
+      "https://www.audioshakespearepronunciationapp.com/shakespeare-pronunciation-dictionary/",
+      "https://github.com/cmusphinx/cmudict/blob/74790861f652b15e4ac49015a90074ad62a27690/cmudict.dict"
+    ]
+  },
+  "record": {
+    "note": "No global override: bare or unclassified record retains the first CMU entry. Only the documented finite noun-phrase cues select the noun variant.",
+    "context_variants": {
+      "noun_after_determiner": {
+        "phonemes": [
+          "R",
+          "EH1",
+          "K",
+          "ER0",
+          "D"
+        ],
+        "note": "Noun record after a listed article/possessive (optionally living), or this/that with a listed nominal continuation. Cambridge distinguishes initial-stressed noun record from final-stressed verb record; phones exactly match pinned CMU record(2). Local lexical heuristic only, not general parsing or historical reconstruction.",
+        "sources": [
+          "https://dictionary.cambridge.org/pronunciation/english/record",
+          "https://github.com/cmusphinx/cmudict/blob/74790861f652b15e4ac49015a90074ad62a27690/cmudict.dict"
+        ]
+      }
+    }
+  },
+  "fixed": {
+    "note": "No global override: bare fixed retains the first CMU entry. The adjacent ever + fixed cue selects syllabic -ed independently of metrical fit.",
+    "context_variants": {
+      "ever_fixed": {
+        "phonemes": [
+          "F",
+          "IH1",
+          "K",
+          "S",
+          "IH0",
+          "D"
+        ],
+        "note": "Syllabic -ed in ever-fixed: Poetry Foundation's Sonnet 116 text explicitly prints ever-fixèd. Author ARPAbet representation uses fix plus unstressed IH0 D. Scoped to adjacent ever + fixed tokens (hyphen and space are not distinguished); no expansion rule for other -ed words and no sonnet/line-number selection.",
+        "sources": [
+          "https://www.poetryfoundation.org/poems/45106/sonnet-116-let-me-not-to-the-marriage-of-true-minds"
+        ]
+      }
+    }
   }
 }

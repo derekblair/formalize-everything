@@ -14,23 +14,23 @@
     "fail": 153
   },
   "licensed_meter": {
-    "pass": 29,
-    "fail": 125
+    "pass": 32,
+    "fail": 122
   },
   "line_strict": {
-    "pass": 1228,
-    "fail": 927
+    "pass": 1248,
+    "fail": 907
   },
   "line_licensed": {
-    "pass": 1884,
-    "fail": 271
+    "pass": 1899,
+    "fail": 256
   },
   "unresolved_lines": 0,
   "licenses": {
     "INITIAL_TROCHAIC_INVERSION": 92,
-    "FEMININE_ENDING": 251,
-    "PYRRHIC_SUBSTITUTION": 257,
-    "SPONDAIC_SUBSTITUTION": 229,
-    "UNSTRESSED_ELISION": 33
+    "FEMININE_ENDING": 241,
+    "PYRRHIC_SUBSTITUTION": 244,
+    "SPONDAIC_SUBSTITUTION": 228,
+    "UNSTRESSED_ELISION": 34
   }
 }

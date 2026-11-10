@@ -158,3 +158,38 @@ such source-error annotation is `respose` → `repose`, supported by
 (accessed 2026-11-10); its phones come from the pinned CMU entry for _repose_.
 The proof therefore remains conditional on that interpretation, not a proof
 that the Gutenberg token is historically attested. See PRONUNCIATION.md.
+
+## MD-SOURCED-LEXICAL-READINGS and MD-LOCAL-LEXICAL-CONTEXT
+
+Before constructing masks, the external annotator selects the documented full
+three-syllable `temperate`, two-syllable `every` and `wandering`, one-syllable
+`wires`, initial-stressed `antique`, and final-stressed `contents` at every
+occurrence. Several are literal alternatives in the frozen
+[CMU dictionary](https://github.com/cmusphinx/cmudict/blob/74790861f652b15e4ac49015a90074ad62a27690/cmudict.dict).
+The marked `wand'ring` and syllabic `ever-fixèd` in
+[Poetry Foundation's edition of 116](https://www.poetryfoundation.org/poems/45106/sonnet-116-let-me-not-to-the-marriage-of-true-minds)
+support those two author phoneme annotations. The `fixed` expansion applies
+only after adjacent `ever`; other participles are unaffected.
+
+Initial stress of `antique` is supported by Alexander Schmidt,
+*Shakespeare-Lexicon*, vol. I, p. 43, *Antic* entry
+([publisher scan](https://api.pageplace.de/preview/DT0400.9783112315330_A39774742/preview-9783112315330_A39774742.pdf)).
+The [Audio Shakespeare pronunciation guide](https://www.audioshakespearepronunciationapp.com/shakespeare-pronunciation-dictionary/)
+documents final-stressed `contents` in several plays. Historical stress evidence
+is not a reconstruction of the modern phoneme segments used in these annotations.
+
+A finite local noun-phrase heuristic selects initial stress for `record` after
+specified determiners, a determiner plus `living`, or `this/that` followed by a
+specified nominal continuation. Unclassified uses retain the CMU first reading.
+The noun/verb distinction is attested by
+[Cambridge](https://dictionary.cambridge.org/pronunciation/english/record).
+The exact cue sets, source scope and ambiguous frames left untouched are in
+PRONUNCIATION.md; this heuristic is not a general syntactic parser.
+
+These are explicit lexical choices before scansion, separate from the single
+indexed unstressed-elision license. Multiple selected contracted lexical words
+may coexist without granting multiple scan elisions. No choice reads a sonnet
+number, metrical target, syllable-count deficit, or rhyme partner. Text and pins
+remain fixed. All sources above were consulted 2026-11-10. The development
+sample motivated these revisions, so its improved agreement is regression
+evidence rather than independent historical validation.

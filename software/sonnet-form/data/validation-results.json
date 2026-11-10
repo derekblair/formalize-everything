@@ -1,38 +1,38 @@
 {
   "hand_source_sha256": "a6b57916618c23d9699c79c3e1fc5d2fed5b5e185ca7a497b1784e85d46fafbb",
-  "annotations_sha256": "66e812b244795a9c7023293fd87c0b6d1655c9c5e498e8e1ee539d9129f2da66",
+  "annotations_sha256": "a3ae716976239ec19ef742e3bd66e4e98347c328369b2ccdac62162e72bd8290",
   "counts": {
     "baseline_syllables": {
-      "agree": 132,
+      "agree": 137,
       "total": 154
     },
     "candidate_syllables": {
-      "agree": 138,
+      "agree": 143,
       "total": 154
     },
     "baseline_stress": {
-      "agree": 71,
+      "agree": 77,
       "total": 154
     },
     "candidate_stress": {
-      "agree": 73,
+      "agree": 79,
       "total": 154
     },
     "selected_stress": {
-      "agree": 71,
+      "agree": 77,
       "total": 154
     },
     "fixed_stress_compatible": {
-      "agree": 121,
+      "agree": 128,
       "total": 154
     },
     "meter_family": {
-      "agree": 140,
+      "agree": 147,
       "total": 154
     }
   },
   "poem_verdict": {
-    "agree": 5,
+    "agree": 7,
     "total": 11
   },
   "sonnets": [
@@ -56,17 +56,17 @@
       "number": 18,
       "lines": 14,
       "metrics": {
-        "baseline_syllables": 12,
-        "candidate_syllables": 12,
-        "baseline_stress": 8,
-        "candidate_stress": 8,
-        "selected_stress": 8,
-        "fixed_stress_compatible": 11,
-        "meter_family": 12
+        "baseline_syllables": 14,
+        "candidate_syllables": 14,
+        "baseline_stress": 9,
+        "candidate_stress": 9,
+        "selected_stress": 9,
+        "fixed_stress_compatible": 12,
+        "meter_family": 14
       },
       "expected_pentameter": true,
-      "observed_licensed_meter": false,
-      "poem_verdict_agrees": false
+      "observed_licensed_meter": true,
+      "poem_verdict_agrees": true
     },
     {
       "number": 19,
@@ -74,10 +74,10 @@
       "metrics": {
         "baseline_syllables": 11,
         "candidate_syllables": 12,
-        "baseline_stress": 4,
-        "candidate_stress": 4,
-        "selected_stress": 4,
-        "fixed_stress_compatible": 11,
+        "baseline_stress": 5,
+        "candidate_stress": 5,
+        "selected_stress": 5,
+        "fixed_stress_compatible": 12,
         "meter_family": 12
       },
       "expected_pentameter": true,
@@ -122,11 +122,11 @@
       "metrics": {
         "baseline_syllables": 10,
         "candidate_syllables": 10,
-        "baseline_stress": 3,
-        "candidate_stress": 3,
-        "selected_stress": 3,
-        "fixed_stress_compatible": 6,
-        "meter_family": 10
+        "baseline_stress": 5,
+        "candidate_stress": 5,
+        "selected_stress": 5,
+        "fixed_stress_compatible": 8,
+        "meter_family": 12
       },
       "expected_pentameter": true,
       "observed_licensed_meter": false,
@@ -168,13 +168,13 @@
       "number": 116,
       "lines": 14,
       "metrics": {
-        "baseline_syllables": 10,
-        "candidate_syllables": 11,
-        "baseline_stress": 6,
-        "candidate_stress": 6,
-        "selected_stress": 6,
-        "fixed_stress_compatible": 9,
-        "meter_family": 11
+        "baseline_syllables": 12,
+        "candidate_syllables": 13,
+        "baseline_stress": 8,
+        "candidate_stress": 8,
+        "selected_stress": 8,
+        "fixed_stress_compatible": 11,
+        "meter_family": 13
       },
       "expected_pentameter": true,
       "observed_licensed_meter": false,
@@ -184,17 +184,17 @@
       "number": 130,
       "lines": 14,
       "metrics": {
-        "baseline_syllables": 12,
-        "candidate_syllables": 13,
+        "baseline_syllables": 13,
+        "candidate_syllables": 14,
         "baseline_stress": 9,
         "candidate_stress": 10,
         "selected_stress": 9,
-        "fixed_stress_compatible": 12,
-        "meter_family": 13
+        "fixed_stress_compatible": 13,
+        "meter_family": 14
       },
       "expected_pentameter": true,
-      "observed_licensed_meter": false,
-      "poem_verdict_agrees": false
+      "observed_licensed_meter": true,
+      "poem_verdict_agrees": true
     },
     {
       "number": 145,
@@ -569,21 +569,23 @@
       "text": "Thou art more lovely and more temperate:",
       "hand_stress": "uSuSuSuSuu",
       "hand_syllables": 10,
-      "baseline_stress": "uSuSuSuSu",
+      "baseline_stress": "uSuSuSuSuu",
       "candidate_stresses": [
-        "uSuSuSuSu"
+        "uSuSuSuSuu"
       ],
-      "selected_stress": "uSuSuSuSu",
-      "model_meter_licensed": false,
-      "model_licenses": [],
+      "selected_stress": "uSuSuSuSuu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "PYRRHIC_SUBSTITUTION"
+      ],
       "agreement": {
-        "baseline_syllables": false,
-        "candidate_syllables": false,
-        "baseline_stress": false,
-        "candidate_stress": false,
-        "selected_stress": false,
-        "fixed_stress_compatible": false,
-        "meter_family": false
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
       }
     },
     {
@@ -687,21 +689,23 @@
       "text": "And every fair from fair sometime declines,",
       "hand_stress": "uSuSuSuSuS",
       "hand_syllables": 10,
-      "baseline_stress": "uSuuuSuSSuS",
+      "baseline_stress": "uSuSuSSSuS",
       "candidate_stresses": [
-        "uSuuuSuSSuS"
+        "uSuSuSSSuS"
       ],
-      "selected_stress": "uSuuuSuSSuS",
-      "model_meter_licensed": false,
-      "model_licenses": [],
+      "selected_stress": "uSuSuSSSuS",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "SPONDAIC_SUBSTITUTION"
+      ],
       "agreement": {
-        "baseline_syllables": false,
-        "candidate_syllables": false,
+        "baseline_syllables": true,
+        "candidate_syllables": true,
         "baseline_stress": false,
         "candidate_stress": false,
         "selected_stress": false,
         "fixed_stress_compatible": false,
-        "meter_family": false
+        "meter_family": true
       }
     },
     {
@@ -1083,23 +1087,20 @@
       "text": "Nor draw no lines there with thine antique pen;",
       "hand_stress": "uSuSuSuSuS",
       "hand_syllables": 10,
-      "baseline_stress": "uSuSuSuuSS",
+      "baseline_stress": "uSuSuSuSuS",
       "candidate_stresses": [
-        "uSuSuSuuSS"
+        "uSuSuSuSuS"
       ],
-      "selected_stress": "uSuSuSuuSS",
+      "selected_stress": "uSuSuSuSuS",
       "model_meter_licensed": true,
-      "model_licenses": [
-        "PYRRHIC_SUBSTITUTION",
-        "SPONDAIC_SUBSTITUTION"
-      ],
+      "model_licenses": [],
       "agreement": {
         "baseline_syllables": true,
         "candidate_syllables": true,
-        "baseline_stress": false,
-        "candidate_stress": false,
-        "selected_stress": false,
-        "fixed_stress_compatible": false,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
         "meter_family": true
       }
     },
@@ -1951,21 +1952,21 @@
       "text": "But you shall shine more bright in these contents",
       "hand_stress": "uSuSuSuSuS",
       "hand_syllables": 10,
-      "baseline_stress": "uSuSuSuSSu",
+      "baseline_stress": "uSuSuSuSuS",
       "candidate_stresses": [
-        "uSuSuSuSSu"
+        "uSuSuSuSuS"
       ],
-      "selected_stress": "uSuSuSuSSu",
-      "model_meter_licensed": false,
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
       "model_licenses": [],
       "agreement": {
         "baseline_syllables": true,
         "candidate_syllables": true,
-        "baseline_stress": false,
-        "candidate_stress": false,
-        "selected_stress": false,
-        "fixed_stress_compatible": false,
-        "meter_family": false
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
       }
     },
     {
@@ -2075,21 +2076,23 @@
       "text": "The living record of your memory.",
       "hand_stress": "uSuSuSuSuu",
       "hand_syllables": 10,
-      "baseline_stress": "uSuuSSuSuu",
+      "baseline_stress": "uSuSuSuSuu",
       "candidate_stresses": [
-        "uSuuSSuSuu"
+        "uSuSuSuSuu"
       ],
-      "selected_stress": "uSuuSSuSuu",
-      "model_meter_licensed": false,
-      "model_licenses": [],
+      "selected_stress": "uSuSuSuSuu",
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "PYRRHIC_SUBSTITUTION"
+      ],
       "agreement": {
         "baseline_syllables": true,
         "candidate_syllables": true,
-        "baseline_stress": false,
-        "candidate_stress": false,
-        "selected_stress": false,
-        "fixed_stress_compatible": false,
-        "meter_family": false
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
       }
     },
     {
@@ -2993,21 +2996,21 @@
       "text": "O, no! it is an ever-fixed mark,",
       "hand_stress": "uSuSuSuSuS",
       "hand_syllables": 10,
-      "baseline_stress": "uSuSuSuSu",
+      "baseline_stress": "uSuSuSuSuS",
       "candidate_stresses": [
-        "uSuSuSuSu"
+        "uSuSuSuSuS"
       ],
-      "selected_stress": "uSuSuSuSu",
-      "model_meter_licensed": false,
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
       "model_licenses": [],
       "agreement": {
-        "baseline_syllables": false,
-        "candidate_syllables": false,
-        "baseline_stress": false,
-        "candidate_stress": false,
-        "selected_stress": false,
-        "fixed_stress_compatible": false,
-        "meter_family": false
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
       }
     },
     {
@@ -3041,21 +3044,21 @@
       "text": "It is the star to every wandering bark,",
       "hand_stress": "uSuSuSuSuS",
       "hand_syllables": 10,
-      "baseline_stress": "uSuSuSuuSuuS",
+      "baseline_stress": "uSuSuSuSuS",
       "candidate_stresses": [
-        "uSuSuSuuSuuS"
+        "uSuSuSuSuS"
       ],
-      "selected_stress": "uSuSuSuuSuuS",
-      "model_meter_licensed": false,
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
       "model_licenses": [],
       "agreement": {
-        "baseline_syllables": false,
-        "candidate_syllables": false,
-        "baseline_stress": false,
-        "candidate_stress": false,
-        "selected_stress": false,
-        "fixed_stress_compatible": false,
-        "meter_family": false
+        "baseline_syllables": true,
+        "candidate_syllables": true,
+        "baseline_stress": true,
+        "candidate_stress": true,
+        "selected_stress": true,
+        "fixed_stress_compatible": true,
+        "meter_family": true
       }
     },
     {
@@ -3302,21 +3305,21 @@
       "text": "If hairs be wires, black wires grow on her head.",
       "hand_stress": "uSuSSSuSuS",
       "hand_syllables": 10,
-      "baseline_stress": "uSuSuSSuuSuS",
+      "baseline_stress": "uSuSuSuSuS",
       "candidate_stresses": [
-        "uSuSuSSuuSuS"
+        "uSuSuSuSuS"
       ],
-      "selected_stress": "uSuSuSSuuSuS",
-      "model_meter_licensed": false,
+      "selected_stress": "uSuSuSuSuS",
+      "model_meter_licensed": true,
       "model_licenses": [],
       "agreement": {
-        "baseline_syllables": false,
-        "candidate_syllables": false,
+        "baseline_syllables": true,
+        "candidate_syllables": true,
         "baseline_stress": false,
         "candidate_stress": false,
         "selected_stress": false,
-        "fixed_stress_compatible": false,
-        "meter_family": false
+        "fixed_stress_compatible": true,
+        "meter_family": true
       }
     },
     {
