@@ -1,0 +1,46 @@
+ElementaryFactorWork.lean:51:2: error: `simp` made no progress
+ElementaryFactorWork.lean:65:2: error: `simp` made no progress
+ElementaryFactorWork.lean:100:2: error: Type mismatch: After simplification, term
+  HasDerivAt.comp_ofReal
+    (HasDerivAt.comp (↑t) (hasDerivAt_elementaryFactor p (↑t * z)) (HasDerivAt.mul_const (hasDerivAt_id ↑t) z))
+ has type
+  @HasDerivAt ℝ DenselyNormedField.toNontriviallyNormedField ℂ Complex.addCommGroup NormedSpace.complexToReal.toModule
+    PseudoMetricSpace.toUniformSpace.toTopologicalSpace ⋯ (fun y => elementaryFactor p (id ↑y * z))
+    (-((↑t * z) ^ p * Complex.exp (elementaryExponent p (↑t * z))) * z) t
+but is expected to have type
+  @HasDerivAt ℝ DenselyNormedField.toNontriviallyNormedField ℂ Complex.addCommGroup
+    instInnerProductSpaceRealComplex.toModule PseudoMetricSpace.toUniformSpace.toTopologicalSpace ⋯
+    (fun x => elementaryFactor p (↑x * z)) (-((↑t * z) ^ p * Complex.exp (elementaryExponent p (↑t * z))) * z) t
+'RudinRCA.Chapter15.ElementaryFactorWork.hasDerivAt_elementaryExponent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.ElementaryFactorWork.hasDerivAt_realElementaryExponent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.ElementaryFactorWork.hasDerivAt_elementaryFactor' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.ElementaryFactorWork.hasDerivAt_realElementaryFactor' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.ElementaryFactorWork.elementary_weight_integral' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.ElementaryFactorWork.norm_elementaryExponent_line_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.ElementaryFactorWork.hasDerivAt_elementaryFactor_line' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.ElementaryFactorWork.norm_elementaryFactor_line_deriv_le' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.ElementaryFactorWork.norm_one_sub_elementaryFactor_le' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
