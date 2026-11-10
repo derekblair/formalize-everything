@@ -1,0 +1,5331 @@
+{
+  "baseline_head": "cfdc1c78e8f12deb451df8ae8c2425a8de159a38",
+  "source_text_unchanged": true,
+  "changed_line_count": 104,
+  "changed_poems": [
+    {
+      "sonnet": 6,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 12,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 13,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 18,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 21,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 27,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 47,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 76,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 91,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 97,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 103,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 108,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 116,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 123,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 127,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 130,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 132,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 133,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    },
+    {
+      "sonnet": 151,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    }
+  ],
+  "changed_lines": [
+    {
+      "sonnet": 5,
+      "line": 2,
+      "text": "The lovely gaze where every eye doth dwell,",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            false,
+            null,
+            null,
+            null
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 5,
+      "line": 8,
+      "text": "Beauty o’er-snowed and bareness every where:",
+      "changes": {
+        "licenses": {
+          "before": [
+            "INITIAL_TROCHAIC_INVERSION",
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ],
+          "after": [
+            "INITIAL_TROCHAIC_INVERSION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            true,
+            false,
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            true,
+            false,
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 6,
+      "line": 5,
+      "text": "That use is not forbidden usury,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "PYRRHIC_SUBSTITUTION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 9,
+      "line": 7,
+      "text": "When every private widow well may keep",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            false,
+            true,
+            false,
+            true,
+            false,
+            null,
+            null,
+            null
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            true,
+            false,
+            true,
+            false,
+            null,
+            null,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 10,
+      "line": 11,
+      "text": "Be, as thy presence is, gracious and kind,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 11,
+      "line": 10,
+      "text": "Harsh, featureless, and rude, barrenly perish:",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 12,
+      "line": 5,
+      "text": "When lofty trees I see barren of leaves,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 13,
+      "line": 7,
+      "text": "Yourself again, after yourself’s decease,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 17,
+      "line": 12,
+      "text": "And stretched metre of an antique song:",
+      "changes": {
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              true,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            false,
+            true,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "antique",
+          "before": [
+            "AE0",
+            "N",
+            "T",
+            "IY1",
+            "K"
+          ],
+          "after": [
+            "AE1",
+            "N",
+            "T",
+            "IY0",
+            "K"
+          ],
+          "derivation": "explicit override: Initial lexical stress follows Alexander Schmidt, Shakespeare-Lexicon, vol. I, p. 43, entry Antic (Antique cross-refers there): early editions use antic/antique spellings with first-syllable accent. Only stress is adapted; the pinned modern antique vowel segments are retained as a modeling approximation, not a full historical phonetic reconstruction. Applies to every occurrence."
+        }
+      ]
+    },
+    {
+      "sonnet": 18,
+      "line": 2,
+      "text": "Thou art more lovely and more temperate:",
+      "changes": {
+        "rhyme": {
+          "before": "EH M P R AH T",
+          "after": "EH M P ER AH T"
+        },
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "PYRRHIC_SUBSTITUTION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            false
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "temperate",
+          "before": [
+            "T",
+            "EH1",
+            "M",
+            "P",
+            "R",
+            "AH0",
+            "T"
+          ],
+          "after": [
+            "T",
+            "EH1",
+            "M",
+            "P",
+            "ER0",
+            "AH0",
+            "T"
+          ],
+          "derivation": "explicit override: Selected full three-syllable lexical variant, exactly the pinned CMU temperate(2); applies to every occurrence. Attested modern availability, not proof of an exclusively historical pronunciation or a choice by meter/rhyme."
+        }
+      ]
+    },
+    {
+      "sonnet": 18,
+      "line": 7,
+      "text": "And every fair from fair sometime declines,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "SPONDAIC_SUBSTITUTION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              false,
+              true,
+              false,
+              true,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              true,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            false,
+            null,
+            null,
+            null,
+            true,
+            true,
+            false,
+            true
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            null,
+            true,
+            true,
+            false,
+            true
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 19,
+      "line": 10,
+      "text": "Nor draw no lines there with thine antique pen;",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [
+            "PYRRHIC_SUBSTITUTION",
+            "SPONDAIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            true,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "antique",
+          "before": [
+            "AE0",
+            "N",
+            "T",
+            "IY1",
+            "K"
+          ],
+          "after": [
+            "AE1",
+            "N",
+            "T",
+            "IY0",
+            "K"
+          ],
+          "derivation": "explicit override: Initial lexical stress follows Alexander Schmidt, Shakespeare-Lexicon, vol. I, p. 43, entry Antic (Antique cross-refers there): early editions use antic/antique spellings with first-syllable accent. Only stress is adapted; the pinned modern antique vowel segments are retained as a modeling approximation, not a full historical phonetic reconstruction. Applies to every occurrence."
+        }
+      ]
+    },
+    {
+      "sonnet": 19,
+      "line": 14,
+      "text": "My love shall in my verse ever live young.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 21,
+      "line": 3,
+      "text": "Who heaven itself for ornament doth use",
+      "changes": {
+        "licenses": {
+          "before": [
+            "PYRRHIC_SUBSTITUTION",
+            "SPONDAIC_SUBSTITUTION",
+            "UNSTRESSED_ELISION"
+          ],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING",
+            "SPONDAIC_SUBSTITUTION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false,
+              true
+            ],
+            "elision": 2
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              true,
+              true,
+              true,
+              false,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          }
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 21,
+      "line": 4,
+      "text": "And every fair with his fair doth rehearse,",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            false,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            true
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            true
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 25,
+      "line": 9,
+      "text": "The painful warrior famoused for fight,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "PYRRHIC_SUBSTITUTION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 27,
+      "line": 2,
+      "text": "The dear respose for limbs with travel tir’d;",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "FEMININE_ENDING"
+          ]
+        },
+        "selected_scan": {
+          "before": null,
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [],
+          "after": [
+            null,
+            null,
+            false,
+            true,
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false
+          ]
+        },
+        "unknown": {
+          "before": [
+            "respose"
+          ],
+          "after": []
+        }
+      },
+      "word_changes": [
+        {
+          "token": "respose",
+          "before": null,
+          "after": [
+            "R",
+            "IY0",
+            "P",
+            "OW1",
+            "Z"
+          ],
+          "derivation": "explicit override: Explicit editorial lookup alias to repose: Folger Sonnet 27 line 2 reads repose (accessed 2026-11-10). The frozen Gutenberg token respose is preserved in poem text; phones are the pinned CMU first entry for repose, not a historical respose reconstruction. This exact lexical alias applies independently of sonnet number, meter or rhyme."
+        }
+      ]
+    },
+    {
+      "sonnet": 32,
+      "line": 6,
+      "text": "And though they be outstripp’d by every pen,",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            null,
+            false,
+            true,
+            null,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            null,
+            false,
+            true,
+            null,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 33,
+      "line": 9,
+      "text": "Even so my sun one early morn did shine,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INITIAL_TROCHAIC_INVERSION",
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 35,
+      "line": 13,
+      "text": "That I an accessary needs must be,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "PYRRHIC_SUBSTITUTION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 38,
+      "line": 2,
+      "text": "While thou dost breathe, that pour’st into my verse",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 38,
+      "line": 4,
+      "text": "For every vulgar paper to rehearse?",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            false,
+            true,
+            false,
+            true,
+            false,
+            null,
+            false,
+            true
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            true,
+            false,
+            true,
+            false,
+            null,
+            false,
+            true
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 44,
+      "line": 14,
+      "text": "But heavy tears, badges of either’s woe.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 47,
+      "line": 2,
+      "text": "And each doth good turns now unto the other:",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 48,
+      "line": 8,
+      "text": "Art left the prey of every vulgar thief.",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true,
+              false,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            false,
+            true,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 50,
+      "line": 7,
+      "text": "As if by some instinct the wretch did know",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 50,
+      "line": 8,
+      "text": "His rider lov’d not speed, being made from thee:",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 50,
+      "line": 9,
+      "text": "The bloody spur cannot provoke him on,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 52,
+      "line": 3,
+      "text": "The which he will not every hour survey,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "UNSTRESSED_ELISION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true,
+              false,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true
+            ],
+            "elision": 8
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            true
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            false,
+            true
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 53,
+      "line": 3,
+      "text": "Since every one, hath every one, one shade,",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            false,
+            null,
+            null,
+            true,
+            false,
+            false,
+            null,
+            null,
+            null
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        },
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 53,
+      "line": 4,
+      "text": "And you but one, can every shadow lend.",
+      "changes": {
+        "licenses": {
+          "before": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION",
+            "SPONDAIC_SUBSTITUTION"
+          ],
+          "after": [
+            "SPONDAIC_SUBSTITUTION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              true,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            false,
+            true,
+            true,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            true,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 53,
+      "line": 12,
+      "text": "And you in every blessed shape we know.",
+      "changes": {
+        "licensed": {
+          "before": true,
+          "after": false
+        },
+        "licenses": {
+          "before": [
+            "PYRRHIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            false,
+            null,
+            null,
+            null,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 55,
+      "line": 3,
+      "text": "But you shall shine more bright in these contents",
+      "changes": {
+        "rhyme": {
+          "before": "AA N T EH N T S",
+          "after": "EH N T S"
+        },
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            false,
+            true
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "contents",
+          "before": [
+            "K",
+            "AA1",
+            "N",
+            "T",
+            "EH0",
+            "N",
+            "T",
+            "S"
+          ],
+          "after": [
+            "K",
+            "AH0",
+            "N",
+            "T",
+            "EH1",
+            "N",
+            "T",
+            "S"
+          ],
+          "derivation": "explicit override: Selected final-stressed prosodic reading, with phones exactly pinned CMU contents(2). The Audio Shakespeare Pronunciation Dictionary documents final stress for contents in Cymbeline II.2.27, King Lear II.4.33 and other plays. This is an explicit Shakespearean reading convention applied to all contents tokens, not inferred from a rhyme partner and not claimed to be the only possible performance."
+        }
+      ]
+    },
+    {
+      "sonnet": 55,
+      "line": 8,
+      "text": "The living record of your memory.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "PYRRHIC_SUBSTITUTION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              true,
+              true,
+              false,
+              true,
+              false,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            false,
+            true,
+            null,
+            null,
+            true,
+            false,
+            false
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            false
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "record",
+          "before": [
+            "R",
+            "AH0",
+            "K",
+            "AO1",
+            "R",
+            "D"
+          ],
+          "after": [
+            "R",
+            "EH1",
+            "K",
+            "ER0",
+            "D"
+          ],
+          "derivation": "contextual override (noun_after_determiner): Noun record after a listed article/possessive (optionally living), or this/that with a listed nominal continuation. Cambridge distinguishes initial-stressed noun record from final-stressed verb record; phones exactly match pinned CMU record(2). Local lexical heuristic only, not general parsing or historical reconstruction."
+        }
+      ]
+    },
+    {
+      "sonnet": 56,
+      "line": 10,
+      "text": "Which parts the shore, where two contracted new",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 56,
+      "line": 13,
+      "text": "Or call it winter, which being full of care,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 59,
+      "line": 5,
+      "text": "O! that record could with a backward look,",
+      "changes": {
+        "strict": {
+          "before": true,
+          "after": false
+        },
+        "licensed": {
+          "before": true,
+          "after": false
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            false,
+            true,
+            null,
+            null,
+            null,
+            true,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            null,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "record",
+          "before": [
+            "R",
+            "AH0",
+            "K",
+            "AO1",
+            "R",
+            "D"
+          ],
+          "after": [
+            "R",
+            "EH1",
+            "K",
+            "ER0",
+            "D"
+          ],
+          "derivation": "contextual override (noun_after_determiner): Noun record after a listed article/possessive (optionally living), or this/that with a listed nominal continuation. Cambridge distinguishes initial-stressed noun record from final-stressed verb record; phones exactly match pinned CMU record(2). Local lexical heuristic only, not general parsing or historical reconstruction."
+        }
+      ]
+    },
+    {
+      "sonnet": 59,
+      "line": 7,
+      "text": "Show me your image in some antique book,",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [
+            "PYRRHIC_SUBSTITUTION",
+            "SPONDAIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            false,
+            true,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "antique",
+          "before": [
+            "AE0",
+            "N",
+            "T",
+            "IY1",
+            "K"
+          ],
+          "after": [
+            "AE1",
+            "N",
+            "T",
+            "IY0",
+            "K"
+          ],
+          "derivation": "explicit override: Initial lexical stress follows Alexander Schmidt, Shakespeare-Lexicon, vol. I, p. 43, entry Antic (Antique cross-refers there): early editions use antic/antique spellings with first-syllable accent. Only stress is adapted; the pinned modern antique vowel segments are retained as a modeling approximation, not a full historical phonetic reconstruction. Applies to every occurrence."
+        }
+      ]
+    },
+    {
+      "sonnet": 61,
+      "line": 6,
+      "text": "So far from home into my deeds to pry,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 62,
+      "line": 2,
+      "text": "And all my soul, and all my every part;",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 66,
+      "line": 1,
+      "text": "Tired with all these, for restful death I cry:",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INITIAL_TROCHAIC_INVERSION",
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 66,
+      "line": 2,
+      "text": "As to behold desert a beggar born,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 68,
+      "line": 9,
+      "text": "In him those holy antique hours are seen,",
+      "changes": {
+        "licenses": {
+          "before": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION",
+            "SPONDAIC_SUBSTITUTION"
+          ],
+          "after": [
+            "FEMININE_ENDING"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            false,
+            true,
+            true,
+            false,
+            null,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            true,
+            false,
+            null,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "antique",
+          "before": [
+            "AE0",
+            "N",
+            "T",
+            "IY1",
+            "K"
+          ],
+          "after": [
+            "AE1",
+            "N",
+            "T",
+            "IY0",
+            "K"
+          ],
+          "derivation": "explicit override: Initial lexical stress follows Alexander Schmidt, Shakespeare-Lexicon, vol. I, p. 43, entry Antic (Antique cross-refers there): early editions use antic/antique spellings with first-syllable accent. Only stress is adapted; the pinned modern antique vowel segments are retained as a modeling approximation, not a full historical phonetic reconstruction. Applies to every occurrence."
+        }
+      ]
+    },
+    {
+      "sonnet": 70,
+      "line": 5,
+      "text": "So thou be good, slander doth but approve",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 70,
+      "line": 11,
+      "text": "Yet this thy praise cannot be so thy praise,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 70,
+      "line": 14,
+      "text": "Then thou alone kingdoms of hearts shouldst owe.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 71,
+      "line": 13,
+      "text": "Lest the wise world should look into your moan,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 74,
+      "line": 8,
+      "text": "My spirit is thine, the better part of me:",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 76,
+      "line": 5,
+      "text": "Why write I still all one, ever the same,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 76,
+      "line": 7,
+      "text": "That every word doth almost tell my name,",
+      "changes": {
+        "licenses": {
+          "before": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION",
+            "SPONDAIC_SUBSTITUTION"
+          ],
+          "after": [
+            "SPONDAIC_SUBSTITUTION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              false,
+              true,
+              true,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              true,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            false,
+            null,
+            null,
+            true,
+            true,
+            null,
+            null,
+            null
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            true,
+            null,
+            null,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 77,
+      "line": 9,
+      "text": "Look! what thy memory cannot contain,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "PYRRHIC_SUBSTITUTION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 78,
+      "line": 3,
+      "text": "As every alien pen hath got my use",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            true,
+            false,
+            false,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 81,
+      "line": 14,
+      "text": "Where breath most breathes, even in the mouths of men.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 82,
+      "line": 4,
+      "text": "Of their fair subject, blessing every book.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "PYRRHIC_SUBSTITUTION",
+            "SPONDAIC_SUBSTITUTION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              true,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              true,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            false,
+            true,
+            true,
+            false,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            false,
+            true,
+            true,
+            false,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 84,
+      "line": 12,
+      "text": "Making his style admired every where.",
+      "changes": {
+        "licenses": {
+          "before": [
+            "INITIAL_TROCHAIC_INVERSION",
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ],
+          "after": [
+            "INITIAL_TROCHAIC_INVERSION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            true,
+            false,
+            null,
+            null,
+            false,
+            true,
+            false,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            true,
+            false,
+            null,
+            null,
+            false,
+            true,
+            false,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 84,
+      "line": 13,
+      "text": "You to your beauteous blessings add a curse,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 85,
+      "line": 2,
+      "text": "While comments of your praise richly compil’d,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 85,
+      "line": 7,
+      "text": "To every hymn that able spirit affords,",
+      "changes": {
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            false,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            false,
+            true
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            false,
+            true
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 86,
+      "line": 5,
+      "text": "Was it his spirit, by spirits taught to write,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 89,
+      "line": 7,
+      "text": "As I’ll myself disgrace; knowing thy will,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "SPONDAIC_SUBSTITUTION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 91,
+      "line": 5,
+      "text": "And every humour hath his adjunct pleasure,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "FEMININE_ENDING",
+            "SPONDAIC_SUBSTITUTION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              true,
+              false,
+              false,
+              true,
+              true,
+              true,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              true,
+              true,
+              false
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            false,
+            true,
+            false,
+            null,
+            null,
+            true,
+            true,
+            true,
+            false
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            true,
+            false,
+            null,
+            null,
+            true,
+            true,
+            true,
+            false
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 91,
+      "line": 10,
+      "text": "Richer than wealth, prouder than garments’ costs,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INITIAL_TROCHAIC_INVERSION",
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 92,
+      "line": 12,
+      "text": "Happy to have thy love, happy to die!",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INITIAL_TROCHAIC_INVERSION",
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 95,
+      "line": 8,
+      "text": "Naming thy name, blesses an ill report.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INITIAL_TROCHAIC_INVERSION",
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 95,
+      "line": 11,
+      "text": "Where beauty’s veil doth cover every blot",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 97,
+      "line": 8,
+      "text": "Like widow’d wombs after their lords’ decease:",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 97,
+      "line": 14,
+      "text": "That leaves look pale, dreading the winter’s near.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 98,
+      "line": 3,
+      "text": "Hath put a spirit of youth in every thing,",
+      "changes": {
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              true,
+              false,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              true,
+              false,
+              false
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            null,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            null,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 99,
+      "line": 14,
+      "text": "More flowers I noted, yet I none could see,",
+      "changes": {
+        "licenses": {
+          "before": [
+            "UNSTRESSED_ELISION"
+          ],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": 2
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              true,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          }
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 100,
+      "line": 12,
+      "text": "And make time’s spoils despised every where.",
+      "changes": {
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              true,
+              false,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              true,
+              false,
+              false
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            null,
+            false,
+            true,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            null,
+            false,
+            true,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 100,
+      "line": 13,
+      "text": "Give my love fame faster than Time wastes life,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 102,
+      "line": 4,
+      "text": "The owner’s tongue doth publish every where.",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 102,
+      "line": 11,
+      "text": "But that wild music burthens every bough,",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 103,
+      "line": 9,
+      "text": "Were it not sinful then, striving to mend,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 105,
+      "line": 14,
+      "text": "Which three till now, never kept seat in one.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 106,
+      "line": 7,
+      "text": "I see their antique pen would have express’d",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [
+            "PYRRHIC_SUBSTITUTION",
+            "SPONDAIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              true,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            false,
+            true,
+            null,
+            null,
+            null,
+            false,
+            true
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            null,
+            false,
+            true
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "antique",
+          "before": [
+            "AE0",
+            "N",
+            "T",
+            "IY1",
+            "K"
+          ],
+          "after": [
+            "AE1",
+            "N",
+            "T",
+            "IY0",
+            "K"
+          ],
+          "derivation": "explicit override: Initial lexical stress follows Alexander Schmidt, Shakespeare-Lexicon, vol. I, p. 43, entry Antic (Antique cross-refers there): early editions use antic/antique spellings with first-syllable accent. Only stress is adapted; the pinned modern antique vowel segments are retained as a modeling approximation, not a full historical phonetic reconstruction. Applies to every occurrence."
+        }
+      ]
+    },
+    {
+      "sonnet": 107,
+      "line": 2,
+      "text": "Of the wide world dreaming on things to come,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 107,
+      "line": 8,
+      "text": "And peace proclaims olives of endless age.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 108,
+      "line": 8,
+      "text": "Even as when first I hallow’d thy fair name.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INITIAL_TROCHAIC_INVERSION",
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 114,
+      "line": 1,
+      "text": "Or whether doth my mind, being crown’d with you,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 114,
+      "line": 7,
+      "text": "Creating every bad a perfect best,",
+      "changes": {
+        "licenses": {
+          "before": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ],
+          "after": [
+            "PYRRHIC_SUBSTITUTION",
+            "SPONDAIC_SUBSTITUTION"
+          ]
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            false,
+            true,
+            false,
+            true,
+            false,
+            false,
+            null,
+            null,
+            false,
+            true,
+            null
+          ],
+          "after": [
+            false,
+            true,
+            false,
+            true,
+            false,
+            null,
+            null,
+            false,
+            true,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 116,
+      "line": 5,
+      "text": "O, no! it is an ever-fixed mark,",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "fixed",
+          "before": [
+            "F",
+            "IH1",
+            "K",
+            "S",
+            "T"
+          ],
+          "after": [
+            "F",
+            "IH1",
+            "K",
+            "S",
+            "IH0",
+            "D"
+          ],
+          "derivation": "contextual override (ever_fixed): Syllabic -ed in ever-fixed: Poetry Foundation's Sonnet 116 text explicitly prints ever-fixèd. Author ARPAbet representation uses fix plus unstressed IH0 D. Scoped to adjacent ever + fixed tokens (hyphen and space are not distinguished); no expansion rule for other -ed words and no sonnet/line-number selection."
+        }
+      ]
+    },
+    {
+      "sonnet": 116,
+      "line": 7,
+      "text": "It is the star to every wandering bark,",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              true,
+              false,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            false,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        },
+        {
+          "token": "wandering",
+          "before": [
+            "W",
+            "AA1",
+            "N",
+            "D",
+            "ER0",
+            "IH0",
+            "NG"
+          ],
+          "after": [
+            "W",
+            "AA1",
+            "N",
+            "D",
+            "R",
+            "IH0",
+            "NG"
+          ],
+          "derivation": "explicit override: Two-syllable wand'ring: Poetry Foundation's Sonnet 116 text explicitly marks this contraction. Author ARPAbet representation retains the pinned CMU segments except unstressed ER0 becomes consonantal R. This named lexical variant applies wherever wandering occurs; source spelling remains unchanged, and no general -ering deletion is licensed."
+        }
+      ]
+    },
+    {
+      "sonnet": 116,
+      "line": 12,
+      "text": "But bears it out even to the edge of doom.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 117,
+      "line": 2,
+      "text": "Wherein I should your great deserts repay,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 122,
+      "line": 8,
+      "text": "Of thee, thy record never can be miss’d.",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [
+            "PYRRHIC_SUBSTITUTION",
+            "SPONDAIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              true,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            false,
+            true,
+            true,
+            false,
+            null,
+            null,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false,
+            null,
+            null,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "record",
+          "before": [
+            "R",
+            "AH0",
+            "K",
+            "AO1",
+            "R",
+            "D"
+          ],
+          "after": [
+            "R",
+            "EH1",
+            "K",
+            "ER0",
+            "D"
+          ],
+          "derivation": "contextual override (noun_after_determiner): Noun record after a listed article/possessive (optionally living), or this/that with a listed nominal continuation. Cambridge distinguishes initial-stressed noun record from final-stressed verb record; phones exactly match pinned CMU record(2). Local lexical heuristic only, not general parsing or historical reconstruction."
+        }
+      ]
+    },
+    {
+      "sonnet": 123,
+      "line": 10,
+      "text": "Not wondering at the present nor the past,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 125,
+      "line": 5,
+      "text": "Have I not seen dwellers on form and favour",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 126,
+      "line": 11,
+      "text": "Her audit (though delayed) answered must be,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 127,
+      "line": 3,
+      "text": "But now is black beauty’s successive heir,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 127,
+      "line": 14,
+      "text": "That every tongue says beauty should look so.",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            true,
+            false,
+            false,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            null
+          ],
+          "after": [
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 129,
+      "line": 3,
+      "text": "Is perjur’d, murderous, bloody, full of blame,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 130,
+      "line": 4,
+      "text": "If hairs be wires, black wires grow on her head.",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              true,
+              false,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            true,
+            false,
+            null,
+            null,
+            null,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "wires",
+          "before": [
+            "W",
+            "AY1",
+            "ER0",
+            "Z"
+          ],
+          "after": [
+            "W",
+            "AY1",
+            "R",
+            "Z"
+          ],
+          "derivation": "explicit override: Selected monosyllabic lexical variant, exactly the pinned CMU wires(2); applies to every occurrence. Modern variant evidence, not reconstructed Elizabethan vowels. No length-driven selection or new scan-level elision."
+        },
+        {
+          "token": "wires",
+          "before": [
+            "W",
+            "AY1",
+            "ER0",
+            "Z"
+          ],
+          "after": [
+            "W",
+            "AY1",
+            "R",
+            "Z"
+          ],
+          "derivation": "explicit override: Selected monosyllabic lexical variant, exactly the pinned CMU wires(2); applies to every occurrence. Modern variant evidence, not reconstructed Elizabethan vowels. No length-driven selection or new scan-level elision."
+        }
+      ]
+    },
+    {
+      "sonnet": 132,
+      "line": 12,
+      "text": "And suit thy pity like in every part.",
+      "changes": {
+        "strict": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [
+            "FEMININE_ENDING",
+            "PYRRHIC_SUBSTITUTION"
+          ],
+          "after": []
+        },
+        "selected_scan": {
+          "before": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              false,
+              false
+            ],
+            "elision": null
+          },
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            false,
+            null
+          ],
+          "after": [
+            null,
+            null,
+            null,
+            true,
+            false,
+            null,
+            null,
+            true,
+            false,
+            null
+          ]
+        }
+      },
+      "word_changes": [
+        {
+          "token": "every",
+          "before": [
+            "EH1",
+            "V",
+            "ER0",
+            "IY0"
+          ],
+          "after": [
+            "EH1",
+            "V",
+            "R",
+            "IY0"
+          ],
+          "derivation": "explicit override: Selected two-syllable lexical variant, exactly the pinned CMU every(2); applies to every occurrence without consulting line length. This is lexical syncope, separate from the model's one-elision scan license."
+        }
+      ]
+    },
+    {
+      "sonnet": 132,
+      "line": 13,
+      "text": "Then will I swear beauty herself is black,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 133,
+      "line": 13,
+      "text": "And yet thou wilt; for I, being pent in thee,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 135,
+      "line": 4,
+      "text": "To thy sweet will making addition thus.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 140,
+      "line": 5,
+      "text": "If I might teach thee wit, better it were,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 142,
+      "line": 2,
+      "text": "Hate of my sin, grounded on sinful loving:",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "FEMININE_ENDING"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 142,
+      "line": 8,
+      "text": "Robb’d others’ beds’ revenues of their rents.",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION",
+            "SPONDAIC_SUBSTITUTION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 146,
+      "line": 5,
+      "text": "Why so large cost, having so short a lease,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 147,
+      "line": 11,
+      "text": "My thoughts and my discourse as madmen’s are,",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 147,
+      "line": 12,
+      "text": "At random from the truth vainly express’d;",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    },
+    {
+      "sonnet": 151,
+      "line": 2,
+      "text": "Yet who knows not conscience is born of love?",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "INTERIOR_TROCHAIC_INVERSION"
+          ]
+        }
+      },
+      "word_changes": []
+    }
+  ]
+}

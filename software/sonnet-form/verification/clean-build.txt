@@ -1,0 +1,22 @@
+$ lake clean
+exit_code=0; elapsed_seconds=0.06
+$ lake build
+✔ [2/19] Built SonnetForm.Spec (1.1s)
+✔ [3/19] Built SonnetForm.Phonology (611ms)
+✔ [4/19] Built SonnetForm.Corpus (8.3s)
+✔ [5/19] Built SonnetForm.AuditTypes (518ms)
+✔ [6/19] Built SonnetForm.AuditPart11 (6.2s)
+✔ [7/19] Built SonnetForm.AuditPart02 (7.2s)
+✔ [8/19] Built SonnetForm.AuditPart07 (7.2s)
+✔ [9/19] Built SonnetForm.AuditPart06 (7.6s)
+✔ [10/19] Built SonnetForm.AuditPart10 (7.7s)
+✔ [11/19] Built SonnetForm.AuditPart08 (7.8s)
+✔ [12/19] Built SonnetForm.AuditPart03 (8.1s)
+✔ [13/19] Built SonnetForm.AuditPart04 (8.1s)
+✔ [14/19] Built SonnetForm.AuditPart01 (8.2s)
+✔ [15/19] Built SonnetForm.AuditPart05 (8.3s)
+✔ [16/19] Built SonnetForm.AuditPart09 (8.8s)
+✔ [17/19] Built SonnetForm.Audit (2.3s)
+✔ [18/19] Built SonnetForm (345ms)
+Build completed successfully (19 jobs).
+exit_code=0; elapsed_seconds=22.1

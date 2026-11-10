@@ -1,0 +1,90 @@
+{
+  "baseline_head": "cfdc1c78e8f12deb451df8ae8c2425a8de159a38",
+  "source_text_unchanged": true,
+  "changed_line_count": 1,
+  "changed_poems": [
+    {
+      "sonnet": 27,
+      "changes": {
+        "licensed_meter": {
+          "before": false,
+          "after": true
+        }
+      }
+    }
+  ],
+  "changed_lines": [
+    {
+      "sonnet": 27,
+      "line": 2,
+      "text": "The dear respose for limbs with travel tir’d;",
+      "changes": {
+        "licensed": {
+          "before": false,
+          "after": true
+        },
+        "licenses": {
+          "before": [],
+          "after": [
+            "FEMININE_ENDING"
+          ]
+        },
+        "selected_scan": {
+          "before": null,
+          "after": {
+            "stress": [
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false,
+              true,
+              false
+            ],
+            "elision": null
+          }
+        },
+        "masks": {
+          "before": [],
+          "after": [
+            null,
+            null,
+            false,
+            true,
+            null,
+            null,
+            null,
+            true,
+            false,
+            true,
+            false
+          ]
+        },
+        "unknown": {
+          "before": [
+            "respose"
+          ],
+          "after": []
+        }
+      },
+      "word_changes": [
+        {
+          "token": "respose",
+          "before": null,
+          "after": [
+            "R",
+            "IY0",
+            "P",
+            "OW1",
+            "Z"
+          ],
+          "derivation": "explicit override: Explicit editorial lookup alias to repose: Folger Sonnet 27 line 2 reads repose (accessed 2026-11-10). The frozen Gutenberg token respose is preserved in poem text; phones are the pinned CMU first entry for repose, not a historical respose reconstruction. This exact lexical alias applies independently of sonnet number, meter or rhyme."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+#!/usr/bin/env python3
+"""Regression checks for the Python annotation/mirror boundary.
+
+This is not the proof: the Lean corpus audit checks all actual verdicts.
+These checks exercise missing data and malformed/unsupported readings that
+should never acquire a favorable default. Uses only Python's standard library.
+"""
+import unittest
+from unittest.mock import patch
+
+from generate import IAMB, annotate, realize, scan_verdict, scans
+
+
+class MeterBoundaryChecks(unittest.TestCase):
+    def test_strict_and_each_license(self):
+        self.assertEqual(scan_verdict({'stress': IAMB, 'elision': None}),
+                         (True, True, []))
+        examples = [
+            ([True, False] + IAMB[2:], None, 'INITIAL_TROCHAIC_INVERSION'),
+            (IAMB[:4] + [True, False] + IAMB[6:], None, 'INTERIOR_TROCHAIC_INVERSION'),
+            (IAMB[:6] + [True, False] + IAMB[8:], None, 'INTERIOR_TROCHAIC_INVERSION'),
+            (IAMB + [False], None, 'FEMININE_ENDING'),
+            ([False, False] + IAMB[2:], None, 'PYRRHIC_SUBSTITUTION'),
+            ([True, True] + IAMB[2:], None, 'SPONDAIC_SUBSTITUTION'),
+            ([False] + IAMB, 0, 'UNSTRESSED_ELISION'),
+        ]
+        for raw, elision, license_name in examples:
+            with self.subTest(license=license_name):
+                strict, licensed, names = scan_verdict({'stress': raw, 'elision': elision})
+                self.assertFalse(strict)
+                self.assertTrue(licensed)
+                self.assertIn(license_name, names)
+
+    def test_bad_readings_fail_and_receive_no_licenses(self):
+        examples = [
+            ([], None),
+            (IAMB[:8], None),
+            (IAMB + [True], None),
+            (IAMB + [False, False], None),
+            (IAMB[:2] + [True, False] + IAMB[4:], None),
+            (IAMB[:8] + [True, False], None),
+            (IAMB[:4] + [True, False, True, False] + IAMB[8:], None),
+            ([True] * 10, None),
+            ([True] + IAMB, 0),
+            (IAMB, 99),
+            (IAMB, -1),
+        ]
+        for raw, elision in examples:
+            with self.subTest(raw=raw, elision=elision):
+                self.assertEqual(scan_verdict({'stress': raw, 'elision': elision}),
+                                 (False, False, []))
+
+    def test_interior_inversion_composes_with_existing_licenses(self):
+        interior = 'INTERIOR_TROCHAIC_INVERSION'
+        raw = IAMB[:6] + [True, False] + IAMB[8:]
+        examples = [
+            ([True, False] + raw[2:], None,
+             ['INITIAL_TROCHAIC_INVERSION', interior]),
+            (raw[:2] + [False, False] + raw[4:], None,
+             [interior, 'PYRRHIC_SUBSTITUTION']),
+            (raw[:8] + [True, True], None,
+             [interior, 'SPONDAIC_SUBSTITUTION']),
+            ([False] + raw + [False], 0,
+             [interior, 'FEMININE_ENDING', 'UNSTRESSED_ELISION']),
+        ]
+        for stress, elision, names in examples:
+            with self.subTest(stress=stress, elision=elision):
+                self.assertEqual(scan_verdict({'stress': stress, 'elision': elision}),
+                                 (False, True, names))
+
+    def test_interior_inversion_keeps_the_total_substitution_budget(self):
+        raw = [True, False, False, False] + IAMB[4:6] + [True, False] + IAMB[8:]
+        self.assertEqual(scan_verdict({'stress': raw, 'elision': None}),
+                         (False, False, []))
+
+    def test_inversion_positions_are_checked_after_elision(self):
+        second_foot = IAMB[:2] + [True, False] + IAMB[4:]
+        self.assertEqual(scan_verdict({'stress': [False] + second_foot, 'elision': 0}),
+                         (False, False, []))
+
+    def test_fixed_interior_stress_survives_realization(self):
+        for offset in (4, 6):
+            with self.subTest(offset=offset):
+                masks = [None] * offset + [True, False] + [None] * (8 - offset)
+                raw = realize(masks)
+                self.assertEqual(raw[offset:offset + 2], [True, False])
+                self.assertEqual(scan_verdict({'stress': raw, 'elision': None}),
+                                 (False, True, ['INTERIOR_TROCHAIC_INVERSION']))
+
+    def test_realization_preserves_fixed_stress_and_count(self):
+        masks = [None, False, True, None, False, None]
+        raw = realize(masks)
+        self.assertEqual(raw, [False, False, True, True, False, True])
+        self.assertEqual(len(raw), len(masks))
+
+    def test_only_fixed_weak_elision_is_eligible(self):
+        for invalid_index in [-1, 0, 1, 3, 99]:
+            with self.subTest(index=invalid_index):
+                self.assertEqual(len(scans([None, True, False], [invalid_index])), 1)
+        candidate = scans([None, True, False, None], [2])[1]
+        self.assertEqual(candidate, {'stress': [False, True, False, False], 'elision': 2})
+        self.assertEqual(scans([], [0]), [])
+
+
+class AnnotationBoundaryChecks(unittest.TestCase):
+    def test_sourced_readings_apply_without_meter_or_poem_identifiers(self):
+        from pronunciations import resolve
+        for token, expected in {'temperate': '100', 'every': '10',
+                                'wandering': '10', 'wires': '1',
+                                'antique': '10', 'contents': '01'}.items():
+            with self.subTest(token=token):
+                phones, note = resolve(token)
+                self.assertEqual(''.join(p[-1] for p in phones if p[-1:] in '012'), expected)
+                self.assertIn('override', note)
+
+    def test_contextual_noun_and_participle_guards(self):
+        from pronunciations import resolve, resolve_in_context, tokenize
+        for text, index in [('the living record endures', 2), ('thy record', 1),
+                            ('that record could endure', 1)]:
+            self.assertEqual(resolve_in_context(tokenize(text), index)[0],
+                             ['R', 'EH1', 'K', 'ER0', 'D'])
+        for text, index in [('to record voices', 1), ('songs that record voices', 2),
+                            ('saw her record voices', 2), ('record', 0)]:
+            self.assertEqual(resolve_in_context(tokenize(text), index), resolve('record'))
+        for text in ['an ever-fixed mark', 'the ever fixed point', 'AN EVER-FIXED MARK']:
+            self.assertEqual(resolve_in_context(tokenize(text), 2)[0],
+                             ['F', 'IH1', 'K', 'S', 'IH0', 'D'])
+        for text, index in [('have you ever fixed this', 3), ('ever fixed', 1),
+                            ('an ever fixed', 2)]:
+            self.assertEqual(resolve_in_context(tokenize(text), index), resolve('fixed'))
+        self.assertEqual(resolve_in_context(tokenize('a fixed point'), 1), resolve('fixed'))
+        self.assertEqual(resolve_in_context(tokenize('ever fix’d'), 1), resolve('fix’d'))
+        with self.assertRaises(IndexError):
+            resolve_in_context(['record'], -1)
+
+    @staticmethod
+    def fake_lookup(token):
+        phones = {'rose': ['R', 'OW1', 'Z'],
+                  'heaven': ['HH', 'EH1', 'V', 'AH0', 'N']}.get(token)
+        return (phones, 'test fixture') if phones is not None else None
+
+    def test_missing_interior_word_cannot_disappear_from_meter(self):
+        with patch('pronunciations.resolve', self.fake_lookup):
+            result = annotate('rose unknown rose')
+        self.assertEqual(result['unknown'], ['unknown'])
+        self.assertEqual(result['masks'], [])
+        self.assertEqual(result['scans'], [])
+        self.assertFalse(result['strict'])
+        self.assertFalse(result['licensed'])
+        self.assertEqual(result['rhyme'], 'OW Z')
+
+    def test_missing_end_word_also_has_no_rhyme(self):
+        with patch('pronunciations.resolve', self.fake_lookup):
+            result = annotate('rose unknown')
+        self.assertIsNone(result['rhyme'])
+        self.assertEqual(result['scans'], [])
+
+    def test_elision_index_counts_syllables_and_text_is_preserved(self):
+        original = 'rose heaven rose'
+        with patch('pronunciations.resolve', self.fake_lookup):
+            result = annotate(original)
+        self.assertEqual(result['text'], original)
+        self.assertEqual(result['masks'], [None, True, False, None])
+        self.assertEqual(result['eligible_elisions'], [2])
+        self.assertEqual(len(result['scans']), 2)
+
+    def test_editorial_alias_preserves_source_and_does_not_guess_other_words(self):
+        from pronunciations import resolve
+        original = 'The dear respose for limbs with travel tired;'
+        result = annotate(original)
+        self.assertEqual(result['text'], original)
+        self.assertEqual(result['words'][2]['token'], 'respose')
+        self.assertEqual(result['words'][2]['phonemes'], resolve('repose')[0])
+        self.assertIn('Folger', result['words'][2]['derivation'])
+        self.assertIsNone(resolve('respoze'))
+
+    def test_empty_text_cannot_pass(self):
+        result = annotate('')
+        self.assertEqual(result['scans'], [])
+        self.assertIsNone(result['rhyme'])
+        self.assertFalse(result['strict'])
+        self.assertFalse(result['licensed'])
+
+
+class HistoricalEvidenceBoundaryChecks(unittest.TestCase):
+    def test_review_rejects_broken_provenance_and_unsupported_complete_claims(self):
+        import copy
+        import json
+        from rhyme_review import ROOT, load_review
+        review = load_review()
+        corpus = json.loads((ROOT / 'data/sonnets.json').read_text())
+        mutations = [
+            lambda d: d['baseline'].update(annotations_sha256='0' * 64),
+            lambda d: d['sonnets'][0].update(whole_historical_scheme_status='validated'),
+            lambda d: next(s for s in d['sonnets'] if s['open_constraint_ids']).update(open_constraint_ids=[]),
+            lambda d: d['summary'].update(sonnets_with_context_free_obstruction=[]),
+            lambda d: d['sonnets'][0]['baseline_classes'].__setitem__(0, 'fabricated class'),
+            lambda d: d['sonnets'][0]['unequal_pairs'][0].update(evidence_ids=['missing source']),
+        ]
+        for index, mutate in enumerate(mutations):
+            changed = copy.deepcopy(review)
+            mutate(changed)
+            with self.subTest(mutation=index):
+                with patch('rhyme_review.json.loads', side_effect=[changed, corpus]):
+                    with self.assertRaises(AssertionError):
+                        load_review()
+
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,0 +1,29 @@
+[
+  {
+    "command": "lake --no-cache build",
+    "cwd": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/repo/software/sonnet-form",
+    "exit_status": 0,
+    "seconds": 14.383,
+    "log": "01-build.log",
+    "sha256": "8c178085ed76e3c46eafe3ab5d4c529f84f39865b4a2e09e2d50fe2c4dc035e8",
+    "original_log": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/phase2-final/01-build.log"
+  },
+  {
+    "command": "python3 tools/import_corpus.py --check",
+    "cwd": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/repo/software/sonnet-form",
+    "exit_status": 0,
+    "seconds": 0.044,
+    "log": "02-import_corpus.log",
+    "sha256": "b3ddcda2ea15bc8595f13f5575a68ca6a667dcf1bf30a5214c90293dfe570ab7",
+    "original_log": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/phase2-final/02-import_corpus.log"
+  },
+  {
+    "command": "python3 tools/generate.py --check",
+    "cwd": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/repo/software/sonnet-form",
+    "exit_status": 1,
+    "seconds": 0.494,
+    "log": "03-generate.log",
+    "sha256": "9cecb15d2da17f57ee303371a40154850ad009e91cc14b06d1adebfc2997e8c4",
+    "original_log": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/phase2-final/03-generate.log"
+  }
+]

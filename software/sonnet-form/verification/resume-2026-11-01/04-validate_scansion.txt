@@ -1,0 +1,12 @@
+$ python3 tools/validate_scansion.py --check
+Hand fixture: 11 complete sonnets, 154 lines
+Baseline syllable count: 132/154
+Any supplied reading: syllable count: 138/154
+Baseline complete stress sequence: 71/154
+Any supplied reading: complete stress sequence: 73/154
+Selected reading: complete stress sequence: 71/154
+Fixed lexical stresses compatible with hand reading: 121/154
+Licensed-meter verdict versus hand verse family: 140/154
+Whole-poem verdict agreement: 5/11
+
+exit_code=0
