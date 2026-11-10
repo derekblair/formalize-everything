@@ -1,0 +1,107 @@
+{
+  "source": "/root/formalize-research",
+  "original_files": [
+    {
+      "path": "BRIEF.md",
+      "bytes": 3578,
+      "sha256": "46f20499f63fb3282ef15197169c2335296b4a1e9875d11b0c74026007919421"
+    },
+    {
+      "path": "REPORT.md",
+      "bytes": 85515,
+      "sha256": "2428f9f16bf0c550134983e2bb2dc3f06e7e34babad4685a1edc02ec2eb8d65c"
+    },
+    {
+      "path": "reports/Lean formalization priorities.md",
+      "bytes": 85515,
+      "sha256": "2428f9f16bf0c550134983e2bb2dc3f06e7e34babad4685a1edc02ec2eb8d65c"
+    },
+    {
+      "path": "research_notes/Lean formalization priorities/algebra_number_theory.md",
+      "bytes": 59025,
+      "sha256": "6beabfb5e0de0bff6f731bc89e82610a18a87db390cad668461f04dac1ce3bd0"
+    },
+    {
+      "path": "research_notes/Lean formalization priorities/analysis_probability.md",
+      "bytes": 72420,
+      "sha256": "a93444e2fb1d0df155fd78cd8e14fb04b02c8fed7a09960f3fd64253e2204e1a"
+    },
+    {
+      "path": "research_notes/Lean formalization priorities/combinatorics_graph_theory.md",
+      "bytes": 77264,
+      "sha256": "37ac7e5a0165acb194930ab3061944addc4f79413f585ebeb60abb596b5d7297"
+    },
+    {
+      "path": "research_notes/Lean formalization priorities/formalization_landscape.md",
+      "bytes": 65647,
+      "sha256": "c480f9c7da117dbd3ccab285ef3ebccae1bd46bddc280ca12776606a7e94346f"
+    },
+    {
+      "path": "research_notes/Lean formalization priorities/logic_theoretical_cs.md",
+      "bytes": 65182,
+      "sha256": "6dcc1ca79fabedc424e0d1713343e3eafaaf37afcd43a9872e44bbf3008ad4e1"
+    },
+    {
+      "path": "research_notes/Lean formalization priorities/mathematical_physics.md",
+      "bytes": 71871,
+      "sha256": "5e02de15221172a93759db620f748f00bb73ac80c719379df9c750ee16d6a29d"
+    },
+    {
+      "path": "research_notes/Lean formalization priorities/topology_geometry.md",
+      "bytes": 77338,
+      "sha256": "12aa6d86549d0b3e89ddd2f80558faa753de80efe4f1cab4c7b680160e5b7928"
+    }
+  ],
+  "upstream_checkouts": [
+    {
+      "path": ".audit/FormalBook",
+      "origin": "https://github.com/mo271/FormalBook.git",
+      "branch": "main",
+      "head": "626d296add63fd39e52934f682142d6f9486dcf7",
+      "local_remote_contains": [
+        "origin/HEAD -> origin/main",
+        "  origin/main"
+      ]
+    },
+    {
+      "path": ".audit/algebraic-combinatorics",
+      "origin": "https://github.com/facebookresearch/algebraic-combinatorics.git",
+      "branch": "main",
+      "head": "b6022318e986a0c20764569208ba8ebbe1c04dbf",
+      "local_remote_contains": [
+        "origin/HEAD -> origin/main",
+        "  origin/main"
+      ]
+    },
+    {
+      "path": ".audit/basic-category-theory-lean4",
+      "origin": "https://github.com/whoiam1101/basic-category-theory-lean4.git",
+      "branch": "main",
+      "head": "64182ea378da340d64cee4b31a4c6975112347bb",
+      "local_remote_contains": [
+        "origin/HEAD -> origin/main",
+        "  origin/main"
+      ]
+    },
+    {
+      "path": ".audit/generatingfunctionology.lean",
+      "origin": "https://github.com/Julian/generatingfunctionology.lean.git",
+      "branch": "main",
+      "head": "6d1998e1de117018ba9ad475c801e55b4751272b",
+      "local_remote_contains": [
+        "origin/HEAD -> origin/main",
+        "  origin/main"
+      ]
+    },
+    {
+      "path": ".audit/spivak-lean",
+      "origin": "https://github.com/stormj-UH/spivak-lean.git",
+      "branch": "fourth-edition",
+      "head": "c24e9fcb7e96873ea9d4769c453be1b3ca48d211",
+      "local_remote_contains": [
+        "origin/HEAD -> origin/fourth-edition",
+        "  origin/fourth-edition"
+      ]
+    }
+  ]
+}
