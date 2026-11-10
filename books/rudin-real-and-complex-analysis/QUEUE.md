@@ -54,3 +54,64 @@ disposition. No original Chapter 3 item is silently marked complete.
 Pinned Mathlib cites Vitali–Carathéodory as RCA 2.24 with `rudin2006real`.
 The verified 1987 third edition has Lusin 2.24 and Vitali–Carathéodory 2.25.
 This lane retains the book's numbering. See the Chapter 2 overlap analysis.
+
+## Cluster E — ticket #41, source fidelity stops
+
+### E-10.37 — variable mismatch in the printed statement
+
+Printed p. 221 displays `Indγ(z) = 1 + Indγ(w)` but ends with the
+membership condition `x ∈ D₊` and `w ∈ D₋`. The free `z`/bound `x`
+mismatch is visible in the scan, not an OCR invention. Stop the literal
+node. The intended repair is to replace that `x` by `z`, supported by
+the following proof, but the repaired geometric theorem is **not yet
+formalized**. No theorem with a silently changed binder is admitted.
+The closure bars on the earlier `a ± bi` membership conditions were
+also checked visually and are present; those conditions are not errors.
+Source: [printed p.221](https://djvu.online/jpg/N/K/m/NKmAEzkLVs8Io/233.webp).
+
+`node10_37_literal_conclusion_counterexample` now proves the algebraic
+obstruction for every complex-valued index map and nonempty side sets:
+choose the unconstrained `z` equal to `w`, and the displayed identity
+would imply `0 = 1`. This is a counterexample to the literal conclusion
+schema; it neither constructs a path satisfying the printed geometry nor
+proves the intended index-jump theorem. The full node remains queued.
+
+### E-11.5 — false strict inequality at radius zero
+
+Printed p. 233, equation (4), allows `0 ≤ r < 1` while claiming strict
+angular decrease. At `r = 0` the Poisson kernel is the constant 1, so
+`δ = 1`, `t = 2` satisfies the printed angular restrictions and falsifies
+the strict inequality. Stop this subclaim. `Chapter11.lean` contains
+`node11_5_strict_inequality_counterexample` and
+`node11_5_strict_inequality_corrected`; the latter explicitly adds `0 < r`.
+Neither proves the false printed claim or completes numbered node 11.5.
+Source: [printed p.233](https://djvu.online/jpg/N/K/m/NKmAEzkLVs8Io/245.webp).
+
+## Cluster E — formalization gaps
+
+- The pinned Mathlib has general `curveIntegral` machinery and a convex
+  primitive theorem. A bridge to Rudin's finite piecewise C¹ paths,
+  reparametrizations, path sums/cycles, and integral-defined integer index
+  is still required. The claims check found no full global winding-number,
+  cycle Cauchy, residue, or argument-principle package. Circle Cauchy
+  theorems alone cannot discharge 10.8–10.15 or 10.34–10.43.
+- 10.7 needs the Cauchy transform for an arbitrary finite **complex**
+  measure; a positive-measure Bochner theorem with altered hypotheses
+  is not a faithful replacement.
+- 11.3 defines harmonicity by continuity and existence of the two pure
+  second partials with zero sum. Mathlib's harmonic predicate includes
+  C² regularity. The reverse regularity bridge is needed for 11.10 and
+  later applications to all of Rudin's harmonic functions.
+- All other unfinished nodes and the exact compound obligations are
+  retained in the [complete inventory](inventory/README.md). Claims-check
+  availability is not proof completion; these nodes remain in scope.
+
+These gaps require further proof development, not pin changes or imports
+of unfinished Chapters 1–9. This lane's delivery remains a draft until
+the Chapter 10 coverage and fidelity requirements are resolved.
+
+Checkpoint 2026-11-01: all 67 incomplete nodes remain accounted for:
+10.5, 10.7–10.15, 10.17, 10.21–10.22, 10.30–10.44;
+11.5–11.32; and 12.1, 12.4–12.8, 12.10–12.14. In particular, the
+newly proved isolated-zero and joint-continuity results do not discharge
+the general path/index obligations or the 10.37 fidelity hold.
