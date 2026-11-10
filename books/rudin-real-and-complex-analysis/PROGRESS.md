@@ -23,9 +23,9 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 15 | Zeros of Holomorphic Functions | 27 | 0 |
 | 16 | Analytic Continuation | 22 | 0 |
 | 17 | Hp-Spaces | 26 | 0 |
-| 18 | Some Applications of the Phragmén–Lindelöf Method | TBD | 0 |
-| 19 | Entire Functions | TBD | 0 |
-| 20 | Boundary Behavior of Bounded Analytic Functions | TBD | 0 |
+| 18 | Elementary Theory of Banach Algebras | 21 (+ 3 local corollaries) | 0 |
+| 19 | Holomorphic Fourier Transforms | 11 | 0 |
+| 20 | Uniform Approximation by Polynomials | 5 | 0 |
 
 Cluster B's counts come from a fresh printed-text enumeration in
 [INVENTORY-B.md](INVENTORY-B.md): 4.1–4.26 and 5.1–5.25, including numbered
@@ -119,3 +119,15 @@ The ticket’s headline numbering differs from the printed third edition: Runge 
 The working Chapter13 module contains the sphere topology and exact stereographic map, inverse-chart singularity definitions, bounded removability and polynomial principal parts at infinity, entire nonpolynomial essential singularities, and the full 13.12 log-modulus harmonicity statement. The combined module and umbrella build passed with48 allowed-axiom declaration audits on2026-10-29. This is an incremental branch checkpoint: neither a complete chapter nor the clean-slate PR gate. Further assertions of13.1 and the drafts for13.2 onward remain under verification. Partial assertions are not counted as completed numbered nodes.
 
 Cluster G counts were independently checked against the printed third edition; see [SCOPING-G.md](SCOPING-G.md). F. and M. Riesz is 17.13 in that edition, whereas issue #43 labels it 17.11. No complete chapter or merged Stage 2 coverage is claimed by this inventory update.
+
+## Cluster H inventory and scope correction
+
+Printed third-edition Chapters 18–20 have 37 top-level numbered nodes, plus
+three locally numbered corollaries under 18.4. The previous titles, also present
+in issue #44, do not match the printed edition. This branch follows the printed
+chapter numbers and discloses the discrepancy; see [SCOPING-H.md](SCOPING-H.md).
+No separate Stage 1 lane inventory was supplied. Counts here were independently
+enumerated from the printed third-edition scan. Exercises are excluded.
+
+The main-branch Done column remains zero until reviewed changes land. A
+successful supporting lemma does not imply completion of its entire book node.
