@@ -18,6 +18,7 @@ IAMB = [False, True] * 5
 ELIDABLE = {'heaven', 'heavens', "heaven's", 'power', 'powers', "power's",
             'flower', 'flowers', "flower's", 'hour', 'hours', "hour's", 'our'}
 LICENSES = [('initialTrochaicInversion', 'INITIAL_TROCHAIC_INVERSION'),
+            ('interiorTrochaicInversion', 'INTERIOR_TROCHAIC_INVERSION'),
             ('feminineEnding', 'FEMININE_ENDING'),
             ('pyrrhicSubstitution', 'PYRRHIC_SUBSTITUTION'),
             ('spondaicSubstitution', 'SPONDAIC_SUBSTITUTION'),
@@ -48,9 +49,11 @@ def scan_verdict(scan):
     core = xs[:10] if feminine else xs
     feet = list(zip(core[::2], core[1::2]))
     licensed = (valid_elision and len(core) == 10 and
-                all(pair != (True, False) or i == 0 for i, pair in enumerate(feet)) and
+                all(pair != (True, False) or i in (0, 2, 3) for i, pair in enumerate(feet)) and
+                sum(pair == (True, False) for pair in feet[1:]) <= 1 and
                 sum(pair != (False, True) for pair in feet) <= 2)
-    flags = [bool(feet) and feet[0] == (True, False), feminine,
+    flags = [bool(feet) and feet[0] == (True, False),
+             (True, False) in feet[1:], feminine,
              (False, False) in feet, (True, True) in feet, elision is not None]
     licenses = [name for (_, name), flag in zip(LICENSES, flags) if flag] if licensed else []
     return strict, licensed, licenses

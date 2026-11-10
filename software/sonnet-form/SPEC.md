@@ -65,7 +65,8 @@ pattern somewhere in an otherwise failed scan does not grant a license.
 
 | Rule / predicate | Exact condition |
 | --- | --- |
-| `initialTrochaicInversion` | The first foot is strong–weak; inversion is allowed only in that foot. |
+| `initialTrochaicInversion` | The first foot is strong–weak. |
+| `interiorTrochaicInversion` | Exactly one interior foot is strong–weak, in the third or fourth foot of the ten-syllable core. |
 | `feminineEnding` | After any elision, an eleventh syllable is weak; remove it before checking the five feet. |
 | `pyrrhicSubstitution` | At least one two-syllable foot is weak–weak. |
 | `spondaicSubstitution` | At least one two-syllable foot is strong–strong. |
@@ -80,17 +81,50 @@ passing candidate, whose deterministic ordering is described below.
 After an optional elision and feminine ending, exactly ten syllables remain.
 They are grouped into five consecutive two-syllable feet. At most **two** feet
 may differ from weak–strong, so at least three remain iambs. Trochees are
-allowed only in the initial foot; weak–weak and strong–strong substitutions
-are allowed in any foot. A feminine ending and elision do not consume this
-two-foot budget and can combine with each other and the substitutions.
+allowed in the initial foot and, subject to MD-INTERIOR-INVERSION below, in
+the third or fourth foot. Weak–weak and strong–strong substitutions are
+allowed in any foot. Every trochee consumes one unit of the same two-foot
+budget. A feminine ending and elision do not consume this budget and can
+combine with each other and the substitutions.
 
 The two-foot bound is a conservative modeling choice, not a theorem about all
-historical metrical practice. No medial inversion, anapestic expansion,
-acephalous line, or arbitrary syllable insertion is granted. A line rejected
-because it needs an unenumerated license is a failure **under this model**.
-The strict and licensed checks are both recorded so the impact of licenses is
-visible. A tetrameter cannot pass by invoking these licenses: deletion never
-creates the missing fifth foot.
+historical metrical practice. No second/fifth-foot inversion, anapestic
+expansion, acephalous line, or arbitrary syllable insertion is granted. A line
+rejected because it needs an unenumerated license is a failure **under this
+model**. The strict and licensed checks are both recorded so the impact of
+licenses is visible. A tetrameter cannot pass by invoking these licenses:
+deletion never creates the missing fifth foot.
+
+## MD-INTERIOR-INVERSION: bounded positional feasibility
+
+At most **one** noninitial foot may be a trochee, and it must be the third or
+fourth foot (zero-based index 2 or 3). An initial inversion may combine with
+it, still subject to the shared two-substitution budget. Positions are counted
+after the declared elision and removal of any feminine ending. Neither text,
+word identity, nor sonnet/line number enters this predicate.
+
+[Bruce Hayes, “The Prosodic Hierarchy in Meter” (1989), pp. 256–257](https://brucehayes.org/201A/readings/HayesProsodicHierarchy1989.pdf#page=29),
+identifies the first, third, and fourth feet as preferred inversion positions
+associated with possible colon beginnings, with second/fifth-foot inversions
+avoided. He also requires genuine phrasal breaks for Shakespeare. The selected
+positions follow that evidence; the one-interior limit and total budget are
+conservative author choices, not universal historical rules.
+
+The specific fourth-foot inversion on *ever* in sonnet 19.14 has direct
+scholarly support: [Paul Kiparsky, “The Rhythmic Structure of English Verse”
+(1977), p. 217, example (75d)](https://brucehayes.org/251metrics/papers/KiparskyRhythmicStructureEnglishVerse1977Shorter.pdf#page=29),
+lists it among sentence-internal cases permitted after a phrase boundary
+without a preceding proclitic. This evidence supports the example independently
+of its passing the model; it does not define the executable rule by that line.
+
+`Scan` has no phrase-boundary or proclitic annotation. Consequently this rule
+is a **positional feasibility approximation**, not a complete implementation
+of either scholar's grammar. It can admit a stress sequence whose phrasing
+would not justify inversion. The specific *ever* reading is supported, but the
+general linguistic license is only partially modeled: phrase/proclitic
+annotation and validation remain outstanding. No new stress realization or
+pronunciation is inferred by this license, and a failed whole scan receives
+no license names. Sources consulted 2026-11-10 UTC.
 
 ## MD-MONOSYLLABLE-FLEX: context-sensitive stress masks
 
@@ -146,8 +180,9 @@ justification of elision indices, or the generator's lexical decisions.
 Recorded source bytes, reproducible extraction/annotation, and a stated
 hand-scanned validation sample are separate evidence for those boundaries.
 Boundary theorems cover ordinary pentameter, each named license, tetrameter,
-medial inversion, excess substitutions, invalid or stressed elisions, missing
-annotations, and preservation of fixed stresses.
+allowed third/fourth-foot and forbidden second/fifth-foot inversions, multiple
+interior inversions, composition and excess substitutions, invalid or stressed
+elisions, missing annotations, and preservation of fixed stresses.
 
 ## MD-SOURCE-ALIAS: editorial interpretation is explicit
 

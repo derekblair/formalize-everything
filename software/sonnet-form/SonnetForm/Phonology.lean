@@ -99,10 +99,20 @@ theorem flexible_pentameter_passes :
 theorem flexible_tetrameter_fails :
     lineMeterLicensed (lineFromMasks "" none (List.replicate 8 none)) = false := by decide
 
-theorem fixed_medial_inversion_not_overwritten :
+theorem fixed_second_foot_inversion_not_overwritten :
     lineMeterLicensed (lineFromMasks "" none
       [none, none, some true, some false, none, none, none, none, none, none]) = false := by
   decide
+
+theorem fixed_third_foot_inversion_licensed :
+    lineLicenses (lineFromMasks "" none
+      [none, none, none, none, some true, some false, none, none, none, none]) =
+        [.interiorTrochaicInversion] := by decide
+
+theorem fixed_fourth_foot_inversion_licensed :
+    lineLicenses (lineFromMasks "" none
+      [none, none, none, none, none, none, some true, some false, none, none]) =
+        [.interiorTrochaicInversion] := by decide
 
 theorem fixed_initial_inversion_licensed :
     lineLicenses (lineFromMasks "" none

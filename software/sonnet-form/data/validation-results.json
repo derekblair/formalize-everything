@@ -1,6 +1,6 @@
 {
   "hand_source_sha256": "a6b57916618c23d9699c79c3e1fc5d2fed5b5e185ca7a497b1784e85d46fafbb",
-  "annotations_sha256": "a3ae716976239ec19ef742e3bd66e4e98347c328369b2ccdac62162e72bd8290",
+  "annotations_sha256": "fdfebb44cb96cfa51d76b77db4042c6b370e1e55efeafff353d98ab6ae61fa6a",
   "counts": {
     "baseline_syllables": {
       "agree": 137,
@@ -27,12 +27,12 @@
       "total": 154
     },
     "meter_family": {
-      "agree": 147,
+      "agree": 149,
       "total": 154
     }
   },
   "poem_verdict": {
-    "agree": 7,
+    "agree": 8,
     "total": 11
   },
   "sonnets": [
@@ -78,7 +78,7 @@
         "candidate_stress": 5,
         "selected_stress": 5,
         "fixed_stress_compatible": 12,
-        "meter_family": 12
+        "meter_family": 13
       },
       "expected_pentameter": true,
       "observed_licensed_meter": false,
@@ -174,11 +174,11 @@
         "candidate_stress": 8,
         "selected_stress": 8,
         "fixed_stress_compatible": 11,
-        "meter_family": 13
+        "meter_family": 14
       },
       "expected_pentameter": true,
-      "observed_licensed_meter": false,
-      "poem_verdict_agrees": false
+      "observed_licensed_meter": true,
+      "poem_verdict_agrees": true
     },
     {
       "number": 130,
@@ -1184,8 +1184,10 @@
         "uSuSuSSuuS"
       ],
       "selected_stress": "uSuSuSSuuS",
-      "model_meter_licensed": false,
-      "model_licenses": [],
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "INTERIOR_TROCHAIC_INVERSION"
+      ],
       "agreement": {
         "baseline_syllables": true,
         "candidate_syllables": true,
@@ -1193,7 +1195,7 @@
         "candidate_stress": true,
         "selected_stress": true,
         "fixed_stress_compatible": true,
-        "meter_family": false
+        "meter_family": true
       }
     },
     {
@@ -3170,8 +3172,11 @@
         "uSuSSuuSuSu"
       ],
       "selected_stress": "uSuSSuuSuSu",
-      "model_meter_licensed": false,
-      "model_licenses": [],
+      "model_meter_licensed": true,
+      "model_licenses": [
+        "INTERIOR_TROCHAIC_INVERSION",
+        "FEMININE_ENDING"
+      ],
       "agreement": {
         "baseline_syllables": false,
         "candidate_syllables": false,
@@ -3179,7 +3184,7 @@
         "candidate_stress": false,
         "selected_stress": false,
         "fixed_stress_compatible": false,
-        "meter_family": false
+        "meter_family": true
       }
     },
     {

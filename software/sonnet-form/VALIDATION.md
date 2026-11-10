@@ -22,8 +22,8 @@ Syllable and stress comparisons apply the candidate's explicitly indexed elision
 | Any supplied reading: complete stress sequence | 79 | 154 | 51.3% |
 | Selected reading: complete stress sequence | 77 | 154 | 50.0% |
 | Fixed lexical stresses compatible with hand reading | 128 | 154 | 83.1% |
-| Licensed-meter verdict versus hand verse family | 147 | 154 | 95.5% |
-| Whole-poem licensed-meter verdict versus hand family | 7 | 11 | 63.6% |
+| Licensed-meter verdict versus hand verse family | 149 | 154 | 96.8% |
+| Whole-poem licensed-meter verdict versus hand family | 8 | 11 | 72.7% |
 
 Low exact stress agreement partly reflects a deliberate model choice: monosyllables are realized in alternating positions, while the hand reading often stresses adjacent content words. Such differences do not by themselves disprove either performance. Syllabification and fixed multisyllabic-stress disagreements are stronger evidence of the current lexical model's limits.
 
@@ -31,19 +31,19 @@ Low exact stress agreement partly reflects a deliberate model choice: monosyllab
 |---:|---:|---:|---:|---:|---:|---:|---|---|
 | 2 | 14/14 | 14/14 | 4/14 | 4/14 | 14/14 | 14/14 | PASS | agree |
 | 18 | 14/14 | 14/14 | 9/14 | 9/14 | 12/14 | 14/14 | PASS | agree |
-| 19 | 11/14 | 12/14 | 5/14 | 5/14 | 12/14 | 12/14 | FAIL | disagree |
+| 19 | 11/14 | 12/14 | 5/14 | 5/14 | 12/14 | 13/14 | FAIL | disagree |
 | 20 | 14/14 | 14/14 | 9/14 | 9/14 | 14/14 | 14/14 | PASS | agree |
 | 29 | 12/14 | 13/14 | 5/14 | 5/14 | 9/14 | 14/14 | PASS | agree |
 | 55 | 10/14 | 10/14 | 5/14 | 5/14 | 8/14 | 12/14 | FAIL | disagree |
 | 60 | 11/14 | 12/14 | 6/14 | 6/14 | 10/14 | 12/14 | FAIL | disagree |
 | 73 | 13/14 | 13/14 | 7/14 | 7/14 | 11/14 | 14/14 | PASS | agree |
-| 116 | 12/14 | 13/14 | 8/14 | 8/14 | 11/14 | 13/14 | FAIL | disagree |
+| 116 | 12/14 | 13/14 | 8/14 | 8/14 | 11/14 | 14/14 | PASS | agree |
 | 130 | 13/14 | 14/14 | 9/14 | 10/14 | 13/14 | 14/14 | PASS | agree |
 | 145 | 13/14 | 14/14 | 10/14 | 11/14 | 14/14 | 14/14 | FAIL | agree |
 
 ## What the discrepancies establish
 
-The hand reading expands `temperate` (18.2) and `fixed` (116.5), contracts `every`/`wandering` (116.7), and uses one syllable for both instances of `wires` (130.4). Those discrepancies motivated the explicit sourced lexical annotations in [PRONUNCIATION.md](PRONUNCIATION.md). The noun/verb ambiguity of `record` (55.8), the historical stress of `antique` (19.10), and the prosodic reading of `contents` (55.3) are now treated by documented lexical/context rules rather than the unqualified first dictionary reading. The interior inversion on `ever` in 19.14 is outside the initial-only rule set at this stage even though its ten syllables agree.
+The hand reading expands `temperate` (18.2) and `fixed` (116.5), contracts `every`/`wandering` (116.7), and uses one syllable for both instances of `wires` (130.4). Those discrepancies motivated the explicit sourced lexical annotations in [PRONUNCIATION.md](PRONUNCIATION.md). The noun/verb ambiguity of `record` (55.8), the historical stress of `antique` (19.10), and the prosodic reading of `contents` (55.3) are now treated by documented lexical/context rules rather than the unqualified first dictionary reading. The interior inversion on `ever` in 19.14 now has the named third/fourth-foot license; Kiparsky directly discusses this example. The generic license still lacks phrase/proclitic annotation and checks only positional feasibility, as detailed in [SPEC.md](SPEC.md).
 
 These findings support the implementation as an auditable **conditional baseline**, but do not establish that its extra failures are genuine exceptions to Shakespearean verse. The original hand fixture remains frozen. This is now a development/regression sample because its named discrepancies informed the revisions, not a held-out estimate of generalization. Remaining disagreements and restrictions are listed below; source evidence justifies specific annotations, not a unique performance of every line. A claim of reliable full-corpus historical conformance would also require validating historical rhyme classes; this sample is a scansion check only. No independent reviewer was appointed or consulted by the author lane.
 
@@ -77,7 +77,6 @@ The table includes any line with a disagreement on any metric. `S` means strong 
 | 19.9 | `uSuSuSuSSS` | `uSuSuSuSuSu`; `uSuSuSuSuS` | baseline syllable count; realization |
 | 19.11 | `SuuSuSuSuS` | `uSuSuSuSuS` | realization |
 | 19.13 | `uSuSSSuSuS` | `uSuSuSuSuS` | realization |
-| 19.14 | `uSuSuSSuuS` | `uSuSuSSuuS` | meter family |
 | 20.2 | `SuuSuSuSuSu` | `uSuSuSuSuSu` | realization |
 | 20.4 | `uSuSuSSSuSu` | `uSuSuSuSuSu` | realization |
 | 20.8 | `uSSSuSuSuSu` | `uSuSuSuSuSu` | realization |
@@ -121,7 +120,7 @@ The table includes any line with a disagreement on any metric. `S` means strong 
 | 116.8 | `uSuSuSuSuSu` | `uSuSSSuSuSu` | fixed stress/length |
 | 116.9 | `SSSSuSuSuS` | `uSuSuSuSuS` | realization |
 | 116.11 | `SSuSuSSSuS` | `uSuSuSuSuSu`; `uSuSuSuSuS` | baseline syllable count; realization |
-| 116.12 | `uSuSSuuSuS` | `uSuSSuuSuSu` | baseline syllable count; all candidate syllable counts; fixed stress/length; meter family |
+| 116.12 | `uSuSSuuSuS` | `uSuSSuuSuSu` | baseline syllable count; all candidate syllable counts; fixed stress/length |
 | 130.2 | `SuuSuSuSSS` | `SuuSuSuSuS` | realization |
 | 130.4 | `uSuSSSuSuS` | `uSuSuSuSuS` | realization |
 | 130.7 | `uSuSuSuSuS` | `uSuuSSuSuS` | fixed stress/length |
@@ -142,4 +141,4 @@ Consulted 2026-10-27 (America/Los_Angeles). The corpus edition is exclusively th
 
 Hand-source SHA-256: `a6b57916618c23d9699c79c3e1fc5d2fed5b5e185ca7a497b1784e85d46fafbb`.
 
-Compared annotation SHA-256: `a3ae716976239ec19ef742e3bd66e4e98347c328369b2ccdac62162e72bd8290`.
+Compared annotation SHA-256: `fdfebb44cb96cfa51d76b77db4042c6b370e1e55efeafff353d98ab6ae61fa6a`.

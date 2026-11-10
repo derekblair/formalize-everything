@@ -12349,8 +12349,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "PYRRHIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -13879,7 +13882,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 7,
@@ -22728,8 +22731,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -24928,8 +24933,12 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING",
+          "PYRRHIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -26490,8 +26499,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -28040,7 +28051,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 13,
@@ -29146,8 +29157,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -30318,7 +30331,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 14,
@@ -44487,8 +44500,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -47468,9 +47483,9 @@
         "strict": false,
         "licensed": true,
         "licenses": [
-          "PYRRHIC_SUBSTITUTION",
-          "SPONDAIC_SUBSTITUTION",
-          "UNSTRESSED_ELISION"
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING",
+          "SPONDAIC_SUBSTITUTION"
         ],
         "selected_scan": {
           "stress": [
@@ -47479,14 +47494,14 @@
             false,
             true,
             true,
-            false,
+            true,
             true,
             false,
             false,
-            false,
-            true
+            true,
+            false
           ],
-          "elision": 2
+          "elision": null
         }
       },
       {
@@ -57979,8 +57994,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "PYRRHIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -76864,8 +76882,12 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INITIAL_TROCHAIC_INVERSION",
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             true,
@@ -82308,8 +82330,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "PYRRHIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -87570,8 +87595,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -103949,8 +103976,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -108910,8 +108939,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -110981,7 +111013,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 48,
@@ -116843,8 +116875,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -117023,8 +117057,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -117178,8 +117215,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -131335,8 +131374,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -131856,8 +131897,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -142479,8 +142523,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -153390,8 +153436,12 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INITIAL_TROCHAIC_INVERSION",
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             true,
@@ -153543,8 +153593,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -163198,8 +163250,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -164187,8 +164241,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -164671,8 +164727,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -166897,8 +166955,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -173154,8 +173214,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -177356,8 +177419,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -178867,7 +178932,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 77,
@@ -180284,8 +180349,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "PYRRHIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -190483,8 +190551,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -197296,8 +197367,12 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING",
+          "PYRRHIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -197824,8 +197899,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -200698,8 +200775,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -208032,8 +208112,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "SPONDAIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -213324,8 +213407,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INITIAL_TROCHAIC_INVERSION",
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             true,
@@ -214011,7 +214097,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 92,
@@ -216004,8 +216090,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INITIAL_TROCHAIC_INVERSION",
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             true,
@@ -222408,8 +222497,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INITIAL_TROCHAIC_INVERSION",
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             true,
@@ -227073,8 +227165,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -228052,8 +228146,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -228074,7 +228170,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 98,
@@ -232847,23 +232943,24 @@
         "strict": false,
         "licensed": true,
         "licenses": [
-          "UNSTRESSED_ELISION"
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
         ],
         "selected_scan": {
           "stress": [
             false,
             true,
             false,
+            true,
+            true,
+            false,
             false,
             true,
             false,
             true,
-            false,
-            true,
-            false,
-            true
+            false
           ],
-          "elision": 2
+          "elision": null
         }
       },
       {
@@ -235200,8 +235297,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -241596,8 +241695,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -242487,7 +242588,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 104,
@@ -247128,8 +247229,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -249796,8 +249899,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -250746,8 +250851,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -253193,8 +253300,12 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INITIAL_TROCHAIC_INVERSION",
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             true,
@@ -254189,7 +254300,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 109,
@@ -266191,8 +266302,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -272776,8 +272890,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -273120,7 +273237,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 117,
@@ -273424,8 +273541,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -288984,8 +289103,12 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING",
+          "PYRRHIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -289692,7 +289815,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 124,
@@ -292896,8 +293019,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -296273,8 +296399,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -296933,8 +297061,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -298782,7 +298912,7 @@
     "line_count": true,
     "rhyme": true,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 128,
@@ -301586,8 +301716,12 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING",
+          "PYRRHIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -310442,8 +310576,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -310629,7 +310765,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 133,
@@ -312898,8 +313034,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -313092,7 +313231,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 134,
@@ -316142,8 +316281,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -328318,8 +328459,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -332600,8 +332743,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "FEMININE_ENDING"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -333627,8 +333773,11 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION",
+          "SPONDAIC_SUBSTITUTION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -342197,8 +342346,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -345463,8 +345614,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -345622,8 +345775,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -353517,8 +353672,10 @@
           }
         ],
         "strict": false,
-        "licensed": false,
-        "licenses": [],
+        "licensed": true,
+        "licenses": [
+          "INTERIOR_TROCHAIC_INVERSION"
+        ],
         "selected_scan": {
           "stress": [
             false,
@@ -355568,7 +355725,7 @@
     "line_count": true,
     "rhyme": false,
     "strict_meter": false,
-    "licensed_meter": false
+    "licensed_meter": true
   },
   {
     "number": 152,

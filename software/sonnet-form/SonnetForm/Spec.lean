@@ -32,6 +32,7 @@ structure Sonnet where
 
 inductive License where
   | initialTrochaicInversion
+  | interiorTrochaicInversion
   | feminineEnding
   | pyrrhicSubstitution
   | spondaicSubstitution
@@ -40,6 +41,7 @@ inductive License where
 
 def licenseName : License → String
   | .initialTrochaicInversion => "INITIAL_TROCHAIC_INVERSION"
+  | .interiorTrochaicInversion => "INTERIOR_TROCHAIC_INVERSION"
   | .feminineEnding => "FEMININE_ENDING"
   | .pyrrhicSubstitution => "PYRRHIC_SUBSTITUTION"
   | .spondaicSubstitution => "SPONDAIC_SUBSTITUTION"
@@ -85,29 +87,39 @@ def isTrochee (f : Bool × Bool) : Bool := f == (true, false)
 def isPyrrhic (f : Bool × Bool) : Bool := f == (false, false)
 def isSpondee (f : Bool × Bool) : Bool := f == (true, true)
 
-/-- Trochaic inversion is restricted to foot zero. Pyrrhics and spondees
-are allowed at any foot, subject to the shared two-substitution budget. -/
+/-- MD-INTERIOR-INVERSION: third/fourth feet are the admitted interior
+positions. This positional approximation does not infer phrasal boundaries. -/
+def interiorInversionFoot (i : Nat) : Bool := i == 2 || i == 3
+
+/-- Trochees are allowed initially or in the third/fourth feet. The enclosing
+check also limits interior inversions to one and all substitutions to two. -/
 def allowedFoot (i : Nat) (f : Bool × Bool) : Bool :=
-  isIamb f || isPyrrhic f || isSpondee f || (i == 0 && isTrochee f)
+  isIamb f || isPyrrhic f || isSpondee f ||
+    ((i == 0 || interiorInversionFoot i) && isTrochee f)
 
 /-- Strict meter admits neither substitutions nor elisions nor extra syllables. -/
 def scanStrict (s : Scan) : Bool :=
   s.elision == none && s.stress == pentameter
 
-/-- MD-METER-BUDGET: exactly five feet, at least three of them iambic.
-A feminine ending and a single annotated unstressed elision can combine with
-these substitutions. No deletion can turn a tetrameter into a pentameter. -/
+/-- MD-METER-BUDGET: exactly five feet, at least three of them iambic,
+and at most one interior trochee. A feminine ending and a single annotated
+unstressed elision can combine with these substitutions. No deletion can turn
+a tetrameter into a pentameter. -/
 def scanLicensed (s : Scan) : Bool :=
   let core := meterCore s
   let fs := feet core
   elisionValid s && core.length == 10 &&
     (fs.zipIdx.all fun (f, i) => allowedFoot i f) &&
+    ((fs.drop 1).filter isTrochee).length ≤ 1 &&
     (fs.filter fun f => !isIamb f).length ≤ 2
 
 /-- Each license has its own executable predicate. The enclosing licensed
 check must succeed, so occurrence in a failed scan is not a license grant. -/
 def initialTrochaicInversion (s : Scan) : Bool :=
   scanLicensed s && (feet (meterCore s)).head? == some (true, false)
+
+def interiorTrochaicInversion (s : Scan) : Bool :=
+  scanLicensed s && ((feet (meterCore s)).drop 1).any isTrochee
 
 def feminineEnding (s : Scan) : Bool :=
   scanLicensed s && hasFeminineEnding s
@@ -123,14 +135,15 @@ def unstressedElision (s : Scan) : Bool :=
 
 def usesLicense : License → Scan → Bool
   | .initialTrochaicInversion => initialTrochaicInversion
+  | .interiorTrochaicInversion => interiorTrochaicInversion
   | .feminineEnding => feminineEnding
   | .pyrrhicSubstitution => pyrrhicSubstitution
   | .spondaicSubstitution => spondaicSubstitution
   | .unstressedElision => unstressedElision
 
 def allLicenses : List License :=
-  [.initialTrochaicInversion, .feminineEnding, .pyrrhicSubstitution,
-   .spondaicSubstitution, .unstressedElision]
+  [.initialTrochaicInversion, .interiorTrochaicInversion, .feminineEnding,
+   .pyrrhicSubstitution, .spondaicSubstitution, .unstressedElision]
 
 def scanLicenses (s : Scan) : List License :=
   allLicenses.filter (fun license => usesLicense license s)
@@ -223,8 +236,51 @@ theorem stressed_elision_fails :
 
 theorem invalid_elision_fails : scanLicensed ⟨pentameter, some 99⟩ = false := by decide
 
-theorem medial_trochee_fails : scanLicensed
+theorem second_foot_trochee_fails : scanLicensed
     ⟨[false, true, true, false, false, true, false, true, false, true], none⟩ = false := by
+  decide
+
+/-- Every permitted interior position has a named diagnostic. -/
+theorem third_foot_inversion_passes : scanLicenses
+    ⟨[false, true, false, true, true, false, false, true, false, true], none⟩ =
+      [.interiorTrochaicInversion] := by decide
+
+theorem fourth_foot_inversion_passes : scanLicenses
+    ⟨[false, true, false, true, false, true, true, false, false, true], none⟩ =
+      [.interiorTrochaicInversion] := by decide
+
+theorem final_foot_trochee_fails : scanLicensed
+    ⟨[false, true, false, true, false, true, false, true, true, false], none⟩ = false := by
+  decide
+
+/-- Two interior inversions violate their own bound, even within the total budget. -/
+theorem two_interior_inversions_fail : scanLicensed
+    ⟨[false, true, false, true, true, false, true, false, false, true], none⟩ = false := by
+  decide
+
+theorem initial_and_interior_inversions_pass : scanLicenses
+    ⟨[true, false, false, true, false, true, true, false, false, true], none⟩ =
+      [.initialTrochaicInversion, .interiorTrochaicInversion] := by decide
+
+theorem interior_and_pyrrhic_pass : scanLicenses
+    ⟨[false, true, false, false, false, true, true, false, false, true], none⟩ =
+      [.interiorTrochaicInversion, .pyrrhicSubstitution] := by decide
+
+theorem interior_then_spondee_pass : scanLicenses
+    ⟨[false, true, false, true, false, true, true, false, true, true], none⟩ =
+      [.interiorTrochaicInversion, .spondaicSubstitution] := by decide
+
+theorem three_substitutions_including_interior_fail : scanLicensed
+    ⟨[true, false, false, false, false, true, true, false, false, true], none⟩ = false := by
+  decide
+
+/-- Interior positions are counted on the core after elision and feminine ending. -/
+theorem interior_elision_and_feminine_ending_pass : scanLicenses
+    ⟨[false, false, true, false, true, false, true, true, false, false, true, false], some 0⟩ =
+      [.interiorTrochaicInversion, .feminineEnding, .unstressedElision] := by decide
+
+theorem failed_interior_scan_has_no_licenses : scanLicenses
+    ⟨[false, true, false, true, true, false, true, false, false, true], none⟩ = [] := by
   decide
 
 theorem three_substitutions_fail : scanLicensed

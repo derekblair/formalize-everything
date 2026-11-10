@@ -17,6 +17,8 @@ class MeterBoundaryChecks(unittest.TestCase):
                          (True, True, []))
         examples = [
             ([True, False] + IAMB[2:], None, 'INITIAL_TROCHAIC_INVERSION'),
+            (IAMB[:4] + [True, False] + IAMB[6:], None, 'INTERIOR_TROCHAIC_INVERSION'),
+            (IAMB[:6] + [True, False] + IAMB[8:], None, 'INTERIOR_TROCHAIC_INVERSION'),
             (IAMB + [False], None, 'FEMININE_ENDING'),
             ([False, False] + IAMB[2:], None, 'PYRRHIC_SUBSTITUTION'),
             ([True, True] + IAMB[2:], None, 'SPONDAIC_SUBSTITUTION'),
@@ -36,6 +38,8 @@ class MeterBoundaryChecks(unittest.TestCase):
             (IAMB + [True], None),
             (IAMB + [False, False], None),
             (IAMB[:2] + [True, False] + IAMB[4:], None),
+            (IAMB[:8] + [True, False], None),
+            (IAMB[:4] + [True, False, True, False] + IAMB[8:], None),
             ([True] * 10, None),
             ([True] + IAMB, 0),
             (IAMB, 99),
@@ -45,6 +49,43 @@ class MeterBoundaryChecks(unittest.TestCase):
             with self.subTest(raw=raw, elision=elision):
                 self.assertEqual(scan_verdict({'stress': raw, 'elision': elision}),
                                  (False, False, []))
+
+    def test_interior_inversion_composes_with_existing_licenses(self):
+        interior = 'INTERIOR_TROCHAIC_INVERSION'
+        raw = IAMB[:6] + [True, False] + IAMB[8:]
+        examples = [
+            ([True, False] + raw[2:], None,
+             ['INITIAL_TROCHAIC_INVERSION', interior]),
+            (raw[:2] + [False, False] + raw[4:], None,
+             [interior, 'PYRRHIC_SUBSTITUTION']),
+            (raw[:8] + [True, True], None,
+             [interior, 'SPONDAIC_SUBSTITUTION']),
+            ([False] + raw + [False], 0,
+             [interior, 'FEMININE_ENDING', 'UNSTRESSED_ELISION']),
+        ]
+        for stress, elision, names in examples:
+            with self.subTest(stress=stress, elision=elision):
+                self.assertEqual(scan_verdict({'stress': stress, 'elision': elision}),
+                                 (False, True, names))
+
+    def test_interior_inversion_keeps_the_total_substitution_budget(self):
+        raw = [True, False, False, False] + IAMB[4:6] + [True, False] + IAMB[8:]
+        self.assertEqual(scan_verdict({'stress': raw, 'elision': None}),
+                         (False, False, []))
+
+    def test_inversion_positions_are_checked_after_elision(self):
+        second_foot = IAMB[:2] + [True, False] + IAMB[4:]
+        self.assertEqual(scan_verdict({'stress': [False] + second_foot, 'elision': 0}),
+                         (False, False, []))
+
+    def test_fixed_interior_stress_survives_realization(self):
+        for offset in (4, 6):
+            with self.subTest(offset=offset):
+                masks = [None] * offset + [True, False] + [None] * (8 - offset)
+                raw = realize(masks)
+                self.assertEqual(raw[offset:offset + 2], [True, False])
+                self.assertEqual(scan_verdict({'stress': raw, 'elision': None}),
+                                 (False, True, ['INTERIOR_TROCHAIC_INVERSION']))
 
     def test_realization_preserves_fixed_stress_and_count(self):
         masks = [None, False, True, None, False, None]

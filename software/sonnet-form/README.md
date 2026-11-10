@@ -46,7 +46,7 @@ make the model look more accurate.
 - Exact phonetic equality signature ABAB CDCD EFEF GG, including distinct
   A–G classes; no rhyme repair license.
 - Strict iambic pentameter, and separately pentameter with named initial
-  inversion, feminine ending, pyrrhic/spondaic substitution, and eligible
+  and third/fourth-foot interior inversion, feminine ending, pyrrhic/spondaic substitution, and eligible
   unstressed-elision rules. At least three of the five feet must be iambs.
 - All 154 per-sonnet rows, every line's verdict and license list, selected
   stress/elision evidence, and rhyme class. The aggregate theorem
@@ -59,9 +59,9 @@ make the model look more accurate.
 | Line count | 152 | 2 |
 | Rhyme under the recorded phonology | 21 | 133 |
 | Strict meter | 1 | 153 |
-| Meter with licenses | 32 | 122 |
+| Meter with licenses | 47 | 107 |
 
-At line level, 1,248/2,155 pass strict meter and 1,899/2,155 pass with licenses.
+At line level, 1,248/2,155 pass strict meter and 1,960/2,155 pass with licenses.
 A failed check is catalogued as **ANOMALOUS under this model**, not automatically
 as a literary anomaly. Every strict meter failure rescued by a named rule is
 **LICENSED**, including licensed lines inside otherwise failing sonnets.
@@ -92,7 +92,7 @@ The eleven-sonnet sample was hand-scanned by an author-agent before examining
 machine output; it is not independent human validation. Baseline syllable
 counts agree on 137/154 lines; supplied alternatives raise this to 143/154.
 Exact selected stress agrees on 77/154, and any candidate on 79/154. Meter-family
-verdicts agree on 147/154 lines but only 7/11 complete poems. Genuine rhetorical
+verdicts agree on 149/154 lines but only 8/11 complete poems. Genuine rhetorical
 ambiguity explains some stress differences, but it does not explain all errors:
 _temperate_ (18.2), _record_ (55.8), _fixed_ (116.5), _every/wandering_ (116.7),
 and _wires_ (130.4), plus _antique_ and _contents_, now have explicit sourced
