@@ -1,0 +1,50 @@
+{
+  "frozen_files": {
+    "data/gutenberg-1041.txt": {
+      "unchanged": true,
+      "sha256": "4a3a5466591e30ca93b2c19daeb24770bb08833b57b1616c972b97246e23580f"
+    },
+    "data/cmudict.dict": {
+      "unchanged": true,
+      "sha256": "81917843c7f44ce2b094ac63873c2c7a4cf802040792c455ba3ca406891c3d22"
+    },
+    "data/cmudict-source.json": {
+      "unchanged": true,
+      "sha256": "4a3449846be4ebfc47c68125f30be456af1b7bf18decdc145352893eb91c8a0d"
+    },
+    "data/corpus-manifest.json": {
+      "unchanged": true,
+      "sha256": "83d23bd11652c395b575c863efedb8cb586d4dfa7b12b9282d333c45772722a6"
+    },
+    "data/sonnets.json": {
+      "unchanged": true,
+      "sha256": "04a445b7ad225a9b0e19328f02e453b2986440a62600e108e179648123225dc2"
+    },
+    "data/validation-scans.tsv": {
+      "unchanged": true,
+      "sha256": "a6b57916618c23d9699c79c3e1fc5d2fed5b5e185ca7a497b1784e85d46fafbb"
+    },
+    "data/validation.json": {
+      "unchanged": true,
+      "sha256": "e646ff6edfeb8eb72026cad5adc08678a728d929caecc04048121c0671caa962"
+    },
+    "lean-toolchain": {
+      "unchanged": true,
+      "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b"
+    },
+    "lake-manifest.json": {
+      "unchanged": true,
+      "sha256": "b9c0c6f5173f69141534c4e2c7062764166aeb26ec227152402ec66c46ea9c23"
+    }
+  },
+  "line_verdict_transitions": {
+    "strict": {
+      "fail_to_pass": 21,
+      "pass_to_fail": 1
+    },
+    "licensed": {
+      "fail_to_pass": 79,
+      "pass_to_fail": 2
+    }
+  }
+}

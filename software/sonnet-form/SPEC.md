@@ -231,3 +231,26 @@ number, metrical target, syllable-count deficit, or rhyme partner. Text and pins
 remain fixed. All sources above were consulted 2026-11-10. The development
 sample motivated these revisions, so its improved agreement is regression
 evidence rather than independent historical validation.
+
+## Historical rhyme review is external evidence
+
+The review in HISTORICAL-RHYME.md and data/historical-rhyme-review.json covers
+the original 133 modern-model failures. It records the 236 unequal intended
+pairs, 83 cross-class collisions and the non-fourteen-line structures of 99/126.
+Sources include David Crystal's
+[study of sonnet rhymes in original pronunciation](https://www.davidcrystal.com/Files/BooksAndArticles/-4836.pdf).
+Per-pair citations, limitations and unresolved questions appear in DEVIATIONS.md.
+
+This layer does not change MD-RHYME-EXACT or supply favorable pronunciation
+classes. Historical support for an individual pair is not a complete check of
+all seven classes, their 21 pairwise distinctions, or a single consistent
+pronunciation model. Repeated identical tokens can obstruct the distinct-class
+policy independently of vowel reconstruction. Such an obstruction is a fact
+about the selected formal specification, not proof of a defective literary rhyme.
+
+The generator checks the review's corpus hashes, ending words, exhaustive
+baseline constraints, evidence references and status summaries. A fixed checksum
+of the original failed-sonnet/class projection binds the baseline without
+requiring Git at verification time. These checks establish data consistency;
+the kernel does not validate the scholarship. Full historical scheme validation
+remains open, and no historical-rhyme completeness theorem is asserted.

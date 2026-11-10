@@ -1,0 +1,56 @@
+[
+  {
+    "command": "lake --no-cache build",
+    "cwd": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/repo/software/sonnet-form",
+    "exit_status": 0,
+    "seconds": 16.188,
+    "log": "01-build.log",
+    "sha256": "f9ef85ed69dff4c225d4a048df2d55f8044eef0406e019bcb3295a1dba45b66b",
+    "original_log": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/phase1/01-build.log"
+  },
+  {
+    "command": "python3 tools/import_corpus.py --check",
+    "cwd": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/repo/software/sonnet-form",
+    "exit_status": 0,
+    "seconds": 0.047,
+    "log": "02-import_corpus.log",
+    "sha256": "b3ddcda2ea15bc8595f13f5575a68ca6a667dcf1bf30a5214c90293dfe570ab7",
+    "original_log": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/phase1/02-import_corpus.log"
+  },
+  {
+    "command": "python3 tools/generate.py --check",
+    "cwd": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/repo/software/sonnet-form",
+    "exit_status": 0,
+    "seconds": 0.421,
+    "log": "03-generate.log",
+    "sha256": "e9bdbc71fdf5793c1b7d2111bdea6ec25dfe4af9c95394f334d3ed13bf7aff19",
+    "original_log": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/phase1/03-generate.log"
+  },
+  {
+    "command": "python3 tools/validate_scansion.py --check",
+    "cwd": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/repo/software/sonnet-form",
+    "exit_status": 0,
+    "seconds": 0.113,
+    "log": "04-validate_scansion.log",
+    "sha256": "d90d94b840237e69c8709ecf8f64dd5ed2d55379500e78626b63ee5492c02a3b",
+    "original_log": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/phase1/04-validate_scansion.log"
+  },
+  {
+    "command": "python3 tools/check_model.py",
+    "cwd": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/repo/software/sonnet-form",
+    "exit_status": 0,
+    "seconds": 0.076,
+    "log": "05-check_model.log",
+    "sha256": "698d16d7b93c4bd9707d3cfacda6fb1e0fea99ed0cda6e69bedc42772940540a",
+    "original_log": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/phase1/05-check_model.log"
+  },
+  {
+    "command": "python3 tools/audit_axioms.py",
+    "cwd": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/repo/software/sonnet-form",
+    "exit_status": 0,
+    "seconds": 0.479,
+    "log": "06-audit_axioms.log",
+    "sha256": "90e3bc199a0eb05bda0ef952b977d52b7c16cfa4fce3b0992f193b4a4cdb1751",
+    "original_log": "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/phase1/06-audit_axioms.log"
+  }
+]

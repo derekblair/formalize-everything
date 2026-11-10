@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/repo/software/sonnet-form/tools/generate.py", line 306, in <module>
+    main()
+    ~~~~^^
+  File "/root/projects/math/tasks/codex-rebase-fe-pr56-20261109/repo/software/sonnet-form/tools/generate.py", line 298, in main
+    assert path.read_text(encoding='utf-8') == text, f'stale generated file: {relative}'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: stale generated file: DEVIATIONS.md

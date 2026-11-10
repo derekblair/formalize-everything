@@ -5,7 +5,8 @@ All 154 sonnets from one frozen Gutenberg edition are encoded, and all component
 verdicts and line diagnostics are kernel-checked. The linguistic model remains
 an explicitly limited baseline: the validation sample exposes syllabification,
 contextual stress, and substitution-scope failures. This does not establish
-historical poetic conformance. See the exact blockers below.
+historical poetic conformance. See [MILESTONE1-STATUS.md](MILESTONE1-STATUS.md)
+and the exact blockers below.
 
 Pure Lean, pinned to `leanprover/lean4:v4.34.1`, without Mathlib. Proofs use
 kernel `decide` and ordinary theorem composition. There are no proof holes,
@@ -17,13 +18,12 @@ Use the already installed pinned toolchain and Python 3 standard library:
 
 ```sh
 cd software/sonnet-form
-lake clean
-lake build
+lake --no-cache build
 python3 tools/import_corpus.py --check
 python3 tools/generate.py --check
 python3 tools/validate_scansion.py --check
 python3 tools/check_model.py
-python3 tools/audit_axioms.py --write
+python3 tools/audit_axioms.py
 ```
 
 No downloads or package installations are needed. `lake build` imports the
@@ -84,7 +84,8 @@ text was changed to obtain these results.
   all comparison metrics and disagreements, and references.
 - `data/annotations.json`: token-by-token pronunciation derivations, masks,
   finite readings, and results; original poem strings remain intact.
-- `verification/`: clean build/check logs and exhaustive axiom census.
+- [verification/README.md](verification/README.md): dated build/check logs and
+  the current exhaustive axiom census; older baseline records remain labeled.
 
 ## Exact blockers to a completed linguistic milestone
 
@@ -99,10 +100,17 @@ and _wires_ (130.4), plus _antique_ and _contents_, now have explicit sourced
 lexical/context annotations in PRONUNCIATION.md. Their improved agreement is
 development-sample regression evidence; it is not independent validation.
 
-Modern American first-pronunciation rhyme classes also reject 133 sonnets;
-these are not established historical rhyme anomalies. A contextual/historical
-pronunciation and stress annotation pass, with justified additional licenses
-where needed, is required before claiming reliable literary conformance.
+Modern American phonemes with the documented lexical/context choices still
+reject 133 sonnets;
+these are not established historical rhyme anomalies. The named pronunciation annotations are implemented. The specific interior
+inversion at 19.14 is supported by Kiparsky and admitted by a bounded named
+license. General phrase/proclitic conditions remain unencoded; the 63 selected
+interior licenses are positional feasibility results. Historical rhyme review
+now records every original failed sonnet, its evidence and open constraints in
+[DEVIATIONS.md](DEVIATIONS.md) and [HISTORICAL-RHYME.md](HISTORICAL-RHYME.md).
+Full historical schemes have not been validated; milestone 1 remains incomplete.
+The global lexical choices also expose new licensed-meter failures at 53.12
+and 59.5, both documented in PRONUNCIATION.md and the full verdict-change log.
 The edition's `respose` at 27.2 is preserved and has an explicit, sourced
 pronunciation alias to _repose_; see PRONUNCIATION.md.
 The complete formal baseline is supplied for coordinator-appointed review;

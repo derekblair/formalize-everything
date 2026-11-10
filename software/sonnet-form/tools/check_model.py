@@ -182,5 +182,29 @@ class AnnotationBoundaryChecks(unittest.TestCase):
         self.assertFalse(result['licensed'])
 
 
+class HistoricalEvidenceBoundaryChecks(unittest.TestCase):
+    def test_review_rejects_broken_provenance_and_unsupported_complete_claims(self):
+        import copy
+        import json
+        from rhyme_review import ROOT, load_review
+        review = load_review()
+        corpus = json.loads((ROOT / 'data/sonnets.json').read_text())
+        mutations = [
+            lambda d: d['baseline'].update(annotations_sha256='0' * 64),
+            lambda d: d['sonnets'][0].update(whole_historical_scheme_status='validated'),
+            lambda d: next(s for s in d['sonnets'] if s['open_constraint_ids']).update(open_constraint_ids=[]),
+            lambda d: d['summary'].update(sonnets_with_context_free_obstruction=[]),
+            lambda d: d['sonnets'][0]['baseline_classes'].__setitem__(0, 'fabricated class'),
+            lambda d: d['sonnets'][0]['unequal_pairs'][0].update(evidence_ids=['missing source']),
+        ]
+        for index, mutate in enumerate(mutations):
+            changed = copy.deepcopy(review)
+            mutate(changed)
+            with self.subTest(mutation=index):
+                with patch('rhyme_review.json.loads', side_effect=[changed, corpus]):
+                    with self.assertRaises(AssertionError):
+                        load_review()
+
+
 if __name__ == '__main__':
     unittest.main()

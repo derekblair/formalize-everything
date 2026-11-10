@@ -1,5 +1,5 @@
 {
-  "theorems_audited": 206,
+  "theorems_audited": 219,
   "method": "Lean #print axioms for every theorem declared in SonnetForm/*.lean",
   "axioms_used": [
     "Quot.sound",
@@ -58,6 +58,9 @@
       "propext"
     ],
     "SonnetForm.count_initialTrochaicInversion_checked": [
+      "propext"
+    ],
+    "SonnetForm.count_interiorTrochaicInversion_checked": [
       "propext"
     ],
     "SonnetForm.count_feminineEnding_checked": [
@@ -554,7 +557,13 @@
     "SonnetForm.flexible_tetrameter_fails": [
       "propext"
     ],
-    "SonnetForm.fixed_medial_inversion_not_overwritten": [
+    "SonnetForm.fixed_second_foot_inversion_not_overwritten": [
+      "propext"
+    ],
+    "SonnetForm.fixed_third_foot_inversion_licensed": [
+      "propext"
+    ],
+    "SonnetForm.fixed_fourth_foot_inversion_licensed": [
       "propext"
     ],
     "SonnetForm.fixed_initial_inversion_licensed": [
@@ -602,7 +611,37 @@
     "SonnetForm.invalid_elision_fails": [
       "propext"
     ],
-    "SonnetForm.medial_trochee_fails": [
+    "SonnetForm.second_foot_trochee_fails": [
+      "propext"
+    ],
+    "SonnetForm.third_foot_inversion_passes": [
+      "propext"
+    ],
+    "SonnetForm.fourth_foot_inversion_passes": [
+      "propext"
+    ],
+    "SonnetForm.final_foot_trochee_fails": [
+      "propext"
+    ],
+    "SonnetForm.two_interior_inversions_fail": [
+      "propext"
+    ],
+    "SonnetForm.initial_and_interior_inversions_pass": [
+      "propext"
+    ],
+    "SonnetForm.interior_and_pyrrhic_pass": [
+      "propext"
+    ],
+    "SonnetForm.interior_then_spondee_pass": [
+      "propext"
+    ],
+    "SonnetForm.three_substitutions_including_interior_fail": [
+      "propext"
+    ],
+    "SonnetForm.interior_elision_and_feminine_ending_pass": [
+      "propext"
+    ],
+    "SonnetForm.failed_interior_scan_has_no_licenses": [
       "propext"
     ],
     "SonnetForm.three_substitutions_fail": [

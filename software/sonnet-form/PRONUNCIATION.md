@@ -214,3 +214,37 @@ The baseline remains first, so a passing feminine-ending reading takes
 precedence over a later elision candidate. No contraction is inferred from
 line length, sonnet number, or rhyme partner. Other possible contractions
 remain model failures and are visible in the validation sample.
+
+## Historical rhyme evidence does not select pronunciations
+
+[HISTORICAL-RHYME.md](HISTORICAL-RHYME.md) and the per-sonnet review in
+[DEVIATIONS.md](DEVIATIONS.md) assess the original 133 failed rhyme verdicts
+against cited scholarship, including
+[David Crystal's original-pronunciation study](https://www.davidcrystal.com/Files/BooksAndArticles/-4836.pdf).
+The review is bound to a frozen baseline; later lexical choices may change a
+modern rhyme suffix, so both baseline evidence and current modern relations are
+visible. No review finding feeds into `resolve`, `resolve_in_context`, the rhyme
+suffix extraction, or the Lean predicate. A documented historical or imperfect
+rhyme relation is evidence to assess, not permission to fit a word to its partner.
+The remaining per-pair and whole-scheme uncertainties stay explicit.
+
+## Collateral corpus effects requiring follow-up
+
+The full-corpus comparison retains two newly failing licensed-meter lines rather
+than selecting a different reading by metrical fit:
+
+- **53.12:** the globally selected two-syllable `every`, combined with the
+  unchanged one-syllable CMU `blessed`, leaves nine syllables. The prior model's
+  three-syllable `every` happened to supply ten. A sourced treatment of syllabic
+  `blessed` or a principled finite lexical-alternative policy remains necessary.
+- **59.5:** the local noun phrase `that record could` now receives noun stress.
+  It produces a second-foot trochee, outside the stated license set. Historical
+  noun-stress alternatives or a more complete syntactic/prosodic policy need
+  independent justification. The old verb reading happened to pass strictly.
+
+These are additional annotation/model questions, not established literary
+exceptions. No metrical failure is used to override the sourced lexical rule.
+All seven lines containing the eight specifically requested annotations pass
+strict or licensed meter; that targeted success does not settle these other
+contexts or full-corpus historical accuracy. The final verification records
+include every changed line and both regressions.
