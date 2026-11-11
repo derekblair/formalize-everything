@@ -13,7 +13,7 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 5 | Examples of Banach Space Techniques | 25 | 25 |
 | 6 | Complex Measures | 19 | 0 |
 | 7 | Differentiation | 26 | 0 |
-| 8 | Integration on Product Spaces | 18 | 0 |
+| 8 | Integration on Product Spaces | 18 | 18 |
 | 9 | Fourier Transforms | 23 | 0 |
 | 10 | Elementary Properties of Holomorphic Functions | 44 | 0 |
 | 11 | Harmonic Functions | 32 | 0 |
@@ -76,12 +76,26 @@ The independently reconstructed [inventory](SCOPING-D.md) counts 18 Chapter 8 no
 [Chapter 9 claims](CLAIMS-D-CH09.md) record the precise Fourier normalization and known
 adaptation gaps. No numeric count in issue #40 conflicts with these counts.
 
-This branch is **in progress**. The complete Chapter 8 module (all 18 numbered
-nodes, 177 public declarations) passed its integrated full Lake build on
-2026-10-29, with 2838 jobs and unchanged Lean/Mathlib pins. Final clean-slate
-build and all-declaration axiom audit are pending; no completed chapter is
-claimed before those gates. Chapter 9 formalization waits for Chapter 8.
-Main's Done counts remain zero. No independent review or merge is claimed.
+Chapter 8 (18/18 numbered nodes, 8.1–8.18) is independently reviewed-and-landed
+on `main` (`Done: 18`) — coordinator-appointed crossed Carbon review
+`PASS WITH ISSUES` (0 blocking, `NB-1`–`NB-3`), review SHA-256
+`f4d891365a78abc620ba5484ae672c6e0ca740b935a516d2305bd97de19d5210`, recorded
+on [FE #40](https://github.com/derekblair/formalize-everything/issues/40) as
+comment `6806962135`; clean-slate `lake build` exited 0 (8,938 jobs); `AuditA`
+passed across 1,576 project declarations; the audited axiom union is exactly
+`{propext, Classical.choice, Quot.sound}`; zero `sorry`. In
+`RudinRCA/Chapter08.lean`, the declaration counts reconcile as `177` public
+*value* declarations (`98` `theorem` + `36` `lemma` + `31` `def` + `6` `abbrev`
++ `6` `instance`), `180` public source declarations (adding the 3 public
+type/predicate formers `IsMonotoneClass`, `MonotoneClosure`, `PowersetCopy`),
+`182` total source declarations (adding the 2 `private theorem`s
+`measurableRectangles_semiring` and `sigmaFinite_completion`), `140`
+`#print axioms` records (`136` theorem/lemma declarations + `4` named
+instances), and `274` `AuditA` constants; see
+[Chapter 8 coverage](CHAPTER08-COVERAGE.md) and
+[Chapter 8 build evidence](BUILD-CHAPTER08.md). With Chapter 8 now done on
+`main`, Chapter 9 (23 numbered nodes, 9.1–9.23) no longer waits on Chapter 8,
+though Chapter 9 formalization remains out of scope (`Done: 0`).
 
 ## Cluster A inventory (branch `books/rca-foundations`)
 
