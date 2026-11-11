@@ -6,8 +6,8 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 
 | Chapter | Title | Nodes (total) | Done |
 |---|---|---|---|
-| 1 | Abstract Integration | 41 | 0 |
-| 2 | Positive Borel Measures | 25 | 0 |
+| 1 | Abstract Integration | 41 | 41 |
+| 2 | Positive Borel Measures | 25 | 14 |
 | 3 | Lp-Spaces | 17 | 0 |
 | 4 | Elementary Hilbert Space Theory | 26 | 0 |
 | 5 | Examples of Banach Space Techniques | 25 | 0 |
@@ -26,6 +26,12 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 18 | Elementary Theory of Banach Algebras | 21 (+ 3 local corollaries) | 0 |
 | 19 | Holomorphic Fourier Transforms | 11 | 0 |
 | 20 | Uniform Approximation by Polynomials | 5 | 0 |
+
+Cluster A (Chapters 1–3) was recorded as Done on 2026-11-11 after
+coordinator-appointed independent crossed review (PASS WITH ISSUES, zero
+blocking findings) of the content as it stands on main; see FE #37.
+Chapter 1: 41, Chapter 2: 14, Chapter 3: 0 (55/83 items, 32/49 result
+groups) as independently reviewed-and-landed.
 
 Cluster B's counts come from a fresh printed-text enumeration in
 [INVENTORY-B.md](INVENTORY-B.md): 4.1–4.26 and 5.1–5.25, including numbered
