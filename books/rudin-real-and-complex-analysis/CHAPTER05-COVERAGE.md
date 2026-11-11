@@ -2,7 +2,7 @@
 
 All declarations below are in [RudinRCA/Chapter05.lean](RudinRCA/Chapter05.lean), namespace `RudinRCA.Chapter05`, except explicit Chapter04 references. This maps all **25 numbered body nodes, 5.1–5.25**, including attached corollaries, examples, and mathematical remarks. The inventory and statement disclosures are in [INVENTORY-B.md](INVENTORY-B.md) and [SCOPING-B.md](SCOPING-B.md). Exercises are excluded; the closed graph theorem is Chapter 5 Exercise 16.
 
-Integrated compilation of this source passed with exit **0**. Its axiom audit passed with **173 theorem/lemma declarations, 175 records, zero missing records, and zero disallowed axioms**; the additional records cover the finite/probability measure instances. The observed axiom union is `propext`, `Classical.choice`, and `Quot.sound`. The fresh-cache clean-slate build and both chapter audits also passed; see [BUILD-CHAPTER05.md](BUILD-CHAPTER05.md). This ledger is implementation evidence, not independent crossed review.
+Integrated compilation of this source passed with exit **0**. Its axiom audit passed with **182 theorem/lemma declarations, 184 records, zero missing records, and zero disallowed axioms**; the additional records cover the finite/probability measure instances. The observed axiom union is `propext`, `Classical.choice`, and `Quot.sound`. The fresh-cache clean-slate build and both chapter audits also passed; see [BUILD-CHAPTER05.md](BUILD-CHAPTER05.md). This ledger is implementation evidence, not independent crossed review.
 
 The table abbreviations identify section groups inside the single module. Its `BEGIN Chapter05…` comments delimit those groups; they are not separate library modules.
 

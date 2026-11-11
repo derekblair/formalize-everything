@@ -9,8 +9,8 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 1 | Abstract Integration | 41 | 41 |
 | 2 | Positive Borel Measures | 25 | 14 |
 | 3 | Lp-Spaces | 17 | 0 |
-| 4 | Elementary Hilbert Space Theory | 26 | 0 |
-| 5 | Examples of Banach Space Techniques | 25 | 0 |
+| 4 | Elementary Hilbert Space Theory | 26 | 26 |
+| 5 | Examples of Banach Space Techniques | 25 | 25 |
 | 6 | Complex Measures | 19 | 0 |
 | 7 | Differentiation | 26 | 0 |
 | 8 | Integration on Product Spaces | 18 | 0 |
@@ -39,6 +39,11 @@ definitions and narrative/proof passages. See [SCOPING-B.md](SCOPING-B.md)
 for conventions, corrected statements, and the closed-graph exercise scope
 discrepancy. Stage 2 implementation and clean build/axiom gates for both cluster B chapters have passed on branch `rca-b-stage2-proton`;
 the `Done` column continues to mean independently reviewed and landed on main.
+Cluster B (Chapters 4–5) was recorded as Done on 2026-11-11 after
+coordinator-appointed independent crossed review (PASS WITH ISSUES, zero
+blocking findings) of the content as it stands on main, with Chapter 4: 26
+(26/26) and Chapter 5: 25 (25/25) — 51/51 items — as independently
+reviewed-and-landed; see FE #38.
 
 ## Cluster B branch gates
 
