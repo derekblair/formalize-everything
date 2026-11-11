@@ -34,6 +34,13 @@ research-lane inventory was present or used.
   the whole plane can be added to that chain. `originDiscChain_extend_by_univ`
   and `originDiscChain_not_maximal` prove the counterexample; the printed
   maximality assertion is explicitly rejected, not treated as proved.
+- **4.24:** `trigonometricSystem_complete` (`RudinRCA/Chapter04.lean:1373-1375`)
+  establishes trigonometric completeness in `L²(T)` via Mathlib's
+  `span_fourierLp_closure_eq_top`, not by reconstructing Rudin's specific
+  polynomial-kernel proof (`Q_k(t) = c_k((1+cos t)/2)^k`). As recorded in
+  [CHAPTER04-COVERAGE.md](CHAPTER04-COVERAGE.md) and [CLAIMS-B.md](CLAIMS-B.md),
+  `Q_k` is a proof route to the density and 4.25 uniform-approximation
+  endpoints rather than an additional claimed theorem.
 - **5.11:** `lebesgueConstant_printed_lower` proves Rudin's p.102 strict
   estimate `(4/pi^2) * H_n < lebesgueConstant n`. The normalized measure is
   exactly `dt/(2*pi)` on `[-pi,pi]`, and `dirichletKernel n` uses frequencies
