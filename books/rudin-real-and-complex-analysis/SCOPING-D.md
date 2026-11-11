@@ -126,8 +126,8 @@ accompany the completed chapter. Names below are in `RudinRCA.Chapter08`.
 | 8.14 | `rudinConvolution`, `theorem_8_14`, with ordinary (unnormalized) Lebesgue measure and the printed f(x−y)g(y) convention. |
 | 8.15 | `distributionFunction`, `distributionFunction_antitone`, `distributionFunction_measurable`, `layerCake_ennreal`. |
 | 8.16 | `theorem_8_16`, with extended-valued Φ, local absolute continuity on every finite interval, and its limit at infinity. `extendedNonnegative` and weighted Tonelli prove the finite and infinite cases. |
-| 8.17 | `maximalFunction_le_essSup`, with the actual centered ball maximal function. The recalled weak-(1,1) estimate is supplied by `centeredMaximal_weak_one` with dimension constant 5^k. |
-| 8.18 | `theorem_8_18` proves a.e. finiteness and Lp membership, so `toReal` does not conceal infinite values. The quantitative development uses a variable truncation parameter, `maximalLpConstant`, and the printed constant's two limiting statements. The actual norm estimate and all quantitative declarations must pass before this node is counted complete. |
+| 8.17 | `maximalFunction_le_essSup` and `theorem_8_17_infty`, with the actual centered ball maximal function. The recalled weak-(1,1) estimate is supplied by `centeredMaximal_weak_one` and `theorem_8_17_weak_one` with dimension constant 5^k. |
+| 8.18 | `theorem_8_18` proves a.e. finiteness and Lp membership, so `toReal` does not conceal infinite values. The quantitative development uses a variable truncation parameter, `maximalLpConstant`, the printed constant's two limiting statements (`maximalLpConstant_tendsto_atTop`, `maximalLpConstant_tendsto_one_right`), and the norm estimates `theorem_8_18_norm_bound` and `theorem_8_18_euclidean`. |
 
 The measures in 8.9 and 8.13–8.18 are ordinary Lebesgue measures. Chapter 9's
 normalization is different and must not be imported into these Chapter 8 statements.
