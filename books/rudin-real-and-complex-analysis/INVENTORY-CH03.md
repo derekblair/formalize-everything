@@ -12,9 +12,9 @@ Mathlib was inspected at `d13f23b723b8a846827a245b89c10fc7d3f11612`. `U` = alrea
 | 3.2 | Theorem; 61–62 | Convexity implies continuity | U | `ConvexOn.continuousOn` on an open interval, `Analysis/Convex/Continuous.lean`. |
 | 3.3 | Theorem; 62–63 | Jensen inequality | V | `ConvexOn.map_integral_le`, `Analysis/Convex/Integral.lean`, assumes a closed convex set and integrability of the composition. Rudin permits an open interval and an infinite upper integral; those cases must be retained. |
 | 3.4 | Definition; 63 | Conjugate exponents | V | `Real.HolderConjugate` and `ENNReal.HolderConjugate`; bridge finite parameters and the endpoint pair. |
-| 3.5 | Theorem; 63–65 | Hölder and Minkowski | U | `MeasureTheory.lintegral_mul_le_Lp_mul_Lq`, `MeasureTheory.lintegral_Lp_add_le`, `MeasureTheory/Integral/MeanInequalities.lean`; finite exponents, nonnegative extended-valued measurable functions. |
+| 3.5 | Theorem; 63–65 | Hölder and Minkowski | U | `ENNReal.lintegral_mul_le_Lp_mul_Lq`, `ENNReal.lintegral_Lp_add_le`, `MeasureTheory/Integral/MeanInequalities.lean`; finite exponents, nonnegative extended-valued measurable functions. |
 | 3.6 | Definition; 65 | Finite-exponent Lp norm | V | `MeasureTheory.eLpNorm`, `MeasureTheory.MemLp`; distinguish actual measurable representatives from AE strong measurability. |
-| 3.7 | Definition; 65–66 | Essential supremum; L∞ | V; FIDELITY HOLD | `MeasureTheory.essSup`, `eLpNorm_exponent_top`. The printed real-threshold set is unbounded below for zero measure; see the event below. |
+| 3.7 | Definition; 65–66 | Essential supremum; L∞ | V; FIDELITY HOLD | `essSup`, `eLpNorm_exponent_top`. The printed real-threshold set is unbounded below for zero measure; see the event below. |
 | 3.8 | Theorem; 66 | Product in L1; Hölder including endpoints | V | `MeasureTheory.MemLp.mul`, `MeasureTheory.eLpNorm_smul_le_mul_eLpNorm`, `LpSeminorm/CompareExp.lean`. The printed L∞ convention must first be repaired explicitly. |
 | 3.9 | Theorem; 66 | Lp addition; triangle inequality | V | `MeasureTheory.MemLp.add`, `MeasureTheory.eLpNorm_add_le`, `LpSeminorm/TriangleInequality.lean`; endpoint depends on 3.7. |
 | 3.10 | Remarks; 66–67 | Vector space; AE quotient metric | V | `MeasureTheory.Lp.instNormedAddCommGroup`, `Lp.instModule`, `MemLp.toLp_eq_toLp_iff`, `Lp.dist_def`; separate representative/quotient bridge. |

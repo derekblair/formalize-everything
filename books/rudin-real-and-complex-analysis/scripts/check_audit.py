@@ -6,11 +6,13 @@ already available:
 
     python3 books/rudin-real-and-complex-analysis/scripts/check_audit.py
 
-The audit and umbrella are copied unchanged. Chapter contents are deliberately
-small fixtures; this tests the audit's rejection behavior, not the mathematics.
-Every case uses a fresh temporary package and fresh project oleans. Only the
-existing dependency directory is shared, through a symlink; no live source or
-live project build artifact is changed. No dependency installer is invoked.
+The audits (AuditA, AuditE) and umbrella (RudinRCA) are copied unchanged.
+Fixture cases use small stub chapters to test rejection behavior alongside a
+clean stub baseline, and live_project compiles and audits a fresh copy of the
+full live package source tree. Every case uses a fresh temporary package and
+fresh project oleans. Only the existing dependency directory is shared, through
+a symlink; no live source or live project build artifact is changed. No
+dependency installer is invoked.
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ from __future__ import annotations
 import argparse
 from dataclasses import dataclass
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -27,6 +30,13 @@ import tempfile
 
 PIN = "d13f23b723b8a846827a245b89c10fc7d3f11612"
 TOOLCHAIN = "leanprover/lean4:v4.34.1"
+CHAPTERS = (1, 2, 3, 4, 5, 8, 10, 11, 12, 13, 15)
+MODULES = (
+    *(f"RudinRCA/Chapter{chapter:02}" for chapter in CHAPTERS),
+    "RudinRCA/AuditE",
+    "RudinRCA",
+)
+LIVE_PROJECT_DECLARATIONS = 1576
 
 
 @dataclass(frozen=True)
@@ -34,11 +44,14 @@ class Case:
     name: str
     injection: str = ""
     extra_source: bool = False
+    live_sources: bool = False
+    expected_declarations: int = len(CHAPTERS)
     expected: tuple[str, ...] = ()
 
 
 CASES = (
     Case("clean_baseline"),
+    Case("live_project", live_sources=True, expected_declarations=LIVE_PROJECT_DECLARATIONS),
     Case(
         "sorry_backed_declaration",
         "theorem RudinRCA.fixtureSorry : False := by sorry\n",
@@ -81,19 +94,38 @@ def invoke(lake: str, root: Path, args: list[str], timeout: float) -> subprocess
         raise Failure(f"command timed out in fixture {root.name}: {args}") from exc
 
 
-def write_fixture(root: Path, snapshot: dict[str, bytes], packages: Path, case: Case) -> None:
+def collect_live_snapshot(book: Path, base_snapshot: dict[str, bytes]) -> dict[str, bytes]:
+    live = dict(base_snapshot)
+    for directory, children, files in os.walk(book):
+        children[:] = [name for name in children if name != ".lake"]
+        for name in files:
+            if name.endswith(".lean"):
+                rel = str((Path(directory) / name).relative_to(book))
+                live[rel] = (book / rel).read_bytes()
+    return live
+
+
+def write_fixture(
+    root: Path,
+    snapshot: dict[str, bytes],
+    live_snapshot: dict[str, bytes],
+    packages: Path,
+    case: Case,
+) -> None:
     root.mkdir()
-    for name, content in snapshot.items():
+    sources = live_snapshot if case.live_sources else snapshot
+    for name, content in sources.items():
         destination = root / name
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes(content)
     (root / ".lake").mkdir()
     (root / ".lake" / "packages").symlink_to(packages, target_is_directory=True)
-    for chapter in (1, 2, 3, 4, 5):
-        source = f"theorem RudinRCA.fixtureChapter{chapter} : True := True.intro\n"
-        if chapter == 1:
-            source += case.injection
-        (root / "RudinRCA" / f"Chapter{chapter:02}.lean").write_text(source)
+    if not case.live_sources:
+        for chapter in CHAPTERS:
+            source = f"theorem RudinRCA.fixtureChapter{chapter} : True := True.intro\n"
+            if chapter == 1:
+                source += case.injection
+            (root / "RudinRCA" / f"Chapter{chapter:02}.lean").write_text(source)
     if case.extra_source:
         # Deliberately outside RudinRCA/: ownership is the source tree, not a prefix.
         (root / "Unimported.lean").write_text(
@@ -105,14 +137,7 @@ def run_case(lake: str, root: Path, case: Case, timeout: float) -> None:
     output_root = root / ".lake" / "build" / "lib" / "lean"
     # Compile every project import explicitly. The empty, per-case output tree
     # prevents a successful audit of stale oleans from masquerading as rejection.
-    for module in (
-        "RudinRCA/Chapter01",
-        "RudinRCA/Chapter02",
-        "RudinRCA/Chapter03",
-        "RudinRCA/Chapter04",
-        "RudinRCA/Chapter05",
-        "RudinRCA",
-    ):
+    for module in MODULES:
         output = output_root / f"{module}.olean"
         output.parent.mkdir(parents=True, exist_ok=True)
         result = invoke(lake, root, ["-o", str(output), f"{module}.lean"], timeout)
@@ -125,9 +150,12 @@ def run_case(lake: str, root: Path, case: Case, timeout: float) -> None:
             raise Failure(f"{case.name}: compiler did not produce {output}")
     result = invoke(lake, root, ["RudinRCA/AuditA.lean"], timeout)
     if not case.expected:
-        if result.returncode != 0 or "Axiom audit passed for 5 project declarations" not in result.stdout:
-            raise Failure(f"baseline audit did not pass nonvacuously; exit {result.returncode}\n{result.stdout}")
-        diagnostic = next(line for line in result.stdout.splitlines() if "Axiom audit passed" in line)
+        expected_banner = f"Axiom audit passed for {case.expected_declarations} project declarations "
+        if result.returncode != 0 or expected_banner not in result.stdout:
+            raise Failure(f"{case.name}: audit did not pass nonvacuously; exit {result.returncode}\n{result.stdout}")
+        lines = result.stdout.splitlines()
+        start = next(i for i, line in enumerate(lines) if "Axiom audit passed" in line)
+        diagnostic = " ".join(line.strip() for line in lines[start:] if line.strip())
         print(f"PASS {case.name}: exit 0; {diagnostic}", flush=True)
         return
     if result.returncode == 0:
@@ -150,9 +178,15 @@ def main() -> int:
     if lake is None:
         raise Failure("lake is not on PATH; this harness does not install it")
     snapshot_names = (
-        "lakefile.toml", "lake-manifest.json", "lean-toolchain", "RudinRCA.lean", "RudinRCA/AuditA.lean"
+        "lakefile.toml",
+        "lake-manifest.json",
+        "lean-toolchain",
+        "RudinRCA.lean",
+        "RudinRCA/AuditA.lean",
+        "RudinRCA/AuditE.lean",
     )
     snapshot = {name: (book / name).read_bytes() for name in snapshot_names}
+    live_snapshot = collect_live_snapshot(book, snapshot)
     manifest = json.loads(snapshot["lake-manifest.json"])
     mathlib = next((package for package in manifest["packages"] if package["name"] == "mathlib"), None)
     if mathlib is None or mathlib["rev"] != PIN or snapshot["lean-toolchain"].decode().strip() != TOOLCHAIN:
@@ -163,9 +197,14 @@ def main() -> int:
         parent = Path(temporary)
         for case in CASES:
             root = parent / case.name
-            write_fixture(root, snapshot, packages, case)
+            write_fixture(root, snapshot, live_snapshot, packages, case)
             run_case(lake, root, case, args.timeout)
-    print("PASS: 1 nonvacuous baseline and 4 expected audit rejections; live sources untouched.", flush=True)
+    print(
+        f"PASS: 1 stub baseline ({len(CHAPTERS)} declarations), "
+        f"1 live-project audit ({LIVE_PROJECT_DECLARATIONS} declarations), "
+        "and 4 expected audit rejections; live sources untouched.",
+        flush=True,
+    )
     return 0
 
 

@@ -18,7 +18,7 @@ Mathlib checkout inspected: `d13f23b723b8a846827a245b89c10fc7d3f11612`. **U** = 
 | 1.8 | 11 | Theorem: paired functions | U | `Measurable.prodMk`, then continuous composition |
 | 1.9 | 11 | Propositions: complex operations | V | `Measurable.re`, `.im`, `.norm`, `.add`, `.mul`, `.indicator`; measurable unit phase requires value 1 at zero |
 | 1.10 | 12 | Theorem: generated sigma-algebra | U | `MeasurableSpace.generateFrom`, `measurableSet_generateFrom`, `generateFrom_le` |
-| 1.11 | 12 | Definition: Borel sets | V | `borel`, `IsClosed.measurableSet`, `IsGδ`, `IsFσ`, `Continuous.measurable` |
+| 1.11 | 12 | Definition: Borel sets | V | `borel`, `IsClosed.measurableSet`, `IsGδ`, `Continuous.measurable`; `IsFSigma` is the book's own definition |
 | 1.12 | 13 | Theorem: pullbacks | V | `MeasurableSpace.map`, `Measurable`, `Measurable.comp`, `measurable_of_Ioi`; real-threshold `EReal` formulation requires endpoint handling |
 | 1.13 | 13 | Definition: limit extrema | V | `Filter.limsup`, `Filter.liminf`, `limsup_eq_iInf_iSup_of_nat`; subsequence characterization included in prose |
 | 1.14 | 14 | Theorem/corollaries: measurable limits | U | `Measurable.iSup`, `.iInf`, `.limsup`, `.liminf`, `.sup`, `.inf`, `measurable_of_tendsto_metrizable` |
@@ -41,7 +41,7 @@ Mathlib checkout inspected: `d13f23b723b8a846827a245b89c10fc7d3f11612`. **U** = 
 | 1.31 | 24 | Definition: complex integral | V | Bochner `integral`, real/imaginary projections, positive/negative decomposition; also extended-real integral convention |
 | 1.32 | 25 | Theorem: linearity | U | `Integrable.add`, `.const_mul`, `integral_add`, `integral_const_mul`; retain ordinary measurability |
 | 1.33 | 26 | Theorem: integral bound | U | `norm_integral_le_integral_norm` |
-| 1.34 | 26 | Theorem: dominated convergence | V | `integrable_of_dominated_convergence`, `tendsto_integral_of_dominated_convergence`; package integrability, L1 convergence, integral convergence |
+| 1.34 | 26 | Theorem: dominated convergence | V | `MeasureTheory.hasFiniteIntegral_of_dominated_convergence`, `tendsto_integral_of_dominated_convergence`; package integrability, L1 convergence, integral convergence |
 | 1.35 | 27 | Definition: almost everywhere | U | `ae`, `Filter.EventuallyEq`, `lintegral_congr_ae`, `integral_congr_ae` |
 | 1.36 | 28 | Theorem: completion | V | `Measure.completion`, `NullMeasurableSet`; sandwich characterization and extension values must be stated |
 | 1.37 | 29 | Extended measurability | V | `AEMeasurable`, `AEStronglyMeasurable`, measurable representatives; reconcile partially defined functions |
