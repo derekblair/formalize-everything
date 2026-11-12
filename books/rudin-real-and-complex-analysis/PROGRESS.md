@@ -144,7 +144,7 @@ representation theorem 2.14 remains pending. Chapter 3
 contains four proved results: a counterexample and three facts about the
 explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
 remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
-Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; current main-table `Done` total is 250/456 on this Stage 2 branch, adding 71/90 Cluster E nodes in FE #88 to the 179/456 baseline on `main` including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES)).
+Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; main-table `Done` total is 250/456 after landing the 71/90 Cluster E Stage 2 nodes in FE #88 (PR #91, crossed review PASS WITH ISSUES) on top of the 179/456 baseline on `main` including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES)).
 
 ## Cluster F working-branch status
 
@@ -165,7 +165,7 @@ chapter numbers and discloses the discrepancy; see [SCOPING-H.md](SCOPING-H.md).
 No separate Stage 1 lane inventory was supplied. Counts here were independently
 enumerated from the printed third-edition scan. Exercises are excluded.
 
-Reviewed changes through PR #90 have landed on `main` (`179/456` baseline on `main` from FE #86 / PR #89 and FE #87 / PR #90; main-table `Done` total is `250/456` with the `71/90` Cluster E Stage 2 nodes in FE #88 awaiting crossed review; Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
+Reviewed changes through PR #91 have landed on `main` (`250/456` total: `179/456` baseline on `main` from FE #86 / PR #89 and FE #87 / PR #90 plus the `71/90` Cluster E Stage 2 nodes in FE #88 landed by PR #91 after coordinator-appointed crossed review (PASS WITH ISSUES, zero blocking findings; see FE #88); Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
 successful supporting lemma does not imply completion of its entire book node.
 
 ## Cluster E Stage 2 (Chapters 10–12; FE #88)
@@ -174,7 +174,7 @@ Cluster E's [inventory](inventory/README.md) verifies all 90 numbered nodes
 of Chapters 10–12 against the third-edition scan. Unnumbered corollaries and
 assertions belong to their numbered parent; exercises are excluded.
 
-Stage 2 (`FE #88`, extending Stage 1 `#41` / PR `#58`; awaiting coordinator-appointed crossed review):
+Stage 2 (`FE #88`, extending Stage 1 `#41` / PR `#58`; coordinator-appointed crossed review passed — PASS WITH ISSUES, zero blocking findings; PR #91):
 
 | Chapter | Inventoried | Complete nodes proved (`Done`) | Pending | Coverage ledger |
 |---|---:|---:|---:|---|
@@ -183,7 +183,7 @@ Stage 2 (`FE #88`, extending Stage 1 `#41` / PR `#58`; awaiting coordinator-appo
 | 12 | 14 | 8 | 6 | [Chapter 12 coverage](CHAPTER12-COVERAGE.md) |
 | **Cluster E** | **90** | **71** | **19** | [Inventory](inventory/README.md), [QUEUE.md](QUEUE.md) |
 
-- `RudinRCA/Chapter10.lean` (`9,059` lines, blob `36ea97885606ba5cc20bb33fa6015b846c5e37a7`; `363` source declarations / `650` `AuditA` constants) proves **44/44** Chapter 10 nodes (`10.1`–`10.44`), including general piecewise-`C¹` paths/chains/cycles, integral-defined winding index `Ind`, global homological and homotopical Cauchy theorems, the Residue Theorem, Argument Principle, Rouché's theorem, and the symmetric sinc Fourier transform `10.44`. For `10.37` (`E-10.37`), both literal printed counterexamples (`node10_37_literal_conclusion_counterexample`, `node10_37_literal_geometric_counterexample`) and the explicitly disclosed `z ∈ D₊` corrected crosscut index-jump theorem (`theorem10_37_corrected`) are proved; final `Done` adjudication of disclosed fidelity repairs rests with the crossed review.
-- `RudinRCA/Chapter11.lean` (`3,559` lines, blob `7230d97929f0d9c784bcc4082d67d443814370eb`; `114` source declarations / `208` `AuditA` constants) proves **19/32** Chapter 11 nodes (`11.1`–`11.15`, `11.27`–`11.29`, `11.31`), retaining Rudin's weak `11.3` `HarmonicOn` predicate and proving its reverse equivalence to smooth `HarmonicOnNhd` (`11.10`), uniform equicontinuity (`11.27`–`11.28`), sequential Banach–Alaoglu (`11.29`), completeness of `H^∞(Ω)` (`11.31`), and all subclauses of `11.5` alongside the `r = 0` counterexample and `0 < r` strict-inequality repair (`E-11.5`). The `13/32` radial/nontangential maximal, Fatou, and measure-Poisson nodes (`11.16`–`11.26`, `11.30`, `11.32`) remain pending.
+- `RudinRCA/Chapter10.lean` (`9,059` lines, blob `36ea97885606ba5cc20bb33fa6015b846c5e37a7`; `363` source declarations / `650` `AuditA` constants) proves **44/44** Chapter 10 nodes (`10.1`–`10.44`), including general piecewise-`C¹` paths/chains/cycles, integral-defined winding index `Ind`, global homological and homotopical Cauchy theorems, the Residue Theorem, Argument Principle, Rouché's theorem, and the symmetric sinc Fourier transform `10.44`. For `10.37` (`E-10.37`), both literal printed counterexamples (`node10_37_literal_conclusion_counterexample`, `node10_37_literal_geometric_counterexample`) and the explicitly disclosed `z ∈ D₊` corrected crosscut index-jump theorem (`theorem10_37_corrected`) are proved; final `Done` adjudication of disclosed fidelity repairs was passed by the crossed review, which approved both `E-10.37` and `E-11.5` as faithful; nodes `10.37` and `11.5` are in `Done`.
+- `RudinRCA/Chapter11.lean` (`3,559` lines, blob `7230d97929f0d9c784bcc4082d67d443814370eb`; `114` source declarations / `208` environment constants in standalone `AuditE` (`207` in combined `AuditA` after upstream `IsMaxFilter.eq_1` deduplication) proves **19/32** Chapter 11 nodes (`11.1`–`11.15`, `11.27`–`11.29`, `11.31`), retaining Rudin's weak `11.3` `HarmonicOn` predicate and proving its reverse equivalence to smooth `HarmonicOnNhd` (`11.10`), uniform equicontinuity (`11.27`–`11.28`), sequential Banach–Alaoglu (`11.29`), completeness of `H^∞(Ω)` (`11.31`), and all subclauses of `11.5` alongside the `r = 0` counterexample and `0 < r` strict-inequality repair (`E-11.5`). The `13/32` radial/nontangential maximal, Fatou, and measure-Poisson nodes (`11.16`–`11.26`, `11.30`, `11.32`) remain pending.
 - `RudinRCA/Chapter12.lean` (`1,085` lines, blob `df0cfaef5808911b5eea0e28cc7c18e0528eae40`; `33` source declarations / `57` `AuditA` constants) proves **8/14** Chapter 12 nodes (`12.2`–`12.9`, including `12.8`'s logarithmic-convexity corollary and `theorem12_9_sharpness`). Partial node `12.1` (missing the recalled `H^∞` radial-boundary-value assertion) and nodes `12.10`–`12.14` remain pending and are excluded from `Done`.
 - Clean-slate `lake build` exited `0` (`8,941` jobs, `0` errors, `0` warnings in Chapters 10–12); `AuditE` passed across `915` Cluster E declarations (`650 + 208 + 57`); whole-book `AuditA` passed across `3,086` project declarations (`+717` over the `2,369` baseline on `main`, axiom union strictly `{propext, Classical.choice, Quot.sound}`, zero `sorry`).

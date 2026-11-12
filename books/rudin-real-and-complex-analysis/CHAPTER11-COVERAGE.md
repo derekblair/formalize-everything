@@ -4,7 +4,7 @@ All declarations below are in [RudinRCA/Chapter11.lean](RudinRCA/Chapter11.lean)
 
 ## Stage 2 build and audit status
 
-- **Stage 2 status:** Wired into [RudinRCA.lean](RudinRCA.lean), [RudinRCA/AuditE.lean](RudinRCA/AuditE.lean), and [RudinRCA/AuditA.lean](RudinRCA/AuditA.lean) for `FE #88` (Cluster E Stage 2; Stage 1 `#41` closed via PR `#58`; umbrella `#36`), awaiting coordinator-appointed independent crossed review.
+- **Stage 2 status:** Wired into [RudinRCA.lean](RudinRCA.lean), [RudinRCA/AuditE.lean](RudinRCA/AuditE.lean), and [RudinRCA/AuditA.lean](RudinRCA/AuditA.lean) for `FE #88` (Cluster E Stage 2; Stage 1 `#41` closed via PR `#58`; umbrella `#36`), coordinator-appointed independent crossed review passed (PASS WITH ISSUES, zero blocking findings; see FE #88, PR #91).
 - **Clean-slate build and axiom audit:** Clean-slate `lake build` exited **0** (`8,941` jobs, `0` errors, `0` warnings in `RudinRCA/Chapter11.lean`); `AuditE` passed across `915` Cluster E declarations (`650` from `RudinRCA.Chapter10`, `208` from `RudinRCA.Chapter11`, `57` from `RudinRCA.Chapter12`); whole-book transitive `AuditA` passed for **3,086** project declarations across `16` audited project modules (`17` package source modules, net additive delta `+717` over the `main` `3c83822d` baseline of `2,369`). Observed axiom union is strictly `{propext, Classical.choice, Quot.sound}`, with **0** `sorry`, `native_decide`, `bv_decide`, `decide!`, or local `axiom`/`opaque`, and **0** code occurrences of `admit` (retaining only the single pre-existing prose phrase `"admitted endpoint"` in the module docstring at `L31`).
 
 ## Declaration count reconciliation (`114` / `104` / `102` / `208`)
@@ -14,7 +14,7 @@ All declarations below are in [RudinRCA/Chapter11.lean](RudinRCA/Chapter11.lean)
 | **Total source declarations** | **114** | `81` public `theorem` + `9` `private theorem` = `90` `theorem`; `17` public `def` + `1` `private def` (`intEquivNatSumNat` at `L540`) = `18` `def`; `3` public `abbrev` (`BookEquicontinuous`, `BookEquicontinuousOn`, `HInfty`); `1` public `instance` (`CompleteSpace (HInfty Ω)` at `L3525`); `2` public `structure` (`HasPureSecondPartialsAt` at `L182`, `HarmonicOn` at `L190`). Zero `lemma`, `axiom`, `opaque`, `class`, or `inductive`. (`104` public + `10` `private` = `114`.) |
 | **Public source declarations** | **104** | `102` public value declarations (`81 + 17 + 3 + 1 = 102`) plus `2` public structure type formers (`HasPureSecondPartialsAt`, `HarmonicOn`). |
 | **Public value declarations** | **102** | `81` `theorem` + `17` `def` + `3` `abbrev` + `1` `instance` = `102`. |
-| **`AuditA` / `AuditE` environment constants (`Chapter11`)** | **208** | Project constants originating in `RudinRCA.Chapter11` (`114` source declarations + `94` Lean-elaborated structure constructors/projections/recursors, `.eq_1` equation lemmas, and proof/simplifier auxiliary constants). |
+| **`AuditA` / `AuditE` environment constants (`Chapter11`)** | **208** | Project constants originating in `RudinRCA.Chapter11` (`114` source declarations + `94` Lean-elaborated structure constructors/projections/recursors, `.eq_1` equation lemmas, and proof/simplifier auxiliary constants). `208` in standalone `AuditE`; `207` in combined `AuditA` (one lazily realized Mathlib equation lemma, `IsMaxFilter.eq_1`, is already present in an upstream Mathlib `.olean` imported via Chapters 1–9). |
 
 ## Representation and fidelity disclosures
 
