@@ -12,7 +12,7 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 4 | Elementary Hilbert Space Theory | 26 | 26 |
 | 5 | Examples of Banach Space Techniques | 25 | 25 |
 | 6 | Complex Measures | 19 | 8 |
-| 7 | Differentiation | 26 | 0 |
+| 7 | Differentiation | 26 | 24 |
 | 8 | Integration on Product Spaces | 18 | 18 |
 | 9 | Fourier Transforms | 23 | 0 |
 | 10 | Elementary Properties of Holomorphic Functions | 44 | 0 |
@@ -67,7 +67,7 @@ PR: [#48](https://github.com/derekblair/formalize-everything/pull/48).
 Coordinator-appointed crossed review passed (`PASS WITH ISSUES`, zero blocking findings; see FE #38) and PR [#79](https://github.com/derekblair/formalize-everything/pull/79) merged (`aba161c6`). The main table above
 continues to count only independently reviewed work landed on main.
 
-Cluster C independently enumerated 45 numbered nodes (6.1–6.19 and 7.1–7.26); see [SCOPING-C.md](SCOPING-C.md) for printed statements, pages, subclauses, pinned Mathlib claims checks, and uncovered obligations, and [COVERAGE-C.md](COVERAGE-C.md) for the live module ledger. `RudinRCA/Chapter06.lean` (`442` lines, blob `a7cbfb23ef0326a9f9222b1d098fc58839d6f58a`) is imported into the audited graph on `main` (`FE #82`, PR #84), proving **8/19** complete Chapter 6 nodes (`6.1`, `6.2`, `6.4`, `6.5`, `6.6`, `6.7`, `6.8`, `6.17`) at the programme bar (`Done: 8` after coordinator-appointed crossed review; overall `Done` on `main` is 132/456); the remaining `11/19` Chapter 6 nodes (`6.3`, `6.9`–`6.16`, `6.18`, `6.19`) and Chapter 7 (`0/26`, `Done: 0`) remain pending.
+Cluster C independently enumerated 45 numbered nodes (6.1–6.19 and 7.1–7.26); see [SCOPING-C.md](SCOPING-C.md) for printed statements, pages, subclauses, pinned Mathlib claims checks, and uncovered obligations, and [COVERAGE-C.md](COVERAGE-C.md) for the live module ledger. `RudinRCA/Chapter06.lean` (`442` lines, blob `a7cbfb23ef0326a9f9222b1d098fc58839d6f58a`) is imported into the audited graph on `main` (`FE #82`, PR #84), proving **8/19** complete Chapter 6 nodes (`6.1`, `6.2`, `6.4`, `6.5`, `6.6`, `6.7`, `6.8`, `6.17`) at the programme bar (`Done: 8` after coordinator-appointed crossed review); `RudinRCA/Chapter07.lean` (`5,393` lines, blob `23a686de561f79fc7a3f1d7ff43f8d66e10b2686`) is wired into the audited graph for `FE #86` (awaiting coordinator-appointed crossed review before merge to `main`), proving **24/26** complete Chapter 7 nodes (`7.1`–`7.22`, `7.25`, `7.26`) at the programme bar (`Done: 24`, bringing the main-table `Done` sum from `132/456` on `main` to `156/456`); the remaining `11/19` Chapter 6 nodes (`6.3`, `6.9`–`6.16`, `6.18`, `6.19`) and `2/26` Chapter 7 gap nodes (`7.23`, `7.24`) remain pending.
 
 ## Cluster D development branch
 
@@ -133,7 +133,7 @@ representation theorem 2.14 remains pending. Chapter 3
 contains four proved results: a counterexample and three facts about the
 explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
 remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
-Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; current main-table `Done` total is 132/456).
+Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; current main-table `Done` total is 156/456, including 24/26 Chapter 7 nodes staged in FE #86 awaiting crossed review).
 
 ## Cluster F working-branch status
 
@@ -154,7 +154,7 @@ chapter numbers and discloses the discrepancy; see [SCOPING-H.md](SCOPING-H.md).
 No separate Stage 1 lane inventory was supplied. Counts here were independently
 enumerated from the printed third-edition scan. Exercises are excluded.
 
-Reviewed changes have landed on `main` (`Done` total 132/456 overall; Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
+Reviewed changes have landed on `main` (`Done` total 132/456 on `main`, 156/456 in the main table above with FE #86 staged awaiting crossed review; Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
 successful supporting lemma does not imply completion of its entire book node.
 
 Cluster E's [inventory](inventory/README.md) verifies all 90 numbered nodes
