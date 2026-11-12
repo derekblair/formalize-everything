@@ -133,7 +133,7 @@ representation theorem 2.14 remains pending. Chapter 3
 contains four proved results: a counterexample and three facts about the
 explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
 remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
-Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; current main-table `Done` total is 124/456).
+Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; current main-table `Done` total is 132/456).
 
 ## Cluster F working-branch status
 
@@ -154,7 +154,7 @@ chapter numbers and discloses the discrepancy; see [SCOPING-H.md](SCOPING-H.md).
 No separate Stage 1 lane inventory was supplied. Counts here were independently
 enumerated from the printed third-edition scan. Exercises are excluded.
 
-Reviewed changes have landed on `main` (`Done` total 124/456 overall; Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
+Reviewed changes have landed on `main` (`Done` total 132/456 overall; Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
 successful supporting lemma does not imply completion of its entire book node.
 
 Cluster E's [inventory](inventory/README.md) verifies all 90 numbered nodes
