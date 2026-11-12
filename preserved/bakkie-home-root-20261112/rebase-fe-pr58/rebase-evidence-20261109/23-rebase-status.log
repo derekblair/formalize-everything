@@ -1,0 +1,32 @@
+$ git status
+interactive rebase in progress; onto 3cd1541
+Last commands done (5 commands done):
+   pick 1cbb883 # Rudin RCA E: prove power-series calculus and maximum modulus cases
+   pick 5058405 # Rudin RCA E: recover harmonic foundations and transitive axiom audit
+  (see more in file .git/rebase-merge/done)
+Next commands to do (2 remaining commands):
+   pick bd73b48 # Rudin RCA E: complete components, isolated zeros, and joint divided differences
+   pick a0538ea # Rudin RCA E: prove 12.9 sharpness
+  (use "git rebase --edit-todo" to view and edit)
+You are currently rebasing branch 'books/rca-holomorphic' on '3cd1541'.
+  (fix conflicts and then run "git rebase --continue")
+  (use "git rebase --skip" to skip this patch)
+  (use "git rebase --abort" to check out the original branch)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	new file:   books/rudin-real-and-complex-analysis/RudinRCA/AuditE.lean
+	modified:   books/rudin-real-and-complex-analysis/RudinRCA/Chapter10.lean
+	new file:   books/rudin-real-and-complex-analysis/RudinRCA/Chapter11.lean
+	modified:   books/rudin-real-and-complex-analysis/inventory/Chapter11.md
+
+Unmerged paths:
+  (use "git restore --staged <file>..." to unstage)
+  (use "git add <file>..." to mark resolution)
+	both modified:   books/rudin-real-and-complex-analysis/RudinRCA.lean
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	rebase-evidence-20261109/
+
+[exit_status=0]

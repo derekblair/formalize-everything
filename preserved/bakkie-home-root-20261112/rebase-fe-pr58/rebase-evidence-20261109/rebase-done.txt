@@ -1,0 +1,5 @@
+pick d530d1ec9bbd761afc42d6013912656c841ed625 # Rudin RCA E: inventory all 90 nodes and check pinned Mathlib claims
+pick 24160eb0703934a56b8c7476faf0cf65f248c3b0 # Rudin RCA E: green Chapter 10 analytic foundations checkpoint
+pick 39a95e4f839f4b8a747ece9f6173b72a22e995a1 # Rudin RCA E: green Schwarz lemma and strip estimate checkpoint
+pick 1cbb8830b7598a9329e0b16504d8307dee7bc532 # Rudin RCA E: prove power-series calculus and maximum modulus cases
+pick 50584052c55c8546d9837a3297fa0f38aa7d3bdd # Rudin RCA E: recover harmonic foundations and transitive axiom audit

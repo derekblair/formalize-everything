@@ -1,0 +1,8 @@
+$ git diff --check
+books/rudin-real-and-complex-analysis/RudinRCA.lean:6: leftover conflict marker
+books/rudin-real-and-complex-analysis/RudinRCA.lean:10: leftover conflict marker
+books/rudin-real-and-complex-analysis/RudinRCA.lean:15: leftover conflict marker
+books/rudin-real-and-complex-analysis/RudinRCA.lean:21: leftover conflict marker
+books/rudin-real-and-complex-analysis/RudinRCA.lean:27: leftover conflict marker
+books/rudin-real-and-complex-analysis/RudinRCA.lean:40: leftover conflict marker
+[exit_status=2]
