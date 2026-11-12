@@ -63,8 +63,10 @@ Printed p. 221 displays `Indγ(z) = 1 + Indγ(w)` but ends with the
 membership condition `x ∈ D₊` and `w ∈ D₋`. The free `z`/bound `x`
 mismatch is visible in the scan, not an OCR invention. Stop the literal
 node. The intended repair is to replace that `x` by `z`, supported by
-the following proof, but the repaired geometric theorem is **not yet
-formalized**. No theorem with a silently changed binder is admitted.
+the following proof, and the repaired geometric theorem is now formalized
+as `theorem10_37_corrected` (`Chapter10.lean:3570`, landed in PR #91
+after crossed review PASS WITH ISSUES, FE #88). No theorem with a
+silently changed binder is admitted.
 The closure bars on the earlier `a ± bi` membership conditions were
 also checked visually and are present; those conditions are not errors.
 Source: [printed p.221](https://djvu.online/jpg/N/K/m/NKmAEzkLVs8Io/233.webp).
@@ -74,7 +76,11 @@ obstruction for every complex-valued index map and nonempty side sets:
 choose the unconstrained `z` equal to `w`, and the displayed identity
 would imply `0 = 1`. This is a counterexample to the literal conclusion
 schema; it neither constructs a path satisfying the printed geometry nor
-proves the intended index-jump theorem. The full node remains queued.
+proves the intended index-jump theorem. The geometric counterexample
+(`node10_37_literal_geometric_counterexample`, `Chapter10.lean:4022`)
+and the corrected theorem (`theorem10_37_corrected`, `Chapter10.lean:3570`)
+are now proved and landed (PR #91, FE #88); node 10.37 is complete
+(`Done`, crossed review PASS WITH ISSUES).
 
 ### E-11.5 — false strict inequality at radius zero
 
@@ -84,7 +90,11 @@ angular decrease. At `r = 0` the Poisson kernel is the constant 1, so
 the strict inequality. Stop this subclaim. `Chapter11.lean` contains
 `node11_5_strict_inequality_counterexample` and
 `node11_5_strict_inequality_corrected`; the latter explicitly adds `0 < r`.
-Neither proves the false printed claim or completes numbered node 11.5.
+Neither proves the false printed claim. Node 11.5 is now complete: the
+counterexample, the `0 < r` strict-inequality repair, non-strict
+monotonicity across the full printed range, and all remaining identities
+and bounds are proved and packaged in `theorem11_5` (`Chapter11.lean:729`),
+landed in PR #91 after crossed review PASS WITH ISSUES (FE #88).
 Source: [printed p.233](https://djvu.online/jpg/N/K/m/NKmAEzkLVs8Io/245.webp).
 
 ## Cluster E — formalization gaps
@@ -107,11 +117,15 @@ Source: [printed p.233](https://djvu.online/jpg/N/K/m/NKmAEzkLVs8Io/245.webp).
   availability is not proof completion; these nodes remain in scope.
 
 These gaps require further proof development, not pin changes or imports
-of unfinished Chapters 1–9. This lane's delivery remains a draft until
-the Chapter 10 coverage and fidelity requirements are resolved.
+of unfinished Chapters 1–9.
 
-Checkpoint 2026-11-01: all 67 incomplete nodes remain accounted for:
-10.5, 10.7–10.15, 10.17, 10.21–10.22, 10.30–10.44;
-11.5–11.32; and 12.1, 12.4–12.8, 12.10–12.14. In particular, the
-newly proved isolated-zero and joint-continuity results do not discharge
-the general path/index obligations or the 10.37 fidelity hold.
+Stage 2 update 2026-11-12 (PR #91, FE #88, crossed review PASS WITH
+ISSUES): the path/index bridge, the 10.7 complex-measure Cauchy transform,
+and the 11.3 reverse regularity bridge are all proved and landed; Chapter
+10 is 44/44 complete and its coverage and fidelity requirements are
+resolved. The remaining Cluster E work is the 19 pending nodes listed in
+the checkpoint below.
+
+Checkpoint 2026-11-12 (PR #91 landed): 19 incomplete nodes remain accounted for:
+11.16–11.26, 11.30, 11.32; and 12.1 (partial), 12.10–12.14. The E-10.37
+and E-11.5 fidelity holds are discharged (see above).
