@@ -1,0 +1,84 @@
+$ git range-diff 33b20f713a484dd8e54d6825e6b6d205f0c449ba..765d70f9aa7c11e52fe8b5a9da3f0118392f4d8c b7593a8..f3190878
+EXIT 0
+1:  1c8d220 ! 1:  e261949 RCA A: inventory chapters 1–3 and map pinned Mathlib claims
+    @@ Metadata
+      ## Commit message ##
+         RCA A: inventory chapters 1–3 and map pinned Mathlib claims
+     
+    - ## books/rudin-real-and-complex-analysis/.gitignore (new) ##
+    -@@
+    -+.lake/
+    -
+      ## books/rudin-real-and-complex-analysis/INVENTORY-CH01.md (new) ##
+     @@
+     +# Chapter 1 inventory and Mathlib claims check
+    @@ books/rudin-real-and-complex-analysis/PROGRESS.md: its ticket) and updated as ch
+     +| 1 | Abstract Integration | 41 | 0 |
+     +| 2 | Positive Borel Measures | 25 | 0 |
+     +| 3 | Lp-Spaces | 17 | 0 |
+    - | 4 | Elementary Hilbert Space Theory | TBD | 0 |
+    - | 5 | Examples of Banach Space Techniques | TBD | 0 |
+    + | 4 | Elementary Hilbert Space Theory | 26 | 0 |
+    + | 5 | Examples of Banach Space Techniques | 25 | 0 |
+      | 6 | Complex Measures | TBD | 0 |
+    -@@ books/rudin-real-and-complex-analysis/PROGRESS.md: its ticket) and updated as chapters land. "Done" means proved at the bar
+    - | 18 | Some Applications of the Phragmén–Lindelöf Method | TBD | 0 |
+    - | 19 | Entire Functions | TBD | 0 |
+    - | 20 | Boundary Behavior of Bounded Analytic Functions | TBD | 0 |
+    +@@ books/rudin-real-and-complex-analysis/PROGRESS.md: have zero proof placeholders and only `propext`, `Classical.choice`, and
+    + PR: [#48](https://github.com/derekblair/formalize-everything/pull/48).
+    + Coordinator-appointed crossed review is still required. The main table above
+    + continues to count only independently reviewed work landed on main.
+     +
+     +## Cluster A inventory (branch `books/rca-foundations`)
+     +
+2:  4de37c8 ! 2:  c4cb4d1 RCA A checkpoint: green chapter modules and enforced transitive axiom audit
+    @@ books/rudin-real-and-complex-analysis/INVENTORY-CH02.md: spurious one-line proof
+     
+      ## books/rudin-real-and-complex-analysis/RudinRCA.lean ##
+     @@
+    --/-
+    --  Rudin, *Real and Complex Analysis* (3rd edition, McGraw-Hill, 1987).
+     +import RudinRCA.Chapter01
+     +import RudinRCA.Chapter02
+     +import RudinRCA.Chapter03
+    + import RudinRCA.Chapter04
+    + import RudinRCA.Chapter05
+      
+    +-/-
+    +-  Rudin, *Real and Complex Analysis* (3rd edition, McGraw-Hill, 1987).
+    +-
+     -  A complete formalization at the programme bar: every numbered node of
+     -  Chapters 1–20, zero sorries, axioms only propext / Classical.choice /
+     -  Quot.sound, statements faithful to the printed text.
+    @@ books/rudin-real-and-complex-analysis/lakefile.toml
+      version = "0.1.0"
+     -defaultTargets = ["RudinRCA"]
+     +defaultTargets = ["RudinRCA", "RudinRCA.AuditA"]
+    + # Keep chapter elaboration serialized on shared build machines.
+    + weakLeanArgs = ["-j1"]
+      
+    - [[lean_lib]]
+    - name = "RudinRCA"
+3:  494596c ! 3:  f62c6cd RCA A: recover complete Chapter 1 proofs and audit regression harness
+    @@ books/rudin-real-and-complex-analysis/INVENTORY-CH03.md: The 17 classifications
+      `Chapter03.lean` stops the printed definition, proves the unboundedness counterexample, and proves an explicitly labelled correction using thresholds in `ℝ≥0∞`. The corrected essential supremum is zero for zero measure, is an almost-everywhere upper bound, and is the least such bound. No downstream node is counted complete by silently adopting this repair. Coordinator disposition is recorded in `QUEUE.md`.
+     
+      ## books/rudin-real-and-complex-analysis/PROGRESS.md ##
+    -@@ books/rudin-real-and-complex-analysis/PROGRESS.md: its ticket) and updated as chapters land. "Done" means proved at the bar
+    +@@ books/rudin-real-and-complex-analysis/PROGRESS.md: continues to count only independently reviewed work landed on main.
+      ## Cluster A inventory (branch `books/rca-foundations`)
+      
+      The complete verified ranges are 1.1–1.41, 2.1–2.25, and 3.1–3.17: **83
+4:  765d70f ! 4:  cc8e279 RCA A: complete Chapter 2 foundations and verify fresh builds
+    @@ books/rudin-real-and-complex-analysis/INVENTORY-CH02.md: clauses (2.4, 2.5(a,b),
+     +theorem from 2.14 onward is claimed proved in this module.
+     
+      ## books/rudin-real-and-complex-analysis/PROGRESS.md ##
+    -@@ books/rudin-real-and-complex-analysis/PROGRESS.md: its ticket) and updated as chapters land. "Done" means proved at the bar
+    +@@ books/rudin-real-and-complex-analysis/PROGRESS.md: continues to count only independently reviewed work landed on main.
+      
+      The complete verified ranges are 1.1–1.41, 2.1–2.25, and 3.1–3.17: **83
+      numbered items**, including definitions and exposition. Of these, **49 are
+-:  ------- > 5:  f4c45e8 RCA A: extend audit to rebased chapters 4-5
+-:  ------- > 6:  f319087 RCA A: trim AuditA trailing blank line

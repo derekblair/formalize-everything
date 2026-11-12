@@ -1,0 +1,20 @@
+$ git diff --numstat b7593a8..f3190878
+EXIT 0
+134	0	books/rudin-real-and-complex-analysis/INVENTORY-CH01.md
+133	0	books/rudin-real-and-complex-analysis/INVENTORY-CH02.md
+35	0	books/rudin-real-and-complex-analysis/INVENTORY-CH03.md
+41	3	books/rudin-real-and-complex-analysis/PROGRESS.md
+53	4	books/rudin-real-and-complex-analysis/QUEUE.md
+35	0	books/rudin-real-and-complex-analysis/README.md
+9	14	books/rudin-real-and-complex-analysis/RudinRCA.lean
+201	0	books/rudin-real-and-complex-analysis/RudinRCA/AuditA.lean
+1140	0	books/rudin-real-and-complex-analysis/RudinRCA/Chapter01.lean
+536	0	books/rudin-real-and-complex-analysis/RudinRCA/Chapter02.lean
+51	0	books/rudin-real-and-complex-analysis/RudinRCA/Chapter03.lean
+59	0	books/rudin-real-and-complex-analysis/SCOPING-A.md
+1	1	books/rudin-real-and-complex-analysis/lakefile.toml
+177	0	books/rudin-real-and-complex-analysis/scripts/check_audit.py
+80	0	books/rudin-real-and-complex-analysis/scripts/check_clean_build.py
+9	0	books/rudin-real-and-complex-analysis/validation/clean-build.log
+53	0	books/rudin-real-and-complex-analysis/validation/resume-2026-11-01.md
+16	0	books/rudin-real-and-complex-analysis/validation/resume-clean-build-2026-11-01.log

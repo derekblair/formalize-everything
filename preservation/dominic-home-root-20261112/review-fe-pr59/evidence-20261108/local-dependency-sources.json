@@ -1,0 +1,56 @@
+[
+  {
+    "name": "mathlib",
+    "source": "/root/projects/book-formalization/rudin-lean/rudin/.lake/packages/mathlib",
+    "revision": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+    "clone_exit": 0
+  },
+  {
+    "name": "plausible",
+    "source": "/root/projects/book-formalization/rudin-lean/rudin/.lake/packages/plausible",
+    "revision": "118aa17ee84656b8bd727fef7c458ee8c833385c",
+    "clone_exit": 0
+  },
+  {
+    "name": "LeanSearchClient",
+    "source": "/root/projects/book-formalization/rudin-lean/rudin/.lake/packages/LeanSearchClient",
+    "revision": "ddf04cf3949fa556442341e87d47f9f6e6074707",
+    "clone_exit": 0
+  },
+  {
+    "name": "importGraph",
+    "source": "/root/projects/book-formalization/rudin-lean/rudin/.lake/packages/importGraph",
+    "revision": "e928b72544873815af278d38681b31c0293588e3",
+    "clone_exit": 0
+  },
+  {
+    "name": "proofwidgets",
+    "source": "/root/projects/book-formalization/rudin-lean/rudin/.lake/packages/proofwidgets",
+    "revision": "106ff4fafc74ef4ac99d81dbf3ab399118f497a5",
+    "clone_exit": 0
+  },
+  {
+    "name": "aesop",
+    "source": "/root/projects/book-formalization/rudin-lean/rudin/.lake/packages/aesop",
+    "revision": "355695d523e41d0554926416cba2a2b3544fbbc9",
+    "clone_exit": 0
+  },
+  {
+    "name": "Qq",
+    "source": "/root/projects/book-formalization/rudin-lean/rudin/.lake/packages/Qq",
+    "revision": "6a489d9af5d0c47e5b259e2e8bcdfc1811b5a259",
+    "clone_exit": 0
+  },
+  {
+    "name": "batteries",
+    "source": "/root/projects/book-formalization/rudin-lean/rudin/.lake/packages/batteries",
+    "revision": "f2effa3d803fda822b1f97b806c47cf2adfbcbc2",
+    "clone_exit": 0
+  },
+  {
+    "name": "Cli",
+    "source": "/root/projects/book-formalization/rudin-lean/rudin/.lake/packages/Cli",
+    "revision": "e92c9f15fdfacc8536f31cfb3b7ad26c3c8cd204",
+    "clone_exit": 0
+  }
+]

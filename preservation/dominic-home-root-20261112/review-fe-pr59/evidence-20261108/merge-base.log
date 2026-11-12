@@ -1,0 +1,3 @@
+$ git merge-base origin/main HEAD
+EXIT 0
+b7593a842e03c909f50dda6388697a23cda18766

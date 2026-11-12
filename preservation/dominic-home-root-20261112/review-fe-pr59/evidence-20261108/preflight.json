@@ -1,0 +1,38 @@
+{
+  "observed_at": "2026-11-08T06:29Z",
+  "head": "f319087865f3d19e64c107eb1edae937973c7adf",
+  "base": "b7593a842e03c909f50dda6388697a23cda18766",
+  "mergeable": true,
+  "mergeable_state": "clean",
+  "draft": false,
+  "seat_email": "derekblair@protonmail.com",
+  "live_session_event_at": "2026-11-08T06:29:25.342Z",
+  "rate_limits": {
+    "plan_type": "pro",
+    "used_percent": 1,
+    "window_minutes": 10080,
+    "resets_at": 1794717725,
+    "rate_limit_reached_type": null
+  },
+  "quota_snapshot_script": {
+    "exit": 0,
+    "account": null,
+    "rateLimits": null,
+    "error": "no response for both calls"
+  },
+  "quota_app_server_diagnostic": {
+    "child_exit": 1,
+    "error": "Read-only file system (os error 30); sandbox user namespace diagnostic"
+  },
+  "gh_pr_view": {
+    "exit": 1,
+    "error": "error connecting to api.github.com"
+  },
+  "network_clone": {
+    "exit": 128,
+    "error": "Could not resolve host: github.com"
+  },
+  "clone": "/root/review-fe-pr59-codex/independent-clone-20261108",
+  "clone_transport": "git clone --no-hardlinks from local repository; old-head objects fetched from /root/formalize-lanes/fe-review; origin URL set to GitHub; origin/main seeded from live GitHub API SHA; full object hashes and ancestry verified",
+  "remote_main": "b7593a842e03c909f50dda6388697a23cda18766"
+}

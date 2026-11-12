@@ -1,0 +1,9 @@
+$ python3 scripts/check_audit.py
+PASS clean_baseline: exit 0; Axiom audit passed for 5 project declarations (including private/generated) across 6 audited project modules; the package source tree holds 7 project modules, all imported into the audited graph and all present in the expected inventory; used: [].
+PASS sorry_backed_declaration: exit 1; RudinRCA/AuditA.lean:64:0: error: RudinRCA.fixtureSorry depends on disallowed axiom sorryAx
+PASS user_axiom: exit 1; RudinRCA/AuditA.lean:64:0: error: Project declares an axiom: RudinRCA.fixtureUserAxiom
+PASS private_axiom_outside_namespace: exit 1; RudinRCA/AuditA.lean:64:0: error: Project declares an axiom: _private.RudinRCA.Chapter01.0.OutsideBook.hidden
+PASS unimported_project_source: exit 1; RudinRCA/AuditA.lean:64:0: error: Axiom audit module-inventory mismatch: source module Unimported belongs to this package (present in the package source tree) but is not imported into the audited import graph
+PASS: 1 nonvacuous baseline and 4 expected audit rejections; live sources untouched.
+
+EXIT 0

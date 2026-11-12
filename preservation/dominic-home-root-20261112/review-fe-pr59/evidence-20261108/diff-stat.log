@@ -1,0 +1,21 @@
+$ git diff --stat b7593a8..f3190878
+EXIT 0
+ .../INVENTORY-CH01.md                              |  134 +++
+ .../INVENTORY-CH02.md                              |  133 +++
+ .../INVENTORY-CH03.md                              |   35 +
+ books/rudin-real-and-complex-analysis/PROGRESS.md  |   44 +-
+ books/rudin-real-and-complex-analysis/QUEUE.md     |   57 +-
+ books/rudin-real-and-complex-analysis/README.md    |   35 +
+ .../rudin-real-and-complex-analysis/RudinRCA.lean  |   23 +-
+ .../RudinRCA/AuditA.lean                           |  201 ++++
+ .../RudinRCA/Chapter01.lean                        | 1140 ++++++++++++++++++++
+ .../RudinRCA/Chapter02.lean                        |  536 +++++++++
+ .../RudinRCA/Chapter03.lean                        |   51 +
+ books/rudin-real-and-complex-analysis/SCOPING-A.md |   59 +
+ .../rudin-real-and-complex-analysis/lakefile.toml  |    2 +-
+ .../scripts/check_audit.py                         |  177 +++
+ .../scripts/check_clean_build.py                   |   80 ++
+ .../validation/clean-build.log                     |    9 +
+ .../validation/resume-2026-11-01.md                |   53 +
+ .../validation/resume-clean-build-2026-11-01.log   |   16 +
+ 18 files changed, 2763 insertions(+), 22 deletions(-)
