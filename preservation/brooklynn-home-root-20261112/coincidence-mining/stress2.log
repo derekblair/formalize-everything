@@ -1,0 +1,20 @@
+stress2: 60 pairs
+counts={'SURVIVES_EXTENDED': 17, 'BREAKS': 41, 'SURVIVES_LISTED_ONLY': 2}
+EXTENDED A225530 vs A384710 variant=drop1 agree=67 extended=4
+EXTENDED A047992 vs A078642 variant=drop2 agree=35 extended=2
+EXTENDED A071050 vs A267445 variant=drop1 agree=66 extended=935
+EXTENDED A058526 vs A112153 variant=abs agree=56 extended=945
+EXTENDED A054541 vs A075526 variant=drop1 agree=96 extended=1
+EXTENDED A003961 vs A045965 variant=drop1 agree=64 extended=9936
+EXTENDED A066043 vs A204904 variant=drop1 agree=64 extended=1
+EXTENDED A022998 vs A257088 variant=drop1 agree=64 extended=937
+EXTENDED A129598 vs A253560 variant=drop1 agree=54 extended=9946
+EXTENDED A113431 vs A116915 variant=abs agree=105 extended=896
+EXTENDED A046698 vs A329683 variant=drop1 agree=91 extended=1
+EXTENDED A111495 vs A111499 variant=drop2 agree=61 extended=3
+EXTENDED A094339 vs A109890 variant=drop2 agree=61 extended=9939
+EXTENDED A143280 vs A227569 variant=drop1 agree=104 extended=9896
+EXTENDED A077961 vs A077962 variant=abs agree=60 extended=941
+EXTENDED A123092 vs A222068 variant=drop1 agree=103 extended=2
+EXTENDED A078029 vs A078030 variant=abs agree=60 extended=941
+STRESS2 DONE

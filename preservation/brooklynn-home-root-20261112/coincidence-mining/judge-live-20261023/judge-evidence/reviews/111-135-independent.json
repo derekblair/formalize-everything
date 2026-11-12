@@ -1,0 +1,109 @@
+{
+  "111": {
+    "first_index": 1729,
+    "a": 2,
+    "b": 1,
+    "agreement": 1729
+  },
+  "113": {
+    "first_index": 115,
+    "a": 120,
+    "b": 121,
+    "agreement": 114
+  },
+  "114": {
+    "first_index": 128,
+    "a": 0,
+    "b": 1,
+    "agreement": 127
+  },
+  "115": {
+    "first_index": 110,
+    "a": 10,
+    "b": 0,
+    "agreement": 110,
+    "n112": [
+      22,
+      12
+    ]
+  },
+  "117": {
+    "first_index": 109,
+    "a": 170,
+    "b": 169,
+    "agreement": 108
+  },
+  "119": {
+    "first_index": 114,
+    "a": 11,
+    "b": 0,
+    "agreement": 113
+  },
+  "134": {
+    "first_index": 2805,
+    "a": 0,
+    "b": 65,
+    "agreement": 2804
+  },
+  "122": {
+    "first_index": 108,
+    "a": 35,
+    "b": 70,
+    "agreement": 107
+  },
+  "123": {
+    "first_index": 64,
+    "a": 100,
+    "b": 89,
+    "agreement": 64,
+    "b_index": 65
+  },
+  "124": {
+    "first_index": 1080,
+    "a": 2205,
+    "b": 2207,
+    "agreement": 1079,
+    "sigma_2205": 4446
+  },
+  "126": {
+    "first_index": 210,
+    "a": 7,
+    "b": 1,
+    "agreement": 210
+  },
+  "127": {
+    "first_index": 1890,
+    "a": 9,
+    "b": 1,
+    "agreement": 1890
+  },
+  "129": {
+    "first_index": 360,
+    "a": 1,
+    "b": 3,
+    "agreement": 360
+  },
+  "128": {
+    "first_index": 511,
+    "a": 171,
+    "b": 170,
+    "agreement": 511,
+    "method": "fresh OEIS b-files, not independent definition implementation"
+  },
+  "131": {
+    "first_index": 300,
+    "a": 1,
+    "b": 0,
+    "agreement": 299,
+    "method": "independent divisor formula vs fresh A171774 b-file"
+  },
+  "118": {
+    "witness_index": 2436,
+    "rational_x": "-4983/5000",
+    "P_at_x_sign": -1,
+    "P_at_zero": 2,
+    "P_at_minus_one": 10790,
+    "nonreal_roots_upper_bound": 2434,
+    "method": "exact integer Horner evaluation, intermediate value theorem; does not prove first divergence"
+  }
+}

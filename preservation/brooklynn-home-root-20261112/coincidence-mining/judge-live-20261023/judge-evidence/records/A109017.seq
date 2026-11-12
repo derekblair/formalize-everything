@@ -1,0 +1,29 @@
+%I A109017 #33 Dec 11 2025 12:36:57
+%S A109017 0,1,0,0,0,1,0,1,0,0,0,1,0,-1,0,0,0,-1,0,-1,0,0,0,-1,0,1,0,0,0,1,0,1,
+%T A109017 0,0,0,1,0,-1,0,0,0,-1,0,-1,0,0,0,-1,0,1,0,0,0,1,0,1,0,0,0,1,0,-1,0,0,
+%U A109017 0,-1,0,-1,0,0,0,-1,0,1,0,0,0,1,0,1,0,0,0,1,0,-1,0,0,0,-1,0,-1,0,0,0,-1,0,1,0,0,0,1,0,1,0
+%N A109017 a(n) = Kronecker symbol (-6/n).
+%D A109017 L. B. W. Jolley, Summation of Series, Dover Publications, 1961.
+%H A109017 G. C. Greubel, <a href="/A109017/b109017.txt">Table of n, a(n) for n = 0..10000</a>
+%H A109017 Eric Weisstein's World of Mathematics, <a href="https://mathworld.wolfram.com/KroneckerSymbol.html">Kronecker Symbol</a>
+%H A109017 <a href="/index/Rec#order_08">Index entries for linear recurrences with constant coefficients</a>, signature (0,0,0,1,0,0,0,-1).
+%F A109017 Euler transform of length-24 sequence [ 0, 0, 0, 1, 0, 1, 0, -1, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1].
+%F A109017 a(n) = -a(-n) = a(n+24) for all n in Z.
+%F A109017 G.f.: x * (1 + x^6) / (1 - x^4 + x^8).
+%F A109017 G.f.: x *(1 -x^8)*(1 -x^12)^2 /((1 -x^4)*(1 -x^6)*(1 -x^24)).
+%F A109017 Sum_{n>=1} |a(n)|/n^2 = Pi^2/9 [Jolley equ. 338].
+%e A109017 G.f. = x + x^5 + x^7 + x^11 - x^13 - x^17 - x^19 - x^23 + x^25 + x^29 + ...
+%p A109017 A109017 := proc(n)
+%p A109017         numtheory[jacobi](-6,n) ;
+%p A109017 end proc: # _R. J. Mathar_, Nov 03 2011
+%t A109017 Table[KroneckerSymbol[-6, n], {n, 0, 104}] (* _Jean-François Alcover_, Jan 10 2014 *)
+%o A109017 (PARI) {a(n) = kronecker(-6, n)};
+%o A109017 (PARI) {a(n) = (n%2) * (n%3!=0) * (-1)^(n\12)};
+%o A109017 (Magma) [KroneckerSymbol(-6,n): n in [0..120]]; // _Vincenzo Librandi_, Aug 09 2015
+%Y A109017 Moebius transform of A192013.
+%Y A109017 Cf. A296924 (primes not inert in Q(sqrt(-6))), A157437 (primes decomposing), A191059 (prime remaining inert).
+%Y A109017 Kronecker symbols {(D/n)} for negative fundamental discriminants D = -3..-47, -67, -163: A102283, A101455, A175629, A188510, A011582, A316569, A011585, A289741, A011586, this sequence, A011588, A390614, A388073, A388072, A011591, A011592, A011596, A011615.
+%Y A109017 Kronecker symbols {(D/n)} for positive fundamental discriminants D = 5..41: A080891, A091337, A110161, A011583, A011584, A322829, A322796, A390615, A011587, A391502, A011589, A391503, A011590.
+%K A109017 sign,mult,easy
+%O A109017 0,1
+%A A109017 _Michael Somos_, Jun 16 2005
