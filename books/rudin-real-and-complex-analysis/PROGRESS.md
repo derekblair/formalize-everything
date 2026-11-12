@@ -64,10 +64,10 @@ have zero proof placeholders and only `propext`, `Classical.choice`, and
 [statement disclosures](SCOPING-B.md).
 
 PR: [#48](https://github.com/derekblair/formalize-everything/pull/48).
-Coordinator-appointed crossed review is still required. The main table above
+Coordinator-appointed crossed review passed (`PASS WITH ISSUES`, zero blocking findings; see FE #38) and PR [#79](https://github.com/derekblair/formalize-everything/pull/79) merged (`aba161c6`). The main table above
 continues to count only independently reviewed work landed on main.
 
-Cluster C independently enumerated 45 numbered nodes (6.1–6.19 and 7.1–7.26); see [SCOPING-C.md](SCOPING-C.md) for printed statements, pages, subclauses, pinned Mathlib claims checks, and uncovered obligations. Chapter 6 implementation is in progress. No chapter has yet passed the complete Stage 2 gate; the Done column remains zero.
+Cluster C independently enumerated 45 numbered nodes (6.1–6.19 and 7.1–7.26); see [SCOPING-C.md](SCOPING-C.md) for printed statements, pages, subclauses, pinned Mathlib claims checks, and uncovered obligations. Chapter 6 implementation is in progress. Overall `Done` on `main` is 124/456; within Cluster C, Chapter 6 import into the audited graph is in progress (not yet on `main`, `Done: 0`) and Chapter 7 (7.1–7.26) is unimplemented (`Done: 0`).
 
 ## Cluster D development branch
 
@@ -117,7 +117,7 @@ These counts verify identifiers, not the correctness or formalization of
 every statement. Section 3.7 has a disclosed zero-measure fidelity hold;
 see [QUEUE.md](QUEUE.md). No exercise is included.
 
-## Cluster A formalization on this branch (independent review pending)
+## Cluster A formalization (landed on main)
 
 | Chapter | Inventoried | Formalized items | Remaining original items | Proved result groups / total |
 |---|---:|---:|---:|---:|
@@ -133,7 +133,7 @@ representation theorem 2.14 remains pending. Chapter 3
 contains four proved results: a counterexample and three facts about the
 explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
 remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
-The `Done` column in the main table remains zero because no merge occurred.
+Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; current main-table `Done` total is 124/456).
 
 ## Cluster F working-branch status
 
@@ -141,7 +141,7 @@ The independent inventory in [SCOPING-F.md](SCOPING-F.md) counts all 34 numbered
 
 The ticket’s headline numbering differs from the printed third edition: Runge is 13.6/13.9; 13.10 is Mittag-Leffler; 13.12 is harmonicity of log modulus. Mergelyan is 20.5 and is outside this cluster. The forward dependency 13.11(j) → 14.8 is explicit in the book.
 
-The working Chapter13 module contains the sphere topology and exact stereographic map, inverse-chart singularity definitions, bounded removability and polynomial principal parts at infinity, entire nonpolynomial essential singularities, and the full 13.12 log-modulus harmonicity statement. The combined module and umbrella build passed with48 allowed-axiom declaration audits on2026-10-29. This is an incremental branch checkpoint: neither a complete chapter nor the clean-slate PR gate. Further assertions of13.1 and the drafts for13.2 onward remain under verification. Partial assertions are not counted as completed numbered nodes.
+The working Chapter13 module contains the sphere topology and exact stereographic map, inverse-chart singularity definitions, bounded removability and polynomial principal parts at infinity, entire nonpolynomial essential singularities, and the full 13.12 log-modulus harmonicity statement. The combined module and umbrella build passed with 48 allowed-axiom declaration audits on 2026-10-29. This is an incremental branch checkpoint: neither a complete chapter nor the clean-slate PR gate. Further assertions of 13.1 and the drafts for 13.2 onward remain under verification. Partial assertions are not counted as completed numbered nodes.
 
 Cluster G counts were independently checked against the printed third edition; see [SCOPING-G.md](SCOPING-G.md). F. and M. Riesz is 17.13 in that edition, whereas issue #43 labels it 17.11. No complete chapter or merged Stage 2 coverage is claimed by this inventory update.
 
@@ -154,7 +154,7 @@ chapter numbers and discloses the discrepancy; see [SCOPING-H.md](SCOPING-H.md).
 No separate Stage 1 lane inventory was supplied. Counts here were independently
 enumerated from the printed third-edition scan. Exercises are excluded.
 
-The main-branch Done column remains zero until reviewed changes land. A
+Reviewed changes have landed on `main` (`Done` total 124/456 overall; Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
 successful supporting lemma does not imply completion of its entire book node.
 
 Cluster E's [inventory](inventory/README.md) verifies all 90 numbered nodes
