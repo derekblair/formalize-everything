@@ -11,7 +11,7 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 3 | Lp-Spaces | 17 | 0 |
 | 4 | Elementary Hilbert Space Theory | 26 | 26 |
 | 5 | Examples of Banach Space Techniques | 25 | 25 |
-| 6 | Complex Measures | 19 | 0 |
+| 6 | Complex Measures | 19 | 8 |
 | 7 | Differentiation | 26 | 0 |
 | 8 | Integration on Product Spaces | 18 | 18 |
 | 9 | Fourier Transforms | 23 | 0 |
@@ -67,7 +67,7 @@ PR: [#48](https://github.com/derekblair/formalize-everything/pull/48).
 Coordinator-appointed crossed review passed (`PASS WITH ISSUES`, zero blocking findings; see FE #38) and PR [#79](https://github.com/derekblair/formalize-everything/pull/79) merged (`aba161c6`). The main table above
 continues to count only independently reviewed work landed on main.
 
-Cluster C independently enumerated 45 numbered nodes (6.1–6.19 and 7.1–7.26); see [SCOPING-C.md](SCOPING-C.md) for printed statements, pages, subclauses, pinned Mathlib claims checks, and uncovered obligations. Chapter 6 implementation is in progress. Overall `Done` on `main` is 124/456; within Cluster C, Chapter 6 import into the audited graph is in progress (not yet on `main`, `Done: 0`) and Chapter 7 (7.1–7.26) is unimplemented (`Done: 0`).
+Cluster C independently enumerated 45 numbered nodes (6.1–6.19 and 7.1–7.26); see [SCOPING-C.md](SCOPING-C.md) for printed statements, pages, subclauses, pinned Mathlib claims checks, and uncovered obligations, and [COVERAGE-C.md](COVERAGE-C.md) for the live module ledger. `RudinRCA/Chapter06.lean` (`442` lines, blob `a7cbfb23ef0326a9f9222b1d098fc58839d6f58a`) is imported into the audited graph on `main` (`FE #82`, PR #84), proving **8/19** complete Chapter 6 nodes (`6.1`, `6.2`, `6.4`, `6.5`, `6.6`, `6.7`, `6.8`, `6.17`) at the programme bar (`Done: 8` after coordinator-appointed crossed review; overall `Done` on `main` is 132/456); the remaining `11/19` Chapter 6 nodes (`6.3`, `6.9`–`6.16`, `6.18`, `6.19`) and Chapter 7 (`0/26`, `Done: 0`) remain pending.
 
 ## Cluster D development branch
 

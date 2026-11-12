@@ -70,7 +70,7 @@ run_cmd do
   -- contribute no declarations of their own.
   let expectedModules : Array Name :=
     #[`RudinRCA, `RudinRCA.Chapter01, `RudinRCA.Chapter02, `RudinRCA.Chapter03,
-      `RudinRCA.Chapter04, `RudinRCA.Chapter05, `RudinRCA.Chapter08,
+      `RudinRCA.Chapter04, `RudinRCA.Chapter05, `RudinRCA.Chapter06, `RudinRCA.Chapter08,
       `RudinRCA.Chapter10, `RudinRCA.Chapter11, `RudinRCA.Chapter12,
       `RudinRCA.Chapter13, `RudinRCA.Chapter15, `RudinRCA.AuditA, `RudinRCA.AuditE]
   let entrypoint : Name := `RudinRCA.AuditA
