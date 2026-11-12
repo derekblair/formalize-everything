@@ -13,7 +13,7 @@ Both modules are imported by [RudinRCA.lean](RudinRCA.lean) and audited by [Rudi
 
 - **Clean-slate build:** `lake build` from a fresh `.lake/build` (shared golden Mathlib cache `d13f23b723b8a846827a245b89c10fc7d3f11612` symlinked at `.lake/packages`, Lean `v4.34.1`) exited **`0`** (`8,940` jobs, `0` errors; `0` warnings in `RudinRCA/Chapter07.lean`).
 - **Whole-book `AuditA` audit:** Passed across **`1,976`** project declarations (`1,651` baseline at `main` `6625bf73` + **`325`** from `RudinRCA.Chapter07`; cumulatively `1,576 + 75 + 325 = 1,976`) across `15` audited project modules (`16` package modules including `RudinRCA.AuditA`). Axiom union is strictly `{propext, Classical.choice, Quot.sound}`; `0` occurrences of `sorry`, `admit`, `native_decide`, `decide!`, `bv_decide`, or local `axiom`/`opaque`.
-- **Review status:** `RudinRCA.Chapter06` (`FE #82`, PR #84) is reviewed and merged on `main` (`Done: 8/19`); `RudinRCA.Chapter07` (`FE #86`) is staged in a draft PR (`24/26` proved in full, `2/26` pending), awaiting coordinator-appointed crossed review before merge to `main`.
+- **Review status:** `RudinRCA.Chapter06` (`FE #82`, PR #84) is reviewed and merged on `main` (`Done: 8/19`); `RudinRCA.Chapter07` (`FE #86`, PR #89) is reviewed (crossed review PASS) and merged on `main` (`24/26` proved in full, `2/26` pending).
 
 ## Chapter 6 declaration count reconciliation (`43` / `40` / `32` / `75`)
 
@@ -24,13 +24,13 @@ Both modules are imported by [RudinRCA.lean](RudinRCA.lean) and audited by [Rudi
 | **Explicit `#print axioms` records** | **32** | `L246–L257` (`12`), `L385–L403` (`19`), `L440` (`1`): covers all `30` public `theorem`s plus `complexMeasureNorm` and `complexMeasureNormedSpace`, each reporting `[propext, Classical.choice, Quot.sound]`. |
 | **`AuditA` environment constants (`Chapter06`)** | **75** | `43` source declarations + `32` Lean-elaborated `CountablePartition` projections/constructor/recursor/`casesOn`/`noConfusion`/`sizeOf`/`inj`/`injEq`/`_flat_ctor` helpers and `._proof_*`/`._simp_*` subterms (`1,576 + 75 = 1,651` whole-book `AuditA` constants at `6625bf73`). |
 
-## Chapter 7 declaration count reconciliation (`191` / `146` / `325`)
+## Chapter 7 declaration count reconciliation (`193` / `148` / `325`)
 
 | Metric | Count | Exact breakdown |
 |---|---:|---|
-| **Total source declarations** | **191** | `109` public `theorem` + `43` `private theorem` = `152` `theorem`; `36` public `def` + `2` `private def` (`rationalSetoid7` at `L4838`, `vitaliTransversal7` at `L4845`) = `38` `def`; `1` public `instance` (`complexMeasure_haveLebesgueDecomposition` at `L1301`). Zero `lemma`, `abbrev`, `structure`, `class`, `inductive`, `axiom`, or `opaque`. (`146` public + `45` `private` = `191`.) |
-| **Public value declarations** | **146** | `109 + 36 + 1 = 146` (public `theorem` + `def` + `instance`; equals public source declarations since `Chapter07` declares no type formers). |
-| **`AuditA` environment constants (`Chapter07`)** | **325** | `191` source declarations + `134` Lean-elaborated auxiliary constants (recursive equation/termination helpers for `cantorApprox` and `lemma_7_3`, `match` splitters, and `._proof_*`/`._simp_*` subterms), giving `1,651 + 325 = 1,976` whole-book `AuditA` constants. |
+| **Total source declarations** | **193** | `111` public `theorem` + `43` `private theorem` = `154` `theorem`; `36` public `def` + `2` `private def` (`rationalSetoid7` at `L4838`, `vitaliTransversal7` at `L4845`) = `38` `def`; `1` public `instance` (`complexMeasure_haveLebesgueDecomposition` at `L1301`). Zero `lemma`, `abbrev`, `structure`, `class`, `inductive`, `axiom`, or `opaque`. (`148` public + `45` `private` = `193`.) |
+| **Public value declarations** | **148** | `111 + 36 + 1 = 148` (public `theorem` + `def` + `instance`; equals public source declarations since `Chapter07` declares no type formers). |
+| **`AuditA` environment constants (`Chapter07`)** | **325** | `193` source declarations + `132` Lean-elaborated auxiliary constants (recursive equation/termination helpers for `cantorApprox` and `lemma_7_3`, `match` splitters, and `._proof_*`/`._simp_*` subterms), giving `1,651 + 325 = 1,976` whole-book `AuditA` constants. |
 
 ## Chapter 6 node-by-node ledger (`6.1`–`6.19`: `8` proved in full, `11` pending)
 
