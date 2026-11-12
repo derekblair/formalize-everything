@@ -95,8 +95,7 @@ instances), and `274` `AuditA` constants; see
 [Chapter 8 coverage](CHAPTER08-COVERAGE.md) and
 [Chapter 8 build evidence](BUILD-CHAPTER08.md). `RudinRCA/Chapter09.lean`
 (`4,333` lines, blob `0e31e98ed13f377c735755b72205751cdf25db49`) is wired into
-the audited graph for `FE #87` (awaiting coordinator-appointed crossed review
-before merge to `main`), proving **23/23** complete Chapter 9 nodes
+the audited graph for `FE #87` (coordinator-appointed crossed review PASS WITH ISSUES, 0 blocking, recorded on FE #87; landed by PR #90), proving **23/23** complete Chapter 9 nodes
 (`9.1`–`9.23`) at the programme bar (`Done: 23`, bringing the main-table `Done`
 sum from `156/456` on `main` to `179/456`); clean-slate `lake build` exited 0
 (`8,941` jobs, `0` errors) and `AuditA` passed across `2,369` project
@@ -145,7 +144,7 @@ representation theorem 2.14 remains pending. Chapter 3
 contains four proved results: a counterexample and three facts about the
 explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
 remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
-Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; current main-table `Done` total is 179/456, including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes staged in FE #87 awaiting crossed review).
+Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; current main-table `Done` total is 179/456, including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES)).
 
 ## Cluster F working-branch status
 
@@ -166,7 +165,7 @@ chapter numbers and discloses the discrepancy; see [SCOPING-H.md](SCOPING-H.md).
 No separate Stage 1 lane inventory was supplied. Counts here were independently
 enumerated from the printed third-edition scan. Exercises are excluded.
 
-Reviewed changes have landed on `main` (`Done` total 156/456 on `main` (FE #86 landed in PR #89), 179/456 in the main table above with FE #87 staged awaiting crossed review; Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
+Reviewed changes have landed on `main` (`Done` total 179/456 on `main` (FE #86 landed in PR #89; FE #87 landed in PR #90 after crossed review PASS WITH ISSUES); Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
 successful supporting lemma does not imply completion of its entire book node.
 
 Cluster E's [inventory](inventory/README.md) verifies all 90 numbered nodes

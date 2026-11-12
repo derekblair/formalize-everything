@@ -4,14 +4,14 @@ All declarations below are in [RudinRCA/Chapter09.lean](RudinRCA/Chapter09.lean)
 
 ## Stage 2 build and audit status
 
-- **Stage 2 review status:** Wired into [RudinRCA.lean](RudinRCA.lean) and [RudinRCA/AuditA.lean](RudinRCA/AuditA.lean) for `FE #87` (cluster D ticket `#40`, umbrella `#36`), awaiting coordinator-appointed independent crossed review before merge to `main`.
+- **Stage 2 review status:** Wired into [RudinRCA.lean](RudinRCA.lean) and [RudinRCA/AuditA.lean](RudinRCA/AuditA.lean) for `FE #87` (cluster D ticket `#40`, umbrella `#36`); coordinator-appointed independent crossed review PASS WITH ISSUES (0 blocking), recorded on FE #87; landed by PR #90.
 - **Clean-slate build and axiom audit:** Clean-slate `lake build` exited **0** (`8,941` jobs, `0` errors, `0` warnings in `RudinRCA/Chapter09.lean`); transitive `AuditA` passed for **2,369** project declarations across `16` audited project modules (`17` package source modules, additive delta `+393` over the `main` `3941e314` baseline of `1,976`). Observed axiom union is strictly `{propext, Classical.choice, Quot.sound}`, with **0** `sorry`, `admit`, `native_decide`, `bv_decide`, `decide!`, or local `axiom`.
 
 ## Declaration count reconciliation (`222` / `205` / `203` / `393`)
 
 | Metric | Count | Exact breakdown |
 |---|---:|---|
-| **Total source declarations** | **222** | `134` public `theorem` (including `13` `@[simp] theorem` declarations); `11` public `lemma` + `17` `private lemma` = `28` `lemma`; `36` public `def`; `3` public `abbrev` (`RudinLp`, `RudinC0`, `RudinComplexHom`); `19` public `instance` (`1` named `instIsRudinBanachAlgebra` at `L2901`, `9` anonymous instances on `rudinMeasure` at `L118–L163`, and `9` anonymous instances on `RudinL1Algebra` at `L3033–L3180`); `1` public `structure` (`@[ext] structure RudinL1Algebra` at `L3027`); `1` public `class` (`class IsRudinBanachAlgebra` at `L2897`). Zero `axiom`, `opaque`, or `inductive`. (`205` public + `17` `private` = `222`.) |
+| **Total source declarations** | **222** | `134` public `theorem` (including `14` `@[simp] theorem` declarations); `11` public `lemma` + `17` `private lemma` = `28` `lemma`; `36` public `def`; `3` public `abbrev` (`RudinLp`, `RudinC0`, `RudinComplexHom`); `19` public `instance` (`1` named `instIsRudinBanachAlgebra` at `L2901`, `9` anonymous instances on `rudinMeasure` at `L118–L163`, and `9` anonymous instances on `RudinL1Algebra` at `L3033–L3180`); `1` public `structure` (`@[ext] structure RudinL1Algebra` at `L3027`); `1` public `class` (`class IsRudinBanachAlgebra` at `L2897`). Zero `axiom`, `opaque`, or `inductive`. (`205` public + `17` `private` = `222`.) |
 | **Public source declarations** | **205** | `203` public value declarations (`134 + 11 + 36 + 3 + 19 = 203`) plus `2` public type/class formers (`RudinL1Algebra`, `IsRudinBanachAlgebra`). |
 | **Public value declarations** | **203** | `134` `theorem` + `11` `lemma` + `36` `def` + `3` `abbrev` + `19` `instance` = `203`. |
 | **`AuditA` environment constants (`Chapter09`)** | **393** | Additive delta `2,369 - 1,976 = 393` project constants contributed by `RudinRCA.Chapter09` (`222` source declarations + `171` Lean-elaborated constructors, projections, recursors/`casesOn`/`noConfusion`, `@[ext]` lemmas, `.eq_1` equation lemmas, and `._proof_*` / `._simp_*` / `_auxLemma` subterms). |
