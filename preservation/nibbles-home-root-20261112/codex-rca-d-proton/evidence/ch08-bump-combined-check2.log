@@ -1,0 +1,18 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08BumpCombinedCheck.lean:449:4: warning: Unused tactic linter: `change volume (Set.Icc (0 : ℝ) 1) = 1` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08BumpCombinedCheck.lean:594:36: error(lean.unknownIdentifier): Unknown constant `Filter.tendsto_id.atTop_sub_const`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08BumpCombinedCheck.lean:604:9: error: invalid 'by' tactic, expected type has not been provided
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08BumpCombinedCheck.lean:605:2: error: No goals to be solved
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08BumpCombinedCheck.lean:624:4: error: Type mismatch: After simplification, term
+  Tendsto.pos_mul_atTop zero_lt_one hid (Tendsto.comp tendsto_inv_nhdsGT_zero hd)
+ has type
+  @Tendsto ℝ ℝ (fun x => x * ((fun x => x⁻¹) ∘ fun p => p - 1) x) (𝓝[>] 1) atTop
+but is expected to have type
+  @Tendsto ℝ ℝ (fun p => p * (p - 1)⁻¹) (𝓝[>] 1) atTop
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08BumpCombinedCheck.lean:632:4: error: Type mismatch: After simplification, term
+  Tendsto.div tendsto_const_nhds hid one_ne_zero
+ has type
+  Tendsto ((fun x => 1) / fun p => p) (𝓝[>] 1) (𝓝 1)
+but is expected to have type
+  Tendsto (fun p => p⁻¹) (𝓝[>] 1) (𝓝 1)

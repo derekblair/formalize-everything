@@ -1,0 +1,370 @@
+'RudinRCA.Chapter13.hasIsolatedSingularityAtInfinity_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.pole_hasIsolatedSingularityAtInfinity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_reduced_representation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_partial_fractions_coefficients' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_partial_fractions_polynomials' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.linear_partial_fractions_in_algebra' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_partial_fractions_with_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.rational_principal_part_remainder' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_quotient_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.polynomial_meromorphic_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_pole_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_tendsto_cobounded_at_pole' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_differentiableAt_of_denom_ne_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.RudinRCA.Chapter13.strip_component_avoids_half' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.strip_component_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.strip_component_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.horizontalStrip_components' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.balanced_exists_successor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.mem_permutationOrbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.permutationOrbit_nonempty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.permutationOrbit_eq_of_sameCycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.isCycleOn_permutationOrbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.enumerate_permutationOrbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.balanced_closed_cycle_partition' depends on axioms: [propext, Classical.choice, Quot.sound]
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:754:6: warning: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:782:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+'RudinRCA.Chapter13.compact_exhaustion_with_spherical_complement_components' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:899:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  T
+in the target expression
+  IsConnected (OnePoint.some '' K)ᶜ
+
+K : Set ℂ
+hdisc : ¬IsConnected (OnePoint.some '' K)ᶜ
+hall : ∀ a ∉ K, ¬Bornology.IsBounded (connectedComponentIn Kᶜ a)
+T : Set RiemannSphere := (OnePoint.some '' K)ᶜ
+hinf : ∞ ∈ T
+hsub : T ⊆ connectedComponentIn T ∞
+heq : connectedComponentIn T ∞ = T
+⊢ IsConnected (OnePoint.some '' K)ᶜ
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:913:17: error: Type mismatch: After simplification, term
+  hzC
+ has type
+  z ∈ connectedComponentIn Kᶜ z
+but is expected to have type
+  z ∈ interior (connectedComponentIn Kᶜ z)
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:990:27: error: Type mismatch: After simplification, term
+  hz
+ has type
+  ¬z = a
+but is expected to have type
+  id z ≠ a
+'RudinRCA.Chapter13.sphericalComplementComponents' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.countable_spherical_complement_components' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.exists_bounded_complement_component' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.frontier_complement_component_subset' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.reciprocal_approximation_obstruction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.polynomial_approximation_obstruction' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.disconnected_spherical_complement_polynomial_obstruction' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.exists_holomorphic_not_polynomial_uniform_limit' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1040:8: warning: This simp argument is unused:
+  Complex.I_sq
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [pow_succ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1041:2: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1074:10: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (x : ℝ) in -1..1,
+    (((fun t => (↑t - I)⁻¹) - fun t => (↑t + I)⁻¹) + (fun x => ?m.529) * fun t => (1 + ↑t * I)⁻¹) x -
+      ((fun x => ?m.553) * fun t => (-1 + ↑t * I)⁻¹) x ∂?m.564
+in the target expression
+  (((∫ (t : ℝ) in -1..1, (↑t - I)⁻¹) - ∫ (t : ℝ) in -1..1, (↑t + I)⁻¹) + I * ∫ (t : ℝ) in -1..1, (1 + ↑t * I)⁻¹) -
+      I * ∫ (t : ℝ) in -1..1, (-1 + ↑t * I)⁻¹ =
+    ∫ (t : ℝ) in -1..1, (↑t - I)⁻¹ - (↑t + I)⁻¹ + I * (1 + ↑t * I)⁻¹ - I * (-1 + ↑t * I)⁻¹
+
+h₁ : Continuous fun t => (↑t - I)⁻¹
+h₂ : Continuous fun t => (↑t + I)⁻¹
+h₃ : Continuous fun t => (1 + ↑t * I)⁻¹
+h₄ : Continuous fun t => (-1 + ↑t * I)⁻¹
+⊢ (((∫ (t : ℝ) in -1..1, (↑t - I)⁻¹) - ∫ (t : ℝ) in -1..1, (↑t + I)⁻¹) + I * ∫ (t : ℝ) in -1..1, (1 + ↑t * I)⁻¹) -
+      I * ∫ (t : ℝ) in -1..1, (-1 + ↑t * I)⁻¹ =
+    ∫ (t : ℝ) in -1..1, (↑t - I)⁻¹ - (↑t + I)⁻¹ + I * (1 + ↑t * I)⁻¹ - I * (-1 + ↑t * I)⁻¹
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1085:30: error: Ambiguous term
+  integral_ofReal
+Possible interpretations:
+  _root_.integral_ofReal : ∫ (x : ?m.595), ↑(?m.600 x) ∂?m.597 = ↑(∫ (x : ?m.595), ?m.600 x ∂?m.597)
+  
+  intervalIntegral.integral_ofReal : ∫ (x : ℝ) in ?m.595..?m.596, ↑(?m.598 x) ∂?m.597 =
+    ↑(∫ (x : ℝ) in ?m.595..?m.596, ?m.598 x ∂?m.597)
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1084:33: error: unsolved goals
+h₁ : Continuous fun t => (↑t - I)⁻¹
+h₂ : Continuous fun t => (↑t + I)⁻¹
+h₃ : Continuous fun t => (1 + ↑t * I)⁻¹
+h₄ : Continuous fun t => (-1 + ↑t * I)⁻¹
+⊢ 4 * I * ∫ (x : ℝ) in -1..1, ↑(1 / (1 + x ^ 2)) = 2 * ↑Real.pi * I
+'RudinRCA.Chapter13Scratch.square_kernel_integrand' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.unit_square_kernel' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.integral_scaled_affine_inv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.centered_square_kernel' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangleIntegral_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangle_kernel_zero_of_horizontal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangle_kernel_zero_of_vertical' depends on axioms: [propext, Classical.choice, Quot.sound]
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1178:5: error: typeclass instance problem is stuck
+  MeasureTheory.IsLocallyFiniteMeasure ?m.47
+
+Note: Lean will not try to resolve this typeclass instance problem because the fourth type argument to `MeasureTheory.IsLocallyFiniteMeasure` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1191:5: error: typeclass instance problem is stuck
+  MeasureTheory.IsLocallyFiniteMeasure ?m.47
+
+Note: Lean will not try to resolve this typeclass instance problem because the fourth type argument to `MeasureTheory.IsLocallyFiniteMeasure` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1219:4: error(lean.unknownIdentifier): Unknown identifier `min_pos`
+'RudinRCA.Chapter13Scratch.rectangleIntegral_split_vertical' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangleIntegral_split_horizontal' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13Scratch.continuous_horizontal_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.continuous_vertical_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangle_kernel' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1277:65: error: unsolved goals
+case a
+f : ℂ → ℂ
+a b c d : ℝ
+z : ℂ
+q x : ℝ
+hx : x ∈ Set.uIcc a b
+⊢ (f (↑x + ↑q * I + z)).re = (f (↑x + ↑q * I + I * ↑z.im + ↑z.re)).re
+
+case a
+f : ℂ → ℂ
+a b c d : ℝ
+z : ℂ
+q x : ℝ
+hx : x ∈ Set.uIcc a b
+⊢ (f (↑x + ↑q * I + z)).im = (f (↑x + ↑q * I + I * ↑z.im + ↑z.re)).im
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1282:15: error: Type mismatch
+  integral_comp_add_right ?m.106 z.re
+has type
+  @intervalIntegral ?m.101 ?m.102 ?m.103 (fun x => ?m.106 (x + z.re)) ?m.104 ?m.105 MeasureTheory.volume =
+    ∫ (x : ℝ) in ?m.104 + z.re..?m.105 + z.re, ?m.106 x
+but is expected to have type
+  @intervalIntegral ℂ instNormedAddCommGroup instInnerProductSpaceRealComplex.toNormedSpace
+      (fun x => f (↑(x + z.re) + ↑(q + z.im) * I)) a b MeasureTheory.volume =
+    ∫ (x : ℝ) in a + z.re..b + z.re, f (↑x + ↑(q + z.im) * I)
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1288:65: error: unsolved goals
+case a
+f : ℂ → ℂ
+a b c d : ℝ
+z : ℂ
+hh : ∀ (q : ℝ), ∫ (x : ℝ) in a..b, f (↑x + ↑q * I + z) = ∫ (x : ℝ) in a + z.re..b + z.re, f (↑x + ↑(q + z.im) * I)
+q y : ℝ
+hy : y ∈ Set.uIcc c d
+⊢ (f (↑q + ↑y * I + z)).re = (f (↑q + ↑y * I + I * ↑z.im + ↑z.re)).re
+
+case a
+f : ℂ → ℂ
+a b c d : ℝ
+z : ℂ
+hh : ∀ (q : ℝ), ∫ (x : ℝ) in a..b, f (↑x + ↑q * I + z) = ∫ (x : ℝ) in a + z.re..b + z.re, f (↑x + ↑(q + z.im) * I)
+q y : ℝ
+hy : y ∈ Set.uIcc c d
+⊢ (f (↑q + ↑y * I + z)).im = (f (↑q + ↑y * I + I * ↑z.im + ↑z.re)).im
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1293:15: error: Type mismatch
+  integral_comp_add_right ?m.212 z.im
+has type
+  @intervalIntegral ?m.207 ?m.208 ?m.209 (fun x => ?m.212 (x + z.im)) ?m.210 ?m.211 MeasureTheory.volume =
+    ∫ (x : ℝ) in ?m.210 + z.im..?m.211 + z.im, ?m.212 x
+but is expected to have type
+  @intervalIntegral ℂ instNormedAddCommGroup instInnerProductSpaceRealComplex.toNormedSpace
+      (fun y => f (↑(q + z.re) + ↑(y + z.im) * I)) c d MeasureTheory.volume =
+    ∫ (y : ℝ) in c + z.im..d + z.im, f (↑(q + z.re) + ↑y * I)
+'RudinRCA.Chapter13Scratch.rectangleIntegral_translate' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangle_kernel_at' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangleBoundaryIntegrable_of_continuousOn' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangle_kernel_boundaryIntegrable' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangleIntegral_add' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangleIntegral_mul_const' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangleIntegral_congr_off_interiorPoint' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangle_cauchy_formula' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.rectangle_cauchy_formula_of_not_mem' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.differentiableAt_of_continuousAt_exp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.holomorphic_of_continuous_log' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.exists_holomorphic_log_of_simply_connected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.exists_holomorphic_sqrt_of_holomorphic_log' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.exists_holomorphic_sqrt_of_simply_connected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1576:40: error(lean.unknownIdentifier): Unknown constant `differentiableOn_const.add`
+'RudinRCA.Chapter13.exists_holomorphic_log_of_primitive_logDeriv' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.primitives_imply_holomorphic_logarithms' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1613:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1615:4: error: failed to synthesize
+  SeparatingDual ?R (E ⧸ M)
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1621:8: error(lean.unknownIdentifier): Unknown constant `Submodule.Quotient.mk_eq_zero.mp`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1647:35: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1655:4: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1661:12: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1662:11: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1668:35: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1674:4: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1674:29: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1675:34: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1677:46: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1679:8: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1682:18: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1675:61: error: unsolved goals
+A : Type u_1
+inst✝¹ : CommRing A
+inst✝ : Algebra ℂ A
+a : A
+α : ℂ
+hα : α ∈ resolventSet ℂ a
+β : ℂ
+hfactor : (algebraMap ℂ A) β - a = ((algebraMap ℂ A) α - a) * (1 - (α - β) • sorry)
+⊢ sorry = sorry * Ring.inverse (1 - (α - β) • sorry)
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1700:21: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1701:16: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1702:47: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1701:54: error: unsolved goals
+A : Type u_1
+inst✝² : NormedCommRing A
+inst✝¹ : NormedAlgebra ℂ A
+inst✝ : CompleteSpace A
+a : A
+L : A →L[ℂ] ℂ
+α : ℂ
+hα : α ∈ resolventSet ℂ a
+h : ∀ (n : ℕ), L (sorry ^ (n + 1)) = 0
+⊢ (fun β => L sorry) =ᶠ[𝓝 α] 0
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1722:4: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1725:9: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1746:6: error(lean.unknownIdentifier): Unknown identifier `isClosed_iff_compl_open`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1744:43: error: unsolved goals
+X : Type u_1
+inst✝ : TopologicalSpace X
+f : X → ℂ
+hiso : ∀ (x : X), (∀ᶠ (y : X) in 𝓝 x, f y = 0) ∨ ∀ᶠ (y : X) in 𝓝[≠] x, f y ≠ 0
+⊢ IsClosed[inst✝] {x | ∀ᶠ (y : X) in 𝓝 x, f y = 0}
+'RudinRCA.Chapter13.mem_submodule_closure_iff_annihilators' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.compactCoordinate_resolvent_apply' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.differentiableOn_compact_cauchy_transform' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.dual_resolvent_eventually_eq_zero' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.analyticAt_dual_inverseChart_resolvent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.dual_inverseChart_resolvent_eventually_eq_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.eq_zero_of_zeroGerm_in_each_component' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:1889:7: error(lean.unknownIdentifier): Unknown constant `Equiv.ofInvolutive`
+'RudinRCA.Chapter13.balanced_complement' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.balanced_of_successor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.gridNeighbor_reverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.gridVertex_reverse_initial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.gridVertex_reverse_terminal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.gridInternalReverse_involutive' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.gridBoundary_balanced' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

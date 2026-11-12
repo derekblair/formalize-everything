@@ -1,0 +1,7 @@
+{
+  "started": "2026-10-29T17:48:15.684524+00:00",
+  "source_sha256": "7ad64f29b1c6695c31d0c83a8a6f544482601685ec6aed9d90d97867558783b9",
+  "command": "lake env lean -j1 RudinRCA/Chapter15.lean",
+  "exit_code": 1,
+  "finished": "2026-10-29T17:52:55.165055+00:00"
+}

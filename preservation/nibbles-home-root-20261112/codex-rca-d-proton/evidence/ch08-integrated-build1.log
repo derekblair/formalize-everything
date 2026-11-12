@@ -1,0 +1,180 @@
+⚠ [2836/2838] Built RudinRCA.Chapter08 (144s)
+warning: RudinRCA/Chapter08.lean:323:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.product_measure_countably_additive`:
+  [SigmaFinite μ]
+  [SigmaFinite ν]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] [SigmaFinite ν] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter08.lean:341:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.integrable_of_iterated_norm`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter08.lean:390:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.completedFactors_le_completedProduct`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter08.lean:420:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: RudinRCA/Chapter08.lean:421:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: RudinRCA/Chapter08.lean:553:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: RudinRCA/Chapter08.lean:567:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.completion_measurable_representative`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter08.lean:572:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.zero_ae_sections`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter08.lean:577:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.completed_measurable_sections_left`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter08.lean:613:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.completed_integrable_of_iterated_norm`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter08.lean:667:8: This simp argument is unused:
+  Measure.restrict_apply
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [measurableSet_singleton]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter08.lean:667:32: This simp argument is unused:
+  measurableSet_singleton
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Measure.restrict_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter08.lean:672:32: This simp argument is unused:
+  measurableSet_singleton
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Measure.restrict_apply, hx]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter08.lean:693:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: RudinRCA/Chapter08.lean:818:2: Try this: 
+  haveI̵
+
+The goal is a proposition, so `have` is preferred over `haveI`.
+The difference between `have` and `haveI` is that `haveI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: RudinRCA/Chapter08.lean:873:2: Try `simp at hnull` instead of `simpa using hnull`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: RudinRCA/Chapter08.lean:879:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: RudinRCA/Chapter08.lean:992:4: Unused tactic linter: `change volume (Set.Icc (0 : ℝ) 1) = 1` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: RudinRCA/Chapter08.lean:1130:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: RudinRCA/Chapter08.lean:1659:36: `if_pos` has been deprecated: Use `ite_eq_left` instead
+warning: RudinRCA/Chapter08.lean:1660:6: `Set.setOf_true` has been deprecated: Use `Set.ofPred_true` instead
+warning: RudinRCA/Chapter08.lean:1678:29: `if_neg` has been deprecated: Use `ite_eq_right` instead
+warning: RudinRCA/Chapter08.lean:1659:36: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [extendedNonnegative, ENNReal.ofReal_lt_top, setOf_true, indicator_univ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter08.lean:1819:2: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: RudinRCA/Chapter08.lean:2030:20: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter08.lean:2032:20: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter08.lean:2082:38: `Set.setOf_true` has been deprecated: Use `Set.ofPred_true` instead
+warning: RudinRCA/Chapter08.lean:2177:8: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter08.lean:2177:22: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter08.lean:2256:17: This simp argument is unused:
+  C
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [mul_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter08.lean:2416:38: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: RudinRCA/Chapter08.lean:2497:8: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter08.lean:2497:22: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter08.lean:2557:20: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter08.lean:2559:20: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter08.lean:2629:17: This simp argument is unused:
+  C
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [b, mul_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter08.lean:2629:20: This simp argument is unused:
+  b
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [C, mul_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [2837/2838] Built RudinRCA (17s)
+Build completed successfully (2838 jobs).

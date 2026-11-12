@@ -1,0 +1,31 @@
+HolomorphicProductWork.lean:119:37: error: Application type mismatch: The argument
+  add_right_injective N
+has type
+  Function.Injective fun x => N + x
+but is expected to have type
+  Function.Injective fun n => n + N
+in the application
+  Summable.comp_injective (hsum w hw) (add_right_injective N)
+'RudinRCA.Chapter15.holomorphic_of_locally_uniform_products' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.uniform_series_tail' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.analyticOrderAt_finset_product' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.analyticOrderAt_product_with_nonzero_tail' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.analyticOrderAt_ne_top_of_component_nonzero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.analyticOrderAt_infinite_product_finite_prefix' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.finite_multiplicity_of_prefix_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.multiplicity_tsum_of_finite_prefix' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.holomorphic_product_of_uniform_norm_series_using_15_4' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.holomorphic_product_multiplicity_using_15_4' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]

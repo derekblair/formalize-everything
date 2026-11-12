@@ -1,0 +1,25 @@
+⚠ [2634/2636] Built RudinRCA.Chapter08 (127s)
+warning: RudinRCA/Chapter08.lean:62:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.product_measure_countably_additive`:
+  [SigmaFinite μ]
+  [SigmaFinite ν]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] [SigmaFinite ν] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+warning: RudinRCA/Chapter08.lean:80:0: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.integrable_of_iterated_norm`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+info: RudinRCA/Chapter08.lean:99:0: 'RudinRCA.Chapter08.measurable_sections' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter08.lean:100:0: 'RudinRCA.Chapter08.measurable_function_sections' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter08.lean:101:0: 'RudinRCA.Chapter08.section_measures' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter08.lean:102:0: 'RudinRCA.Chapter08.product_measure_definition' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter08.lean:103:0: 'RudinRCA.Chapter08.product_measure_countably_additive' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter08.lean:104:0: 'RudinRCA.Chapter08.product_measure_sigmaFinite' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter08.lean:105:0: 'RudinRCA.Chapter08.tonelli' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter08.lean:106:0: 'RudinRCA.Chapter08.integrable_of_iterated_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter08.lean:107:0: 'RudinRCA.Chapter08.fubini' depends on axioms: [propext, Classical.choice, Quot.sound]
+✔ [2635/2636] Built RudinRCA (52s)
+Build completed successfully (2636 jobs).

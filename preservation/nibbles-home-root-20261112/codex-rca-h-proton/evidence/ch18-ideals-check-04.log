@@ -1,0 +1,125 @@
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:33:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.definition18_12_no_unit_in_proper_ideal`:
+  [Algebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Algebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:57:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_13_maximal_containment`:
+  [Algebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Algebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:79:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_14_quotient_isField_iff`:
+  [Algebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Algebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+Try this:
+  [apply] abel_nf
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:120:37: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:122:37: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:132:34: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:194:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:192:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_13_maximal_closed`:
+  [NormedAlgebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:204:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_15_ideal_quotient_complete`:
+  [NormedAlgebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:207:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_15_quotient_norm_mul`:
+  [NormedAlgebra ℂ A]
+  [CompleteSpace A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] [CompleteSpace A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:213:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:211:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_15_quotient_norm_one`:
+  [NormedAlgebra ℂ A]
+  [CompleteSpace A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] [CompleteSpace A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:258:4: warning: Try `simp at hh` instead of `simpa using hh`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:301:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:346:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_17_d`:
+  [CompleteSpace A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [CompleteSpace A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+'RudinRCA.Chapter18.definition18_12_no_unit_in_proper_ideal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.definition18_12_mem_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_13_maximal_containment' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_13_maximal_closed' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_coset_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_cosets_disjoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_quotient_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_quotient_isField_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_norm_inf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_norm_distance' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_norm_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.definition18_16_character_map_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.definition18_16_character_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.definition18_16_nonzero_iff_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_a' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_quotientCharacter_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_nonunit_character' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_b' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_c' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_e' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_character_continuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_character_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_quotient_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_quotient_operations' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_mem_coset' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_zero_coset' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_quotient_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_linear_quotient_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_linear_quotient_operations' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_linear_quotient_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_ideal_quotient_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_norm_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_norm_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+LEAN_EXIT_CODE=0

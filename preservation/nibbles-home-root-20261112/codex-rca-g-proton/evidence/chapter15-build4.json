@@ -1,0 +1,12 @@
+{
+  "started": "2026-10-29T18:52:17.579487+00:00",
+  "command": [
+    "lake",
+    "build",
+    "RudinRCA"
+  ],
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "source_sha256": "f37b406d6ee6965b19df0151271dec0168c10292990f7b2cb8ec4301ce421df0",
+  "exit_code": null,
+  "clean_slate": false
+}

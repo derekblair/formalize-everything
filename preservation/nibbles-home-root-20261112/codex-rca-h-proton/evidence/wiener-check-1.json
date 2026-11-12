@@ -1,0 +1,18 @@
+{
+  "source": "/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean",
+  "sha256": "cb2c37d50bfce6ff55c90ed63b5891e118d577b2e69671a68d61bc25a2300818",
+  "started_utc": "2026-10-29T18:00:41Z",
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "-j1",
+    "-R",
+    "/home/derekblair/lane-work/codex-rca-h-proton/work",
+    "-o",
+    "/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.olean",
+    "/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean"
+  ],
+  "exit_code": 1,
+  "finished_utc": "2026-10-29T18:09:04Z"
+}

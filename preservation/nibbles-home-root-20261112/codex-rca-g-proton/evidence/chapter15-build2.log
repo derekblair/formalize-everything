@@ -1,0 +1,83 @@
+✖ [3014/3016] Building RudinRCA.Chapter15 (570s)
+trace: .> LEAN_PATH=/home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/packages/Cli/.lake/build/lib/lean:/home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/packages/batteries/.lake/build/lib/lean:/home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/packages/Qq/.lake/build/lib/lean:/home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/packages/aesop/.lake/build/lib/lean:/home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/packages/importGraph/.lake/build/lib/lean:/home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/packages/plausible/.lake/build/lib/lean:/home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/packages/mathlib/.lake/build/lib/lean:/home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/lib/lean /home/derekblair/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/RudinRCA/Chapter15.lean -o /home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/lib/lean/RudinRCA/Chapter15.olean -i /home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/lib/lean/RudinRCA/Chapter15.ilean -c /home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/ir/RudinRCA/Chapter15.c --setup /home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis/.lake/build/ir/RudinRCA/Chapter15.setup.json --json
+info: RudinRCA/Chapter15.lean:666:0: 'RudinRCA.Chapter15.holomorphic_of_locally_uniform_products' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:667:0: 'RudinRCA.Chapter15.uniform_series_tail' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:668:0: 'RudinRCA.Chapter15.analyticOrderAt_finset_product' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:669:0: 'RudinRCA.Chapter15.analyticOrderAt_product_with_nonzero_tail' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter15.lean:670:0: 'RudinRCA.Chapter15.analyticOrderAt_ne_top_of_component_nonzero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter15.lean:671:0: 'RudinRCA.Chapter15.analyticOrderAt_infinite_product_finite_prefix' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter15.lean:672:0: 'RudinRCA.Chapter15.finite_multiplicity_of_prefix_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:673:0: 'RudinRCA.Chapter15.multiplicity_tsum_of_finite_prefix' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:674:0: 'RudinRCA.Chapter15.holomorphic_product_of_uniform_norm_series_using_15_4' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter15.lean:675:0: 'RudinRCA.Chapter15.holomorphic_product_multiplicity_using_15_4' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter15.lean:676:0: 'RudinRCA.Chapter15.holomorphic_product_multiplicity' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:677:0: 'RudinRCA.Chapter15.analyticOrderAt_scaled_elementaryFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:678:0: 'RudinRCA.Chapter15.uniform_product_of_uniform_norm_series' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:679:0: 'RudinRCA.Chapter15.uniform_productOn_of_uniform_norm_series' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:680:0: 'RudinRCA.Chapter15.product_eq_zero_iff_of_uniform_norm_series' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter15.lean:681:0: 'RudinRCA.Chapter15.uniform_norm_series_reindex' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:682:0: 'RudinRCA.Chapter15.uniform_product_reindex_of_uniform_norm_series' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter15.lean:683:0: 'RudinRCA.Chapter15.product_reindex' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:684:0: 'RudinRCA.Chapter15.analyticOrderAt_elementaryFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:685:0: 'RudinRCA.Chapter15.finite_product_majorant_le_exp' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:686:0: 'RudinRCA.Chapter15.norm_finite_product_sub_one_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:687:0: 'RudinRCA.Chapter15.finite_product_estimates' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:688:0: 'RudinRCA.Chapter15.zeros_have_no_accumulation' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:689:0: 'RudinRCA.Chapter15.elementaryFactor_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:690:0: 'RudinRCA.Chapter15.elementaryFactor_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:691:0: 'RudinRCA.Chapter15.differentiable_elementaryFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:692:0: 'RudinRCA.Chapter15.sequentialProduct_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:693:0: 'RudinRCA.Chapter15.HasProd.hasSequentialProduct' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:694:0: 'RudinRCA.Chapter15.product_one_sub_converges' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:695:0: 'RudinRCA.Chapter15.positive_product_one_sub_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:821:0: 'RudinRCA.Chapter15.hasDerivAt_elementaryExponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:822:0: 'RudinRCA.Chapter15.hasDerivAt_realElementaryExponent' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:823:0: 'RudinRCA.Chapter15.hasDerivAt_elementaryFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:824:0: 'RudinRCA.Chapter15.hasDerivAt_realElementaryFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:825:0: 'RudinRCA.Chapter15.elementary_weight_integral' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:826:0: 'RudinRCA.Chapter15.norm_elementaryExponent_line_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:827:0: 'RudinRCA.Chapter15.hasDerivAt_elementaryFactor_line' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:828:0: 'RudinRCA.Chapter15.norm_elementaryFactor_line_deriv_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:829:0: 'RudinRCA.Chapter15.norm_one_sub_elementaryFactor_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+error: RudinRCA/Chapter15.lean:889:2: Type mismatch: After simplification, term
+  hs
+ has type
+  @Set.Finite ι {x | a x = z}
+but is expected to have type
+  @Set.Finite ι (a ⁻¹' {z})
+info: RudinRCA/Chapter15.lean:1002:0: 'RudinRCA.Chapter15.differentiableOn_of_continuous_log' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:1003:0: 'RudinRCA.Chapter15.exists_holomorphic_log' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:1004:0: 'RudinRCA.Chapter15.exists_entire_log' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:1005:0: 'RudinRCA.Chapter15.finite_fiber_of_hasSum_count' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:1006:0: 'RudinRCA.Chapter15.zero_sequence_norm_tendsto_atTop' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:1007:0: 'RudinRCA.Chapter15.zero_enumeration_norm_tendsto_atTop' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter15.lean:1008:0: 'RudinRCA.Chapter15.exists_entire_nonvanishing_quotient_of_order_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter15.lean:1009:0: 'RudinRCA.Chapter15.exists_entire_exponential_factor_of_order_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter15.lean:1010:0: 'RudinRCA.Chapter15.analyticOrderAt_ne_top_of_entire_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter15.lean:1011:0: 'RudinRCA.Chapter15.exists_entire_exponential_factor_of_nat_order_eq' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+Some required targets logged failures:
+- RudinRCA.Chapter15
+error: build failed

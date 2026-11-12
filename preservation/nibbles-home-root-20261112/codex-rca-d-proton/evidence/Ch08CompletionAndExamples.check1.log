@@ -1,0 +1,449 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:48:42: error: Application type mismatch: The argument
+  Measure.quasiMeasurePreserving_fst
+has type
+  Measure.QuasiMeasurePreserving Prod.fst (Measure.prod ?m.44 ?m.45) ?m.44
+but is expected to have type
+  Measurable Prod.fst
+in the application
+  MeasurableSet.preimage hs Measure.quasiMeasurePreserving_fst
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:50:42: error: Application type mismatch: The argument
+  Measure.quasiMeasurePreserving_snd
+has type
+  Measure.QuasiMeasurePreserving Prod.snd (Measure.prod ?m.71 ?m.72) ?m.72
+but is expected to have type
+  Measurable Prod.snd
+in the application
+  MeasurableSet.preimage hs Measure.quasiMeasurePreserving_snd
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:57:66: error: synthesized type class instance is not definitionally equal to expression inferred by typing rules, synthesized
+  @Prod.instMeasurableSpace α β mα mβ
+inferred
+  @MeasurableSpace.prod α β (completedSigma μ) (completedSigma ν)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:68:14: error: unexpected token ':='; expected '}'
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:75:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:76:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:80:10: error: typeclass instance problem is stuck
+  SFinite ?m.74
+
+Note: Lean will not try to resolve this typeclass instance problem because the third type argument to `SFinite` is a metavariable. This argument must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:82:2: error: Tactic `rfl` failed: The left-hand side
+  (intermediateCompletedProduct μ ν) s
+is not definitionally equal to the right-hand side
+  (μ.prod ν) s
+
+α : Type u_1
+β : Type u_2
+mα : MeasurableSpace α
+mβ : MeasurableSpace β
+μ : Measure α
+ν : Measure β
+inst✝¹ : SigmaFinite μ
+inst✝ : SigmaFinite ν
+s : Set (α × β)
+this✝ : SigmaFinite μ.completion := sigmaFinite_completion μ
+this : SigmaFinite ν.completion := sigmaFinite_completion ν
+heq : μ.completion.prod ν.completion = intermediateCompletedProduct μ ν
+⊢ (intermediateCompletedProduct μ ν) s = (μ.prod ν) s
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:89:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (μ.completion.prod ν.completion) ?s
+in the target expression
+  (μ.completion.prod ν.completion) sᶜ = 0 ↔ (μ.prod ν) sᶜ = 0
+
+α : Type u_1
+β : Type u_2
+mα : MeasurableSpace α
+mβ : MeasurableSpace β
+μ : Measure α
+ν : Measure β
+inst✝¹ : SigmaFinite μ
+inst✝ : SigmaFinite ν
+s : Set (NullMeasurableSpace α μ × NullMeasurableSpace β ν)
+⊢ (μ.completion.prod ν.completion) sᶜ = 0 ↔ (μ.prod ν) sᶜ = 0
+
+Note: The target expression is not type-correct under the `implicit` transparency level, which may have triggered the failure. This is usually caused by unfolding of semireducible definitions in prior tactic steps. Use `set_option linter.tacticCheckInstances true` to investigate the source of the issue.
+Full error:
+  Application type mismatch: The argument
+    s
+  has type
+    Set (NullMeasurableSpace α μ × NullMeasurableSpace β ν)
+  but is expected to have type
+    Set (α × β)
+  in the application
+    sᶜ
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:98:36: error: synthesized type class instance is not definitionally equal to expression inferred by typing rules, synthesized
+  NullMeasurableSpace.instMeasurableSpace
+inferred
+  mβ
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:98:15: error: synthesized type class instance is not definitionally equal to expression inferred by typing rules, synthesized
+  @Prod.instMeasurableSpace (NullMeasurableSpace α μ) (NullMeasurableSpace β ν) NullMeasurableSpace.instMeasurableSpace
+    NullMeasurableSpace.instMeasurableSpace
+inferred
+  @Prod.instMeasurableSpace α (NullMeasurableSpace β ν) mα mβ
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:133:46: error: Application type mismatch: The argument
+  MeasurePreserving.quasiMeasurePreserving he
+has type
+  Measure.QuasiMeasurePreserving (⇑e) μ ν
+but is expected to have type
+  Measurable ⇑e.toEquiv
+in the application
+  MeasurableSet.preimage hs (MeasurePreserving.quasiMeasurePreserving he)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:134:47: error: Application type mismatch: The argument
+  MeasurePreserving.quasiMeasurePreserving (MeasurePreserving.symm e he)
+has type
+  Measure.QuasiMeasurePreserving (⇑e.symm) ν μ
+but is expected to have type
+  Measurable ⇑e.symm
+in the application
+  MeasurableSet.preimage hs (MeasurePreserving.quasiMeasurePreserving (MeasurePreserving.symm e he))
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:205:51: error: Application type mismatch: The argument
+  hc
+has type
+  (μ.prod ν).IsComplete
+of sort `Prop` but is expected to have type
+  Set (X × Y)
+of sort `Type (max u_1 u_2)` in the application
+  @measurableSet_of_null (X × Y) Prod.instMeasurableSpace (μ.prod ν) hc
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:218:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.completion_measurable_representative`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:225:2: error(lean.unknownIdentifier): Unknown identifier `ae_ae_of_ae_prod`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:233:18: error(lean.unknownIdentifier): Unknown identifier `ae_ae_of_ae_prod`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:234:75: error(lean.invalidField): Invalid field notation: Type of
+  hx
+is not known; cannot resolve field `symm`
+
+Hint: Consider replacing the field projection with a call to one of the following:
+  • `symm`
+  • `AddCommute.symm`
+  • `AddCon.symm`
+  • `AddEquiv.symm`
+  • `AffineEquiv.symm`
+  • `AffineIsometryEquiv.symm`
+  • `AlgEquiv.symm`
+  • `And.symm`
+  • `AntisymmRel.symm`
+  • `Antivary.symm`
+  • `AntivaryOn.symm`
+  • `Associated.symm`
+  • `BEq.symm`
+  • `Codisjoint.symm`
+  • `Commute.symm`
+  • `Con.symm`
+  • `ContinuousAddEquiv.symm`
+  • `ContinuousAffineEquiv.symm`
+  • `ContinuousAlgEquiv.symm`
+  • `ContinuousLinearEquiv.symm`
+  • `ContinuousMulEquiv.symm`
+  • `DilationEquiv.symm`
+  • `Disjoint.symm`
+  • `Eq.symm`
+  • `Equiv.symm`
+  • `Equivalence.symm`
+  • `HEq.symm`
+  • `Homeomorph.symm`
+  • `Iff.symm`
+  • `Inseparable.symm`
+  • `IntervalIntegrable.symm`
+  • `InvImage.symm`
+  • `IsAddConj.symm`
+  • `IsBoundedBilinearMap.symm`
+  • `IsChain.symm`
+  • `IsCompl.symm`
+  • `IsConj.symm`
+  • `IsCoprime.symm`
+  • `IsMaxAntichain.symm`
+  • `IsMaxChain.symm`
+  • `IsRelPrime.symm`
+  • `IsometryEquiv.symm`
+  • `Joined.symm`
+  • `JoinedIn.symm`
+  • `LinearEquiv.symm`
+  • `LinearIsometryEquiv.symm`
+  • `MeasurableEquiv.symm`
+  • `Monovary.symm`
+  • `MonovaryOn.symm`
+  • `MulEquiv.symm`
+  • `Ne.symm`
+  • `OpenPartialHomeomorph.symm`
+  • `Or.symm`
+  • `OrderAddMonoidIso.symm`
+  • `OrderIso.symm`
+  • `OrderMonoidIso.symm`
+  • `OrderRingIso.symm`
+  • `PartialEquiv.symm`
+  • `PartialEquivBEq.symm`
+  • `PartialHomeomorph.symm`
+  • `Path.symm`
+  • `RelEmbedding.symm`
+  • `RelIso.symm`
+  • `RingCon.symm`
+  • `RingEquiv.symm`
+  • `RingHomInvPair.symm`
+  • `SMulCommClass.symm`
+  • `SameRay.symm`
+  • `SeparatedNhds.symm`
+  • `SetRel.symm`
+  • `Setoid.symm`
+  • `Specializes.symm`
+  • `StarAlgEquiv.symm`
+  • `StarMulEquiv.symm`
+  • `StarRingEquiv.symm`
+  • `Subtype.symm`
+  • `UniformEquiv.symm`
+  • `UniformSpace.symm`
+  • `VAddCommClass.symm`
+  • `unitInterval.symm`
+  • `AddCommGroup.ModEq.symm`
+  • `AddConGen.Rel.symm`
+  • `AddSubgroup.IsComplement'.symm`
+  • `AffineSubspace.Parallel.symm`
+  • `Array.Perm.symm`
+  • `Asymptotics.IsBigO.symm`
+  • `Asymptotics.IsBigOTVS.symm`
+  • `Asymptotics.IsBigOWith.symm`
+  • `Asymptotics.IsEquivalent.symm`
+  • `Asymptotics.IsLittleO.symm`
+  • `Asymptotics.IsLittleOTVS.symm`
+  • `Asymptotics.IsTheta.symm`
+  • `Asymptotics.IsThetaTVS.symm`
+  • `CompositionSeries.Equivalent.symm`
+  • `ConGen.Rel.symm`
+  • `Convexity.IsConvexCombComm.symm`
+  • `ENNReal.HolderConjugate.symm`
+  • `ENNReal.HolderTriple.symm`
+  • `Equiv.subsingleton.symm`
+  • `Filter.EventuallyEq.symm`
+  • `Filter.EventuallyEqSet.symm`
+  • `Function.Commute.symm`
+  • `Int.ModEq.symm`
+  • `List.Disjoint.symm`
+  • `List.IsRotated.symm`
+  • `List.Perm.symm`
+  • `Matrix.IsDetpBalanced.symm`
+  • `AEDisjoint.symm`
+  • `MeasurePreserving.symm`
+  • `NNReal.HolderConjugate.symm`
+  • `NNReal.HolderTriple.symm`
+  • `Nat.Coprime.symm`
+  • `Nat.ModEq.symm`
+  • `OpenPartialHomeomorph.IsImage.symm`
+  • `PartialEquiv.IsImage.symm`
+  • `Real.HolderConjugate.symm`
+  • `Real.HolderTriple.symm`
+  • `Relation.EqvGen.symm`
+  • `Relation.Join.symm`
+  • `Relation.SymmGen.symm`
+  • `Relator.BiTotal.symm`
+  • `Relator.LeftTotal.symm`
+  • `Relator.RightTotal.symm`
+  • `RingConGen.Rel.symm`
+  • `BijOn.symm`
+  • `EqOn.symm`
+  • `InvOn.symm`
+  • `Std.Symm.symm`
+  • `Subgroup.IsComplement'.symm`
+  • `Submodule.IsOrtho.symm`
+  • `Submodule.IsTopCompl.symm`
+  • `Sym2.Rel.symm`
+  • `UniformSpace.Core.symm`
+  • `Vector.Perm.symm`
+  • `AddConGen.Rel.below.symm`
+  • `ConGen.Rel.below.symm`
+  • `Equiv.Perm.Disjoint.symm`
+  • `Equiv.Perm.SameCycle.symm`
+  • `Equiv.Perm.subtypeCongr.symm`
+  • `Lean.Parser.Tactic.symm`
+  • `Measure.MutuallySingular.symm`
+  • `Relation.EqvGen.below.symm`
+  • `RingConGen.Rel.below.symm`
+  • `Std.DHashMap.Equiv.symm`
+  • `Std.HashMap.Equiv.symm`
+  • `Lean.Meta.SolveByElim.ApplyRulesConfig.symm`
+  • `Mathlib.Tactic.ClickSuggestions.GrwLemma.symm`
+  • `Mathlib.Tactic.ClickSuggestions.RwKey.symm`
+  • `Mathlib.Tactic.ClickSuggestions.RwLemma.symm`
+  • `Mathlib.Tactic.LibraryRewrite.Rewrite.symm`
+  • `Mathlib.Tactic.LibraryRewrite.RewriteInterface.symm`
+  • `Mathlib.Tactic.LibraryRewrite.RewriteLemma.symm`
+  • `Std.Do.SPred.bientails.symm`
+  • `Std.DTreeMap.Internal.Impl.BalancedAtRoot.symm`
+  • `Std.DTreeMap.Internal.Impl.SameKeys.symm`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:231:47: error: unsolved goals
+X : Type u_1
+Y : Type u_2
+Z : Type u_3
+inst✝⁶ : MeasurableSpace X
+inst✝⁵ : MeasurableSpace Y
+μ : Measure X
+ν : Measure Y
+inst✝⁴ : SigmaFinite μ
+inst✝³ : SigmaFinite ν
+inst✝² : MeasurableSpace Z
+inst✝¹ : MeasurableSpace.CountablyGenerated Z
+inst✝ : ν.IsComplete
+f : X × Y → Z
+hf : NullMeasurable f (μ.prod ν)
+ha : AEMeasurable f (μ.prod ν)
+x : X
+hx : x ∈ ?m.47
+⊢ Measurable fun y => f (x, y)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:228:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.completed_measurable_sections_left`:
+  [SigmaFinite μ]
+  [SigmaFinite ν]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] [SigmaFinite ν] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:264:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.completed_integrable_of_iterated_norm`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:319:8: warning: This simp argument is unused:
+  Measure.restrict_apply
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [measurableSet_singleton]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:319:32: warning: This simp argument is unused:
+  measurableSet_singleton
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Measure.restrict_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:324:32: warning: This simp argument is unused:
+  measurableSet_singleton
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Measure.restrict_apply, hx]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:345:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:349:4: error: Application type mismatch: The argument
+  Measurable.aemeasurable diagonalIndicator_measurable
+has type
+  AEMeasurable (fun z => diagonalIndicator z.1 z.2) ?m.52
+but is expected to have type
+  AEMeasurable (Function.uncurry ?m.46) ((volume.restrict (Icc 0 1)).prod (Measure.count.restrict (Icc 0 1)))
+in the application
+  lintegral_lintegral_swap (Measurable.aemeasurable diagonalIndicator_measurable)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:343:62: error: unsolved goals
+h : SigmaFinite (Measure.count.restrict (Icc 0 1))
+this : SigmaFinite (Measure.count.restrict (Icc 0 1)) := h
+⊢ False
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:386:51: error: expected token
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:386:48: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  LE Type
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:386:50: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  OfNat Type 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  Type
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:394:40: error: expected token
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:462:2: error: Type mismatch: After simplification, term
+  measure_preimage_add_right volume (-↑q) W
+ has type
+  @Eq ENNReal (volume ((fun h => h + -↑q) ⁻¹' W)) (volume W)
+but is expected to have type
+  @Eq ENNReal (volume {x | x + -↑q ∈ W}) (volume W)
+
+Note: The following definitions were not unfolded because their definition is not exposed:
+  Real.instAdd ↦ 1
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:484:32: error: expected token
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:469:2: warning: Try this: 
+  haveI̵
+
+The goal is a proposition, so `have` is preferred over `haveI`.
+The difference between `have` and `haveI` is that `haveI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:484:7: error: Missing cases:
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:466:86: error: unsolved goals
+W : Set ℝ
+hW : W ⊆ vitaliRepresentatives
+hm : NullMeasurableSet W volume
+n : ℝ
+hb : W ⊆ Icc (-n) n
+T : Type := { q // q ∈ Icc 0 1 }
+this : Infinite T
+F : T → Set ℝ := fun q => {x | x - ↑↑q ∈ W}
+hFd : Pairwise fun q r => Disjoint (F q) (F r)
+hFm : ∀ (q : T), NullMeasurableSet (F q) volume
+hbound : ⋃ q, F q ⊆ Icc (-n) (n + 1)
+hn : ¬volume W = 0
+hi : volume (⋃ q, F q) = sorry
+⊢ False
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:519:8: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  x - ↑q
+in the target expression
+  x ∈ {x | x - ↑q ∈ vitaliRepresentatives}
+
+hm : NullMeasurableSet vitaliRepresentatives volume
+hw : ∀ (n : ℕ), volume (vitaliRepresentatives ∩ Icc (-↑n) ↑n) = 0
+hv : volume vitaliRepresentatives = 0
+x : ℝ
+a : Quotient rationalTranslationSetoid := ⟦x⟧
+q : ℚ
+hq : x - a.out = ↑q
+he : x - ↑q = a.out
+⊢ x ∈ {x | x - ↑q ∈ vitaliRepresentatives}
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:523:2: warning: Try `simp at hnull` instead of `simpa using hnull`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+Command exited with non-zero status 1
+	Command being timed: "lake env lean /home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean"
+	User time (seconds): 8.80
+	System time (seconds): 7.59
+	Percent of CPU this job got: 65%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:25.16
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1285004
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 29526
+	Minor (reclaiming a frame) page faults: 149137
+	Voluntary context switches: 51404
+	Involuntary context switches: 13892
+	Swaps: 0
+	File system inputs: 3828336
+	File system outputs: 40
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 1
