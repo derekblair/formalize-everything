@@ -73,7 +73,8 @@ run_cmd do
       `RudinRCA.Chapter04, `RudinRCA.Chapter05, `RudinRCA.Chapter06, `RudinRCA.Chapter07,
       `RudinRCA.Chapter08, `RudinRCA.Chapter09, `RudinRCA.Chapter10, `RudinRCA.Chapter11,
       `RudinRCA.Chapter12, `RudinRCA.Chapter13, `RudinRCA.Chapter14, `RudinRCA.Chapter15,
-      `RudinRCA.Chapter16, `RudinRCA.Chapter17,
+      `RudinRCA.Chapter16, `RudinRCA.Chapter17, `RudinRCA.Chapter18, `RudinRCA.Chapter19,
+      `RudinRCA.Chapter20,
       `RudinRCA.AuditA, `RudinRCA.AuditE]
   let entrypoint : Name := `RudinRCA.AuditA
   -- Resolve the package root from this audit module's own source
