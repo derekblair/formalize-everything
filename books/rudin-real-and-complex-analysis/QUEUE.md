@@ -99,8 +99,8 @@ Source: [printed p.233](https://djvu.online/jpg/N/K/m/NKmAEzkLVs8Io/245.webp).
 
 ### E-11.22 — standing finite-measure hypothesis in `11.22`
 
-Section `11.19` (printed p. 239, opening paragraph of *"Boundary Behavior of
-Poisson Integrals"*) establishes the standing convention that positive Borel
+Section `11.15` (printed p. 239, opening paragraph of *"Boundary Behavior of
+Poisson Integrals"*; `11.17`–`11.20` follow on pp. 240–242) establishes the standing convention that positive Borel
 measures on `T` in that section are finite (`μ(T) < ∞`), matching automatic
 finiteness of Radon/regular Borel measures on compact `T`. Printed Theorem
 `11.22` (p. 243) writes *"Suppose `μ` is a positive Borel measure on `T`"*
@@ -110,7 +110,7 @@ measure with `μ(T) = ∞` vanishing in a neighborhood of `e^{iθ₀}` satisfies
 `∫_T P_r(θ₀ - t) dμ(e^{it}) = +∞` everywhere on `U`. `Chapter11.lean` records
 both this general infinite-measure obstruction
 (`lintegral_poissonKernel_eq_top_of_measure_univ_eq_top`, `L7374`) and a
-concrete non-compact counterexample (`node11_22_infinite_measure_counterexample`,
+concrete on-circle counterexample (`node11_22_infinite_measure_counterexample`,
 `L7408`), and proves the full nontangential limit theorem under the explicit
 standing hypothesis `[IsFiniteMeasure μ]` (`theorem11_22`, `L7509`).
 
