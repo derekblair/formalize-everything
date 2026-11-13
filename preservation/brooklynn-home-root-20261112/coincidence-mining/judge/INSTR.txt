@@ -1,0 +1,1 @@
+Read JUDGE_BRIEF.md in this directory and follow it exactly. The candidate packet is finalist_packet.md in this directory. Rank every candidate per the brief and write your report to JUDGE-argon.md in this directory, ending with the line JUDGING COMPLETE.

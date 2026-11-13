@@ -1,0 +1,902 @@
+[
+  {
+    "rank": 61,
+    "a": "A353812",
+    "b": "A353813",
+    "score": 125.0,
+    "claimed": 125,
+    "variant": "raw",
+    "family_size": 2
+  },
+  {
+    "rank": 62,
+    "a": "A118822",
+    "b": "A230075",
+    "score": 124.2,
+    "claimed": 108,
+    "variant": "abs",
+    "family_size": 3
+  },
+  {
+    "rank": 63,
+    "a": "A295884",
+    "b": "A380397",
+    "score": 119.6,
+    "claimed": 104,
+    "variant": "drop1",
+    "family_size": 6
+  },
+  {
+    "rank": 64,
+    "a": "A036453",
+    "b": "A040000",
+    "score": 118.4,
+    "claimed": 103,
+    "variant": "drop2",
+    "family_size": 11
+  },
+  {
+    "rank": 65,
+    "a": "A323152",
+    "b": "A323153",
+    "score": 118.0,
+    "claimed": 118,
+    "variant": "drop1",
+    "family_size": 2
+  },
+  {
+    "rank": 66,
+    "a": "A061486",
+    "b": "A264600",
+    "score": 116.1,
+    "claimed": 101,
+    "variant": "raw",
+    "family_size": 4
+  },
+  {
+    "rank": 67,
+    "a": "A132272",
+    "b": "A179051",
+    "score": 113.8,
+    "claimed": 99,
+    "variant": "drop1",
+    "family_size": 5
+  },
+  {
+    "rank": 68,
+    "a": "A305900",
+    "b": "A374478",
+    "score": 108.1,
+    "claimed": 94,
+    "variant": "raw",
+    "family_size": 4
+  },
+  {
+    "rank": 69,
+    "a": "A323077",
+    "b": "A334201",
+    "score": 105.0,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 2
+  },
+  {
+    "rank": 70,
+    "a": "A052382",
+    "b": "A209931",
+    "score": 104.6,
+    "claimed": 91,
+    "variant": "raw",
+    "family_size": 43
+  },
+  {
+    "rank": 71,
+    "a": "A358678",
+    "b": "A359150",
+    "score": 103.0,
+    "claimed": 103,
+    "variant": "drop1",
+    "family_size": 2
+  },
+  {
+    "rank": 72,
+    "a": "A256608",
+    "b": "A279186",
+    "score": 98.9,
+    "claimed": 86,
+    "variant": "raw",
+    "family_size": 3
+  },
+  {
+    "rank": 73,
+    "a": "A327517",
+    "b": "A376504",
+    "score": 98.9,
+    "claimed": 86,
+    "variant": "drop1",
+    "family_size": 3
+  },
+  {
+    "rank": 74,
+    "a": "A064459",
+    "b": "A342696",
+    "score": 97.0,
+    "claimed": 97,
+    "variant": "raw",
+    "family_size": 2
+  },
+  {
+    "rank": 75,
+    "a": "A001462",
+    "b": "A377862",
+    "score": 96.6,
+    "claimed": 84,
+    "variant": "raw",
+    "family_size": 3
+  },
+  {
+    "rank": 76,
+    "a": "A031955",
+    "b": "A288040",
+    "score": 95.4,
+    "claimed": 83,
+    "variant": "raw",
+    "family_size": 7
+  },
+  {
+    "rank": 77,
+    "a": "A108045",
+    "b": "A127672",
+    "score": 90.0,
+    "claimed": 90,
+    "variant": "drop1",
+    "family_size": 2
+  },
+  {
+    "rank": 78,
+    "a": "A277998",
+    "b": "A289288",
+    "score": 90.0,
+    "claimed": 90,
+    "variant": "raw",
+    "family_size": 2
+  },
+  {
+    "rank": 79,
+    "a": "A188734",
+    "b": "A188941",
+    "score": 88.3,
+    "claimed": 128,
+    "variant": "drop2",
+    "family_size": 3
+  },
+  {
+    "rank": 80,
+    "a": "A355824",
+    "b": "A355826",
+    "score": 87.6,
+    "claimed": 127,
+    "variant": "abs",
+    "family_size": 3
+  },
+  {
+    "rank": 81,
+    "a": "A374130",
+    "b": "A374466",
+    "score": 87.6,
+    "claimed": 127,
+    "variant": "raw",
+    "family_size": 3
+  },
+  {
+    "rank": 82,
+    "a": "A298735",
+    "b": "A384916",
+    "score": 87.0,
+    "claimed": 87,
+    "variant": "raw",
+    "family_size": 2
+  },
+  {
+    "rank": 83,
+    "a": "A185014",
+    "b": "A240467",
+    "score": 86.2,
+    "claimed": 75,
+    "variant": "drop1",
+    "family_size": 3
+  },
+  {
+    "rank": 84,
+    "a": "A359466",
+    "b": "A359467",
+    "score": 86.2,
+    "claimed": 125,
+    "variant": "raw",
+    "family_size": 3
+  },
+  {
+    "rank": 85,
+    "a": "A046951",
+    "b": "A159631",
+    "score": 85.6,
+    "claimed": 124,
+    "variant": "raw",
+    "family_size": 13
+  },
+  {
+    "rank": 86,
+    "a": "A296073",
+    "b": "A305800",
+    "score": 85.6,
+    "claimed": 124,
+    "variant": "raw",
+    "family_size": 63
+  },
+  {
+    "rank": 87,
+    "a": "A321538",
+    "b": "A321803",
+    "score": 85.6,
+    "claimed": 124,
+    "variant": "raw",
+    "family_size": 3
+  },
+  {
+    "rank": 88,
+    "a": "A373491",
+    "b": "A373588",
+    "score": 85.6,
+    "claimed": 124,
+    "variant": "drop1",
+    "family_size": 3
+  },
+  {
+    "rank": 89,
+    "a": "A374134",
+    "b": "A374136",
+    "score": 85.6,
+    "claimed": 124,
+    "variant": "drop1",
+    "family_size": 4
+  },
+  {
+    "rank": 90,
+    "a": "A335324",
+    "b": "A366245",
+    "score": 85.0,
+    "claimed": 85,
+    "variant": "raw",
+    "family_size": 2
+  },
+  {
+    "rank": 91,
+    "a": "A359162",
+    "b": "A360111",
+    "score": 84.2,
+    "claimed": 122,
+    "variant": "drop1",
+    "family_size": 4
+  },
+  {
+    "rank": 92,
+    "a": "A319707",
+    "b": "A319717",
+    "score": 83.5,
+    "claimed": 121,
+    "variant": "raw",
+    "family_size": 6
+  },
+  {
+    "rank": 93,
+    "a": "A072411",
+    "b": "A290107",
+    "score": 82.8,
+    "claimed": 120,
+    "variant": "raw",
+    "family_size": 51
+  },
+  {
+    "rank": 94,
+    "a": "A129251",
+    "b": "A276077",
+    "score": 82.8,
+    "claimed": 120,
+    "variant": "raw",
+    "family_size": 4
+  },
+  {
+    "rank": 95,
+    "a": "A294936",
+    "b": "A378539",
+    "score": 82.8,
+    "claimed": 120,
+    "variant": "raw",
+    "family_size": 6
+  },
+  {
+    "rank": 96,
+    "a": "A353675",
+    "b": "A353676",
+    "score": 82.8,
+    "claimed": 120,
+    "variant": "drop1",
+    "family_size": 3
+  },
+  {
+    "rank": 97,
+    "a": "A055642",
+    "b": "A348674",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "drop1",
+    "family_size": 8
+  },
+  {
+    "rank": 98,
+    "a": "A131734",
+    "b": "A134452",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "abs",
+    "family_size": 9
+  },
+  {
+    "rank": 99,
+    "a": "A184582",
+    "b": "A184734",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "drop1",
+    "family_size": 3
+  },
+  {
+    "rank": 100,
+    "a": "A322437",
+    "b": "A322438",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "drop1",
+    "family_size": 186
+  },
+  {
+    "rank": 101,
+    "a": "A347246",
+    "b": "A353626",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "drop2",
+    "family_size": 4
+  },
+  {
+    "rank": 102,
+    "a": "A353480",
+    "b": "A359595",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "drop2",
+    "family_size": 3
+  },
+  {
+    "rank": 103,
+    "a": "A227349",
+    "b": "A284580",
+    "score": 81.4,
+    "claimed": 118,
+    "variant": "drop1",
+    "family_size": 7
+  },
+  {
+    "rank": 104,
+    "a": "A103889",
+    "b": "A114112",
+    "score": 80.5,
+    "claimed": 70,
+    "variant": "drop2",
+    "family_size": 4
+  },
+  {
+    "rank": 105,
+    "a": "A270418",
+    "b": "A367168",
+    "score": 80.5,
+    "claimed": 70,
+    "variant": "raw",
+    "family_size": 10
+  },
+  {
+    "rank": 106,
+    "a": "A206074",
+    "b": "A325559",
+    "score": 79.3,
+    "claimed": 69,
+    "variant": "raw",
+    "family_size": 6
+  },
+  {
+    "rank": 107,
+    "a": "A085971",
+    "b": "A387421",
+    "score": 78.2,
+    "claimed": 68,
+    "variant": "raw",
+    "family_size": 14
+  },
+  {
+    "rank": 108,
+    "a": "A252895",
+    "b": "A366242",
+    "score": 77.0,
+    "claimed": 67,
+    "variant": "raw",
+    "family_size": 13
+  },
+  {
+    "rank": 109,
+    "a": "A389215",
+    "b": "A393981",
+    "score": 77.0,
+    "claimed": 67,
+    "variant": "raw",
+    "family_size": 7
+  },
+  {
+    "rank": 110,
+    "a": "A188658",
+    "b": "A248803",
+    "score": 76.8,
+    "claimed": 128,
+    "variant": "drop2",
+    "family_size": 2
+  },
+  {
+    "rank": 111,
+    "a": "A025446",
+    "b": "A373972",
+    "score": 76.2,
+    "claimed": 127,
+    "variant": "raw",
+    "family_size": 2
+  },
+  {
+    "rank": 112,
+    "a": "A004772",
+    "b": "A319371",
+    "score": 75.9,
+    "claimed": 66,
+    "variant": "drop1",
+    "family_size": 6
+  },
+  {
+    "rank": 113,
+    "a": "A249407",
+    "b": "A360305",
+    "score": 75.9,
+    "claimed": 66,
+    "variant": "raw",
+    "family_size": 10
+  },
+  {
+    "rank": 114,
+    "a": "A355823",
+    "b": "A355825",
+    "score": 75.0,
+    "claimed": 125,
+    "variant": "drop2",
+    "family_size": 2
+  },
+  {
+    "rank": 115,
+    "a": "A035930",
+    "b": "A347470",
+    "score": 74.5,
+    "claimed": 108,
+    "variant": "raw",
+    "family_size": 15
+  },
+  {
+    "rank": 116,
+    "a": "A087003",
+    "b": "A091069",
+    "score": 74.5,
+    "claimed": 108,
+    "variant": "abs",
+    "family_size": 5
+  },
+  {
+    "rank": 117,
+    "a": "A193304",
+    "b": "A240370",
+    "score": 74.5,
+    "claimed": 108,
+    "variant": "raw",
+    "family_size": 27
+  },
+  {
+    "rank": 118,
+    "a": "A052928",
+    "b": "A346663",
+    "score": 74.0,
+    "claimed": 74,
+    "variant": "raw",
+    "family_size": 2
+  },
+  {
+    "rank": 119,
+    "a": "A025657",
+    "b": "A025686",
+    "score": 73.8,
+    "claimed": 107,
+    "variant": "raw",
+    "family_size": 5
+  },
+  {
+    "rank": 120,
+    "a": "A038189",
+    "b": "A089013",
+    "score": 73.8,
+    "claimed": 107,
+    "variant": "drop1",
+    "family_size": 3
+  },
+  {
+    "rank": 121,
+    "a": "A118828",
+    "b": "A118831",
+    "score": 73.8,
+    "claimed": 107,
+    "variant": "abs",
+    "family_size": 3
+  },
+  {
+    "rank": 122,
+    "a": "A344696",
+    "b": "A389087",
+    "score": 73.8,
+    "claimed": 107,
+    "variant": "raw",
+    "family_size": 5
+  },
+  {
+    "rank": 123,
+    "a": "A007094",
+    "b": "A039155",
+    "score": 73.6,
+    "claimed": 64,
+    "variant": "raw",
+    "family_size": 10
+  },
+  {
+    "rank": 124,
+    "a": "A088828",
+    "b": "A348741",
+    "score": 73.6,
+    "claimed": 64,
+    "variant": "raw",
+    "family_size": 3
+  },
+  {
+    "rank": 125,
+    "a": "A213222",
+    "b": "A265283",
+    "score": 73.6,
+    "claimed": 64,
+    "variant": "drop2",
+    "family_size": 3
+  },
+  {
+    "rank": 126,
+    "a": "A099564",
+    "b": "A276153",
+    "score": 73.1,
+    "claimed": 106,
+    "variant": "raw",
+    "family_size": 4
+  },
+  {
+    "rank": 127,
+    "a": "A276150",
+    "b": "A341513",
+    "score": 73.1,
+    "claimed": 106,
+    "variant": "raw",
+    "family_size": 4
+  },
+  {
+    "rank": 128,
+    "a": "A292592",
+    "b": "A332996",
+    "score": 73.1,
+    "claimed": 106,
+    "variant": "raw",
+    "family_size": 3
+  },
+  {
+    "rank": 129,
+    "a": "A328482",
+    "b": "A371091",
+    "score": 73.1,
+    "claimed": 106,
+    "variant": "raw",
+    "family_size": 6
+  },
+  {
+    "rank": 130,
+    "a": "A133265",
+    "b": "A275365",
+    "score": 73.0,
+    "claimed": 73,
+    "variant": "drop1",
+    "family_size": 2
+  },
+  {
+    "rank": 131,
+    "a": "A002324",
+    "b": "A171774",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 3
+  },
+  {
+    "rank": 132,
+    "a": "A004258",
+    "b": "A029837",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 11
+  },
+  {
+    "rank": 133,
+    "a": "A010476",
+    "b": "A020762",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 4
+  },
+  {
+    "rank": 134,
+    "a": "A025658",
+    "b": "A025673",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 24
+  },
+  {
+    "rank": 135,
+    "a": "A046978",
+    "b": "A075553",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3
+  },
+  {
+    "rank": 136,
+    "a": "A052409",
+    "b": "A327503",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 12
+  },
+  {
+    "rank": 137,
+    "a": "A069158",
+    "b": "A359155",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 11
+  },
+  {
+    "rank": 138,
+    "a": "A077267",
+    "b": "A081602",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 3
+  },
+  {
+    "rank": 139,
+    "a": "A083650",
+    "b": "A138514",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3
+  },
+  {
+    "rank": 140,
+    "a": "A093829",
+    "b": "A113447",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 4
+  },
+  {
+    "rank": 141,
+    "a": "A099443",
+    "b": "A132342",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 4
+  },
+  {
+    "rank": 142,
+    "a": "A101871",
+    "b": "A101875",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 3
+  },
+  {
+    "rank": 143,
+    "a": "A103391",
+    "b": "A331743",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 4
+  },
+  {
+    "rank": 144,
+    "a": "A106459",
+    "b": "A143433",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 4
+  },
+  {
+    "rank": 145,
+    "a": "A106510",
+    "b": "A163804",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 8
+  },
+  {
+    "rank": 146,
+    "a": "A109017",
+    "b": "A110161",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 6
+  },
+  {
+    "rank": 147,
+    "a": "A113446",
+    "b": "A121450",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3
+  },
+  {
+    "rank": 148,
+    "a": "A113661",
+    "b": "A113974",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3
+  },
+  {
+    "rank": 149,
+    "a": "A121373",
+    "b": "A199918",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 9
+  },
+  {
+    "rank": 150,
+    "a": "A143064",
+    "b": "A185124",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 6
+  },
+  {
+    "rank": 151,
+    "a": "A143259",
+    "b": "A359818",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3
+  },
+  {
+    "rank": 152,
+    "a": "A156277",
+    "b": "A365428",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3
+  },
+  {
+    "rank": 153,
+    "a": "A163812",
+    "b": "A163818",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 9
+  },
+  {
+    "rank": 154,
+    "a": "A164116",
+    "b": "A164118",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3
+  },
+  {
+    "rank": 155,
+    "a": "A209927",
+    "b": "A223139",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "drop1",
+    "family_size": 4
+  },
+  {
+    "rank": 156,
+    "a": "A290110",
+    "b": "A300250",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 14
+  },
+  {
+    "rank": 157,
+    "a": "A305979",
+    "b": "A334868",
+    "score": 72.4,
+    "claimed": 63,
+    "variant": "raw",
+    "family_size": 3
+  },
+  {
+    "rank": 158,
+    "a": "A351454",
+    "b": "A351460",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 5
+  },
+  {
+    "rank": 159,
+    "a": "A030205",
+    "b": "A159817",
+    "score": 72.0,
+    "claimed": 72,
+    "variant": "abs",
+    "family_size": 2
+  },
+  {
+    "rank": 160,
+    "a": "A115633",
+    "b": "A115713",
+    "score": 72.0,
+    "claimed": 120,
+    "variant": "abs",
+    "family_size": 2
+  }
+]

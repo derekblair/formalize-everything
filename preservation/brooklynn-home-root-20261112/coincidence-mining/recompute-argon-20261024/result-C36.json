@@ -1,0 +1,8 @@
+{
+  "candidate": "C36",
+  "compared_to": 2000,
+  "domain": "n>=2",
+  "mismatches": 0,
+  "first_mismatch": null,
+  "verdict": "AGREE_TO_2000"
+}
