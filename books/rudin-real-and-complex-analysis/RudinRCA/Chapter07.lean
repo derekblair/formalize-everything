@@ -25,6 +25,9 @@ import Mathlib.Topology.Semicontinuity.Basic
 import Mathlib.MeasureTheory.Measure.AEMeasurable
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 import Mathlib.Analysis.Calculus.FDeriv.Measurable
+import Mathlib.Topology.MetricSpace.Thickening
+import Mathlib.Topology.Compactness.SigmaCompact
+import Mathlib.GroupTheory.Perm.Fin
 
 /-!
 # Chapter 7: Differentiation
@@ -4405,22 +4408,1490 @@ theorem BookHasFDerivAt.jacobian_eq_det {k : ℕ}
 
 end Node7_22
 
-/-!
-### Nodes `7.23` and `7.24` (pending — flagged major gaps in `SCOPING-C.md` / `BRIEF.md` §1.6)
+section Node7_23
 
-* **Node `7.23`** (Rudin, Lemma 7.23, p. 151): Brouwer fixed-point image-ball lemma on
-  `closedBall 0 1 ⊆ ℝ^k` (`‖F x - x‖ < ε` on `sphere 0 1` implies `ball 0 (1 - ε) ⊆ F '' ball 0 1`
-  under continuity alone). Pinned Mathlib `d13f23b7` contains no Brouwer fixed-point / sphere
-  no-retraction theorem; the inverse-function theorem requires stronger hypotheses and is not
-  substituted here.
-* **Node `7.24`** (Rudin, Theorem 7.24, pp. 151–153): pointwise ball volume-ratio theorem
-  `m(T(B(x, r))) / m(B(x, r)) → |det T'(x)|` assuming continuity on open `V` and differentiability
-  **only at the single point `x`**. Depends on `7.23` for nonsingular `T'(x)`; no `C¹`, strict
-  differentiability, local injectivity, or open-map assumption is added.
+open Classical
+open scoped RealInnerProductSpace
 
-Accordingly, neither `7.23` nor `7.24` is claimed in this module; see `CHAPTER07-STAGE2-REPORT.md`
-and `COVERAGE-C.md`.
--/
+/-! ### Part 1: Kuhn's cubical Sperner lemma -/
+
+abbrev CubeVertex (k N : ℕ) := Fin k → Fin (N + 2)
+
+abbrev KuhnSimplex (k N : ℕ) := (Fin k → Fin (N + 1)) × Equiv.Perm (Fin k)
+
+def kuhnVertex {k N : ℕ} (s : KuhnSimplex k N) (m : Fin (k + 1)) (i : Fin k) : Fin (N + 2) :=
+  ⟨(s.1 i).val + if (s.2.symm i).val < m.val then 1 else 0, by
+    have hi := (s.1 i).isLt
+    split_ifs <;> omega⟩
+
+def IsCubicalSperner {k N : ℕ} (c : CubeVertex k N → Fin (k + 1)) : Prop :=
+  (∀ v (i : Fin k), (v i).val = 0 → c v ≠ i.castSucc) ∧
+  (∀ v (i : Fin k), (v i).val = N + 1 → (c v).val ≤ i.val)
+
+def IsSubPan {d : ℕ} (f : Fin (d + 2) → Fin (d + 2)) (m : Fin (d + 2)) : Prop :=
+  ∀ j : Fin (d + 1), ∃ r ≠ m, f r = j.castSucc
+
+private theorem even_card_of_involution {α : Type*} [DecidableEq α] :
+    ∀ (n : ℕ) (S : Finset α) (τ : α → α),
+      S.card = n →
+      (∀ x ∈ S, τ x ∈ S) →
+      (∀ x ∈ S, τ (τ x) = x) →
+      (∀ x ∈ S, τ x ≠ x) →
+      S.card % 2 = 0 := by
+  intro n
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+    intro S τ hcard hmem hinv hne
+    by_cases hS : S = ∅
+    · subst hS; simp
+    · obtain ⟨x, hx⟩ := Finset.nonempty_iff_ne_empty.mpr hS
+      have hτx : τ x ∈ S := hmem x hx
+      have hτx_ne : τ x ≠ x := hne x hx
+      have hτx_erase : τ x ∈ S.erase x := Finset.mem_erase.mpr ⟨hτx_ne, hτx⟩
+      let S' := (S.erase x).erase (τ x)
+      have hcard1 : (S.erase x).card + 1 = S.card := Finset.card_erase_add_one hx
+      have hcard2 : S'.card + 1 = (S.erase x).card := Finset.card_erase_add_one hτx_erase
+      have hlt : S'.card < n := by omega
+      have hS'_even : S'.card % 2 = 0 := by
+        apply ih S'.card hlt S' τ rfl
+        · intro y hy
+          have hy1 : y ≠ τ x ∧ y ∈ S.erase x := Finset.mem_erase.mp hy
+          have hy2 : y ≠ x ∧ y ∈ S := Finset.mem_erase.mp hy1.2
+          refine Finset.mem_erase.mpr ⟨?_, Finset.mem_erase.mpr ⟨?_, hmem y hy2.2⟩⟩
+          · intro heq
+            apply hy2.1
+            calc
+              y = τ (τ y) := (hinv y hy2.2).symm
+              _ = τ (τ x) := by rw [heq]
+              _ = x := hinv x hx
+          · intro heq
+            apply hy1.1
+            calc
+              y = τ (τ y) := (hinv y hy2.2).symm
+              _ = τ x := by rw [heq]
+        · intro y hy
+          exact hinv y (Finset.mem_of_mem_erase (Finset.mem_of_mem_erase hy))
+        · intro y hy
+          exact hne y (Finset.mem_of_mem_erase (Finset.mem_of_mem_erase hy))
+      omega
+
+private theorem subPan_card_mod_two {d : ℕ} (f : Fin (d + 2) → Fin (d + 2)) :
+    (Finset.univ.filter (fun m => IsSubPan f m)).card % 2 =
+      if Function.Surjective f then 1 else 0 := by
+  by_cases hsurj : Function.Surjective f
+  · simp only [hsurj, ↓reduceIte]
+    have hbij : Function.Bijective f := Finite.surjective_iff_bijective.mp hsurj
+    obtain ⟨m₀, hm₀⟩ := hsurj (Fin.last (d + 1))
+    have hset : Finset.univ.filter (fun m => IsSubPan f m) = {m₀} := by
+      ext m
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
+      constructor
+      · intro hm
+        by_cases hlast : f m = Fin.last (d + 1)
+        · exact hbij.1 (hlast.trans hm₀.symm)
+        · let j : Fin (d + 1) := (f m).castPred hlast
+          obtain ⟨r, hrm, hfr⟩ := hm j
+          have hfm : j.castSucc = f m := Fin.castSucc_castPred (f m) hlast
+          exact False.elim (hrm (hbij.1 (hfr.trans hfm)))
+      · rintro rfl j
+        obtain ⟨r, hr⟩ := hsurj j.castSucc
+        refine ⟨r, ?_, hr⟩
+        intro hrm
+        rw [hrm, hm₀] at hr
+        exact Fin.castSucc_ne_last j hr.symm
+    rw [hset, Finset.card_singleton]
+  · simp only [hsurj, ↓reduceIte]
+    by_cases hall : ∀ j : Fin (d + 1), ∃ r, f r = j.castSucc
+    · have hne_last : ∀ r : Fin (d + 2), f r ≠ Fin.last (d + 1) := by
+        intro r hr
+        apply hsurj
+        intro y
+        refine Fin.lastCases ⟨r, hr⟩ (fun j => hall j) y
+      let g : Fin (d + 2) → Fin (d + 1) := fun r => (f r).castPred (hne_last r)
+      have hg_cast : ∀ r, (g r).castSucc = f r := fun r => Fin.castSucc_castPred (f r) (hne_last r)
+      have hg_surj : Function.Surjective g := by
+        intro j
+        obtain ⟨r, hr⟩ := hall j
+        exact ⟨r, Fin.castSucc_inj.mp ((hg_cast r).trans hr)⟩
+      have hnot_inj : ¬ Function.Injective g := by
+        intro hinj
+        have hcard := Fintype.card_le_of_injective g hinj
+        simp only [Fintype.card_fin] at hcard
+        omega
+      obtain ⟨m₁, m₂, hgm, hm₁₂⟩ : ∃ m₁ m₂, g m₁ = g m₂ ∧ m₁ ≠ m₂ := by
+        simpa [Function.Injective] using hnot_inj
+      have hset : Finset.univ.filter (fun m => IsSubPan f m) = {m₁, m₂} := by
+        ext m
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_insert,
+          Finset.mem_singleton]
+        constructor
+        · intro hm
+          by_contra hnot
+          push Not at hnot
+          rcases hnot with ⟨h1, h2⟩
+          let restrictG : {r : Fin (d + 2) // r ≠ m} → Fin (d + 1) := fun r => g r.1
+          have hrsurj : Function.Surjective restrictG := by
+            intro j
+            obtain ⟨r, hrm, hfr⟩ := hm j
+            exact ⟨⟨r, hrm⟩, Fin.castSucc_inj.mp ((hg_cast r).trans hfr)⟩
+          have hcard_dom : Fintype.card {r : Fin (d + 2) // r ≠ m} = Fintype.card (Fin (d + 1)) := by
+            rw [Fintype.card_subtype_compl, Fintype.card_subtype_eq, Fintype.card_fin,
+              Fintype.card_fin]
+            omega
+          have hrbij : Function.Bijective restrictG :=
+            (Fintype.bijective_iff_surjective_and_card restrictG).mpr ⟨hrsurj, hcard_dom⟩
+          have heq : (⟨m₁, h1.symm⟩ : {r : Fin (d + 2) // r ≠ m}) = ⟨m₂, h2.symm⟩ :=
+            hrbij.1 hgm
+          exact hm₁₂ (Subtype.ext_iff.mp heq)
+        · intro hmem j
+          rcases hmem with rfl | rfl
+          · obtain ⟨r, hr⟩ := hg_surj j
+            by_cases hrm : r = m
+            · refine ⟨m₂, hm₁₂.symm, ?_⟩
+              rw [← hg_cast m₂, ← hgm, ← hrm, hr]
+            · exact ⟨r, hrm, (hg_cast r).symm.trans (congrArg Fin.castSucc hr)⟩
+          · obtain ⟨r, hr⟩ := hg_surj j
+            by_cases hrm : r = m
+            · refine ⟨m₁, hm₁₂, ?_⟩
+              rw [← hg_cast m₁, hgm, ← hrm, hr]
+            · exact ⟨r, hrm, (hg_cast r).symm.trans (congrArg Fin.castSucc hr)⟩
+      rw [hset, Finset.card_pair hm₁₂]
+    · have hset : Finset.univ.filter (fun m => IsSubPan f m) = ∅ := by
+        ext m
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.notMem_empty, iff_false]
+        intro hm
+        apply hall
+        intro j
+        obtain ⟨r, -, hr⟩ := hm j
+        exact ⟨r, hr⟩
+      rw [hset, Finset.card_empty]
+
+private def rotRight (d : ℕ) : Equiv.Perm (Fin (d + 1)) where
+  toFun := Fin.lastCases 0 Fin.succ
+  invFun := Fin.cases (Fin.last d) Fin.castSucc
+  left_inv x := by
+    refine Fin.lastCases ?_ (fun j => ?_) x
+    · simp
+    · simp
+  right_inv x := by
+    refine Fin.cases ?_ (fun j => ?_) x
+    · simp
+    · simp
+
+private def liftPerm {d : ℕ} (e : Equiv.Perm (Fin d)) : Equiv.Perm (Fin (d + 1)) where
+  toFun := Fin.cases (Fin.last d) (fun x => (e x).castSucc)
+  invFun := Fin.lastCases 0 (fun y => (e.symm y).succ)
+  left_inv x := by
+    refine Fin.cases ?_ (fun j => ?_) x
+    · simp
+    · simp
+  right_inv x := by
+    refine Fin.lastCases ?_ (fun j => ?_) x
+    · simp
+    · simp
+
+private def isBdryPair {d N : ℕ} (p : KuhnSimplex (d + 1) N × Fin (d + 2)) : Prop :=
+  p.2 = 0 ∧ p.1.1 (p.1.2 0) = Fin.last N ∧ p.1.2 0 = Fin.last d
+
+private def kuhnPartner {d N : ℕ}
+    (p : KuhnSimplex (d + 1) N × Fin (d + 2)) :
+    KuhnSimplex (d + 1) N × Fin (d + 2) :=
+  if hm0 : p.2 = 0 then
+    if hb : (p.1.1 (p.1.2 0)).val < N then
+      ((Function.update p.1.1 (p.1.2 0) ⟨(p.1.1 (p.1.2 0)).val + 1, by omega⟩,
+        p.1.2 * rotRight d), Fin.last (d + 1))
+    else p
+  else if hml : p.2 = Fin.last (d + 1) then
+    if hb : 0 < (p.1.1 (p.1.2 (Fin.last d))).val then
+      ((Function.update p.1.1 (p.1.2 (Fin.last d)) ⟨(p.1.1 (p.1.2 (Fin.last d))).val - 1, by omega⟩,
+        p.1.2 * (rotRight d).symm), 0)
+    else p
+  else
+    have hm_pos : 0 < p.2.val := Nat.pos_of_ne_zero fun h => hm0 (Fin.ext h)
+    have hm_lt : p.2.val < d + 1 := by
+      have := p.2.isLt
+      have hne : p.2.val ≠ d + 1 := fun h => hml (Fin.ext h)
+      omega
+    let j₁ : Fin (d + 1) := ⟨p.2.val - 1, by omega⟩
+    let j₂ : Fin (d + 1) := ⟨p.2.val, hm_lt⟩
+    ((p.1.1, p.1.2 * Equiv.swap j₁ j₂), p.2)
+
+private theorem kuhnVertex_left_shift {d N : ℕ} (b : Fin (d + 1) → Fin (N + 1))
+    (σ : Equiv.Perm (Fin (d + 1))) (hb : (b (σ 0)).val < N) (r : Fin (d + 1)) :
+    let b' := Function.update b (σ 0) ⟨(b (σ 0)).val + 1, by omega⟩
+    let σ' := σ * rotRight d
+    kuhnVertex (b', σ') r.castSucc = kuhnVertex (b, σ) r.succ := by
+  intro b' σ'
+  ext i
+  dsimp only [kuhnVertex]
+  have hsymm : σ'.symm i = (rotRight d).symm (σ.symm i) := rfl
+  by_cases hi : i = σ 0
+  · subst hi
+    have h0 : σ.symm (σ 0) = 0 := σ.symm_apply_apply 0
+    have hrot : (rotRight d).symm 0 = Fin.last d := by simp [rotRight]
+    have hup : (b' (σ 0)).val = (b (σ 0)).val + 1 := by simp [b']
+    have hr : ¬ (d < r.val) := Nat.not_lt.mpr (Nat.le_of_lt_succ r.isLt)
+    simp [hsymm, h0, hrot, hup, hr]
+  · have hup : b' i = b i := Function.update_of_ne hi _ b
+    have hne0 : σ.symm i ≠ 0 := fun h =>
+      hi ((σ.apply_symm_apply i).symm.trans (congrArg σ h))
+    obtain ⟨j, hj⟩ := Fin.eq_succ_of_ne_zero hne0
+    have hrot : (rotRight d).symm j.succ = j.castSucc := by simp [rotRight]
+    rw [hsymm, hj, hrot, hup]
+    simp only [Fin.val_castSucc, Fin.val_succ]
+    split_ifs <;> omega
+
+private theorem kuhnVertex_mid_swap {d N : ℕ} (b : Fin (d + 1) → Fin (N + 1))
+    (σ : Equiv.Perm (Fin (d + 1))) (m : Fin (d + 2))
+    (hm0 : m ≠ 0) (hml : m ≠ Fin.last (d + 1))
+    (r : Fin (d + 2)) (hrm : r ≠ m) :
+    have hm_pos : 0 < m.val := Nat.pos_of_ne_zero fun h => hm0 (Fin.ext h)
+    have hm_lt : m.val < d + 1 := by
+      have := m.isLt
+      have hne : m.val ≠ d + 1 := fun h => hml (Fin.ext h)
+      omega
+    let j₁ : Fin (d + 1) := ⟨m.val - 1, by omega⟩
+    let j₂ : Fin (d + 1) := ⟨m.val, hm_lt⟩
+    kuhnVertex (b, σ * Equiv.swap j₁ j₂) r = kuhnVertex (b, σ) r := by
+  intro hm_pos hm_lt j₁ j₂
+  ext i
+  simp only [kuhnVertex]
+  have hsymm : (σ * Equiv.swap j₁ j₂).symm i = Equiv.swap j₁ j₂ (σ.symm i) := by
+    change (Equiv.swap j₁ j₂).symm (σ.symm i) = _
+    rw [Equiv.symm_swap]
+  rw [hsymm]
+  have hrm_val : r.val ≠ m.val := fun h => hrm (Fin.ext h)
+  by_cases hu1 : σ.symm i = j₁
+  · rw [hu1, Equiv.swap_apply_left]
+    change _ + (if m.val < r.val then 1 else 0) = _ + (if m.val - 1 < r.val then 1 else 0)
+    split_ifs <;> omega
+  · by_cases hu2 : σ.symm i = j₂
+    · rw [hu2, Equiv.swap_apply_right]
+      change _ + (if m.val - 1 < r.val then 1 else 0) = _ + (if m.val < r.val then 1 else 0)
+      split_ifs <;> omega
+    · rw [Equiv.swap_apply_of_ne_of_ne hu1 hu2]
+
+/-- **Kuhn's Cubical Sperner Lemma**: for any cubical Sperner coloring of `{0, ..., N + 1}^k`,
+the number of panchromatic Kuhn `k`-simplices is odd. -/
+theorem sperner_kuhn_cube :
+    ∀ (k N : ℕ) (c : CubeVertex k N → Fin (k + 1)),
+      IsCubicalSperner c →
+      (Finset.univ.filter (fun s : KuhnSimplex k N =>
+        Function.Surjective (fun m => c (kuhnVertex s m)))).card % 2 = 1 := by
+  intro k
+  induction k with
+  | zero =>
+    intro N c _
+    have hsurj : ∀ s : KuhnSimplex 0 N, Function.Surjective (fun m => c (kuhnVertex s m)) := by
+      intro s y
+      exact ⟨0, (Fin.eq_zero _).trans (Fin.eq_zero y).symm⟩
+    have hcard : Fintype.card (KuhnSimplex 0 N) = 1 := by
+      rw [Fintype.card_prod, Fintype.card_fun, Fintype.card_perm, Fintype.card_fin]
+      simp
+    simp [hsurj, Finset.filter_true_of_mem, hcard]
+  | succ d ih =>
+    intro N c hc
+    let pan := Finset.univ.filter (fun s : KuhnSimplex (d + 1) N =>
+      Function.Surjective (fun m => c (kuhnVertex s m)))
+    let pairs := Finset.univ.filter (fun p : KuhnSimplex (d + 1) N × Fin (d + 2) =>
+      IsSubPan (fun r => c (kuhnVertex p.1 r)) p.2)
+    have hpairs_mod : pairs.card % 2 = pan.card % 2 := by
+      have hprod : pairs.card =
+          ∑ s : KuhnSimplex (d + 1) N,
+            (Finset.univ.filter (fun m : Fin (d + 2) =>
+              IsSubPan (fun r => c (kuhnVertex s r)) m)).card := by
+        simp only [pairs, Finset.card_filter, Fintype.sum_prod_type]
+      rw [hprod, Finset.sum_nat_mod]
+      have hcongr :
+          (∑ s : KuhnSimplex (d + 1) N,
+            (Finset.univ.filter (fun m : Fin (d + 2) =>
+              IsSubPan (fun r => c (kuhnVertex s r)) m)).card % 2) =
+          ∑ s : KuhnSimplex (d + 1) N,
+            if Function.Surjective (fun m => c (kuhnVertex s m)) then 1 else 0 := by
+        refine Finset.sum_congr rfl fun s _ => subPan_card_mod_two _
+      rw [hcongr, Finset.sum_boole, Nat.cast_id]
+    let bdry := pairs.filter isBdryPair
+    let paired := pairs.filter (fun p => ¬ isBdryPair p)
+    have hsplit_card : pairs.card = bdry.card + paired.card :=
+      (Finset.card_filter_add_card_filter_not isBdryPair).symm
+    have hnot_dead_right : ∀ p ∈ pairs, p.2 = Fin.last (d + 1) →
+        0 < (p.1.1 (p.1.2 (Fin.last d))).val := by
+      intro p hp hml
+      have hsub : IsSubPan (fun r => c (kuhnVertex p.1 r)) p.2 := (Finset.mem_filter.mp hp).2
+      by_contra hle
+      have hz : (p.1.1 (p.1.2 (Fin.last d))).val = 0 := by omega
+      let i := p.1.2 (Fin.last d)
+      obtain ⟨r, hrm, hcr⟩ := hsub i
+      dsimp only at hcr
+      have hr_lt : r.val < d + 1 := by
+        have := r.isLt
+        have hne : r.val ≠ d + 1 := fun h => hrm ((Fin.ext h).trans hml.symm)
+        omega
+      have hv0 : (kuhnVertex p.1 r i).val = 0 := by
+        simp only [kuhnVertex, i, p.1.2.symm_apply_apply, Fin.val_last]
+        split_ifs <;> omega
+      exact hc.1 (kuhnVertex p.1 r) i hv0 hcr
+    have hnot_dead_left : ∀ p ∈ paired, p.2 = 0 →
+        (p.1.1 (p.1.2 0)).val < N := by
+      intro p hp hm0
+      have hp_pairs : p ∈ pairs := (Finset.mem_filter.mp hp).1
+      have hnbdry : ¬ isBdryPair p := (Finset.mem_filter.mp hp).2
+      have hsub : IsSubPan (fun r => c (kuhnVertex p.1 r)) p.2 := (Finset.mem_filter.mp hp_pairs).2
+      by_contra hge
+      have hN : (p.1.1 (p.1.2 0)).val = N := by
+        have := (p.1.1 (p.1.2 0)).isLt
+        omega
+      have hb_last : p.1.1 (p.1.2 0) = Fin.last N := Fin.ext hN
+      have hσ_ne : p.1.2 0 ≠ Fin.last d := fun hσ => hnbdry ⟨hm0, hb_last, hσ⟩
+      have hi_lt : (p.1.2 0).val < d := by
+        have := (p.1.2 0).isLt
+        have hne : (p.1.2 0).val ≠ d := fun h => hσ_ne (Fin.ext h)
+        omega
+      obtain ⟨r, hrm, hcr⟩ := hsub (Fin.last d)
+      dsimp only at hcr
+      have hr_pos : 0 < r.val := Nat.pos_of_ne_zero fun h => hrm ((Fin.ext h).trans hm0.symm)
+      have hvN : (kuhnVertex p.1 r (p.1.2 0)).val = N + 1 := by
+        simp only [kuhnVertex, p.1.2.symm_apply_apply, Fin.val_zero, hN]
+        split_ifs <;> omega
+      have hle := hc.2 (kuhnVertex p.1 r) (p.1.2 0) hvN
+      rw [hcr, Fin.val_castSucc, Fin.val_last] at hle
+      omega
+    have hpaired_even : paired.card % 2 = 0 := by
+      refine even_card_of_involution paired.card paired kuhnPartner rfl ?_ ?_ ?_
+      · intro p hp
+        have hp_pairs : p ∈ pairs := (Finset.mem_filter.mp hp).1
+        have hsub : IsSubPan (fun r => c (kuhnVertex p.1 r)) p.2 := (Finset.mem_filter.mp hp_pairs).2
+        by_cases hm0 : p.2 = 0
+        · have hb : (p.1.1 (p.1.2 0)).val < N := hnot_dead_left p hp hm0
+          have hpart : kuhnPartner p =
+              ((Function.update p.1.1 (p.1.2 0) ⟨(p.1.1 (p.1.2 0)).val + 1, by omega⟩,
+                p.1.2 * rotRight d), Fin.last (d + 1)) := by
+            simp [kuhnPartner, hm0, hb]
+          rw [hpart]
+          refine Finset.mem_filter.mpr ⟨Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩, ?_⟩
+          · intro j
+            obtain ⟨r, hrm, hcr⟩ := hsub j
+            dsimp only at hcr
+            have hr0 : r ≠ 0 := fun h => hrm (h.trans hm0.symm)
+            obtain ⟨r', rfl⟩ := Fin.eq_succ_of_ne_zero hr0
+            refine ⟨r'.castSucc, Fin.castSucc_ne_last r', ?_⟩
+            dsimp only
+            rw [kuhnVertex_left_shift p.1.1 p.1.2 hb r']
+            exact hcr
+          · intro hbdry
+            exact Fin.last_pos.ne' hbdry.1
+        · by_cases hml : p.2 = Fin.last (d + 1)
+          · have hb : 0 < (p.1.1 (p.1.2 (Fin.last d))).val := hnot_dead_right p hp_pairs hml
+            let b0 := Function.update p.1.1 (p.1.2 (Fin.last d))
+              ⟨(p.1.1 (p.1.2 (Fin.last d))).val - 1, by omega⟩
+            let σ0 := p.1.2 * (rotRight d).symm
+            have hpart : kuhnPartner p = ((b0, σ0), 0) := by
+              simp [kuhnPartner, hml, hb, b0, σ0]
+            have hσ0_zero : σ0 0 = p.1.2 (Fin.last d) := by
+              change p.1.2 ((rotRight d).symm 0) = _
+              simp [rotRight]
+            have hb0_lt : (b0 (σ0 0)).val < N := by
+              rw [hσ0_zero]
+              simp only [b0, Function.update_self]
+              have := (p.1.1 (p.1.2 (Fin.last d))).isLt
+              omega
+            have hb_back : Function.update b0 (σ0 0) ⟨(b0 (σ0 0)).val + 1, by omega⟩ = p.1.1 := by
+              ext x
+              by_cases hx : x = σ0 0
+              · subst hx
+                rw [Function.update_self]
+                dsimp only
+                rw [hσ0_zero]
+                simp only [b0, Function.update_self]
+                omega
+              · rw [Function.update_of_ne hx]
+                have hx' : x ≠ p.1.2 (Fin.last d) := fun h => hx (h.trans hσ0_zero.symm)
+                simp [b0, hx']
+            have hσ_back : σ0 * rotRight d = p.1.2 := by
+              change p.1.2 * (rotRight d)⁻¹ * rotRight d = p.1.2
+              exact inv_mul_cancel_right p.1.2 (rotRight d)
+            rw [hpart]
+            refine Finset.mem_filter.mpr ⟨Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩, ?_⟩
+            · intro j
+              obtain ⟨r, hrm, hcr⟩ := hsub j
+              dsimp only at hcr
+              have hrl : r ≠ Fin.last (d + 1) := fun h => hrm (h.trans hml.symm)
+              let r' : Fin (d + 1) := r.castPred hrl
+              have hr'_eq : r'.castSucc = r := Fin.castSucc_castPred r hrl
+              refine ⟨r'.succ, Fin.succ_ne_zero r', ?_⟩
+              dsimp only
+              have hv := kuhnVertex_left_shift b0 σ0 hb0_lt r'
+              dsimp only at hv
+              rw [hb_back, hσ_back, hr'_eq] at hv
+              rw [← hv]
+              exact hcr
+            · intro hbdry
+              have hlast : (b0 (σ0 0)).val = N := congrArg Fin.val hbdry.2.1
+              omega
+          · have hm_pos : 0 < p.2.val := Nat.pos_of_ne_zero fun h => hm0 (Fin.ext h)
+            have hm_lt : p.2.val < d + 1 := by
+              have := p.2.isLt
+              have hne : p.2.val ≠ d + 1 := fun h => hml (Fin.ext h)
+              omega
+            let j₁ : Fin (d + 1) := ⟨p.2.val - 1, by omega⟩
+            let j₂ : Fin (d + 1) := ⟨p.2.val, hm_lt⟩
+            have hpart : kuhnPartner p = ((p.1.1, p.1.2 * Equiv.swap j₁ j₂), p.2) := by
+              simp [kuhnPartner, hm0, hml, j₁, j₂]
+            rw [hpart]
+            refine Finset.mem_filter.mpr ⟨Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩, ?_⟩
+            · intro j
+              obtain ⟨r, hrm, hcr⟩ := hsub j
+              dsimp only at hcr
+              refine ⟨r, hrm, ?_⟩
+              dsimp only
+              rw [kuhnVertex_mid_swap p.1.1 p.1.2 p.2 hm0 hml r hrm]
+              exact hcr
+            · intro hbdry
+              exact hm0 hbdry.1
+      · intro p hp
+        have hp_pairs : p ∈ pairs := (Finset.mem_filter.mp hp).1
+        rcases p with ⟨⟨b, σ⟩, m⟩
+        by_cases hm0 : m = 0
+        · have hb : (b (σ 0)).val < N := hnot_dead_left ((b, σ), m) hp hm0
+          subst hm0
+          let b' := Function.update b (σ 0) ⟨(b (σ 0)).val + 1, by omega⟩
+          let σ' := σ * rotRight d
+          have h1 : kuhnPartner ((b, σ), 0) = ((b', σ'), Fin.last (d + 1)) := by
+            simp [kuhnPartner, hb, b', σ']
+          rw [h1]
+          have hne0 : (Fin.last (d + 1) : Fin (d + 2)) ≠ 0 := Fin.last_pos.ne'
+          have hσ'_last : σ' (Fin.last d) = σ 0 := by
+            change σ (rotRight d (Fin.last d)) = σ 0
+            simp [rotRight]
+          have hb'_pos : 0 < (b' (σ' (Fin.last d))).val := by
+            rw [hσ'_last]
+            simp [b']
+          simp only [kuhnPartner, hne0, ↓reduceDIte, hb'_pos]
+          refine Prod.ext (Prod.ext ?_ ?_) rfl
+          · ext x
+            dsimp only
+            by_cases hx : x = σ' (Fin.last d)
+            · subst hx
+              rw [Function.update_self]
+              dsimp only
+              rw [hσ'_last]
+              simp [b']
+            · rw [Function.update_of_ne hx]
+              have hx' : x ≠ σ 0 := fun h => hx (h.trans hσ'_last.symm)
+              simp [b', hx']
+          · change σ * rotRight d * (rotRight d)⁻¹ = σ
+            exact mul_inv_cancel_right σ (rotRight d)
+        · by_cases hml : m = Fin.last (d + 1)
+          · have hb : 0 < (b (σ (Fin.last d))).val := hnot_dead_right ((b, σ), m) hp_pairs hml
+            subst hml
+            let b' := Function.update b (σ (Fin.last d)) ⟨(b (σ (Fin.last d))).val - 1, by omega⟩
+            let σ' := σ * (rotRight d).symm
+            have h1 : kuhnPartner ((b, σ), Fin.last (d + 1)) = ((b', σ'), 0) := by
+              simp [kuhnPartner, hb, b', σ']
+            rw [h1]
+            have hσ'_zero : σ' 0 = σ (Fin.last d) := by
+              change σ ((rotRight d).symm 0) = σ (Fin.last d)
+              simp [rotRight]
+            have hb'_lt : (b' (σ' 0)).val < N := by
+              rw [hσ'_zero]
+              simp only [b', Function.update_self]
+              have := (b (σ (Fin.last d))).isLt
+              omega
+            simp only [kuhnPartner, ↓reduceDIte, hb'_lt]
+            refine Prod.ext (Prod.ext ?_ ?_) rfl
+            · ext x
+              dsimp only
+              by_cases hx : x = σ' 0
+              · subst hx
+                rw [Function.update_self]
+                dsimp only
+                rw [hσ'_zero]
+                simp only [b', Function.update_self]
+                omega
+              · rw [Function.update_of_ne hx]
+                have hx' : x ≠ σ (Fin.last d) := fun h => hx (h.trans hσ'_zero.symm)
+                simp [b', hx']
+            · change σ * (rotRight d)⁻¹ * rotRight d = σ
+              exact inv_mul_cancel_right σ (rotRight d)
+          · have hm_pos : 0 < m.val := Nat.pos_of_ne_zero fun h => hm0 (Fin.ext h)
+            have hm_lt : m.val < d + 1 := by
+              have := m.isLt
+              have hne : m.val ≠ d + 1 := fun h => hml (Fin.ext h)
+              omega
+            let j₁ : Fin (d + 1) := ⟨m.val - 1, by omega⟩
+            let j₂ : Fin (d + 1) := ⟨m.val, hm_lt⟩
+            have h1 : kuhnPartner ((b, σ), m) = ((b, σ * Equiv.swap j₁ j₂), m) := by
+              simp [kuhnPartner, hm0, hml, j₁, j₂]
+            rw [h1]
+            simp [kuhnPartner, hm0, hml, j₁, j₂, mul_assoc]
+      · intro p hp
+        have hp_pairs : p ∈ pairs := (Finset.mem_filter.mp hp).1
+        rcases p with ⟨⟨b, σ⟩, m⟩
+        by_cases hm0 : m = 0
+        · have hb : (b (σ 0)).val < N := hnot_dead_left ((b, σ), m) hp hm0
+          subst hm0
+          simp only [kuhnPartner, ↓reduceDIte, hb, ne_eq, Prod.mk.injEq]
+          intro h
+          exact Fin.last_pos.ne' h.2
+        · by_cases hml : m = Fin.last (d + 1)
+          · have hb : 0 < (b (σ (Fin.last d))).val := hnot_dead_right ((b, σ), m) hp_pairs hml
+            subst hml
+            simp only [kuhnPartner, hm0, ↓reduceDIte, hb, ne_eq, Prod.mk.injEq]
+            intro h
+            exact Fin.last_pos.ne h.2
+          · have hm_pos : 0 < m.val := Nat.pos_of_ne_zero fun h => hm0 (Fin.ext h)
+            have hm_lt : m.val < d + 1 := by
+              have := m.isLt
+              have hne : m.val ≠ d + 1 := fun h => hml (Fin.ext h)
+              omega
+            let j₁ : Fin (d + 1) := ⟨m.val - 1, by omega⟩
+            let j₂ : Fin (d + 1) := ⟨m.val, hm_lt⟩
+            intro h
+            have hpart : kuhnPartner ((b, σ), m) = ((b, σ * Equiv.swap j₁ j₂), m) := by
+              simp [kuhnPartner, hm0, hml, j₁, j₂]
+            have hσ : σ * Equiv.swap j₁ j₂ = σ :=
+              congrArg (fun q => q.1.2) (hpart.symm.trans h)
+            have hsw : Equiv.swap j₁ j₂ = 1 := mul_left_cancel (hσ.trans (mul_one σ).symm)
+            have hj12 : j₁ = j₂ := by
+              have := Equiv.Perm.ext_iff.mp hsw j₁
+              simpa using this.symm
+            have hval : m.val - 1 = m.val := congrArg Fin.val hj12
+            omega
+    -- Step B: `bdry` bijects with panchromatic `d`-simplices for the face coloring `c'`
+    let faceVert (w : CubeVertex d N) : CubeVertex (d + 1) N :=
+      Fin.snoc w (Fin.last (N + 1))
+    have hface_BN : ∀ w : CubeVertex d N, (c (faceVert w)).val < d + 1 := by
+      intro w
+      have hv : (faceVert w (Fin.last d)).val = N + 1 := by
+        simp [faceVert, Fin.snoc_last]
+      have hle := hc.2 (faceVert w) (Fin.last d) hv
+      rw [Fin.val_last] at hle
+      omega
+    let c' (w : CubeVertex d N) : Fin (d + 1) := ⟨(c (faceVert w)).val, hface_BN w⟩
+    have hc'_cast : ∀ w, (c' w).castSucc = c (faceVert w) := by
+      intro w
+      ext
+      rfl
+    have hc'_sperner : IsCubicalSperner c' := by
+      refine ⟨?_, ?_⟩
+      · intro w y hy hc'y
+        have hv : (faceVert w y.castSucc).val = 0 := by
+          simpa [faceVert, Fin.snoc_castSucc] using hy
+        apply hc.1 (faceVert w) y.castSucc hv
+        rw [← hc'_cast w, hc'y]
+      · intro w y hy
+        have hv : (faceVert w y.castSucc).val = N + 1 := by
+          simpa [faceVert, Fin.snoc_castSucc] using hy
+        simpa [c', Fin.val_castSucc] using hc.2 (faceVert w) y.castSucc hv
+    let pan_d := Finset.univ.filter (fun s' : KuhnSimplex d N =>
+      Function.Surjective (fun r => c' (kuhnVertex s' r)))
+    have hbdry_vertex : ∀ (s' : KuhnSimplex d N) (r : Fin (d + 1)),
+        kuhnVertex (Fin.snoc s'.1 (Fin.last N), liftPerm s'.2) r.succ =
+          faceVert (kuhnVertex s' r) := by
+      intro s' r
+      funext i
+      refine Fin.lastCases ?_ (fun y => ?_) i
+      · dsimp only [faceVert]
+        rw [Fin.snoc_last]
+        apply Fin.ext
+        have hsymm : (liftPerm s'.2).symm (Fin.last d) = 0 := by simp [liftPerm]
+        simp [kuhnVertex, hsymm]
+      · dsimp only [faceVert]
+        rw [Fin.snoc_castSucc]
+        apply Fin.ext
+        have hsymm : (liftPerm s'.2).symm y.castSucc = (s'.2.symm y).succ := by simp [liftPerm]
+        simp only [kuhnVertex, Fin.snoc_castSucc, hsymm, Fin.val_succ]
+        split_ifs <;> omega
+    have hbdry_card : bdry.card = pan_d.card := by
+      symm
+      refine Finset.card_bij
+        (fun s' _ => ((Fin.snoc s'.1 (Fin.last N), liftPerm s'.2), (0 : Fin (d + 2))))
+        ?_ ?_ ?_
+      · intro s' hs'
+        have hsurj : Function.Surjective (fun r => c' (kuhnVertex s' r)) :=
+          (Finset.mem_filter.mp hs').2
+        refine Finset.mem_filter.mpr ⟨Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩, ?_⟩
+        · intro j
+          obtain ⟨r, hr⟩ := hsurj j
+          dsimp only at hr
+          refine ⟨r.succ, Fin.succ_ne_zero r, ?_⟩
+          dsimp only
+          rw [hbdry_vertex s' r, ← hc'_cast, hr]
+        · refine ⟨rfl, ?_, ?_⟩
+          · dsimp only
+            have h0 : liftPerm s'.2 0 = Fin.last d := by simp [liftPerm]
+            rw [h0, Fin.snoc_last]
+          · simp [liftPerm]
+      · intro s₁ _ s₂ _ heq
+        have h1 : (Fin.snoc s₁.1 (Fin.last N) : Fin (d + 1) → Fin (N + 1)) =
+            Fin.snoc s₂.1 (Fin.last N) :=
+          congrArg (fun q => q.1.1) heq
+        have h2 : liftPerm s₁.2 = liftPerm s₂.2 :=
+          congrArg (fun q => q.1.2) heq
+        refine Prod.ext ?_ ?_
+        · funext y
+          have hy := congrFun h1 y.castSucc
+          simpa [Fin.snoc_castSucc] using hy
+        · refine Equiv.ext fun y => ?_
+          have hy := Equiv.Perm.ext_iff.mp h2 y.succ
+          simp only [liftPerm] at hy
+          exact Fin.castSucc_inj.mp hy
+      · rintro ⟨⟨b, σ⟩, m⟩ hp
+        have hp_pairs : ((b, σ), m) ∈ pairs := (Finset.mem_filter.mp hp).1
+        have hbd : isBdryPair ((b, σ), m) := (Finset.mem_filter.mp hp).2
+        rcases hbd with ⟨hm0, hb_last, hσ0⟩
+        dsimp only at hm0 hb_last hσ0
+        subst hm0
+        rw [hσ0] at hb_last
+        let b' : Fin d → Fin (N + 1) := Fin.init b
+        let e : Equiv.Perm (Fin d) :=
+          { toFun := fun x => (σ x.succ).castPred fun h =>
+              Fin.succ_ne_zero x (σ.injective (h.trans hσ0.symm))
+            invFun := fun y => (σ.symm y.castSucc).pred fun h =>
+              Fin.castSucc_ne_last y
+                ((σ.apply_symm_apply y.castSucc).symm.trans ((congrArg σ h).trans hσ0))
+            left_inv := fun x => by simp
+            right_inv := fun y => by simp }
+        have hb_eq : Fin.snoc b' (Fin.last N) = b := by
+          rw [← hb_last]
+          exact Fin.snoc_init_self b
+        have he_eq : liftPerm e = σ := by
+          ext i
+          refine Fin.cases ?_ (fun x => ?_) i
+          · simp [liftPerm, hσ0]
+          · simp [liftPerm, e]
+        refine ⟨(b', e), Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩, ?_⟩
+        · intro j
+          have hsub : IsSubPan (fun r => c (kuhnVertex (b, σ) r)) 0 :=
+            (Finset.mem_filter.mp hp_pairs).2
+          obtain ⟨r, hr0, hcr⟩ := hsub j
+          dsimp only at hcr ⊢
+          obtain ⟨r', rfl⟩ := Fin.eq_succ_of_ne_zero hr0
+          refine ⟨r', ?_⟩
+          have hv := hbdry_vertex (b', e) r'
+          rw [hb_eq, he_eq] at hv
+          rw [hv, ← hc'_cast] at hcr
+          exact Fin.castSucc_inj.mp hcr
+        · rw [hb_eq, he_eq]
+    have hpan_d_odd : pan_d.card % 2 = 1 := ih N c' hc'_sperner
+    change pan.card % 2 = 1
+    omega
+
+/-! ### Part 2: Brouwer's fixed-point theorem and Rudin Lemma 7.23 -/
+
+/-- Closed unit cube `[0, 1]^k` in coordinate space `Fin k → ℝ`. -/
+def closedUnitCubePi (k : ℕ) : Set (Fin k → ℝ) :=
+  Set.pi univ (fun _ : Fin k => Icc (0 : ℝ) 1)
+
+private theorem isCompact_closedUnitCubePi (k : ℕ) : IsCompact (closedUnitCubePi k) :=
+  isCompact_univ_pi fun _ => isCompact_Icc
+
+/-- Embedding of cubical grid vertices `{0, …, N + 1}^k` into `[0, 1]^k`. -/
+def gridPoint {k N : ℕ} (v : CubeVertex k N) (i : Fin k) : ℝ :=
+  ((v i).val : ℝ) / ((N : ℝ) + 1)
+
+private theorem gridPoint_mem_closedUnitCubePi {k N : ℕ} (v : CubeVertex k N) :
+    gridPoint v ∈ closedUnitCubePi k := by
+  intro i _
+  dsimp only [gridPoint]
+  have hN : (0 : ℝ) < (N : ℝ) + 1 := by positivity
+  refine ⟨div_nonneg (Nat.cast_nonneg _) hN.le, ?_⟩
+  rw [div_le_one hN]
+  have hi : (v i).val ≤ N + 1 := Nat.lt_succ_iff.mp (v i).isLt
+  exact_mod_cast hi
+
+private theorem gridPoint_kuhnVertex_dist {k N : ℕ} (s : KuhnSimplex k N)
+    (m₁ m₂ : Fin (k + 1)) (i : Fin k) :
+    |gridPoint (kuhnVertex s m₁) i - gridPoint (kuhnVertex s m₂) i| ≤ 1 / ((N : ℝ) + 1) := by
+  have hN : (0 : ℝ) < (N : ℝ) + 1 := by positivity
+  have hval : |((kuhnVertex s m₁ i).val : ℝ) - ((kuhnVertex s m₂ i).val : ℝ)| ≤ 1 := by
+    dsimp only [kuhnVertex]
+    split_ifs <;> push_cast <;> ring_nf <;> norm_num
+  have hsub :
+      gridPoint (kuhnVertex s m₁) i - gridPoint (kuhnVertex s m₂) i =
+        (((kuhnVertex s m₁ i).val : ℝ) - ((kuhnVertex s m₂ i).val : ℝ)) / ((N : ℝ) + 1) := by
+    dsimp only [gridPoint]
+    ring
+  rw [hsub, abs_div, abs_of_pos hN]
+  exact div_le_div_of_nonneg_right hval hN.le
+
+/-- Strict-interior Brouwer fixed-point theorem on `[0, 1]^k`: a continuous map sending `[0, 1]^k`
+into `[δ, 1 - δ]^k` (`0 < δ < 1/2`) has a fixed point via Kuhn's cubical Sperner lemma. -/
+theorem brouwer_fixed_point_cube_strict {k : ℕ} {g : (Fin k → ℝ) → (Fin k → ℝ)} {δ : ℝ}
+    (hδ0 : 0 < δ) (_hδ1 : δ < 1 / 2)
+    (hg_cont : ContinuousOn g (closedUnitCubePi k))
+    (hg_maps : ∀ x ∈ closedUnitCubePi k, ∀ i : Fin k, g x i ∈ Icc δ (1 - δ)) :
+    ∃ x ∈ closedUnitCubePi k, g x = x := by
+  let S : ∀ N : ℕ, CubeVertex k N → Finset (Fin k) := fun N v =>
+    Finset.univ.filter (fun j : Fin k => g (gridPoint v) j < gridPoint v j)
+  let c : ∀ N : ℕ, CubeVertex k N → Fin (k + 1) := fun N v =>
+    if h : (S N v).Nonempty then ((S N v).min' h).castSucc else Fin.last k
+  have hc_sperner : ∀ N : ℕ, IsCubicalSperner (c N) := by
+    intro N
+    refine ⟨?_, ?_⟩
+    · intro v i hvi hcv
+      have hgp0 : gridPoint v i = 0 := by simp [gridPoint, hvi]
+      have hgi : δ ≤ g (gridPoint v) i := (hg_maps (gridPoint v) (gridPoint_mem_closedUnitCubePi v) i).1
+      have hnotS : i ∉ S N v := by
+        simp only [S, Finset.mem_filter, Finset.mem_univ, true_and, hgp0, not_lt]
+        linarith
+      by_cases hne : (S N v).Nonempty
+      · have hmin_eq : ((S N v).min' hne).castSucc = i.castSucc := by
+          simpa [c, hne] using hcv
+        have hmin : (S N v).min' hne = i := Fin.castSucc_inj.mp hmin_eq
+        exact hnotS (hmin ▸ Finset.min'_mem (S N v) hne)
+      · have hlast : Fin.last k = i.castSucc := by simpa [c, hne] using hcv
+        exact (Fin.castSucc_ne_last i hlast.symm).elim
+    · intro v i hvi
+      have hgp1 : gridPoint v i = 1 := by
+        dsimp only [gridPoint]
+        rw [hvi]
+        push_cast
+        exact div_self (by positivity)
+      have hgi : g (gridPoint v) i ≤ 1 - δ :=
+        (hg_maps (gridPoint v) (gridPoint_mem_closedUnitCubePi v) i).2
+      have hiS : i ∈ S N v := by
+        simp only [S, Finset.mem_filter, Finset.mem_univ, true_and, hgp1]
+        linarith
+      have hne : (S N v).Nonempty := ⟨i, hiS⟩
+      dsimp only [c]
+      split_ifs
+      simp only [Fin.val_castSucc]
+      exact Finset.min'_le (S N v) i hiS
+  have hex_pan : ∀ N : ℕ, ∃ s : KuhnSimplex k N,
+      Function.Surjective (fun r => c N (kuhnVertex s r)) := by
+    intro N
+    have hodd := sperner_kuhn_cube k N (c N) (hc_sperner N)
+    have hpos : 0 < (Finset.univ.filter (fun s : KuhnSimplex k N =>
+        Function.Surjective (fun r => c N (kuhnVertex s r)))).card := by omega
+    obtain ⟨s, hs⟩ := Finset.card_pos.mp hpos
+    exact ⟨s, (Finset.mem_filter.mp hs).2⟩
+  choose s hs using hex_pan
+  let xseq : ℕ → (Fin k → ℝ) := fun N => gridPoint (kuhnVertex (s N) 0)
+  have hxseq_mem : ∀ N : ℕ, xseq N ∈ closedUnitCubePi k :=
+    fun N => gridPoint_mem_closedUnitCubePi (kuhnVertex (s N) 0)
+  obtain ⟨xstar, hxstar_mem, φ, hφ_mono, hx_lim⟩ :=
+    (isCompact_closedUnitCubePi k).tendsto_subseq hxseq_mem
+  have hmesh_zero : Tendsto (fun n : ℕ => 1 / ((φ n : ℝ) + 1)) atTop (𝓝 0) := by
+    refine tendsto_const_nhds.div_atTop ?_
+    exact ((tendsto_natCast_atTop_atTop (R := ℝ)).comp hφ_mono.tendsto_atTop).atTop_add
+      tendsto_const_nhds
+  have vertex_tendsto : ∀ r : ℕ → Fin (k + 1),
+      Tendsto (fun n => gridPoint (kuhnVertex (s (φ n)) (r n))) atTop (𝓝 xstar) := by
+    intro r
+    rw [tendsto_pi_nhds]
+    intro i
+    have hxi : Tendsto (fun n => xseq (φ n) i) atTop (𝓝 (xstar i)) := by
+      have h := (tendsto_pi_nhds.mp hx_lim) i
+      simpa only [Function.comp_def] using h
+    have hdiff : Tendsto (fun n =>
+        gridPoint (kuhnVertex (s (φ n)) (r n)) i - xseq (φ n) i) atTop (𝓝 0) := by
+      refine squeeze_zero_norm ?_ hmesh_zero
+      intro n
+      rw [Real.norm_eq_abs]
+      exact gridPoint_kuhnVertex_dist (s (φ n)) (r n) 0 i
+    simpa using hdiff.add hxi
+  refine ⟨xstar, hxstar_mem, ?_⟩
+  funext j
+  apply le_antisymm
+  · choose r_lo hr_lo using fun n : ℕ => hs (φ n) j.castSucc
+    let y : ℕ → (Fin k → ℝ) := fun n => gridPoint (kuhnVertex (s (φ n)) (r_lo n))
+    have hy_lim : Tendsto y atTop (𝓝 xstar) := vertex_tendsto r_lo
+    have hy_mem : ∀ n, y n ∈ closedUnitCubePi k := fun _ => gridPoint_mem_closedUnitCubePi _
+    have hgy_lim : Tendsto (fun n => g (y n) j) atTop (𝓝 (g xstar j)) := by
+      have hg_all : Tendsto (g ∘ y) atTop (𝓝 (g xstar)) :=
+        (hg_cont xstar hxstar_mem).tendsto.comp
+          (tendsto_nhdsWithin_iff.mpr ⟨hy_lim, Eventually.of_forall hy_mem⟩)
+      exact (tendsto_pi_nhds.mp hg_all) j
+    have hyj_lim : Tendsto (fun n => y n j) atTop (𝓝 (xstar j)) :=
+      (tendsto_pi_nhds.mp hy_lim) j
+    refine le_of_tendsto_of_tendsto hgy_lim hyj_lim (Eventually.of_forall fun n => ?_)
+    have hc_eq : c (φ n) (kuhnVertex (s (φ n)) (r_lo n)) = j.castSucc := hr_lo n
+    by_cases hne : (S (φ n) (kuhnVertex (s (φ n)) (r_lo n))).Nonempty
+    · have hmin_eq :
+          ((S (φ n) (kuhnVertex (s (φ n)) (r_lo n))).min' hne).castSucc = j.castSucc := by
+        simpa [c, hne] using hc_eq
+      have hmin : (S (φ n) (kuhnVertex (s (φ n)) (r_lo n))).min' hne = j :=
+        Fin.castSucc_inj.mp hmin_eq
+      have hjS : j ∈ S (φ n) (kuhnVertex (s (φ n)) (r_lo n)) :=
+        hmin ▸ Finset.min'_mem _ hne
+      exact le_of_lt (Finset.mem_filter.mp hjS).2
+    · have hlast : Fin.last k = j.castSucc := by simpa [c, hne] using hc_eq
+      exact (Fin.castSucc_ne_last j hlast.symm).elim
+  · choose r_hi hr_hi using fun n : ℕ => hs (φ n) (Fin.last k)
+    let z : ℕ → (Fin k → ℝ) := fun n => gridPoint (kuhnVertex (s (φ n)) (r_hi n))
+    have hz_lim : Tendsto z atTop (𝓝 xstar) := vertex_tendsto r_hi
+    have hz_mem : ∀ n, z n ∈ closedUnitCubePi k := fun _ => gridPoint_mem_closedUnitCubePi _
+    have hgz_lim : Tendsto (fun n => g (z n) j) atTop (𝓝 (g xstar j)) := by
+      have hg_all : Tendsto (g ∘ z) atTop (𝓝 (g xstar)) :=
+        (hg_cont xstar hxstar_mem).tendsto.comp
+          (tendsto_nhdsWithin_iff.mpr ⟨hz_lim, Eventually.of_forall hz_mem⟩)
+      exact (tendsto_pi_nhds.mp hg_all) j
+    have hzj_lim : Tendsto (fun n => z n j) atTop (𝓝 (xstar j)) :=
+      (tendsto_pi_nhds.mp hz_lim) j
+    refine le_of_tendsto_of_tendsto hzj_lim hgz_lim (Eventually.of_forall fun n => ?_)
+    have hc_eq : c (φ n) (kuhnVertex (s (φ n)) (r_hi n)) = Fin.last k := hr_hi n
+    have hnot_ne : ¬ (S (φ n) (kuhnVertex (s (φ n)) (r_hi n))).Nonempty := by
+      intro hne
+      simp only [c, hne, ↓reduceDIte] at hc_eq
+      exact Fin.castSucc_ne_last _ hc_eq
+    have hj_not : j ∉ S (φ n) (kuhnVertex (s (φ n)) (r_hi n)) := fun hj => hnot_ne ⟨j, hj⟩
+    simp only [S, Finset.mem_filter, Finset.mem_univ, true_and, not_lt] at hj_not
+    exact hj_not
+
+/-- Brouwer's fixed-point theorem on `[0, 1]^k`. -/
+theorem brouwer_fixed_point_cube {k : ℕ} {f : (Fin k → ℝ) → (Fin k → ℝ)}
+    (hf_cont : ContinuousOn f (closedUnitCubePi k))
+    (hf_maps : MapsTo f (closedUnitCubePi k) (closedUnitCubePi k)) :
+    ∃ x ∈ closedUnitCubePi k, f x = x := by
+  let δ : ℕ → ℝ := fun n => 1 / ((n : ℝ) + 3)
+  have hδ0 : ∀ n, 0 < δ n := fun n => by dsimp [δ]; positivity
+  have hδ1 : ∀ n, δ n < 1 / 2 := by
+    intro n
+    dsimp [δ]
+    rw [div_lt_div_iff₀ (by positivity) (by norm_num)]
+    linarith
+  let g : ℕ → (Fin k → ℝ) → (Fin k → ℝ) :=
+    fun n x i => (1 - 2 * δ n) * f x i + δ n
+  have hex : ∀ n : ℕ, ∃ x ∈ closedUnitCubePi k, g n x = x := by
+    intro n
+    refine brouwer_fixed_point_cube_strict (hδ0 n) (hδ1 n) ?_ ?_
+    · rw [continuousOn_pi]
+      intro i
+      exact ((continuousOn_const.mul ((continuousOn_pi.mp hf_cont) i)).add continuousOn_const)
+    · intro x hx i
+      have hfi : f x i ∈ Icc (0 : ℝ) 1 := hf_maps hx i (mem_univ i)
+      have h12 : 0 < 1 - 2 * δ n := by linarith [hδ1 n]
+      exact ⟨by nlinarith [hfi.1], by nlinarith [hfi.2]⟩
+  choose xseq hxseq_mem hxseq_fix using hex
+  obtain ⟨xstar, hxstar_mem, φ, hφ_mono, hx_lim⟩ :=
+    (isCompact_closedUnitCubePi k).tendsto_subseq hxseq_mem
+  have hδ_lim : Tendsto (fun m => δ (φ m)) atTop (𝓝 0) := by
+    refine tendsto_const_nhds.div_atTop ?_
+    exact ((tendsto_natCast_atTop_atTop (R := ℝ)).comp hφ_mono.tendsto_atTop).atTop_add
+      tendsto_const_nhds
+  have hf_lim : Tendsto (fun m => f (xseq (φ m))) atTop (𝓝 (f xstar)) :=
+    (hf_cont xstar hxstar_mem).tendsto.comp
+      (tendsto_nhdsWithin_iff.mpr ⟨hx_lim, Eventually.of_forall (fun m => hxseq_mem (φ m))⟩)
+  refine ⟨xstar, hxstar_mem, ?_⟩
+  funext i
+  have hgi_lim : Tendsto (fun m => g (φ m) (xseq (φ m)) i) atTop (𝓝 (f xstar i)) := by
+    have hfi_lim : Tendsto (fun m => f (xseq (φ m)) i) atTop (𝓝 (f xstar i)) :=
+      (tendsto_pi_nhds.mp hf_lim) i
+    have hcoef : Tendsto (fun m => 1 - 2 * δ (φ m)) atTop (𝓝 (1 - 2 * (0 : ℝ))) :=
+      tendsto_const_nhds.sub (tendsto_const_nhds.mul hδ_lim)
+    simpa using (hcoef.mul hfi_lim).add hδ_lim
+  have hxi_lim : Tendsto (fun m => g (φ m) (xseq (φ m)) i) atTop (𝓝 (xstar i)) := by
+    have h := (tendsto_pi_nhds.mp hx_lim) i
+    dsimp only [Function.comp_def] at h
+    simpa only [hxseq_fix] using h
+  exact tendsto_nhds_unique hgi_lim hxi_lim
+
+/-- **Brouwer's fixed-point theorem** on the closed Euclidean unit ball `closedBall 0 1 ⊆ ℝ^k`:
+every continuous map `F : closedBall 0 1 → closedBall 0 1` has at least one fixed point. -/
+theorem brouwer_fixed_point_closedBall {k : ℕ}
+    {F : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k)}
+    (hF_cont : ContinuousOn F (closedBall 0 1))
+    (hF_maps : MapsTo F (closedBall 0 1) (closedBall 0 1)) :
+    ∃ x ∈ closedBall (0 : EuclideanSpace ℝ (Fin k)) 1, F x = x := by
+  let R : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k) :=
+    fun y => (max (1 : ℝ) ‖y‖)⁻¹ • y
+  have hR_pos : ∀ y : EuclideanSpace ℝ (Fin k), 0 < max (1 : ℝ) ‖y‖ :=
+    fun y => lt_of_lt_of_le zero_lt_one (le_max_left 1 ‖y‖)
+  have hR_cont : Continuous R :=
+    ((continuous_const.max continuous_norm).inv₀ (fun y => (hR_pos y).ne')).smul continuous_id
+  have hR_mem : ∀ y, R y ∈ closedBall (0 : EuclideanSpace ℝ (Fin k)) 1 := by
+    intro y
+    rw [mem_closedBall_zero_iff, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (inv_pos.mpr (hR_pos y))]
+    calc
+      (max (1 : ℝ) ‖y‖)⁻¹ * ‖y‖ ≤ (max (1 : ℝ) ‖y‖)⁻¹ * max (1 : ℝ) ‖y‖ :=
+        mul_le_mul_of_nonneg_left (le_max_right 1 ‖y‖) (inv_nonneg.mpr (hR_pos y).le)
+      _ = 1 := inv_mul_cancel₀ (hR_pos y).ne'
+  have hR_id : ∀ y ∈ closedBall (0 : EuclideanSpace ℝ (Fin k)) 1, R y = y := by
+    intro y hy
+    rw [mem_closedBall_zero_iff] at hy
+    simp [R, max_eq_left hy]
+  let ι : (Fin k → ℝ) → EuclideanSpace ℝ (Fin k) :=
+    fun u => WithLp.toLp 2 (fun i => 2 * u i - 1)
+  let π : EuclideanSpace ℝ (Fin k) → (Fin k → ℝ) :=
+    fun y i => (y.ofLp i + 1) / 2
+  have hι_cont : Continuous ι :=
+    (PiLp.continuous_toLp 2 (fun _ : Fin k => ℝ)).comp
+      (continuous_pi fun i => (continuous_const.mul (continuous_apply i)).sub continuous_const)
+  have hπ_cont : Continuous π :=
+    continuous_pi fun i =>
+      (((continuous_apply i).comp (PiLp.continuous_ofLp 2 (fun _ : Fin k => ℝ))).add
+        continuous_const).div_const 2
+  have hιπ : ∀ y : EuclideanSpace ℝ (Fin k), ι (π y) = y := by
+    intro y
+    ext i
+    simp [ι, π]
+    ring
+  have hπ_mem : ∀ y ∈ closedBall (0 : EuclideanSpace ℝ (Fin k)) 1, π y ∈ closedUnitCubePi k := by
+    intro y hy i _
+    rw [mem_closedBall_zero_iff] at hy
+    have hcoord : |y.ofLp i| ≤ 1 := by
+      simpa [Real.norm_eq_abs] using (PiLp.norm_apply_le y i).trans hy
+    rcases abs_le.mp hcoord with ⟨hlo, hhi⟩
+    dsimp [π]
+    exact ⟨by linarith, by linarith⟩
+  let f : (Fin k → ℝ) → (Fin k → ℝ) := fun u => π (F (R (ι u)))
+  have hf_cont : ContinuousOn f (closedUnitCubePi k) := by
+    have hFR : ContinuousOn (fun u => F (R (ι u))) (closedUnitCubePi k) :=
+      hF_cont.comp (hR_cont.comp hι_cont).continuousOn (fun u _ => hR_mem (ι u))
+    exact hπ_cont.comp_continuousOn hFR
+  have hf_maps : MapsTo f (closedUnitCubePi k) (closedUnitCubePi k) :=
+    fun u _ => hπ_mem _ (hF_maps (hR_mem (ι u)))
+  obtain ⟨ustar, _, hustar⟩ := brouwer_fixed_point_cube hf_cont hf_maps
+  let xstar : EuclideanSpace ℝ (Fin k) := ι ustar
+  have hxstar_eq : F (R xstar) = xstar := by
+    calc
+      F (R xstar) = ι (π (F (R xstar))) := (hιπ _).symm
+      _ = ι (f ustar) := rfl
+      _ = xstar := by rw [hustar]
+  have hxstar_mem : xstar ∈ closedBall (0 : EuclideanSpace ℝ (Fin k)) 1 := by
+    rw [← hxstar_eq]
+    exact hF_maps (hR_mem xstar)
+  refine ⟨xstar, hxstar_mem, ?_⟩
+  calc
+    F xstar = F (R xstar) := by rw [hR_id xstar hxstar_mem]
+    _ = xstar := hxstar_eq
+
+/-- Unrestricted-`ε` version of **Lemma 7.23**: holds for all `ε : ℝ` (when `1 - ε ≤ 0`,
+`ball 0 (1 - ε) = ∅` automatically). -/
+theorem lemma_7_23_unrestricted {k : ℕ}
+    {F : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k)} {ε : ℝ}
+    (hF_cont : ContinuousOn F (closedBall 0 1))
+    (hF_sphere : ∀ x ∈ sphere (0 : EuclideanSpace ℝ (Fin k)) 1, ‖F x - x‖ < ε) :
+    ball (0 : EuclideanSpace ℝ (Fin k)) (1 - ε) ⊆ F '' ball 0 1 := by
+  intro a ha
+  by_contra ha_not
+  rw [mem_ball_zero_iff] at ha
+  have hne : ∀ x ∈ closedBall (0 : EuclideanSpace ℝ (Fin k)) 1, a - F x ≠ 0 := by
+    intro x hx hsub
+    have hFx : F x = a := (sub_eq_zero.mp hsub).symm
+    rw [mem_closedBall_zero_iff] at hx
+    rcases hx.lt_or_eq with hlt | heq
+    · exact ha_not ⟨x, mem_ball_zero_iff.mpr hlt, hFx⟩
+    · have hxS : x ∈ sphere (0 : EuclideanSpace ℝ (Fin k)) 1 := mem_sphere_zero_iff_norm.mpr heq
+      have hsp := hF_sphere x hxS
+      have htri : ‖x‖ - ‖F x - x‖ ≤ ‖F x‖ := by
+        have := norm_sub_norm_le x (x - F x)
+        simpa [norm_sub_rev] using this
+      rw [heq, hFx] at htri
+      rw [hFx] at hsp
+      linarith
+  let G : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k) :=
+    fun x => (‖a - F x‖)⁻¹ • (a - F x)
+  have hG_cont : ContinuousOn G (closedBall 0 1) := by
+    have hsub : ContinuousOn (fun x => a - F x) (closedBall 0 1) :=
+      continuousOn_const.sub hF_cont
+    have hnorm : ContinuousOn (fun x => (‖a - F x‖)⁻¹) (closedBall 0 1) :=
+      (continuous_norm.comp_continuousOn hsub).inv₀
+        (fun x hx => norm_ne_zero_iff.mpr (hne x hx))
+    exact hnorm.smul hsub
+  have hG_sphere : ∀ x ∈ closedBall (0 : EuclideanSpace ℝ (Fin k)) 1,
+      G x ∈ sphere (0 : EuclideanSpace ℝ (Fin k)) 1 := by
+    intro x hx
+    have hpos : 0 < ‖a - F x‖ := norm_pos_iff.mpr (hne x hx)
+    rw [mem_sphere_zero_iff_norm, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (inv_pos.mpr hpos), inv_mul_cancel₀ hpos.ne']
+  have hG_maps : MapsTo G (closedBall 0 1) (closedBall 0 1) :=
+    fun x hx => sphere_subset_closedBall (hG_sphere x hx)
+  obtain ⟨x, hx_mem, hx_fix⟩ := brouwer_fixed_point_closedBall hG_cont hG_maps
+  have hxS : x ∈ sphere (0 : EuclideanSpace ℝ (Fin k)) 1 := by
+    rw [← hx_fix]
+    exact hG_sphere x hx_mem
+  have hx_norm : ‖x‖ = 1 := mem_sphere_zero_iff_norm.mp hxS
+  have hpos : 0 < ‖a - F x‖ := norm_pos_iff.mpr (hne x hx_mem)
+  have haFx_eq : a - F x = ‖a - F x‖ • x := by
+    calc
+      a - F x = ‖a - F x‖ • G x := by
+        dsimp [G]
+        rw [smul_smul, mul_inv_cancel₀ hpos.ne', one_smul]
+      _ = ‖a - F x‖ • x := by rw [hx_fix]
+  have hinner_pos : 0 < ⟪x, a - F x⟫ := by
+    rw [haFx_eq, real_inner_smul_right, real_inner_self_eq_norm_sq, hx_norm, one_pow, mul_one]
+    exact hpos
+  have hdecomp : a - F x = a + (x - F x) - x := by abel
+  have hinner_neg : ⟪x, a - F x⟫ < 0 := by
+    have h1 : ⟪x, a - F x⟫ = ⟪x, a⟫ + ⟪x, x - F x⟫ - ⟪x, x⟫ := by
+      rw [hdecomp, inner_sub_right, inner_add_right]
+    have hxa : ⟪x, a⟫ ≤ ‖a‖ := by
+      have := real_inner_le_norm x a
+      rwa [hx_norm, one_mul] at this
+    have hxxF : ⟪x, x - F x⟫ ≤ ‖F x - x‖ := by
+      have := real_inner_le_norm x (x - F x)
+      rwa [hx_norm, one_mul, norm_sub_rev] at this
+    have hxx : ⟪x, x⟫ = 1 := by
+      rw [real_inner_self_eq_norm_sq, hx_norm, one_pow]
+    have hsp := hF_sphere x hxS
+    linarith
+  linarith
+
+/-- **Lemma 7.23** (Rudin, p. 151): Let `S = {x : ‖x‖ = 1}` be the boundary sphere of the open unit
+ball `B = ball 0 1` in `ℝ^k`, with closure `B̄ = closedBall 0 1`. If `F : B̄ → ℝ^k` is continuous,
+`0 < ε < 1`, and `‖F x - x‖ < ε` for all `x ∈ S`, then `ball 0 (1 - ε) ⊆ F '' ball 0 1`. -/
+theorem lemma_7_23 {k : ℕ}
+    {F : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k)} {ε : ℝ}
+    (_hε0 : 0 < ε) (_hε1 : ε < 1)
+    (hF_cont : ContinuousOn F (closedBall 0 1))
+    (hF_sphere : ∀ x ∈ sphere (0 : EuclideanSpace ℝ (Fin k)) 1, ‖F x - x‖ < ε) :
+    ball (0 : EuclideanSpace ℝ (Fin k)) (1 - ε) ⊆ F '' ball 0 1 :=
+  lemma_7_23_unrestricted hF_cont hF_sphere
+
+end Node7_23
+
+section Node7_24
+
+/-- Open Euclidean balls in `ℝ^k` are `σ`-compact. -/
+theorem isSigmaCompact_ball {k : ℕ} (x : EuclideanSpace ℝ (Fin k)) (r : ℝ) :
+    IsSigmaCompact (ball x r) := by
+  rcases le_or_gt r 0 with hr | hr
+  · rw [Metric.ball_eq_empty.mpr hr]
+    exact isSigmaCompact_empty
+  · have heq : ball x r = ⋃ n : ℕ, closedBall x (r * ((n : ℝ) / ((n : ℝ) + 1))) := by
+      ext y
+      simp only [mem_ball, mem_iUnion, mem_closedBall]
+      constructor
+      · intro hy
+        have hpos : 0 < r - dist y x := sub_pos.mpr hy
+        obtain ⟨n, hn⟩ := exists_nat_gt (dist y x / (r - dist y x))
+        refine ⟨n, ?_⟩
+        have hn' : dist y x < (n : ℝ) * (r - dist y x) := (div_lt_iff₀ hpos).mp hn
+        have hn1 : dist y x * ((n : ℝ) + 1) ≤ r * (n : ℝ) := by linarith
+        rw [mul_div_assoc', le_div_iff₀ (by positivity)]
+        exact hn1
+      · rintro ⟨n, hn⟩
+        have hfrac : (n : ℝ) / ((n : ℝ) + 1) < 1 := by
+          rw [div_lt_one (by positivity)]
+          linarith
+        exact hn.trans_lt (by nlinarith)
+    rw [heq]
+    exact isSigmaCompact_iUnion_of_isCompact _ (fun n => ProperSpace.isCompact_closedBall x _)
+
+/-- **Assertion 7.24 (measurability / `σ`-compactness note)** (Rudin, p. 151): when `T` is
+continuous on `V` and `ball x r ⊆ V`, `T '' ball x r` is `σ`-compact, hence Borel measurable
+(and Lebesgue measurable). -/
+theorem isSigmaCompact_image_ball {k : ℕ}
+    {V : Set (EuclideanSpace ℝ (Fin k))}
+    {T : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k)}
+    {x : EuclideanSpace ℝ (Fin k)} {r : ℝ}
+    (hT_cont : ContinuousOn T V) (hrV : ball x r ⊆ V) :
+    IsSigmaCompact (T '' ball x r) :=
+  (isSigmaCompact_ball x r).image_of_continuousOn (hT_cont.mono hrV)
+
+theorem measurableSet_image_ball {k : ℕ}
+    {V : Set (EuclideanSpace ℝ (Fin k))}
+    {T : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k)}
+    {x : EuclideanSpace ℝ (Fin k)} {r : ℝ}
+    (hT_cont : ContinuousOn T V) (hrV : ball x r ⊆ V) :
+    MeasurableSet (T '' ball x r) := by
+  rcases isSigmaCompact_image_ball hT_cont hrV with ⟨K, hK, hcov⟩
+  rw [← hcov]
+  exact MeasurableSet.iUnion fun n => (hK n).isClosed.measurableSet
+
+theorem nullMeasurableSet_image_ball {k : ℕ}
+    {V : Set (EuclideanSpace ℝ (Fin k))}
+    {T : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k)}
+    {x : EuclideanSpace ℝ (Fin k)} {r : ℝ}
+    (hT_cont : ContinuousOn T V) (hrV : ball x r ⊆ V) :
+    NullMeasurableSet (T '' ball x r) volume :=
+  (measurableSet_image_ball hT_cont hrV).nullMeasurableSet
+
+private theorem volume_image_add_left {k : ℕ}
+    (w : EuclideanSpace ℝ (Fin k)) (S : Set (EuclideanSpace ℝ (Fin k))) :
+    volume ((fun z => w + z) '' S) = volume S := by
+  have heq : (fun z => w + z) '' S = (fun z => -w + z) ⁻¹' S := by
+    ext y
+    simp only [mem_image, mem_preimage]
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      simpa using hz
+    · intro hy
+      exact ⟨-w + y, hy, by abel⟩
+  rw [heq, measure_preimage_add volume (-w) S]
+
+private theorem volume_image_smul_nonneg {k : ℕ} {r : ℝ} (hr : 0 ≤ r)
+    (S : Set (EuclideanSpace ℝ (Fin k))) :
+    volume ((fun z => r • z) '' S) = ENNReal.ofReal (r ^ k) * volume S := by
+  let L : EuclideanSpace ℝ (Fin k) →ₗ[ℝ] EuclideanSpace ℝ (Fin k) := r • LinearMap.id
+  have hfun : (fun z : EuclideanSpace ℝ (Fin k) => r • z) = L := rfl
+  have hdet : linearModulus L = r ^ k := by
+    dsimp [linearModulus, L]
+    rw [LinearMap.det_smul, finrank_euclideanSpace_fin, LinearMap.det_id, mul_one,
+      abs_of_nonneg (pow_nonneg hr k)]
+  rw [hfun, volume_image_linearMap_eq_linearModulus, hdet]
+
+private theorem volume_ball_eq_pow_mul {k : ℕ} (x : EuclideanSpace ℝ (Fin k)) {r : ℝ}
+    (hr : 0 < r) :
+    volume (ball x r) =
+      ENNReal.ofReal (r ^ k) * volume (ball (0 : EuclideanSpace ℝ (Fin k)) 1) := by
+  have heq : ball x r = (fun z => x + z) '' ((fun z => r • z) '' ball 0 1) := by
+    ext y
+    simp only [mem_ball, mem_image, dist_zero_right]
+    constructor
+    · intro hy
+      refine ⟨r • (r⁻¹ • (y - x)), ⟨r⁻¹ • (y - x), ?_, rfl⟩, ?_⟩
+      · rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hr)]
+        rw [inv_mul_lt_iff₀ hr, mul_one]
+        simpa [dist_eq_norm] using hy
+      · rw [smul_smul, mul_inv_cancel₀ hr.ne', one_smul, add_sub_cancel]
+    · rintro ⟨_, ⟨z, hz, rfl⟩, rfl⟩
+      rw [dist_self_add_left, norm_smul, Real.norm_eq_abs, abs_of_pos hr]
+      nlinarith
+  rw [heq, volume_image_add_left, volume_image_smul_nonneg hr.le]
+
+private theorem volumeReal_ball_eq_pow_mul {k : ℕ} (x : EuclideanSpace ℝ (Fin k)) {r : ℝ}
+    (hr : 0 < r) :
+    volume.real (ball x r) =
+      r ^ k * volume.real (ball (0 : EuclideanSpace ℝ (Fin k)) 1) := by
+  rw [measureReal_def, volume_ball_eq_pow_mul x hr, ENNReal.toReal_mul,
+    ENNReal.toReal_ofReal (pow_nonneg hr.le k), ← measureReal_def]
+
+/-- **Theorem 7.24 (explicit linear derivative form)** (Rudin, pp. 151–153): If `V ⊆ ℝ^k` is open,
+`T : V → ℝ^k` is continuous, and `T` is differentiable at `x ∈ V` with `T'(x) = A` (no assumption
+of differentiability anywhere else on `V`), then
+`lim_{r → 0⁺} m(T(B(x, r))) / m(B(x, r)) = Δ(A) = |det A|`. -/
+theorem theorem_7_24_bookHasFDerivAt {k : ℕ}
+    {V : Set (EuclideanSpace ℝ (Fin k))}
+    {T : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k)}
+    {A : EuclideanSpace ℝ (Fin k) →ₗ[ℝ] EuclideanSpace ℝ (Fin k)}
+    {x : EuclideanSpace ℝ (Fin k)}
+    (hV : IsOpen V) (hx : x ∈ V)
+    (hT_cont : ContinuousOn T V)
+    (hT_diff : BookHasFDerivAt T A x) :
+    Tendsto (fun r => volume.real (T '' ball x r) / volume.real (ball x r))
+      (𝓝[>] (0 : ℝ)) (𝓝 (linearModulus A)) := by
+  have hT_fderiv : HasFDerivAt T A.toContinuousLinearMap x :=
+    bookHasFDerivAt_iff_hasFDerivAt.mp hT_diff
+  have hv0_pos : 0 < volume.real (ball (0 : EuclideanSpace ℝ (Fin k)) 1) :=
+    ENNReal.toReal_pos (Metric.measure_ball_pos volume 0 zero_lt_one).ne' measure_ball_lt_top.ne
+  obtain ⟨δV, hδV_pos, hδV_sub⟩ := Metric.nhds_basis_closedBall.mem_iff.mp (hV.mem_nhds hx)
+  by_cases hdet : LinearMap.det A ≠ 0
+  · -- Case I: `A` is invertible (`det A ≠ 0`).
+    let e : EuclideanSpace ℝ (Fin k) ≃ₗ[ℝ] EuclideanSpace ℝ (Fin k) :=
+      LinearMap.equivOfDetNeZero A hdet
+    let eL : EuclideanSpace ℝ (Fin k) ≃L[ℝ] EuclideanSpace ℝ (Fin k) :=
+      e.toContinuousLinearEquiv
+    let F : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k) := fun y => eL.symm (T y)
+    have hAF : ∀ y, A (F y) = T y := fun y => e.apply_symm_apply (T y)
+    have hFA : ∀ v, eL.symm (A v) = v := fun v => e.symm_apply_apply v
+    have hF_cont : ContinuousOn F V := eL.symm.continuous.comp_continuousOn hT_cont
+    have hF_fderiv : HasFDerivAt F (ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin k))) x := by
+      have hcomp := (eL.symm : EuclideanSpace ℝ (Fin k) →L[ℝ] EuclideanSpace ℝ (Fin k)).hasFDerivAt.comp
+        x hT_fderiv
+      have hid :
+          (eL.symm : EuclideanSpace ℝ (Fin k) →L[ℝ] EuclideanSpace ℝ (Fin k)).comp
+              A.toContinuousLinearMap =
+            ContinuousLinearMap.id ℝ (EuclideanSpace ℝ (Fin k)) :=
+        ContinuousLinearMap.ext fun v => hFA v
+      rwa [hid] at hcomp
+    have hF_ratio :
+        Tendsto (fun r => volume.real (F '' ball x r) / volume.real (ball x r))
+          (𝓝[>] (0 : ℝ)) (𝓝 1) := by
+      rw [Metric.tendsto_nhds]
+      intro η hη
+      have hpow_cont : ContinuousAt (fun t : ℝ => t ^ k) 1 := (continuous_pow k).continuousAt
+      rw [Metric.continuousAt_iff] at hpow_cont
+      obtain ⟨δ₁, hδ₁_pos, hδ₁⟩ := hpow_cont η hη
+      let ε : ℝ := min (δ₁ / 2) (1 / 2)
+      have hε_pos : 0 < ε := lt_min (half_pos hδ₁_pos) (by norm_num)
+      have hε_lt_one : ε < 1 := lt_of_le_of_lt (min_le_right _ _) (by norm_num)
+      have hε_lt_δ₁ : ε < δ₁ := lt_of_le_of_lt (min_le_left _ _) (half_lt_self hδ₁_pos)
+      have hpow_lo : 1 - η < (1 - ε) ^ k := by
+        have hd : dist (1 - ε) 1 < δ₁ := by
+          rw [Real.dist_eq, show (1 - ε) - 1 = -ε by ring, abs_neg, abs_of_pos hε_pos]
+          exact hε_lt_δ₁
+        have h := @hδ₁ (1 - ε) hd
+        rw [one_pow, Real.dist_eq, abs_lt] at h
+        linarith
+      have hpow_hi : (1 + ε) ^ k < 1 + η := by
+        have hd : dist (1 + ε) 1 < δ₁ := by
+          rw [Real.dist_eq, show (1 + ε) - 1 = ε by ring, abs_of_pos hε_pos]
+          exact hε_lt_δ₁
+        have h := @hδ₁ (1 + ε) hd
+        rw [one_pow, Real.dist_eq, abs_lt] at h
+        linarith
+      have hlo_fderiv :=
+        (hasFDerivAt_iff_isLittleO_nhds_zero.mp hF_fderiv).def (half_pos hε_pos)
+      obtain ⟨δ₂, hδ₂_pos, hδ₂⟩ := Metric.eventually_nhds_iff.mp hlo_fderiv
+      let δ : ℝ := min δ₂ δV
+      have hδ_pos : 0 < δ := lt_min hδ₂_pos hδV_pos
+      filter_upwards [Ioo_mem_nhdsGT hδ_pos] with r ⟨hr_pos, hr_lt⟩
+      have hr_lt_δ₂ : r < δ₂ := hr_lt.trans_le (min_le_left _ _)
+      have hr_le_δV : r ≤ δV := (hr_lt.trans_le (min_le_right _ _)).le
+      have hcb_sub_V : closedBall x r ⊆ V :=
+        (closedBall_subset_closedBall hr_le_δV).trans hδV_sub
+      have hfderiv_bound : ∀ h : EuclideanSpace ℝ (Fin k), ‖h‖ ≤ r →
+          ‖F (x + h) - F x - h‖ ≤ (ε / 2) * ‖h‖ := by
+        intro h hh
+        have hh_lt : dist h 0 < δ₂ := by
+          rw [dist_zero_right]
+          exact hh.trans_lt hr_lt_δ₂
+        simpa using hδ₂ hh_lt
+      have hsub_hi : F '' ball x r ⊆ ball (F x) ((1 + ε) * r) := by
+        rintro _ ⟨y, hy, rfl⟩
+        let h := y - x
+        have hy_eq : y = x + h := (add_sub_cancel x y).symm
+        have hh_lt : ‖h‖ < r := by simpa [h, dist_eq_norm] using mem_ball.mp hy
+        have hbd := hfderiv_bound h hh_lt.le
+        rw [mem_ball, dist_eq_norm, hy_eq]
+        have htri : ‖F (x + h) - F x‖ ≤ ‖F (x + h) - F x - h‖ + ‖h‖ := by
+          simpa using norm_add_le (F (x + h) - F x - h) h
+        nlinarith [norm_nonneg h]
+      have hsub_lo : ball (F x) ((1 - ε) * r) ⊆ F '' ball x r := by
+        let Φ : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k) :=
+          fun u => r⁻¹ • (F (x + r • u) - F x)
+        have hΦ_cont : ContinuousOn Φ (closedBall 0 1) := by
+          have haff : Continuous (fun u : EuclideanSpace ℝ (Fin k) => x + r • u) :=
+            continuous_const.add (continuous_id.const_smul r)
+          have hmaps : MapsTo (fun u => x + r • u) (closedBall 0 1) V := by
+            intro u hu
+            apply hcb_sub_V
+            rw [mem_closedBall, dist_self_add_left, norm_smul, Real.norm_eq_abs, abs_of_pos hr_pos]
+            rw [mem_closedBall_zero_iff] at hu
+            nlinarith
+          exact ((hF_cont.comp haff.continuousOn hmaps).sub continuousOn_const).const_smul r⁻¹
+        have hΦ_sphere : ∀ u ∈ sphere (0 : EuclideanSpace ℝ (Fin k)) 1, ‖Φ u - u‖ < ε := by
+          intro u hu
+          have hu_norm : ‖u‖ = 1 := mem_sphere_zero_iff_norm.mp hu
+          have hru_norm : ‖r • u‖ = r := by
+            rw [norm_smul, Real.norm_eq_abs, abs_of_pos hr_pos, hu_norm, mul_one]
+          have hbd := hfderiv_bound (r • u) hru_norm.le
+          have hrew : Φ u - u = r⁻¹ • (F (x + r • u) - F x - r • u) := by
+            dsimp [Φ]
+            rw [smul_sub (r⁻¹) (F (x + r • u) - F x) (r • u),
+              smul_smul, inv_mul_cancel₀ hr_pos.ne', one_smul]
+          rw [hrew, norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hr_pos)]
+          rw [hru_norm] at hbd
+          have hle : r⁻¹ * ‖F (x + r • u) - F x - r • u‖ ≤ ε / 2 := by
+            calc
+              r⁻¹ * ‖F (x + r • u) - F x - r • u‖ ≤ r⁻¹ * ((ε / 2) * r) :=
+                mul_le_mul_of_nonneg_left hbd (inv_nonneg.mpr hr_pos.le)
+              _ = ε / 2 := by field_simp [hr_pos.ne']
+          linarith
+        have h723 := lemma_7_23 hε_pos hε_lt_one hΦ_cont hΦ_sphere
+        intro z hz
+        rw [mem_ball, dist_eq_norm] at hz
+        let w : EuclideanSpace ℝ (Fin k) := r⁻¹ • (z - F x)
+        have hw : w ∈ ball (0 : EuclideanSpace ℝ (Fin k)) (1 - ε) := by
+          rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hr_pos)]
+          exact (inv_mul_lt_iff₀ hr_pos).mpr (by linarith)
+        obtain ⟨u, hu_ball, hΦu⟩ := h723 hw
+        refine ⟨x + r • u, ?_, ?_⟩
+        · rw [mem_ball, dist_self_add_left, norm_smul, Real.norm_eq_abs, abs_of_pos hr_pos]
+          rw [mem_ball_zero_iff] at hu_ball
+          nlinarith
+        · have h1 : r • Φ u = F (x + r • u) - F x := by
+            dsimp [Φ]
+            rw [smul_smul, mul_inv_cancel₀ hr_pos.ne', one_smul]
+          have h2 : r • w = z - F x := by
+            dsimp [w]
+            rw [smul_smul, mul_inv_cancel₀ hr_pos.ne', one_smul]
+          have h3 : F (x + r • u) - F x = z - F x := by rw [← h1, hΦu, h2]
+          exact sub_left_inj.mp h3
+      have h1mε_pos : 0 < (1 - ε) * r := mul_pos (sub_pos.mpr hε_lt_one) hr_pos
+      have h1pε_pos : 0 < (1 + ε) * r := mul_pos (by linarith) hr_pos
+      have hhi_fin : volume (ball (F x) ((1 + ε) * r)) ≠ ⊤ := measure_ball_lt_top.ne
+      have hF_fin : volume (F '' ball x r) ≠ ⊤ :=
+        ((measure_mono hsub_hi).trans_lt measure_ball_lt_top).ne
+      have hvol_hi : volume.real (F '' ball x r) ≤ volume.real (ball (F x) ((1 + ε) * r)) :=
+        measureReal_mono hsub_hi hhi_fin
+      have hvol_lo : volume.real (ball (F x) ((1 - ε) * r)) ≤ volume.real (F '' ball x r) :=
+        measureReal_mono hsub_lo hF_fin
+      have hball_r_pos : 0 < volume.real (ball x r) := by
+        rw [volumeReal_ball_eq_pow_mul x hr_pos]
+        exact mul_pos (pow_pos hr_pos k) hv0_pos
+      have hratio_lo :
+          (1 - ε) ^ k ≤ volume.real (F '' ball x r) / volume.real (ball x r) := by
+        rw [le_div_iff₀ hball_r_pos]
+        calc
+          (1 - ε) ^ k * volume.real (ball x r)
+            = ((1 - ε) * r) ^ k * volume.real (ball (0 : EuclideanSpace ℝ (Fin k)) 1) := by
+                rw [volumeReal_ball_eq_pow_mul x hr_pos, mul_pow]
+                ring
+          _ = volume.real (ball (F x) ((1 - ε) * r)) :=
+                (volumeReal_ball_eq_pow_mul (F x) h1mε_pos).symm
+          _ ≤ volume.real (F '' ball x r) := hvol_lo
+      have hratio_hi :
+          volume.real (F '' ball x r) / volume.real (ball x r) ≤ (1 + ε) ^ k := by
+        rw [div_le_iff₀ hball_r_pos]
+        calc
+          volume.real (F '' ball x r)
+            ≤ volume.real (ball (F x) ((1 + ε) * r)) := hvol_hi
+          _ = ((1 + ε) * r) ^ k * volume.real (ball (0 : EuclideanSpace ℝ (Fin k)) 1) :=
+                volumeReal_ball_eq_pow_mul (F x) h1pε_pos
+          _ = (1 + ε) ^ k * volume.real (ball x r) := by
+                rw [volumeReal_ball_eq_pow_mul x hr_pos, mul_pow]
+                ring
+      rw [Real.dist_eq, abs_lt]
+      exact ⟨by linarith, by linarith⟩
+    have hscale : ∀ r : ℝ,
+        volume.real (T '' ball x r) / volume.real (ball x r) =
+          linearModulus A * (volume.real (F '' ball x r) / volume.real (ball x r)) := by
+      intro r
+      have himg : T '' ball x r = A '' (F '' ball x r) := by
+        ext z
+        simp only [mem_image]
+        constructor
+        · rintro ⟨y, hy, rfl⟩
+          exact ⟨F y, ⟨y, hy, rfl⟩, hAF y⟩
+        · rintro ⟨_, ⟨y, hy, rfl⟩, rfl⟩
+          exact ⟨y, hy, (hAF y).symm⟩
+      have hmod_nonneg : 0 ≤ linearModulus A := abs_nonneg _
+      have hvol : volume.real (T '' ball x r) = linearModulus A * volume.real (F '' ball x r) := by
+        rw [himg, measureReal_def, volume_image_linearMap_eq_linearModulus,
+          ENNReal.toReal_mul, ENNReal.toReal_ofReal hmod_nonneg, ← measureReal_def]
+      rw [hvol, mul_div_assoc]
+    simpa [hscale, mul_one] using tendsto_const_nhds.mul hF_ratio
+  · -- Case II: `A` is singular (`det A = 0`).
+    have hdet0 : LinearMap.det A = 0 := not_not.mp hdet
+    have hmod0 : linearModulus A = 0 := by simp [linearModulus, hdet0]
+    rw [hmod0, Metric.tendsto_nhds]
+    intro η hη
+    let K : Set (EuclideanSpace ℝ (Fin k)) := A '' closedBall 0 1
+    have hK_compact : IsCompact K :=
+      (ProperSpace.isCompact_closedBall 0 1).image A.toContinuousLinearMap.continuous
+    have hK_vol : volume K = 0 := by
+      rw [volume_image_linearMap_eq_linearModulus, hmod0, ENNReal.ofReal_zero, zero_mul]
+    let v₀ : ℝ := volume.real (ball (0 : EuclideanSpace ℝ (Fin k)) 1)
+    have htarget_pos : 0 < ENNReal.ofReal ((η / 2) * v₀) :=
+      ENNReal.ofReal_pos.mpr (mul_pos (half_pos hη) hv0_pos)
+    have hK_lt : volume K < ENNReal.ofReal ((η / 2) * v₀) := hK_vol ▸ htarget_pos
+    obtain ⟨U, hKU, hU_open, hU_vol⟩ :=
+      Set.exists_isOpen_lt_of_lt (μ := volume) K (ENNReal.ofReal ((η / 2) * v₀)) hK_lt
+    obtain ⟨ε, hε_pos, hthick_sub⟩ := hK_compact.exists_thickening_subset_open hU_open hKU
+    have hlo_fderiv :=
+      (hasFDerivAt_iff_isLittleO_nhds_zero.mp hT_fderiv).def (half_pos hε_pos)
+    obtain ⟨δ, hδ_pos, hδ⟩ := Metric.eventually_nhds_iff.mp hlo_fderiv
+    filter_upwards [Ioo_mem_nhdsGT hδ_pos] with r ⟨hr_pos, hr_lt⟩
+    have hsub : T '' ball x r ⊆ (fun z => T x + z) '' ((fun z => r • z) '' U) := by
+      rintro _ ⟨y, hy, rfl⟩
+      let h := y - x
+      have hy_eq : y = x + h := (add_sub_cancel x y).symm
+      have hh_lt : ‖h‖ < r := by simpa [h, dist_eq_norm] using mem_ball.mp hy
+      have hh_δ : dist h 0 < δ := by
+        rw [dist_zero_right]
+        exact hh_lt.trans hr_lt
+      have hbd : ‖T (x + h) - T x - A h‖ ≤ (ε / 2) * ‖h‖ := by
+        simpa using hδ hh_δ
+      let u : EuclideanSpace ℝ (Fin k) := r⁻¹ • h
+      have hu_mem : u ∈ closedBall (0 : EuclideanSpace ℝ (Fin k)) 1 := by
+        rw [mem_closedBall_zero_iff, norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hr_pos)]
+        calc
+          r⁻¹ * ‖h‖ ≤ r⁻¹ * r := mul_le_mul_of_nonneg_left hh_lt.le (inv_nonneg.mpr hr_pos.le)
+          _ = 1 := inv_mul_cancel₀ hr_pos.ne'
+      let z : EuclideanSpace ℝ (Fin k) := r⁻¹ • (T (x + h) - T x)
+      have hz_thick : z ∈ Metric.thickening ε K := by
+        rw [Metric.mem_thickening_iff]
+        refine ⟨A u, ⟨u, hu_mem, rfl⟩, ?_⟩
+        have hzu : z - A u = r⁻¹ • (T (x + h) - T x - A h) := by
+          dsimp [z, u]
+          rw [map_smul, ← smul_sub]
+        rw [dist_eq_norm, hzu, norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hr_pos)]
+        have hle : r⁻¹ * ‖T (x + h) - T x - A h‖ ≤ ε / 2 := by
+          calc
+            r⁻¹ * ‖T (x + h) - T x - A h‖
+              ≤ r⁻¹ * ((ε / 2) * ‖h‖) :=
+                  mul_le_mul_of_nonneg_left hbd (inv_nonneg.mpr hr_pos.le)
+            _ ≤ r⁻¹ * ((ε / 2) * r) :=
+                  mul_le_mul_of_nonneg_left
+                    (mul_le_mul_of_nonneg_left hh_lt.le (half_pos hε_pos).le)
+                    (inv_nonneg.mpr hr_pos.le)
+            _ = ε / 2 := by field_simp [hr_pos.ne']
+        linarith
+      have hzU : z ∈ U := hthick_sub hz_thick
+      refine ⟨r • z, ⟨z, hzU, rfl⟩, ?_⟩
+      dsimp [z]
+      rw [smul_smul, mul_inv_cancel₀ hr_pos.ne', one_smul, add_sub_cancel, ← hy_eq]
+    have hvol_le : volume (T '' ball x r) ≤ ENNReal.ofReal (r ^ k) * volume U := by
+      calc
+        volume (T '' ball x r)
+          ≤ volume ((fun z => T x + z) '' ((fun z => r • z) '' U)) := measure_mono hsub
+        _ = ENNReal.ofReal (r ^ k) * volume U := by
+              rw [volume_image_add_left, volume_image_smul_nonneg hr_pos.le]
+    have hU_fin : volume U ≠ ⊤ := (hU_vol.trans_le le_top).ne
+    have hrhs_fin : ENNReal.ofReal (r ^ k) * volume U ≠ ⊤ :=
+      ENNReal.mul_ne_top ENNReal.ofReal_ne_top hU_fin
+    have hreal_le : volume.real (T '' ball x r) ≤ r ^ k * ((η / 2) * v₀) := by
+      have h1 : volume.real (T '' ball x r) ≤ (ENNReal.ofReal (r ^ k) * volume U).toReal := by
+        rw [measureReal_def]
+        exact ENNReal.toReal_mono hrhs_fin hvol_le
+      have hU_real : volume.real U ≤ (η / 2) * v₀ := by
+        rw [measureReal_def]
+        have := ENNReal.toReal_mono ENNReal.ofReal_ne_top hU_vol.le
+        rwa [ENNReal.toReal_ofReal (mul_nonneg (half_pos hη).le hv0_pos.le)] at this
+      rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (pow_nonneg hr_pos.le k), ← measureReal_def] at h1
+      exact h1.trans (mul_le_mul_of_nonneg_left hU_real (pow_nonneg hr_pos.le k))
+    have hball_r_pos : 0 < volume.real (ball x r) := by
+      rw [volumeReal_ball_eq_pow_mul x hr_pos]
+      exact mul_pos (pow_pos hr_pos k) hv0_pos
+    have hratio_le : volume.real (T '' ball x r) / volume.real (ball x r) ≤ η / 2 := by
+      rw [div_le_iff₀ hball_r_pos]
+      calc
+        volume.real (T '' ball x r)
+          ≤ r ^ k * ((η / 2) * v₀) := hreal_le
+        _ = (η / 2) * volume.real (ball x r) := by
+              rw [volumeReal_ball_eq_pow_mul x hr_pos]
+              ring
+    have hratio_nonneg : 0 ≤ volume.real (T '' ball x r) / volume.real (ball x r) :=
+      div_nonneg measureReal_nonneg hball_r_pos.le
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg hratio_nonneg]
+    linarith
+
+/-- **Theorem 7.24** (Rudin, pp. 151–153): If `V` is open in `ℝ^k`, `T : V → ℝ^k` is continuous,
+and `T` is differentiable at some point `x ∈ V`, then
+`lim_{r → 0⁺} m(T(B(x, r))) / m(B(x, r)) = Δ(T'(x)) = |J_T(x)|`. -/
+theorem theorem_7_24 {k : ℕ}
+    {V : Set (EuclideanSpace ℝ (Fin k))}
+    {T : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k)}
+    {x : EuclideanSpace ℝ (Fin k)}
+    (hV : IsOpen V) (hx : x ∈ V)
+    (hT_cont : ContinuousOn T V)
+    (hT_diff : DifferentiableAt ℝ T x) :
+    Tendsto (fun r => volume.real (T '' ball x r) / volume.real (ball x r))
+      (𝓝[>] (0 : ℝ)) (𝓝 |jacobian T x|) := by
+  have hclm : (fderiv ℝ T x).toLinearMap.toContinuousLinearMap = fderiv ℝ T x :=
+    ContinuousLinearMap.ext fun _ => rfl
+  have hbook : BookHasFDerivAt T (fderiv ℝ T x).toLinearMap x :=
+    bookHasFDerivAt_iff_hasFDerivAt.mpr (hclm.symm ▸ hT_diff.hasFDerivAt)
+  simpa [jacobian, linearModulus] using theorem_7_24_bookHasFDerivAt hV hx hT_cont hbook
+
+/-- `ℝ≥0∞`-valued companion to **Theorem 7.24**:
+`lim_{r → 0⁺} volume (T '' ball x r) / volume (ball x r) = ENNReal.ofReal |J_T(x)|`. -/
+theorem theorem_7_24_ennreal {k : ℕ}
+    {V : Set (EuclideanSpace ℝ (Fin k))}
+    {T : EuclideanSpace ℝ (Fin k) → EuclideanSpace ℝ (Fin k)}
+    {x : EuclideanSpace ℝ (Fin k)}
+    (hV : IsOpen V) (hx : x ∈ V)
+    (hT_cont : ContinuousOn T V)
+    (hT_diff : DifferentiableAt ℝ T x) :
+    Tendsto (fun r => volume (T '' ball x r) / volume (ball x r))
+      (𝓝[>] (0 : ℝ)) (𝓝 (ENNReal.ofReal |jacobian T x|)) := by
+  have hreal := theorem_7_24 hV hx hT_cont hT_diff
+  have hofReal :
+      Tendsto (fun r => ENNReal.ofReal (volume.real (T '' ball x r) / volume.real (ball x r)))
+        (𝓝[>] (0 : ℝ)) (𝓝 (ENNReal.ofReal |jacobian T x|)) :=
+    ENNReal.continuous_ofReal.continuousAt.tendsto.comp hreal
+  obtain ⟨δV, hδV_pos, hδV_sub⟩ := Metric.nhds_basis_closedBall.mem_iff.mp (hV.mem_nhds hx)
+  have hK_fin : volume (T '' closedBall x δV) < ⊤ :=
+    ((ProperSpace.isCompact_closedBall x δV).image_of_continuousOn
+      (hT_cont.mono hδV_sub)).isBounded.measure_lt_top
+  refine hofReal.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT hδV_pos] with r ⟨hr_pos, hr_lt⟩
+  have hball_pos : volume (ball x r) ≠ 0 := (Metric.measure_ball_pos volume x hr_pos).ne'
+  have hball_fin : volume (ball x r) ≠ ⊤ := measure_ball_lt_top.ne
+  have himg_fin : volume (T '' ball x r) ≠ ⊤ := by
+    have hsub : T '' ball x r ⊆ T '' closedBall x δV :=
+      image_mono ((ball_subset_closedBall).trans (closedBall_subset_closedBall hr_lt.le))
+    exact ((measure_mono hsub).trans_lt hK_fin).ne
+  rw [measureReal_def, measureReal_def,
+    ENNReal.ofReal_div_of_pos (ENNReal.toReal_pos hball_pos hball_fin),
+    ENNReal.ofReal_toReal himg_fin, ENNReal.ofReal_toReal hball_fin]
+
+end Node7_24
 
 section Node7_25
 
