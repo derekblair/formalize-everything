@@ -6,6 +6,11 @@ import Mathlib.MeasureTheory.Function.Jacobian
 import Mathlib.Analysis.SpecialFunctions.PolarCoord
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
+import Mathlib.Analysis.Complex.Tietze
+import Mathlib.Analysis.Complex.MeanValue
+import Mathlib.Analysis.Convex.Contractible
+import Mathlib.Analysis.SpecialFunctions.Complex.Log
+import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 
 /-!
 # Chapter 14: Conformal Mapping
@@ -6186,6 +6191,6996 @@ theorem theorem14_17 :
       le_of_tendsto_of_tendsto hγv_lim hinv2 (Filter.Eventually.of_forall hv_im)
     linarith
 
+/-! ### Node 14.18: Boundary Extension and Distinctness at Simple Boundary Points -/
+
+theorem eq_of_isPreconnected_forall_int {S : Set ℝ} (hS : IsPreconnected S) {g : ℝ → ℝ}
+    (hg : ContinuousOn g S) (hint : ∀ x ∈ S, ∃ k : ℤ, g x = k)
+    {x y : ℝ} (hx : x ∈ S) (hy : y ∈ S) : g x = g y := by
+  by_contra hne
+  obtain ⟨kx, hkx⟩ := hint x hx
+  obtain ⟨ky, hky⟩ := hint y hy
+  have hkne : kx ≠ ky := fun h => hne (by rw [hkx, hky, h])
+  have himg_pre : IsPreconnected (g '' S) := hS.image g hg
+  by_cases hlt : kx < ky
+  · have hmid_in : ((kx : ℝ) + 1 / 2) ∈ Icc (g x) (g y) := by
+      rw [hkx, hky]
+      have h1 : (kx : ℝ) + 1 ≤ (ky : ℝ) := by exact_mod_cast Int.add_one_le_iff.mpr hlt
+      exact ⟨by linarith, by linarith⟩
+    have hsub := himg_pre.ordConnected.out (⟨x, hx, rfl⟩ : g x ∈ g '' S) (⟨y, hy, rfl⟩ : g y ∈ g '' S)
+    rcases hsub hmid_in with ⟨z, hz, hgz⟩
+    obtain ⟨kz, hkz⟩ := hint z hz
+    have h2 : (2 : ℝ) * (kz : ℝ) = 2 * (kx : ℝ) + 1 := by linarith
+    have h2z : (2 * kz : ℤ) = 2 * kx + 1 := by exact_mod_cast h2
+    omega
+  · have hgt : ky < kx := lt_of_le_of_ne (not_lt.mp hlt) hkne.symm
+    have hmid_in : ((ky : ℝ) + 1 / 2) ∈ Icc (g y) (g x) := by
+      rw [hkx, hky]
+      have h1 : (ky : ℝ) + 1 ≤ (kx : ℝ) := by exact_mod_cast Int.add_one_le_iff.mpr hgt
+      exact ⟨by linarith, by linarith⟩
+    have hsub := himg_pre.ordConnected.out (⟨y, hy, rfl⟩ : g y ∈ g '' S) (⟨x, hx, rfl⟩ : g x ∈ g '' S)
+    rcases hsub hmid_in with ⟨z, hz, hgz⟩
+    obtain ⟨kz, hkz⟩ := hint z hz
+    have h2 : (2 : ℝ) * (kz : ℝ) = 2 * (ky : ℝ) + 1 := by linarith
+    have h2z : (2 * kz : ℤ) = 2 * ky + 1 := by exact_mod_cast h2
+    omega
+
+/-- If `f : ℝ → ℂ` is continuous and nonzero on `Icc a b` (`a ≤ b`), there exists a continuous
+real-valued angle lift `ϑ : ℝ → ℝ` on `Icc a b` such that `f t = ‖f t‖ * exp (ϑ t * I)` on `Icc a b`. -/
+theorem exists_continuousOn_angle_Icc {a b : ℝ} (hab : a ≤ b) {f : ℝ → ℂ}
+    (hf_cont : ContinuousOn f (Icc a b)) (hf_ne : ∀ t ∈ Icc a b, f t ≠ 0) :
+    ∃ ϑ : ℝ → ℝ, ContinuousOn ϑ (Icc a b) ∧
+      ∀ t ∈ Icc a b, f t = (‖f t‖ : ℂ) * Complex.exp ((ϑ t : ℂ) * Complex.I) := by
+  let u : ℝ → ℂ := fun t => f t / (‖f t‖ : ℂ)
+  have hu_cont : ContinuousOn u (Icc a b) := by
+    refine hf_cont.div (Complex.continuous_ofReal.comp_continuousOn (continuous_norm.comp_continuousOn hf_cont)) ?_
+    intro t ht
+    exact Complex.ofReal_ne_zero.mpr (norm_pos_iff.mpr (hf_ne t ht)).ne'
+  have hu_norm : ∀ t ∈ Icc a b, ‖u t‖ = 1 := by
+    intro t ht
+    dsimp [u]
+    have hp : 0 < ‖f t‖ := norm_pos_iff.mpr (hf_ne t ht)
+    rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hp, div_self hp.ne']
+  have huc : UniformContinuousOn u (Icc a b) := isCompact_Icc.uniformContinuousOn_of_continuous hu_cont
+  rw [Metric.uniformContinuousOn_iff] at huc
+  obtain ⟨δ, hδ_pos, hδ⟩ := huc 1 zero_lt_one
+  obtain ⟨N, hN⟩ := exists_nat_gt ((b - a) / δ)
+  have hN_pos : 0 < N := by
+    rcases Nat.eq_zero_or_pos N with rfl | hp
+    · have hge : 0 ≤ (b - a) / δ := div_nonneg (sub_nonneg.mpr hab) hδ_pos.le
+      simp at hN
+      linarith
+    · exact hp
+  have hstep : ∀ k : ℕ, k ≤ N →
+      ∃ ϑ : ℝ → ℝ, ContinuousOn ϑ (Icc a (a + (k : ℝ) * ((b - a) / (N : ℝ)))) ∧
+        ∀ t ∈ Icc a (a + (k : ℝ) * ((b - a) / (N : ℝ))),
+          u t = Complex.exp ((ϑ t : ℂ) * Complex.I) := by
+    intro k
+    induction k with
+    | zero =>
+      intro _
+      simp only [Nat.cast_zero, zero_mul, add_zero, Icc_self]
+      refine ⟨fun _ => Complex.arg (u a), continuousOn_const, ?_⟩
+      intro t ht
+      rw [mem_singleton_iff] at ht
+      rw [ht]
+      have hpolar := Complex.norm_mul_exp_arg_mul_I (u a)
+      rw [hu_norm a (left_mem_Icc.mpr hab), Complex.ofReal_one, one_mul] at hpolar
+      exact hpolar.symm
+    | succ k ih =>
+      intro hk1
+      obtain ⟨ϑ₀, hϑ₀_cont, hϑ₀_eq⟩ := ih (Nat.le_of_succ_le hk1)
+      set x_k : ℝ := a + (k : ℝ) * ((b - a) / (N : ℝ))
+      set x_k1 : ℝ := a + ((k + 1 : ℕ) : ℝ) * ((b - a) / (N : ℝ))
+      have hstep_nonneg : 0 ≤ (b - a) / (N : ℝ) :=
+        div_nonneg (sub_nonneg.mpr hab) (Nat.cast_nonneg (α := ℝ) N)
+      have ha_le_xk : a ≤ x_k := by
+        dsimp [x_k]; nlinarith [Nat.cast_nonneg (α := ℝ) k]
+      have hxk_le_xk1 : x_k ≤ x_k1 := by
+        dsimp [x_k, x_k1]; push_cast; linarith
+      have hxk1_le_b : x_k1 ≤ b := by
+        dsimp [x_k1]
+        have hkN : ((k + 1 : ℕ) : ℝ) ≤ (N : ℝ) := by exact_mod_cast hk1
+        have hN_ne : (N : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hN_pos.ne'
+        calc
+          a + ((k + 1 : ℕ) : ℝ) * ((b - a) / (N : ℝ))
+              ≤ a + (N : ℝ) * ((b - a) / (N : ℝ)) := by nlinarith
+          _ = b := by field_simp [hN_ne]; ring
+      have hlen_lt : x_k1 - x_k < δ := by
+        have h1 : x_k1 - x_k = (b - a) / (N : ℝ) := by dsimp [x_k, x_k1]; push_cast; ring
+        rw [h1]
+        by_cases hab_eq : a = b
+        · rw [hab_eq, sub_self, zero_div]; exact hδ_pos
+        · rw [div_lt_iff₀ (Nat.cast_pos.mpr hN_pos)]
+          have := (div_lt_iff₀ hδ_pos).mp hN
+          linarith
+      have hxk_in : x_k ∈ Icc a b := ⟨ha_le_xk, hxk_le_xk1.trans hxk1_le_b⟩
+      let ψ : ℝ → ℝ := fun t => ϑ₀ x_k + Complex.arg (u t / u x_k)
+      have hre_pos : ∀ t ∈ Icc x_k x_k1, 0 < (u t / u x_k).re := by
+        intro t ht
+        have ht_in : t ∈ Icc a b := ⟨ha_le_xk.trans ht.1, ht.2.trans hxk1_le_b⟩
+        have hdist : dist t x_k < δ := by
+          rw [Real.dist_eq, abs_of_nonneg (sub_nonneg.mpr ht.1)]
+          exact (sub_le_sub_right ht.2 x_k).trans_lt hlen_lt
+        have hudist : ‖u t - u x_k‖ < 1 := by
+          simpa [dist_eq_norm] using hδ t ht_in x_k hxk_in hdist
+        have hnorm_xk : ‖u x_k‖ = 1 := hu_norm x_k hxk_in
+        have huxk_ne : u x_k ≠ 0 := by intro h0; rw [h0, norm_zero] at hnorm_xk; norm_num at hnorm_xk
+        have hq : ‖u t / u x_k - 1‖ < 1 := by
+          have hsub : u t / u x_k - 1 = (u t - u x_k) / u x_k := by field_simp [huxk_ne]
+          rw [hsub, norm_div, hnorm_xk, div_one]
+          exact hudist
+        have hre1 : |(u t / u x_k - 1).re| ≤ ‖u t / u x_k - 1‖ :=
+          Complex.abs_re_le_norm (u t / u x_k - 1)
+        rw [Complex.sub_re, Complex.one_re] at hre1
+        linarith [abs_lt.mp (lt_of_le_of_lt hre1 hq)]
+      have hψ_cont : ContinuousOn ψ (Icc x_k x_k1) := by
+        refine continuousOn_const.add ?_
+        intro t ht
+        have hc_div : ContinuousWithinAt (fun s => u s / u x_k) (Icc x_k x_k1) t :=
+          (hu_cont.mono (Icc_subset_Icc ha_le_xk hxk1_le_b) t ht).div_const (u x_k)
+        exact ContinuousAt.comp_continuousWithinAt (f := fun s => u s / u x_k)
+          (Complex.continuousAt_arg (Or.inl (hre_pos t ht))) hc_div
+      have hψ_xk : ψ x_k = ϑ₀ x_k := by
+        dsimp [ψ]
+        have hnorm_xk : ‖u x_k‖ = 1 := hu_norm x_k hxk_in
+        have huxk_ne : u x_k ≠ 0 := by intro h0; rw [h0, norm_zero] at hnorm_xk; norm_num at hnorm_xk
+        rw [div_self huxk_ne, Complex.arg_one, add_zero]
+      have hψ_eq : ∀ t ∈ Icc x_k x_k1, u t = Complex.exp ((ψ t : ℂ) * Complex.I) := by
+        intro t ht
+        have ht_in : t ∈ Icc a b := ⟨ha_le_xk.trans ht.1, ht.2.trans hxk1_le_b⟩
+        have hnorm_xk : ‖u x_k‖ = 1 := hu_norm x_k hxk_in
+        have huxk_ne : u x_k ≠ 0 := by intro h0; rw [h0, norm_zero] at hnorm_xk; norm_num at hnorm_xk
+        have hnorm_q : ‖u t / u x_k‖ = 1 := by
+          rw [norm_div, hu_norm t ht_in, hnorm_xk, div_one]
+        have hpolar := Complex.norm_mul_exp_arg_mul_I (u t / u x_k)
+        rw [hnorm_q, Complex.ofReal_one, one_mul] at hpolar
+        have hxk_eq : u x_k = Complex.exp ((ϑ₀ x_k : ℂ) * Complex.I) :=
+          hϑ₀_eq x_k ⟨ha_le_xk, le_rfl⟩
+        dsimp [ψ]
+        rw [Complex.ofReal_add, add_mul, Complex.exp_add, ← hxk_eq, hpolar,
+          mul_comm (u x_k), div_mul_cancel₀ (u t) huxk_ne]
+      let ϑ₁ : ℝ → ℝ := fun t => if t ≤ x_k then ϑ₀ t else ψ t
+      refine ⟨ϑ₁, ?_, ?_⟩
+      · have hcov : Icc a x_k1 = Icc a x_k ∪ Icc x_k x_k1 :=
+          (Icc_union_Icc_eq_Icc ha_le_xk hxk_le_xk1).symm
+        rw [hcov]
+        refine ContinuousOn.union_of_isClosed ?_ ?_ isClosed_Icc isClosed_Icc
+        · refine hϑ₀_cont.congr fun t ht => ?_
+          simp [ϑ₁, ht.2]
+        · refine hψ_cont.congr fun t ht => ?_
+          dsimp [ϑ₁]
+          split_ifs with hle
+          · have heq : t = x_k := le_antisymm hle ht.1
+            subst heq
+            exact hψ_xk.symm
+          · rfl
+      · intro t ht
+        dsimp [ϑ₁]
+        split_ifs with hle
+        · exact hϑ₀_eq t ⟨ht.1, hle⟩
+        · exact hψ_eq t ⟨le_of_not_ge hle, ht.2⟩
+  obtain ⟨ϑ, hϑ_cont, hϑ_eq⟩ := hstep N le_rfl
+  have hN_ne : (N : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hN_pos.ne'
+  have hend : a + (N : ℝ) * ((b - a) / (N : ℝ)) = b := by field_simp [hN_ne]; ring
+  rw [hend] at hϑ_cont hϑ_eq
+  refine ⟨ϑ, hϑ_cont, ?_⟩
+  intro t ht
+  have hp : (‖f t‖ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (norm_pos_iff.mpr (hf_ne t ht)).ne'
+  have hu_t := hϑ_eq t ht
+  dsimp [u] at hu_t
+  rw [← hu_t]
+  exact (mul_div_cancel₀ (f t) hp).symm
+
+/-- Continuous angle lift on `Ico T₀ 1` for a nonzero continuous curve `Γ : ℝ → ℂ`. -/
+theorem exists_continuousOn_angle_Ico {T₀ : ℝ} (hT₀ : T₀ < 1) {Γ : ℝ → ℂ}
+    (hΓ_cont : ContinuousOn Γ (Ico T₀ 1)) (hΓ_ne : ∀ t ∈ Ico T₀ 1, Γ t ≠ 0) :
+    ∃ ϑ : ℝ → ℝ, ContinuousOn ϑ (Ico T₀ 1) ∧
+      ∀ t ∈ Ico T₀ 1, Γ t = (‖Γ t‖ : ℂ) * Complex.exp ((ϑ t : ℂ) * Complex.I) := by
+  let b_seq : ℕ → ℝ := fun n => 1 - (1 - T₀) / ((n : ℝ) + 2)
+  have hb_lt1 : ∀ n, b_seq n < 1 := by
+    intro n; dsimp [b_seq]
+    have : 0 < (1 - T₀) / ((n : ℝ) + 2) := div_pos (sub_pos.mpr hT₀) (by positivity)
+    linarith
+  have hb_ge : ∀ n, T₀ ≤ b_seq n := by
+    intro n; dsimp [b_seq]
+    have h1 : (1 - T₀) / ((n : ℝ) + 2) ≤ 1 - T₀ :=
+      div_le_self (sub_nonneg.mpr hT₀.le) (by linarith [Nat.cast_nonneg (α := ℝ) n])
+    linarith
+  have hb_mono : Monotone b_seq := by
+    intro m n hmn; dsimp [b_seq]
+    have hmn_r : (m : ℝ) + 2 ≤ (n : ℝ) + 2 := by
+      have : (m : ℝ) ≤ (n : ℝ) := Nat.cast_le.mpr hmn
+      linarith
+    have hsub : (1 - T₀) / ((n : ℝ) + 2) ≤ (1 - T₀) / ((m : ℝ) + 2) :=
+      div_le_div_of_nonneg_left (sub_nonneg.mpr hT₀.le) (by positivity) hmn_r
+    linarith
+  have hex_n : ∀ n : ℕ, ∃ ϑ : ℝ → ℝ, ContinuousOn ϑ (Icc T₀ (b_seq n)) ∧
+      ϑ T₀ = Complex.arg (Γ T₀) ∧
+      ∀ t ∈ Icc T₀ (b_seq n), Γ t = (‖Γ t‖ : ℂ) * Complex.exp ((ϑ t : ℂ) * Complex.I) := by
+    intro n
+    have hsub : Icc T₀ (b_seq n) ⊆ Ico T₀ 1 := fun t ht => ⟨ht.1, ht.2.trans_lt (hb_lt1 n)⟩
+    obtain ⟨ϑ₀, hϑ₀_c, hϑ₀_eq⟩ := exists_continuousOn_angle_Icc (hb_ge n)
+      (hΓ_cont.mono hsub) (fun t ht => hΓ_ne t (hsub ht))
+    have hT₀_mem : T₀ ∈ Icc T₀ (b_seq n) := ⟨le_rfl, hb_ge n⟩
+    have h1 := hϑ₀_eq T₀ hT₀_mem
+    have hpolar := (Complex.norm_mul_exp_arg_mul_I (Γ T₀)).symm
+    have hnorm_ne : (‖Γ T₀‖ : ℂ) ≠ 0 :=
+      Complex.ofReal_ne_zero.mpr (norm_pos_iff.mpr (hΓ_ne T₀ ⟨le_rfl, hT₀⟩)).ne'
+    have hexp_eq : Complex.exp ((ϑ₀ T₀ : ℂ) * Complex.I) =
+        Complex.exp ((Complex.arg (Γ T₀) : ℂ) * Complex.I) :=
+      mul_left_cancel₀ hnorm_ne (h1.symm.trans hpolar)
+    rw [Complex.exp_eq_exp_iff_exists_int] at hexp_eq
+    obtain ⟨k, hk⟩ := hexp_eq
+    have hshift : ϑ₀ T₀ - Complex.arg (Γ T₀) = (k : ℝ) * (2 * Real.pi) := by
+      have hc : ((ϑ₀ T₀ - Complex.arg (Γ T₀) : ℝ) : ℂ) * Complex.I =
+          (((k : ℝ) * (2 * Real.pi) : ℝ) : ℂ) * Complex.I := by
+        push_cast; linear_combination hk
+      exact Complex.ofReal_injective (mul_right_cancel₀ Complex.I_ne_zero hc)
+    refine ⟨fun t => ϑ₀ t - (k : ℝ) * (2 * Real.pi), hϑ₀_c.sub continuousOn_const, by linarith, ?_⟩
+    intro t ht
+    have hexp_k : Complex.exp ((((ϑ₀ t - (k : ℝ) * (2 * Real.pi)) : ℝ) : ℂ) * Complex.I) =
+        Complex.exp ((ϑ₀ t : ℂ) * Complex.I) := by
+      have harg : (((ϑ₀ t - (k : ℝ) * (2 * Real.pi)) : ℝ) : ℂ) * Complex.I =
+          (ϑ₀ t : ℂ) * Complex.I - (k : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := by
+        push_cast; ring
+      rw [harg, Complex.exp_sub, Complex.exp_int_mul_two_pi_mul_I k, div_one]
+    rw [hexp_k, ← hϑ₀_eq t ht]
+  choose ϑ_seq hϑ_cont hϑ_T₀ hϑ_eq using hex_n
+  have hagree : ∀ (m n : ℕ) {t : ℝ}, t ∈ Icc T₀ (b_seq m) → t ∈ Icc T₀ (b_seq n) →
+      ϑ_seq m t = ϑ_seq n t := by
+    intro m n t htm htn
+    wlog hmn : m ≤ n generalizing m n
+    · exact (this n m htn htm (Nat.le_of_not_le hmn)).symm
+    let diff : ℝ → ℝ := fun s => (ϑ_seq m s - ϑ_seq n s) / (2 * Real.pi)
+    have hdiff_cont : ContinuousOn diff (Icc T₀ (b_seq m)) :=
+      (hϑ_cont m |>.sub ((hϑ_cont n).mono (Icc_subset_Icc_right (hb_mono hmn)))).div_const _
+    have hdiff_int : ∀ s ∈ Icc T₀ (b_seq m), ∃ k : ℤ, diff s = k := by
+      intro s hs
+      have hsn : s ∈ Icc T₀ (b_seq n) := ⟨hs.1, hs.2.trans (hb_mono hmn)⟩
+      have hs_ico : s ∈ Ico T₀ 1 := ⟨hs.1, hs.2.trans_lt (hb_lt1 m)⟩
+      have hnorm_ne : (‖Γ s‖ : ℂ) ≠ 0 :=
+        Complex.ofReal_ne_zero.mpr (norm_pos_iff.mpr (hΓ_ne s hs_ico)).ne'
+      have hexp : Complex.exp ((ϑ_seq m s : ℂ) * Complex.I) =
+          Complex.exp ((ϑ_seq n s : ℂ) * Complex.I) :=
+        mul_left_cancel₀ hnorm_ne ((hϑ_eq m s hs).symm.trans (hϑ_eq n s hsn))
+      rw [Complex.exp_eq_exp_iff_exists_int] at hexp
+      obtain ⟨k, hk⟩ := hexp
+      refine ⟨k, ?_⟩
+      have hc : ((ϑ_seq m s - ϑ_seq n s : ℝ) : ℂ) * Complex.I =
+          (((k : ℝ) * (2 * Real.pi) : ℝ) : ℂ) * Complex.I := by
+        push_cast; linear_combination hk
+      have hr : ϑ_seq m s - ϑ_seq n s = (k : ℝ) * (2 * Real.pi) :=
+        Complex.ofReal_injective (mul_right_cancel₀ Complex.I_ne_zero hc)
+      dsimp [diff]
+      rw [hr, mul_div_cancel_right₀ _ (by positivity)]
+    have heq_diff := eq_of_isPreconnected_forall_int (convex_Icc T₀ (b_seq m)).isPreconnected
+      hdiff_cont hdiff_int htm ⟨le_rfl, hb_ge m⟩
+    have hdiff_T₀ : diff T₀ = 0 := by
+      dsimp [diff]; rw [hϑ_T₀ m, hϑ_T₀ n, sub_self, zero_div]
+    rw [hdiff_T₀] at heq_diff
+    dsimp [diff] at heq_diff
+    have hsub0 : ϑ_seq m t - ϑ_seq n t = 0 :=
+      (div_eq_zero_iff.mp heq_diff).resolve_right (by positivity)
+    linarith
+  have hex_idx : ∀ t : ℝ, t < 1 → ∃ n : ℕ, t < b_seq n := by
+    intro t ht
+    obtain ⟨n, hn⟩ := exists_nat_gt ((1 - T₀) / (1 - t))
+    refine ⟨n, ?_⟩
+    dsimp [b_seq]
+    have hpos : 0 < 1 - t := sub_pos.mpr ht
+    have hlt : (1 - T₀) / (1 - t) < (n : ℝ) + 2 := by linarith
+    have h1 : (1 - T₀) / ((n : ℝ) + 2) < 1 - t :=
+      (div_lt_iff₀ (by positivity)).mpr ((div_lt_iff₀ hpos).mp hlt |>.trans_eq (mul_comm _ _))
+    linarith
+  let idx : ℝ → ℕ := fun t => if h : t < 1 then Nat.find (hex_idx t h) else 0
+  let ϑ : ℝ → ℝ := fun t => ϑ_seq (idx t) t
+  refine ⟨ϑ, ?_, ?_⟩
+  · intro t ht
+    obtain ⟨n, htn⟩ := hex_idx t ht.2
+    have hsub_nhd : Ioo (T₀ - 1) (b_seq n) ∈ 𝓝[Ico T₀ 1] t :=
+      mem_nhdsWithin_of_mem_nhds (Ioo_mem_nhds (by linarith [ht.1]) htn)
+    have hev : EqOn ϑ (ϑ_seq n) (Ico T₀ 1 ∩ Ioo (T₀ - 1) (b_seq n)) := by
+      intro s ⟨hs_ico, hs_ioo⟩
+      dsimp [ϑ]
+      have hs_lt : s < b_seq (idx s) := by
+        simp only [idx, hs_ico.2, ↓reduceDIte]
+        exact Nat.find_spec (hex_idx s hs_ico.2)
+      exact hagree (idx s) n ⟨hs_ico.1, hs_lt.le⟩ ⟨hs_ico.1, hs_ioo.2.le⟩
+    have hc_n : ContinuousWithinAt (ϑ_seq n) (Ico T₀ 1) t := by
+      have hc1 := (hϑ_cont n t ⟨ht.1, htn.le⟩).mono
+        (show Ico T₀ 1 ∩ Ioo (T₀ - 1) (b_seq n) ⊆ Icc T₀ (b_seq n) from
+          fun s hs => ⟨hs.1.1, hs.2.2.le⟩)
+      exact continuousWithinAt_inter' hsub_nhd |>.mp hc1
+    exact hc_n.congr_of_eventuallyEq
+      (eventually_nhdsWithin_iff.mpr
+        (eventually_of_mem (Ioo_mem_nhds (by linarith [ht.1]) htn) fun s hs hs_ico =>
+          hev ⟨hs_ico, hs⟩))
+      (hev ⟨ht, by linarith [ht.1], htn⟩)
+  · intro t ht
+    have hidx : idx t = Nat.find (hex_idx t ht.2) := by simp only [idx, ht.2, ↓reduceDIte]
+    dsimp [ϑ]
+    rw [hidx]
+    exact hϑ_eq _ t ⟨ht.1, (Nat.find_spec (hex_idx t ht.2)).le⟩
+
+/-! ### Polar area bound and a.e. radial limits of bounded univalent maps on `U` -/
+
+theorem lintegral_polar_deriv_sq_le_of_injOn {D : Set ℂ} (hD_open : IsOpen D)
+    {g : ℂ → ℂ} (hg_holo : RudinRCA.Chapter10.HolomorphicOn g D) (hg_inj : InjOn g D)
+    {M : ℝ} (hM : 0 < M) (hg_bdd : ∀ w ∈ D, ‖g w‖ ≤ M) :
+    (∫⁻ p in _root_.polarCoord.target,
+      (D \ {0}).indicator (fun z => ENNReal.ofReal (‖deriv g z‖ ^ 2)) (Complex.polarCoord.symm p) *
+        ENNReal.ofReal p.1 ∂MeasureTheory.volume) ≤
+      ENNReal.ofReal (Real.pi * M ^ 2) := by
+  let D₀ : Set ℂ := D \ {0}
+  have hD₀_open : IsOpen D₀ := hD_open.sdiff isClosed_singleton
+  have hD₀_sub : D₀ ⊆ D := Set.sdiff_subset
+  let f' : ℂ → (ℂ →L[ℝ] ℂ) := fun z =>
+    ((ContinuousLinearMap.smulRight (1 : ℂ →L[ℂ] ℂ) (deriv g z)).restrictScalars ℝ)
+  have hf'_within : ∀ z ∈ D₀, HasFDerivWithinAt g (f' z) D₀ z := by
+    intro z hz
+    exact ((hg_holo z (hD₀_sub hz)).hasDerivAt.hasFDerivAt.restrictScalars ℝ).hasFDerivWithinAt
+  have hvol_D₀ : MeasureTheory.volume (g '' D₀) =
+      ∫⁻ z in D₀, ENNReal.ofReal (‖deriv g z‖ ^ 2) ∂MeasureTheory.volume := by
+    rw [← MeasureTheory.setLIntegral_one (g '' D₀),
+      MeasureTheory.lintegral_image_eq_lintegral_abs_det_fderiv_mul MeasureTheory.volume
+        hD₀_open.measurableSet hf'_within (hg_inj.mono hD₀_sub)]
+    refine MeasureTheory.setLIntegral_congr_fun hD₀_open.measurableSet ?_
+    intro z _
+    dsimp [f']
+    rw [det_real_smulRight_complex, abs_of_nonneg (sq_nonneg _), mul_one]
+  have himg_sub : g '' D₀ ⊆ closedBall (0 : ℂ) M := by
+    rintro _ ⟨z, hz, rfl⟩
+    exact mem_closedBall_zero_iff.mpr (hg_bdd z (hD₀_sub hz))
+  have hvol_closed : MeasureTheory.volume (closedBall (0 : ℂ) M) = ENNReal.ofReal (Real.pi * M ^ 2) := by
+    rw [Complex.volume_closedBall, ENNReal.ofReal_mul Real.pi_pos.le,
+      ENNReal.ofReal_pow hM.le, ← NNReal.coe_real_pi, ENNReal.ofReal_coe_nnreal, mul_comm]
+  have hbound : (∫⁻ z in D₀, ENNReal.ofReal (‖deriv g z‖ ^ 2) ∂MeasureTheory.volume) ≤
+      ENNReal.ofReal (Real.pi * M ^ 2) := by
+    rw [← hvol_D₀, ← hvol_closed]
+    exact MeasureTheory.measure_mono himg_sub
+  let g_int : ℂ → ENNReal := D₀.indicator (fun z => ENNReal.ofReal (‖deriv g z‖ ^ 2))
+  have hpolar : (∫⁻ z in D₀, ENNReal.ofReal (‖deriv g z‖ ^ 2) ∂MeasureTheory.volume) =
+      ∫⁻ p in _root_.polarCoord.target,
+        ENNReal.ofReal p.1 • g_int (Complex.polarCoord.symm p) ∂MeasureTheory.volume := by
+    rw [← MeasureTheory.lintegral_indicator hD₀_open.measurableSet,
+      ← Complex.lintegral_comp_polarCoord_symm g_int]
+  rw [hpolar] at hbound
+  refine le_trans ?_ hbound
+  refine MeasureTheory.setLIntegral_mono' (by rw [polarCoord_target]; exact measurableSet_Ioi.prod measurableSet_Ioo) ?_
+  intro p _
+  dsimp [g_int, D₀]
+  exact le_of_eq (mul_comm _ _)
+
+theorem ae_radial_limit_of_injOn_ball {g : ℂ → ℂ}
+    (hg_holo : RudinRCA.Chapter10.HolomorphicOn g (ball (0 : ℂ) 1))
+    (hg_inj : InjOn g (ball (0 : ℂ) 1)) {M : ℝ} (hM : 0 < M)
+    (hg_bdd : ∀ w ∈ ball (0 : ℂ) 1, ‖g w‖ ≤ M) :
+    ∀ᵐ θ ∂MeasureTheory.volume,
+      ∃ L : ℂ, Tendsto (fun ρ : ℝ => g (circleMap 0 ρ θ)) (𝓝[<] 1) (𝓝 L) := by
+  -- First prove for a.e. `θ ∈ Ioo (-π) π` for ANY rotated version `w ↦ g (exp (α * I) * w)`
+  have hae_core : ∀ α : ℝ, ∀ᵐ θ ∂MeasureTheory.volume, θ ∈ Ioo (-Real.pi) Real.pi →
+      ∃ L : ℂ, Tendsto (fun ρ : ℝ => g (circleMap 0 ρ (θ + α))) (𝓝[<] 1) (𝓝 L) := by
+    intro α
+    let uα : ℂ := Complex.exp ((α : ℂ) * Complex.I)
+    have huα_norm : ‖uα‖ = 1 := Complex.norm_exp_ofReal_mul_I α
+    have huα_ne : uα ≠ 0 := Complex.exp_ne_zero _
+    let gα : ℂ → ℂ := fun w => g (uα * w)
+    have hmaps : MapsTo (fun w : ℂ => uα * w) (ball (0 : ℂ) 1) (ball (0 : ℂ) 1) := by
+      intro w hw
+      rw [mem_ball_zero_iff] at hw ⊢
+      rw [norm_mul, huα_norm, one_mul]; exact hw
+    have hgα_holo : RudinRCA.Chapter10.HolomorphicOn gα (ball (0 : ℂ) 1) :=
+      fun w hw => (hg_holo _ (hmaps hw)).comp w (differentiableAt_id.const_mul uα)
+    have hgα_inj : InjOn gα (ball (0 : ℂ) 1) := by
+      intro w₁ hw₁ w₂ hw₂ heq
+      exact mul_left_cancel₀ huα_ne (hg_inj (hmaps hw₁) (hmaps hw₂) heq)
+    have hgα_bdd : ∀ w ∈ ball (0 : ℂ) 1, ‖gα w‖ ≤ M := fun w hw => hg_bdd _ (hmaps hw)
+    have harea := lintegral_polar_deriv_sq_le_of_injOn isOpen_ball hgα_holo hgα_inj hM hgα_bdd
+    have hpolar_eq_circle : ∀ p : ℝ × ℝ, Complex.polarCoord.symm p = circleMap 0 p.1 p.2 := by
+      intro p
+      rw [Complex.polarCoord_symm_apply, circleMap_zero, Complex.exp_mul_I,
+        Complex.ofReal_cos, Complex.ofReal_sin]
+    let S : Set (ℝ × ℝ) := Ioo (1 / 2 : ℝ) 1 ×ˢ Ioo (-Real.pi) Real.pi
+    have hS_sub : S ⊆ _root_.polarCoord.target := by
+      rw [polarCoord_target]
+      exact prod_mono (fun ρ hρ => lt_trans (by norm_num) hρ.1) Subset.rfl
+    have hS_meas : MeasurableSet S := measurableSet_Ioo.prod measurableSet_Ioo
+    let h_prod : ℝ × ℝ → ENNReal := fun p =>
+      ENNReal.ofReal (p.1 * ‖deriv gα (circleMap 0 p.1 p.2)‖ ^ 2)
+    have hdgα_holo := RudinRCA.Chapter10.holomorphicOn_deriv isOpen_ball hgα_holo
+    have hh_cont : ContinuousOn h_prod S := by
+      have hcm_maps : MapsTo (fun p : ℝ × ℝ => circleMap 0 p.1 p.2) S (ball (0 : ℂ) 1) := by
+        rintro ⟨ρ, θ⟩ ⟨hρ, _⟩
+        rw [mem_ball_zero_iff, norm_circleMap_zero, abs_of_pos (by linarith [hρ.1])]
+        exact hρ.2
+      have hcm_cont : Continuous (fun p : ℝ × ℝ => circleMap 0 p.1 p.2) := by
+        simp only [circleMap_zero]
+        exact (Complex.continuous_ofReal.comp continuous_fst).mul
+          (Complex.continuous_exp.comp
+            ((Complex.continuous_ofReal.comp continuous_snd).mul continuous_const))
+      have hd_cont : ContinuousOn (fun p : ℝ × ℝ => deriv gα (circleMap 0 p.1 p.2)) S :=
+        (RudinRCA.Chapter10.continuousOn_of_holomorphicOn hdgα_holo).comp
+          hcm_cont.continuousOn hcm_maps
+      exact ENNReal.continuous_ofReal.comp_continuousOn
+        (continuousOn_fst.mul ((continuous_norm.comp_continuousOn hd_cont).pow 2))
+    have hprod_le : (∫⁻ p in S, h_prod p ∂MeasureTheory.volume) ≤ ENNReal.ofReal (Real.pi * M ^ 2) := by
+      refine le_trans ?_ harea
+      refine le_trans ?_ (MeasureTheory.lintegral_mono' (MeasureTheory.Measure.restrict_mono hS_sub le_rfl) le_rfl)
+      refine MeasureTheory.setLIntegral_mono' hS_meas ?_
+      rintro ⟨ρ, θ⟩ ⟨hρ, _⟩
+      have hρ_pos : 0 < ρ := by linarith [hρ.1]
+      have hz_in : Complex.polarCoord.symm (ρ, θ) ∈ ball (0 : ℂ) 1 \ {0} := by
+        rw [hpolar_eq_circle]
+        have hn : ‖circleMap 0 ρ θ‖ = ρ := by rw [norm_circleMap_zero, abs_of_pos hρ_pos]
+        refine ⟨mem_ball_zero_iff.mpr (by rw [hn]; exact hρ.2), ?_⟩
+        intro h0; rw [mem_singleton_iff] at h0; rw [h0, norm_zero] at hn; linarith
+      dsimp [h_prod]
+      rw [Set.indicator_of_mem hz_in, hpolar_eq_circle, ← ENNReal.ofReal_mul (sq_nonneg _), mul_comm]
+    -- Apply Tonelli (`setLIntegral_prod_symm`) on `S = Ioo (1/2) 1 ×ˢ Ioo (-π) π`
+    have htonelli : (∫⁻ p in S, h_prod p ∂MeasureTheory.volume) =
+        ∫⁻ θ in Ioo (-Real.pi) Real.pi,
+          (∫⁻ ρ in Ioo (1 / 2 : ℝ) 1, h_prod (ρ, θ) ∂MeasureTheory.volume) ∂MeasureTheory.volume := by
+      dsimp [S]
+      rw [MeasureTheory.Measure.volume_eq_prod]
+      exact MeasureTheory.setLIntegral_prod_symm h_prod
+        (hh_cont.aestronglyMeasurable hS_meas).aemeasurable
+    have hlt_top : (∫⁻ θ in Ioo (-Real.pi) Real.pi,
+        (∫⁻ ρ in Ioo (1 / 2 : ℝ) 1, h_prod (ρ, θ) ∂MeasureTheory.volume) ∂MeasureTheory.volume) < ⊤ := by
+      rw [← htonelli]
+      exact lt_of_le_of_lt hprod_le ENNReal.ofReal_lt_top
+    have hae_fin : ∀ᵐ θ ∂(MeasureTheory.volume.restrict (Ioo (-Real.pi) Real.pi)),
+        (∫⁻ ρ in Ioo (1 / 2 : ℝ) 1, h_prod (ρ, θ) ∂MeasureTheory.volume) < ⊤ := by
+      have hm_prod : AEMeasurable h_prod
+          ((MeasureTheory.volume.restrict (Ioo (1 / 2 : ℝ) 1)).prod
+            (MeasureTheory.volume.restrict (Ioo (-Real.pi) Real.pi))) := by
+        rw [MeasureTheory.Measure.prod_restrict, ← MeasureTheory.Measure.volume_eq_prod]
+        exact (hh_cont.aestronglyMeasurable hS_meas).aemeasurable
+      exact MeasureTheory.ae_lt_top' hm_prod.lintegral_prod_left' hlt_top.ne
+    rw [MeasureTheory.ae_restrict_iff' measurableSet_Ioo] at hae_fin
+    filter_upwards [hae_fin] with θ hθ_imp hθ_in
+    have hfin := hθ_imp hθ_in
+    -- Bound `∫⁻ ρ in Ioo (1/2) 1, ofReal ‖deriv gα (circleMap 0 ρ θ)‖ < ⊤` via `x ≤ 1/2 + ρ x^2`
+    let v_fn : ℝ → ℂ := fun ρ => deriv gα (circleMap 0 ρ θ) * Complex.exp ((θ : ℂ) * Complex.I)
+    have hv_cont : ContinuousOn v_fn (Ioo (1 / 2 : ℝ) 1) := by
+      refine ContinuousOn.mul ?_ continuousOn_const
+      intro ρ hρ
+      have hρ_pos : 0 < ρ := by linarith [hρ.1]
+      have hcm_in : circleMap 0 ρ θ ∈ ball (0 : ℂ) 1 := by
+        rw [mem_ball_zero_iff, norm_circleMap_zero, abs_of_pos hρ_pos]; exact hρ.2
+      have hc_cm : ContinuousAt (fun r : ℝ => circleMap 0 r θ) ρ := by
+        simp only [circleMap_zero]
+        exact (Complex.continuous_ofReal.mul continuous_const).continuousAt
+      exact (ContinuousAt.comp (g := deriv gα) (f := fun r : ℝ => circleMap 0 r θ)
+        (hdgα_holo _ hcm_in).continuousAt hc_cm).continuousWithinAt
+    have hv_norm : ∀ ρ : ℝ, ‖v_fn ρ‖ = ‖deriv gα (circleMap 0 ρ θ)‖ := by
+      intro ρ; dsimp [v_fn]
+      rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
+    have hv_lint : (∫⁻ ρ in Ioo (1 / 2 : ℝ) 1, ENNReal.ofReal ‖v_fn ρ‖ ∂MeasureTheory.volume) < ⊤ := by
+      have hle_sum : ∀ ρ ∈ Ioo (1 / 2 : ℝ) 1,
+          ENNReal.ofReal ‖v_fn ρ‖ ≤ ENNReal.ofReal (1 / 2 : ℝ) + h_prod (ρ, θ) := by
+        intro ρ hρ
+        rw [hv_norm]
+        dsimp [h_prod]
+        rw [← ENNReal.ofReal_add (by norm_num) (mul_nonneg (by linarith [hρ.1]) (sq_nonneg _))]
+        apply ENNReal.ofReal_le_ofReal
+        set x : ℝ := ‖deriv gα (circleMap 0 ρ θ)‖
+        have hx_sq : 0 ≤ (x - 1) ^ 2 := sq_nonneg (x - 1)
+        have hρ_ge : (1 / 2 : ℝ) * x ^ 2 ≤ ρ * x ^ 2 :=
+          mul_le_mul_of_nonneg_right hρ.1.le (sq_nonneg x)
+        linarith
+      have hmono := MeasureTheory.setLIntegral_mono' (μ := MeasureTheory.volume) measurableSet_Ioo hle_sum
+      have hadd := MeasureTheory.lintegral_add_left'
+        (aemeasurable_const (b := ENNReal.ofReal (1 / 2 : ℝ)))
+        (μ := MeasureTheory.volume.restrict (Ioo (1 / 2 : ℝ) 1)) (fun ρ => h_prod (ρ, θ))
+      have hconst_lt : (∫⁻ _ in Ioo (1 / 2 : ℝ) 1, ENNReal.ofReal (1 / 2 : ℝ) ∂MeasureTheory.volume) < ⊤ := by
+        rw [MeasureTheory.setLIntegral_const, Real.volume_Ioo]
+        exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top
+      exact lt_of_le_of_lt hmono (by rw [hadd]; exact ENNReal.add_lt_top.mpr ⟨hconst_lt, hfin⟩)
+    have hv_int : MeasureTheory.IntegrableOn v_fn (Ioo (1 / 2 : ℝ) 1) MeasureTheory.volume := by
+      refine ⟨hv_cont.aestronglyMeasurable measurableSet_Ioo, ?_⟩
+      rw [MeasureTheory.hasFiniteIntegral_iff_norm]
+      exact hv_lint
+    have hv_int34 : MeasureTheory.IntegrableOn v_fn (Ioo (3 / 4 : ℝ) 1) MeasureTheory.volume :=
+      hv_int.mono_set (Ioo_subset_Ioo (by norm_num) le_rfl)
+    -- Express `gα (circleMap 0 r θ)` for `r ∈ Ioo (3/4) 1` via FTC + Dominated Convergence
+    let L : ℂ := gα (circleMap 0 (3 / 4 : ℝ) θ) +
+      ∫ ρ in Ioo (3 / 4 : ℝ) 1, v_fn ρ ∂MeasureTheory.volume
+    refine ⟨L, ?_⟩
+    have hshift_eq : ∀ ρ : ℝ, g (circleMap 0 ρ (θ + α)) = gα (circleMap 0 ρ θ) := by
+      intro ρ
+      dsimp [gα, uα]
+      congr 1
+      simp only [circleMap_zero, Complex.ofReal_add, add_mul, Complex.exp_add]
+      ring
+    simp_rw [hshift_eq]
+    have hlim_int : Tendsto
+        (fun r : ℝ => ∫ ρ in Ioo (3 / 4 : ℝ) 1, (Ioc (3 / 4 : ℝ) r).indicator v_fn ρ ∂MeasureTheory.volume)
+        (𝓝[<] (1 : ℝ))
+        (𝓝 (∫ ρ in Ioo (3 / 4 : ℝ) 1, v_fn ρ ∂MeasureTheory.volume)) := by
+      refine MeasureTheory.tendsto_integral_filter_of_dominated_convergence
+        (fun ρ => ‖v_fn ρ‖) ?_ ?_ hv_int34.norm ?_
+      · refine Filter.Eventually.of_forall fun r => ?_
+        exact hv_int34.aestronglyMeasurable.indicator measurableSet_Ioc
+      · refine Filter.Eventually.of_forall fun r => Filter.Eventually.of_forall fun ρ => ?_
+        by_cases h : ρ ∈ Ioc (3 / 4 : ℝ) r
+        · simp [h]
+        · simp [h]
+      · rw [MeasureTheory.ae_restrict_iff' measurableSet_Ioo]
+        refine Filter.Eventually.of_forall fun ρ hρ => ?_
+        have hev : (fun r : ℝ => (Ioc (3 / 4 : ℝ) r).indicator v_fn ρ) =ᶠ[𝓝[<] (1 : ℝ)]
+            fun _ => v_fn ρ := by
+          filter_upwards [nhdsWithin_le_nhds (Ioi_mem_nhds hρ.2)] with r hr
+          have hmem : ρ ∈ Ioc (3 / 4 : ℝ) r := ⟨hρ.1, le_of_lt hr⟩
+          simp only [Set.indicator_of_mem hmem]
+        exact tendsto_const_nhds.congr' hev.symm
+    have hftc_ev : (fun r : ℝ => gα (circleMap 0 (3 / 4 : ℝ) θ) +
+        ∫ ρ in Ioo (3 / 4 : ℝ) 1, (Ioc (3 / 4 : ℝ) r).indicator v_fn ρ ∂MeasureTheory.volume) =ᶠ[𝓝[<] (1 : ℝ)]
+        fun r : ℝ => gα (circleMap 0 r θ) := by
+      filter_upwards [Ioo_mem_nhdsLT (by norm_num : (3 / 4 : ℝ) < 1)] with r hr
+      have hind_eq : (∫ ρ in Ioo (3 / 4 : ℝ) 1, (Ioc (3 / 4 : ℝ) r).indicator v_fn ρ ∂MeasureTheory.volume) =
+          ∫ ρ in (3 / 4 : ℝ)..r, v_fn ρ := by
+        have hinter : Ioc (3 / 4 : ℝ) r ∩ Ioo (3 / 4 : ℝ) 1 = Ioc (3 / 4 : ℝ) r :=
+          Set.inter_eq_left.mpr fun x hx => ⟨hx.1, lt_of_le_of_lt hx.2 hr.2⟩
+        rw [MeasureTheory.integral_indicator measurableSet_Ioc,
+          MeasureTheory.Measure.restrict_restrict measurableSet_Ioc,
+          hinter, ← intervalIntegral.integral_of_le hr.1.le]
+      rw [hind_eq]
+      have hderiv_r : ∀ ρ ∈ Set.uIcc (3 / 4 : ℝ) r,
+          HasDerivAt (fun s : ℝ => gα (circleMap 0 s θ)) (v_fn ρ) ρ := by
+        intro ρ hρ_u
+        rw [Set.uIcc_of_le hr.1.le] at hρ_u
+        have hρ_pos : 0 < ρ := by linarith [hρ_u.1]
+        have hcm_in : circleMap 0 ρ θ ∈ ball (0 : ℂ) 1 := by
+          rw [mem_ball_zero_iff, norm_circleMap_zero, abs_of_pos hρ_pos]
+          exact lt_of_le_of_lt hρ_u.2 hr.2
+        have hd_cm : HasDerivAt (fun s : ℝ => circleMap 0 s θ) (Complex.exp ((θ : ℂ) * Complex.I)) ρ := by
+          simp only [circleMap_zero]
+          simpa using (Complex.ofRealCLM.hasDerivAt (x := ρ)).mul_const (Complex.exp ((θ : ℂ) * Complex.I))
+        exact HasDerivAt.comp (h₂ := gα) (h := fun s : ℝ => circleMap 0 s θ) ρ
+          (hgα_holo _ hcm_in).hasDerivAt hd_cm
+      have hint_iv : IntervalIntegrable v_fn MeasureTheory.volume (3 / 4 : ℝ) r := by
+        rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hr.1.le]
+        exact hv_int.mono_set (fun ρ hρ => ⟨by linarith [hρ.1], lt_of_le_of_lt hρ.2 hr.2⟩)
+      rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv_r hint_iv]
+      ring
+    exact (tendsto_const_nhds.add hlim_int).congr' hftc_ev
+  -- Cover `ℝ` by countably many shifted intervals `(k - π, k + π)` for `k : ℤ`
+  have hae_z : ∀ k : ℤ, ∀ᵐ φ ∂MeasureTheory.volume, φ ∈ Ioo ((k : ℝ) - Real.pi) ((k : ℝ) + Real.pi) →
+      ∃ L : ℂ, Tendsto (fun ρ : ℝ => g (circleMap 0 ρ φ)) (𝓝[<] 1) (𝓝 L) := by
+    intro k
+    have hk := hae_core (k : ℝ)
+    -- Transport along translation `θ ↦ θ + k`
+    have hmp : MeasureTheory.MeasurePreserving (fun φ : ℝ => φ - (k : ℝ))
+        MeasureTheory.volume MeasureTheory.volume :=
+      MeasureTheory.measurePreserving_sub_right MeasureTheory.volume (k : ℝ)
+    have hpull := hmp.quasiMeasurePreserving.ae hk
+    filter_upwards [hpull] with φ hφ hφ_in
+    have hsub_in : φ - (k : ℝ) ∈ Ioo (-Real.pi) Real.pi := ⟨by linarith [hφ_in.1], by linarith [hφ_in.2]⟩
+    simpa [sub_add_cancel] using hφ hsub_in
+  rw [← MeasureTheory.ae_all_iff] at hae_z
+  filter_upwards [hae_z] with φ hφ
+  let k : ℤ := ⌊φ⌋
+  have hk1 : (k : ℝ) ≤ φ := Int.floor_le φ
+  have hk2 : φ < (k : ℝ) + 1 := Int.lt_floor_add_one φ
+  exact hφ k ⟨by linarith [Real.two_le_pi], by linarith [Real.two_le_pi]⟩
+
+/-- If `h` is holomorphic and bounded on `ball 0 1`, `a < b`, and `h (circleMap 0 ρ φ) → 0` as
+`ρ → 1⁻` for a.e. `φ ∈ Ioo a b`, then `h 0 = 0`. -/
+theorem holomorphic_zero_at_zero_of_ae_radial_zero_arc {h : ℂ → ℂ}
+    (hh_holo : RudinRCA.Chapter10.HolomorphicOn h (ball (0 : ℂ) 1))
+    {B : ℝ} (hB : 0 ≤ B) (hh_bdd : ∀ w ∈ ball (0 : ℂ) 1, ‖h w‖ ≤ B)
+    {a b : ℝ} (hab : a < b)
+    (hae : ∀ᵐ φ ∂(MeasureTheory.volume.restrict (Ioo a b)),
+      Tendsto (fun ρ : ℝ => h (circleMap 0 ρ φ)) (𝓝[<] 1) (𝓝 0)) :
+    h 0 = 0 := by
+  have hba_pos : 0 < b - a := sub_pos.mpr hab
+  obtain ⟨N, hN⟩ := exists_nat_gt (2 * Real.pi / (b - a))
+  have hN_pos : 0 < N := by
+    rcases Nat.eq_zero_or_pos N with rfl | hp
+    · have : 0 < 2 * Real.pi / (b - a) := div_pos (by positivity) hba_pos
+      simp at hN; linarith
+    · exact hp
+  let s : ℝ := 2 * Real.pi / (N : ℝ)
+  have hs_pos : 0 < s := div_pos (by positivity) (Nat.cast_pos.mpr hN_pos)
+  have hs_lt : s < b - a := by
+    dsimp [s]
+    rw [div_lt_iff₀ (Nat.cast_pos.mpr hN_pos)]
+    have := (div_lt_iff₀ hba_pos).mp hN
+    linarith
+  let ω : ℂ := Complex.exp ((s : ℂ) * Complex.I)
+  have hω_norm : ‖ω‖ = 1 := Complex.norm_exp_ofReal_mul_I s
+  let P : ℂ → ℂ := fun w => ∏ j ∈ Finset.range N, h (ω ^ j * w)
+  have hP_holo : RudinRCA.Chapter10.HolomorphicOn P (ball (0 : ℂ) 1) := by
+    intro w hw
+    dsimp [P]
+    have hdiff_prod : ∀ S : Finset ℕ,
+        (∀ j ∈ S, DifferentiableAt ℂ (fun z => h (ω ^ j * z)) w) →
+        DifferentiableAt ℂ (fun z => ∏ j ∈ S, h (ω ^ j * z)) w := by
+      intro S
+      induction S using Finset.induction_on with
+      | empty => intro _; simp only [Finset.prod_empty]; exact differentiableAt_const (1 : ℂ)
+      | @insert k s' hk ih =>
+        intro hfac
+        have h_eq : (fun z => ∏ j ∈ insert k s', h (ω ^ j * z)) =
+            fun z => h (ω ^ k * z) * ∏ j ∈ s', h (ω ^ j * z) := by
+          ext z; exact Finset.prod_insert hk
+        rw [h_eq]
+        exact (hfac k (Finset.mem_insert_self k s')).mul
+          (ih fun j hj => hfac j (Finset.mem_insert_of_mem hj))
+    refine hdiff_prod (Finset.range N) fun j _ => ?_
+    have hm : ω ^ j * w ∈ ball (0 : ℂ) 1 := by
+      rw [mem_ball_zero_iff] at hw ⊢
+      rw [norm_mul, norm_pow, hω_norm, one_pow, one_mul]; exact hw
+    exact (hh_holo _ hm).comp w (differentiableAt_id.const_mul (ω ^ j))
+  let B₁ : ℝ := max B 1
+  have hB₁_pos : 0 < B₁ := lt_max_of_lt_right zero_lt_one
+  have _ := hB
+  have hP_bdd : ∀ w ∈ ball (0 : ℂ) 1, ‖P w‖ ≤ B₁ ^ N := by
+    intro w hw
+    dsimp [P]
+    rw [norm_prod]
+    calc
+      (∏ j ∈ Finset.range N, ‖h (ω ^ j * w)‖)
+          ≤ ∏ _j ∈ Finset.range N, B₁ := by
+            gcongr with j _
+            have hm : ω ^ j * w ∈ ball (0 : ℂ) 1 := by
+              rw [mem_ball_zero_iff] at hw ⊢
+              rw [norm_mul, norm_pow, hω_norm, one_pow, one_mul]; exact hw
+            exact (hh_bdd _ hm).trans (le_max_left B 1)
+      _ = B₁ ^ N := by simp
+  -- Show `P (circleMap 0 ρ θ) → 0` as `ρ → 1⁻` for a.e. `θ ∈ ℝ`
+  let Z : Set ℝ := {φ : ℝ | Tendsto (fun ρ : ℝ => h (circleMap 0 ρ φ)) (𝓝[<] 1) (𝓝 0)}
+  have hZ_per : ∀ (φ : ℝ) (m : ℤ), φ - 2 * Real.pi * (m : ℝ) ∈ Z → φ ∈ Z := by
+    intro φ m hm
+    dsimp [Z] at hm ⊢
+    refine hm.congr fun ρ => ?_
+    congr 1
+    simp only [circleMap_zero]
+    congr 1
+    have harg : (φ : ℂ) * Complex.I =
+        ((φ - 2 * Real.pi * (m : ℝ) : ℝ) : ℂ) * Complex.I +
+          (m : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := by
+      push_cast; ring
+    rw [harg, Complex.exp_add, Complex.exp_int_mul_two_pi_mul_I m, mul_one]
+  have hae_imp : ∀ᵐ φ ∂MeasureTheory.volume, φ ∈ Ioo a b → φ ∈ Z := by
+    rwa [MeasureTheory.ae_restrict_iff' measurableSet_Ioo] at hae
+  have hae_pair : ∀ (j : Fin N) (m : ℤ),
+      ∀ᵐ θ ∂MeasureTheory.volume,
+        θ + (j.1 : ℝ) * s - 2 * Real.pi * (m : ℝ) ∈ Ioo a b →
+          θ + (j.1 : ℝ) * s ∈ Z := by
+    intro j m
+    let c : ℝ := (j.1 : ℝ) * s - 2 * Real.pi * (m : ℝ)
+    have hmp : MeasureTheory.MeasurePreserving (fun θ : ℝ => θ + c)
+        MeasureTheory.volume MeasureTheory.volume :=
+      MeasureTheory.measurePreserving_add_right MeasureTheory.volume c
+    filter_upwards [hmp.quasiMeasurePreserving.ae hae_imp] with θ hθ hin
+    have hc_eq : θ + c = θ + (j.1 : ℝ) * s - 2 * Real.pi * (m : ℝ) := by dsimp [c]; ring
+    rw [← hc_eq] at hin
+    have hz : θ + c ∈ Z := hθ hin
+    rw [hc_eq] at hz
+    exact hZ_per (θ + (j.1 : ℝ) * s) m hz
+  have hae_all : ∀ᵐ θ ∂MeasureTheory.volume, ∀ (j : Fin N) (m : ℤ),
+      θ + (j.1 : ℝ) * s - 2 * Real.pi * (m : ℝ) ∈ Ioo a b → θ + (j.1 : ℝ) * s ∈ Z := by
+    rw [MeasureTheory.ae_all_iff]
+    intro j
+    rw [MeasureTheory.ae_all_iff]
+    exact hae_pair j
+  have hae_P0 : ∀ᵐ θ ∂MeasureTheory.volume,
+      Tendsto (fun ρ : ℝ => P (circleMap 0 ρ θ)) (𝓝[<] 1) (𝓝 0) := by
+    filter_upwards [hae_all] with θ hθ
+    -- Find `q = ⌊(a - θ) / s⌋ + 1`, write `q = N * (q / N) + (q % N)`
+    let q : ℤ := ⌊(a - θ) / s⌋ + 1
+    have hq_lo : a < θ + (q : ℝ) * s := by
+      have h1 : (a - θ) / s < (q : ℝ) := by
+        dsimp [q]; push_cast; exact Int.lt_floor_add_one _
+      have := (div_lt_iff₀ hs_pos).mp h1
+      linarith
+    have hq_hi : θ + (q : ℝ) * s < b := by
+      have h1 : (q : ℝ) - 1 ≤ (a - θ) / s := by
+        dsimp [q]; push_cast; linarith [Int.floor_le ((a - θ) / s)]
+      have h2 : ((q : ℝ) - 1) * s ≤ a - θ := (le_div_iff₀ hs_pos).mp h1
+      nlinarith
+    have hN_int_pos : (0 : ℤ) < (N : ℤ) := Int.natCast_pos.mpr hN_pos
+    let r_int : ℤ := q % (N : ℤ)
+    have hr_nonneg : 0 ≤ r_int := Int.emod_nonneg q hN_int_pos.ne'
+    have hr_lt : r_int < (N : ℤ) := Int.emod_lt_of_pos q hN_int_pos
+    let j_nat : ℕ := r_int.toNat
+    have hj_lt : j_nat < N := by
+      have : (j_nat : ℤ) = r_int := Int.toNat_of_nonneg hr_nonneg
+      omega
+    let m : ℤ := -(q / (N : ℤ))
+    have hq_decomp : (q : ℝ) * s = (j_nat : ℝ) * s - 2 * Real.pi * (m : ℝ) := by
+      have hdiv : q = (N : ℤ) * (q / (N : ℤ)) + r_int := by
+        dsimp [r_int]
+        rw [Int.emod_def]
+        ring
+      have hr_eq : (j_nat : ℤ) = r_int := Int.toNat_of_nonneg hr_nonneg
+      have hq_r : (q : ℝ) = (N : ℝ) * (-(m : ℝ)) + (j_nat : ℝ) := by
+        have hdiv_r : (q : ℝ) = ((N : ℤ) : ℝ) * ((q / (N : ℤ) : ℤ) : ℝ) + (r_int : ℝ) := by
+          exact_mod_cast hdiv
+        push_cast at hdiv_r
+        have hm_r : (m : ℝ) = -((q / (N : ℤ) : ℤ) : ℝ) := by dsimp [m]; push_cast; ring
+        have hj_r : (j_nat : ℝ) = (r_int : ℝ) := by exact_mod_cast hr_eq
+        nlinarith
+      have hNs : (N : ℝ) * s = 2 * Real.pi := by
+        dsimp [s]; exact mul_div_cancel₀ _ (Nat.cast_ne_zero.mpr hN_pos.ne')
+      calc
+        (q : ℝ) * s = ((N : ℝ) * (-(m : ℝ)) + (j_nat : ℝ)) * s := by rw [hq_r]
+        _ = -((N : ℝ) * s) * (m : ℝ) + (j_nat : ℝ) * s := by ring
+        _ = (j_nat : ℝ) * s - 2 * Real.pi * (m : ℝ) := by rw [hNs]; ring
+    have hin_ab : θ + (j_nat : ℝ) * s - 2 * Real.pi * (m : ℝ) ∈ Ioo a b :=
+      ⟨by linarith [hq_lo, hq_decomp], by linarith [hq_hi, hq_decomp]⟩
+    have hj_Z : θ + (j_nat : ℝ) * s ∈ Z := hθ ⟨j_nat, hj_lt⟩ m hin_ab
+    -- Factor `P (circleMap 0 ρ θ)` into `h (circleMap 0 ρ (θ + j_nat * s))` times bounded rest
+    let rest : ℝ → ℂ := fun ρ => ∏ k ∈ (Finset.range N).erase j_nat, h (ω ^ k * circleMap 0 ρ θ)
+    have hfact : ∀ ρ : ℝ, P (circleMap 0 ρ θ) =
+        h (circleMap 0 ρ (θ + (j_nat : ℝ) * s)) * rest ρ := by
+      intro ρ
+      dsimp [P, rest]
+      rw [← Finset.mul_prod_erase (Finset.range N) (fun k => h (ω ^ k * circleMap 0 ρ θ))
+        (Finset.mem_range.mpr hj_lt)]
+      congr 2
+      dsimp [ω]
+      rw [circleMap_zero, circleMap_zero, ← Complex.exp_nat_mul]
+      have hexp : Complex.exp ((j_nat : ℂ) * ((s : ℂ) * Complex.I)) *
+          ((ρ : ℂ) * Complex.exp ((θ : ℂ) * Complex.I)) =
+          (ρ : ℂ) * Complex.exp (((θ + (j_nat : ℝ) * s : ℝ) : ℂ) * Complex.I) := by
+        rw [mul_left_comm, ← Complex.exp_add]
+        congr 2
+        push_cast; ring
+      exact hexp
+    simp_rw [hfact]
+    -- `h (...) → 0` and `‖rest ρ‖ ≤ B₁ ^ (N - 1)` eventually for `ρ ∈ (0, 1)`
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have hB_pow_pos : 0 < B₁ ^ N := pow_pos hB₁_pos N
+    have hlim0 := Metric.tendsto_nhds.mp hj_Z (ε / B₁ ^ N) (div_pos hε hB_pow_pos)
+    filter_upwards [hlim0, Ioo_mem_nhdsLT zero_lt_one] with ρ hρ_small hρ_in
+    rw [dist_zero_right] at hρ_small ⊢
+    have hrest_le : ‖rest ρ‖ ≤ B₁ ^ N := by
+      dsimp [rest]
+      rw [norm_prod]
+      calc
+        (∏ k ∈ (Finset.range N).erase j_nat, ‖h (ω ^ k * circleMap 0 ρ θ)‖)
+            ≤ ∏ _k ∈ (Finset.range N).erase j_nat, B₁ := by
+              gcongr with k _
+              have hm : ω ^ k * circleMap 0 ρ θ ∈ ball (0 : ℂ) 1 := by
+                rw [mem_ball_zero_iff, norm_mul, norm_pow, hω_norm, one_pow, one_mul,
+                  norm_circleMap_zero, abs_of_pos hρ_in.1]
+                exact hρ_in.2
+              exact (hh_bdd _ hm).trans (le_max_left B 1)
+        _ = B₁ ^ ((Finset.range N).erase j_nat).card := by simp
+        _ ≤ B₁ ^ N := pow_le_pow_right₀ (le_max_right B 1) (Finset.card_erase_le.trans (by simp))
+    rw [norm_mul]
+    calc
+      ‖h (circleMap 0 ρ (θ + (j_nat : ℝ) * s))‖ * ‖rest ρ‖
+          ≤ ‖h (circleMap 0 ρ (θ + (j_nat : ℝ) * s))‖ * B₁ ^ N :=
+            mul_le_mul_of_nonneg_left hrest_le (norm_nonneg _)
+      _ < (ε / B₁ ^ N) * B₁ ^ N :=
+            mul_lt_mul_of_pos_right hρ_small hB_pow_pos
+      _ = ε := div_mul_cancel₀ ε hB_pow_pos.ne'
+  -- Mean value property on `circleMap 0 r θ` + Dominated Convergence as `r → 1⁻`
+  have hmvp : ∀ r ∈ Ioo (0 : ℝ) 1, P 0 = Real.circleAverage P 0 r := by
+    intro r hr
+    have habs : |r| = r := abs_of_pos hr.1
+    have hcont_cl : ContinuousOn P (closedBall (0 : ℂ) |r|) := by
+      rw [habs]
+      exact (RudinRCA.Chapter10.continuousOn_of_holomorphicOn hP_holo).mono
+        (Metric.closedBall_subset_ball hr.2)
+    have hdiff_in : ∀ z ∈ ball (0 : ℂ) |r| \ (∅ : Set ℂ), DifferentiableAt ℂ P z := by
+      rw [habs]
+      exact fun z hz => hP_holo z (Metric.ball_subset_ball hr.2.le hz.1)
+    exact (circleAverage_of_differentiable_on_off_countable Set.countable_empty hcont_cl hdiff_in).symm
+  have hlim_avg : Tendsto (fun r : ℝ => Real.circleAverage P 0 r) (𝓝[<] 1) (𝓝 0) := by
+    have hdef : ∀ r : ℝ, Real.circleAverage P 0 r =
+        (2 * Real.pi)⁻¹ • ∫ θ in Ioc (0 : ℝ) (2 * Real.pi), P (circleMap 0 r θ) ∂MeasureTheory.volume := by
+      intro r
+      rw [Real.circleAverage_def, intervalIntegral.integral_of_le (by positivity)]
+    simp_rw [hdef]
+    have hlim_int0 : Tendsto
+        (fun r : ℝ => ∫ θ in Ioc (0 : ℝ) (2 * Real.pi), P (circleMap 0 r θ) ∂MeasureTheory.volume)
+        (𝓝[<] 1)
+        (𝓝 (∫ _θ in Ioc (0 : ℝ) (2 * Real.pi), (0 : ℂ) ∂MeasureTheory.volume)) := by
+      refine MeasureTheory.tendsto_integral_filter_of_dominated_convergence
+        (fun _ => B₁ ^ N) ?_ ?_ ?_ ?_
+      · filter_upwards [Ioo_mem_nhdsLT zero_lt_one] with r hr
+        have hcP : ContinuousOn P (ball (0 : ℂ) 1) :=
+          RudinRCA.Chapter10.continuousOn_of_holomorphicOn hP_holo
+        have hc : Continuous (fun θ : ℝ => P (circleMap 0 r θ)) := by
+          refine hcP.comp_continuous (continuous_circleMap 0 r) fun θ => ?_
+          rw [mem_ball_zero_iff, norm_circleMap_zero, abs_of_pos hr.1]
+          exact hr.2
+        exact hc.aestronglyMeasurable
+      · filter_upwards [Ioo_mem_nhdsLT zero_lt_one] with r hr
+        refine Filter.Eventually.of_forall fun θ => hP_bdd _ ?_
+        rw [mem_ball_zero_iff, norm_circleMap_zero, abs_of_pos hr.1]
+        exact hr.2
+      · exact MeasureTheory.integrableOn_const (hs := by rw [Real.volume_Ioc]; exact ENNReal.ofReal_lt_top.ne)
+      · exact MeasureTheory.ae_restrict_of_ae hae_P0
+    simpa using hlim_int0.const_smul (2 * Real.pi)⁻¹
+  have hev_const : (fun r : ℝ => Real.circleAverage P 0 r) =ᶠ[𝓝[<] 1] fun _ => P 0 := by
+    filter_upwards [Ioo_mem_nhdsLT zero_lt_one] with r hr
+    exact (hmvp r hr).symm
+  have hP0_eq_0 : P 0 = 0 := tendsto_nhds_unique tendsto_const_nhds (hlim_avg.congr' hev_const)
+  have hP0_pow : P 0 = h 0 ^ N := by
+    dsimp [P]
+    simp [mul_zero]
+  rw [hP0_pow] at hP0_eq_0
+  exact (pow_eq_zero_iff hN_pos.ne').mp hP0_eq_0
+
+/-! ### Boundary modulus 1, Lindelöf curve convergence, and Theorem 14.18 -/
+
+/-- Properness of a holomorphic bijection `f : Ω → ball 0 1`: as `z ∈ Ω` approaches any boundary
+point `β ∈ frontier Ω`, `‖f z‖ → 1`. -/
+theorem tendsto_norm_one_nhdsWithin {Ω : Set ℂ} (hΩ_open : IsOpen Ω)
+    {f : ℂ → ℂ} (hf_holo : RudinRCA.Chapter10.HolomorphicOn f Ω)
+    (hf_bij : BijOn f Ω (ball (0 : ℂ) 1)) {β : ℂ} (hβ : β ∈ frontier Ω) :
+    Tendsto (fun z => ‖f z‖) (𝓝[Ω] β) (𝓝 1) := by
+  obtain ⟨g, hg_holo, hg_bij, hgf, _⟩ := (theorem14_7 hΩ_open hf_holo hf_bij).2.1
+  have hβ_notΩ : β ∉ Ω := by
+    have hint : interior Ω = Ω := hΩ_open.interior_eq
+    intro hmem
+    exact hβ.2 (hint.symm ▸ hmem)
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  let r : ℝ := max 0 (1 - ε / 2)
+  have hr_lt : r < 1 := max_lt zero_lt_one (by linarith)
+  let K : Set ℂ := g '' closedBall (0 : ℂ) r
+  have hK_compact : IsCompact K :=
+    (isCompact_closedBall (0 : ℂ) r).image_of_continuousOn
+      ((RudinRCA.Chapter10.continuousOn_of_holomorphicOn hg_holo).mono
+        (Metric.closedBall_subset_ball hr_lt))
+  have hK_sub : K ⊆ Ω := by
+    rintro _ ⟨w, hw, rfl⟩
+    exact hg_bij.mapsTo (Metric.closedBall_subset_ball hr_lt hw)
+  have hβ_notK : β ∉ K := fun h => hβ_notΩ (hK_sub h)
+  have hKc_nhds : Kᶜ ∈ 𝓝[Ω] β :=
+    nhdsWithin_le_nhds (hK_compact.isClosed.isOpen_compl.mem_nhds hβ_notK)
+  filter_upwards [self_mem_nhdsWithin, hKc_nhds] with z hzΩ hzKc
+  have hfz_lt : ‖f z‖ < 1 := mem_ball_zero_iff.mp (hf_bij.mapsTo hzΩ)
+  have hfz_gt : r < ‖f z‖ := by
+    by_contra hle
+    have hmemK : z ∈ K := ⟨f z, mem_closedBall_zero_iff.mpr (not_lt.mp hle), hgf z hzΩ⟩
+    exact hzKc hmemK
+  have hge : 1 - ε / 2 ≤ r := le_max_right 0 (1 - ε / 2)
+  rw [Real.dist_eq, abs_of_neg (by linarith)]
+  linarith
+
+/-- Helper: a curve `γ : [0, 1] → ℂ` continuous on `[0, 1]` mapping `[0, 1)` into `Ω` with
+`γ 1 = β` tends to `β` within `Ω` along `𝓝[<] 1`. -/
+theorem tendsto_nhdsWithin_of_curve_Icc {Ω : Set ℂ} {γ : ℝ → ℂ} {β : ℂ}
+    (hγ_cont : ContinuousOn γ (Icc (0 : ℝ) 1))
+    (hγ_in : ∀ s ∈ Ico (0 : ℝ) 1, γ s ∈ Ω) (hγ1 : γ 1 = β) :
+    Tendsto γ (𝓝[<] (1 : ℝ)) (𝓝[Ω] β) := by
+  have h_icc : Tendsto (fun t : ℝ => t) (𝓝[<] (1 : ℝ)) (𝓝[Icc (0 : ℝ) 1] 1) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+      (tendsto_id.mono_left nhdsWithin_le_nhds)
+      (by
+        filter_upwards [Ioo_mem_nhdsLT (zero_lt_one : (0 : ℝ) < 1)] with t ht
+        exact ⟨ht.1.le, ht.2.le⟩)
+  have hγ_nhds : Tendsto γ (𝓝[<] (1 : ℝ)) (𝓝 β) := by
+    rw [← hγ1]
+    exact (hγ_cont 1 (right_mem_Icc.mpr zero_le_one)).tendsto.comp h_icc
+  refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hγ_nhds ?_
+  filter_upwards [Ioo_mem_nhdsLT (zero_lt_one : (0 : ℝ) < 1)] with t ht
+  exact hγ_in t ⟨ht.1.le, ht.2⟩
+
+/-- Along any continuous curve `γ : [0, 1] → ℂ` mapping `[0, 1)` into a bounded open set `Ω` and
+ending at `γ 1 = β ∈ frontier Ω`, a holomorphic bijection `f : Ω → ball 0 1` converges as `t → 1⁻`
+to a point `w₀` of norm `1`. -/
+theorem lindelof_curve_tendsto {Ω : Set ℂ} (hΩ_open : IsOpen Ω)
+    (hΩ_bdd : Bornology.IsBounded Ω) {f : ℂ → ℂ}
+    (hf_holo : RudinRCA.Chapter10.HolomorphicOn f Ω)
+    (hf_bij : BijOn f Ω (ball (0 : ℂ) 1)) {β : ℂ} (hβ : β ∈ frontier Ω)
+    {γ : ℝ → ℂ} (hγ_cont : ContinuousOn γ (Icc (0 : ℝ) 1))
+    (hγ_in : ∀ s ∈ Ico (0 : ℝ) 1, γ s ∈ Ω) (hγ1 : γ 1 = β) :
+    ∃ w₀ : ℂ, ‖w₀‖ = 1 ∧ Tendsto (fun t => f (γ t)) (𝓝[<] 1) (𝓝 w₀) := by
+  obtain ⟨g, hg_holo, hg_bij, hgf, _⟩ := (theorem14_7 hΩ_open hf_holo hf_bij).2.1
+  have hβ_notΩ : β ∉ Ω := by
+    have hint : interior Ω = Ω := hΩ_open.interior_eq
+    intro hmem
+    exact hβ.2 (hint.symm ▸ hmem)
+  obtain ⟨M₀, hM₀⟩ := hΩ_bdd.subset_closedBall (0 : ℂ)
+  let M : ℝ := max M₀ 1
+  have hM_pos : 0 < M := lt_max_of_lt_right zero_lt_one
+  have hg_bdd : ∀ w ∈ ball (0 : ℂ) 1, ‖g w‖ ≤ M := by
+    intro w hw
+    have hz : g w ∈ closedBall (0 : ℂ) M₀ := hM₀ (hg_bij.mapsTo hw)
+    exact (mem_closedBall_zero_iff.mp hz).trans (le_max_left M₀ 1)
+  have hγ_tendsto_Ω : Tendsto γ (𝓝[<] (1 : ℝ)) (𝓝[Ω] β) :=
+    tendsto_nhdsWithin_of_curve_Icc hγ_cont hγ_in hγ1
+  let Γ : ℝ → ℂ := fun t => f (γ t)
+  have hnorm_lim : Tendsto (fun t => ‖Γ t‖) (𝓝[<] (1 : ℝ)) (𝓝 1) :=
+    (tendsto_norm_one_nhdsWithin hΩ_open hf_holo hf_bij hβ).comp hγ_tendsto_Ω
+  -- Choose `T₀ ∈ (0, 1)` such that `1 / 2 < ‖Γ t‖` for all `t ∈ [T₀, 1)`
+  have hev_half : ∀ᶠ t in 𝓝[<] (1 : ℝ), t ∈ Ioo (0 : ℝ) 1 ∧ (1 / 2 : ℝ) < ‖Γ t‖ := by
+    filter_upwards [Ioo_mem_nhdsLT (zero_lt_one : (0 : ℝ) < 1),
+      hnorm_lim.eventually (Ioi_mem_nhds (by norm_num : (1 / 2 : ℝ) < 1))] with t ht₁ ht₂
+    exact ⟨ht₁, ht₂⟩
+  obtain ⟨l₀, hl₀_lt_mem, hl₀_sub⟩ := (mem_nhdsLT_iff_exists_Ioo_subset).mp hev_half
+  have hl₀_lt : l₀ < 1 := hl₀_lt_mem
+  let T₀ : ℝ := (max l₀ 0 + 1) / 2
+  have hT₀_in : T₀ ∈ Ioo (0 : ℝ) 1 := by
+    have h1 : max l₀ 0 < 1 := max_lt hl₀_lt zero_lt_one
+    exact ⟨by positivity, by dsimp [T₀]; linarith⟩
+  have hΓ_half : ∀ t ∈ Ico T₀ 1, (1 / 2 : ℝ) < ‖Γ t‖ := by
+    intro t ht
+    have hmax_lt : max l₀ 0 < T₀ := by
+      dsimp [T₀]; linarith [max_lt hl₀_lt zero_lt_one]
+    have ht_ioo : t ∈ Ioo l₀ 1 := ⟨lt_of_le_of_lt (le_max_left l₀ 0) (lt_of_lt_of_le hmax_lt ht.1), ht.2⟩
+    exact (hl₀_sub ht_ioo).2
+  have hΓ_ne : ∀ t ∈ Ico T₀ 1, Γ t ≠ 0 := by
+    intro t ht h0
+    have := hΓ_half t ht
+    rw [h0, norm_zero] at this
+    linarith
+  have hΓ_cont : ContinuousOn Γ (Ico T₀ 1) := by
+    refine (RudinRCA.Chapter10.continuousOn_of_holomorphicOn hf_holo).comp
+      (hγ_cont.mono (fun t ht => ⟨le_trans hT₀_in.1.le ht.1, ht.2.le⟩)) ?_
+    intro t ht
+    exact hγ_in t ⟨le_trans hT₀_in.1.le ht.1, ht.2⟩
+  -- Lift `Γ` on `[T₀, 1)` to a continuous angle `ϑ`
+  obtain ⟨ϑ, hϑ_cont, hϑ_eq⟩ := exists_continuousOn_angle_Ico hT₀_in.2 hΓ_cont hΓ_ne
+  -- Show `ϑ` satisfies the Cauchy criterion as `t → 1⁻`
+  have hϑ_cauchy : ∀ ε > 0, ∃ T ∈ Ico T₀ 1, ∀ u ∈ Ico T 1, ∀ v ∈ Ico T 1, |ϑ v - ϑ u| < ε := by
+    by_contra hnot_cauchy
+    -- Derive an open interval `Ioo a b` (`a < b`) swept mod `2π` for all `T ∈ [T₀, 1)`
+    have hex_arc : ∃ a b : ℝ, a < b ∧ ∀ φ ∈ Ioo a b, ∀ T ∈ Ico T₀ 1,
+        ∃ t ∈ Ico T 1, ∃ m : ℤ, ϑ t = φ + 2 * Real.pi * (m : ℝ) := by
+      by_cases hub_hi : ∀ B : ℝ, ∃ t ∈ Ico T₀ 1, B < ϑ t
+      · -- Subcase 1: `ϑ` is unbounded above on `[T₀, 1)`
+        refine ⟨0, 2 * Real.pi, by positivity, ?_⟩
+        intro φ _ T hT
+        -- `ϑ` is bounded on compact `[T₀, T]`, hence unbounded above on `[T, 1)`
+        have hcomp : IsCompact (ϑ '' Icc T₀ T) :=
+          (isCompact_Icc).image_of_continuousOn
+            (hϑ_cont.mono (fun s hs => ⟨hs.1, lt_of_le_of_lt hs.2 hT.2⟩))
+        obtain ⟨B₀, hB₀⟩ := hcomp.bddAbove
+        let m : ℤ := ⌊(max B₀ (ϑ T) - φ) / (2 * Real.pi)⌋ + 1
+        have hm_gt : max B₀ (ϑ T) < φ + 2 * Real.pi * (m : ℝ) := by
+          have h1 : (max B₀ (ϑ T) - φ) / (2 * Real.pi) < (m : ℝ) := by
+            dsimp [m]; push_cast; exact Int.lt_floor_add_one _
+          have h2 := (div_lt_iff₀ (by positivity : (0 : ℝ) < 2 * Real.pi)).mp h1
+          linarith
+        obtain ⟨t₁, ht₁_in, ht₁_gt⟩ := hub_hi (φ + 2 * Real.pi * (m : ℝ))
+        have ht₁_ge_T : T ≤ t₁ := by
+          by_contra hlt
+          have hle_B₀ : ϑ t₁ ≤ B₀ := hB₀ ⟨t₁, ⟨ht₁_in.1, (not_le.mp hlt).le⟩, rfl⟩
+          have : B₀ ≤ max B₀ (ϑ T) := le_max_left _ _
+          linarith
+        have hivt : φ + 2 * Real.pi * (m : ℝ) ∈ ϑ '' Icc T t₁ := by
+          apply intermediate_value_Icc ht₁_ge_T
+            (hϑ_cont.mono (fun s hs => ⟨le_trans hT.1 hs.1, lt_of_le_of_lt hs.2 ht₁_in.2⟩))
+          exact ⟨le_trans (le_max_right B₀ (ϑ T)) hm_gt.le, ht₁_gt.le⟩
+        rcases hivt with ⟨t, ht_icc, ht_eq⟩
+        exact ⟨t, ⟨ht_icc.1, lt_of_le_of_lt ht_icc.2 ht₁_in.2⟩, m, ht_eq⟩
+      · by_cases hub_lo : ∀ B : ℝ, ∃ t ∈ Ico T₀ 1, ϑ t < B
+        · -- Subcase 2: `ϑ` is unbounded below on `[T₀, 1)`
+          refine ⟨0, 2 * Real.pi, by positivity, ?_⟩
+          intro φ _ T hT
+          have hcomp : IsCompact (ϑ '' Icc T₀ T) :=
+            (isCompact_Icc).image_of_continuousOn
+              (hϑ_cont.mono (fun s hs => ⟨hs.1, lt_of_le_of_lt hs.2 hT.2⟩))
+          obtain ⟨B₀, hB₀⟩ := hcomp.bddBelow
+          let m : ℤ := -(⌊(φ - min B₀ (ϑ T)) / (2 * Real.pi)⌋ + 1)
+          have hm_lt : φ + 2 * Real.pi * (m : ℝ) < min B₀ (ϑ T) := by
+            have h1 : (φ - min B₀ (ϑ T)) / (2 * Real.pi) < -(m : ℝ) := by
+              dsimp [m]; push_cast; linarith [Int.lt_floor_add_one ((φ - min B₀ (ϑ T)) / (2 * Real.pi))]
+            have h2 := (div_lt_iff₀ (by positivity : (0 : ℝ) < 2 * Real.pi)).mp h1
+            linarith
+          obtain ⟨t₁, ht₁_in, ht₁_lt⟩ := hub_lo (φ + 2 * Real.pi * (m : ℝ))
+          have ht₁_ge_T : T ≤ t₁ := by
+            by_contra hlt
+            have hge_B₀ : B₀ ≤ ϑ t₁ := hB₀ ⟨t₁, ⟨ht₁_in.1, (not_le.mp hlt).le⟩, rfl⟩
+            have : min B₀ (ϑ T) ≤ B₀ := min_le_left _ _
+            linarith
+          have hivt : φ + 2 * Real.pi * (m : ℝ) ∈ ϑ '' Icc T t₁ := by
+            apply intermediate_value_Icc' ht₁_ge_T
+              (hϑ_cont.mono (fun s hs => ⟨le_trans hT.1 hs.1, lt_of_le_of_lt hs.2 ht₁_in.2⟩))
+            exact ⟨ht₁_lt.le, le_trans hm_lt.le (min_le_right B₀ (ϑ T))⟩
+          rcases hivt with ⟨t, ht_icc, ht_eq⟩
+          exact ⟨t, ⟨ht_icc.1, lt_of_le_of_lt ht_icc.2 ht₁_in.2⟩, m, ht_eq⟩
+        · -- Subcase 3: `ϑ` is bounded on `[T₀, 1)` and fails Cauchy at `1⁻`
+          have hex_hi : ∃ B_hi : ℝ, ∀ t ∈ Ico T₀ 1, ϑ t ≤ B_hi := by
+            by_contra hno
+            apply hub_hi
+            intro B
+            by_contra hnoB
+            exact hno ⟨B, fun t ht => le_of_not_gt fun hgt => hnoB ⟨t, ht, hgt⟩⟩
+          have hex_lo : ∃ B_lo : ℝ, ∀ t ∈ Ico T₀ 1, B_lo ≤ ϑ t := by
+            by_contra hno
+            apply hub_lo
+            intro B
+            by_contra hnoB
+            exact hno ⟨B, fun t ht => le_of_not_gt fun hlt => hnoB ⟨t, ht, hlt⟩⟩
+          obtain ⟨B_hi, hB_hi⟩ := hex_hi
+          obtain ⟨B_lo, hB_lo⟩ := hex_lo
+          have hex_eps : ∃ ε₀ > 0, ∀ T ∈ Ico T₀ 1, ∃ u ∈ Ico T 1, ∃ v ∈ Ico T 1, ε₀ ≤ ϑ v - ϑ u := by
+            by_contra hno
+            apply hnot_cauchy
+            intro ε hε
+            by_contra hnoT
+            apply hno ⟨ε, hε, fun T hT => ?_⟩
+            have hex_uv : ∃ u ∈ Ico T 1, ∃ v ∈ Ico T 1, ε ≤ |ϑ v - ϑ u| := by
+              by_contra hall
+              exact hnoT ⟨T, hT, fun u hu v hv => lt_of_not_ge fun hge => hall ⟨u, hu, v, hv, hge⟩⟩
+            rcases hex_uv with ⟨u, hu, v, hv, hge⟩
+            rcases le_total (ϑ u) (ϑ v) with huv | hvu
+            · exact ⟨u, hu, v, hv, by rwa [abs_of_nonneg (sub_nonneg.mpr huv)] at hge⟩
+            · exact ⟨v, hv, u, hu, by rw [abs_sub_comm, abs_of_nonneg (sub_nonneg.mpr hvu)] at hge; exact hge⟩
+          obtain ⟨ε₀, hε₀_pos, hosc⟩ := hex_eps
+          let δ : ℝ := ε₀ / 4
+          have hδ_pos : 0 < δ := by positivity
+          let k_lo : ℤ := ⌊B_lo / δ⌋ + 1
+          let k_hi : ℤ := ⌊B_hi / δ⌋ + 1
+          have hk_le : k_lo ≤ k_hi := by
+            have : B_lo / δ ≤ B_hi / δ :=
+              div_le_div_of_nonneg_right
+                (le_trans (hB_lo T₀ ⟨le_rfl, hT₀_in.2⟩) (hB_hi T₀ ⟨le_rfl, hT₀_in.2⟩)) hδ_pos.le
+            have := Int.floor_mono this
+            dsimp [k_lo, k_hi]; omega
+          let S_grid : Finset ℤ := Finset.Icc k_lo k_hi
+          have hS_ne : S_grid.Nonempty := ⟨k_lo, Finset.mem_Icc.mpr ⟨le_rfl, hk_le⟩⟩
+          -- Some `k ∈ S_grid` has `(k * δ, (k + 1) * δ)` straddled for EVERY `T ∈ [T₀, 1)`
+          have hex_k : ∃ k ∈ S_grid, ∀ T ∈ Ico T₀ 1,
+              ∃ u ∈ Ico T 1, ∃ v ∈ Ico T 1, ϑ u < (k : ℝ) * δ ∧ ((k : ℝ) + 1) * δ < ϑ v := by
+            by_contra hno_k
+            have hall_bad : ∀ k ∈ S_grid, ∃ T ∈ Ico T₀ 1, ∀ u ∈ Ico T 1, ∀ v ∈ Ico T 1,
+                ¬ (ϑ u < (k : ℝ) * δ ∧ ((k : ℝ) + 1) * δ < ϑ v) := by
+              intro k hk
+              by_contra hk_good
+              exact hno_k ⟨k, hk, fun T hT => by
+                by_contra hT_bad
+                exact hk_good ⟨T, hT, fun u hu v hv hstrad => hT_bad ⟨u, hu, v, hv, hstrad⟩⟩⟩
+            choose T_bad hT_bad_in hT_bad_prop using fun (k : S_grid) => hall_bad k.1 k.2
+            let S_sub : Finset S_grid := Finset.univ
+            have hS_sub_ne : S_sub.Nonempty := ⟨⟨k_lo, Finset.mem_Icc.mpr ⟨le_rfl, hk_le⟩⟩, Finset.mem_univ _⟩
+            let T_max : ℝ := S_sub.sup' hS_sub_ne T_bad
+            have hT_max_in : T_max ∈ Ico T₀ 1 := by
+              refine ⟨?_, ?_⟩
+              · exact le_trans (hT_bad_in ⟨k_lo, Finset.mem_Icc.mpr ⟨le_rfl, hk_le⟩⟩).1
+                  (Finset.le_sup' T_bad (Finset.mem_univ _))
+              · exact (Finset.sup'_lt_iff hS_sub_ne).mpr fun k _ => (hT_bad_in k).2
+            obtain ⟨u, hu, v, hv, huv⟩ := hosc T_max hT_max_in
+            let k₀ : ℤ := ⌊ϑ u / δ⌋ + 1
+            have hk₀_mem : k₀ ∈ S_grid := by
+              refine Finset.mem_Icc.mpr ⟨?_, ?_⟩
+              · have := Int.floor_mono (div_le_div_of_nonneg_right (hB_lo u ⟨le_trans hT_max_in.1 hu.1, hu.2⟩) hδ_pos.le)
+                dsimp [k_lo, k₀]; omega
+              · have := Int.floor_mono (div_le_div_of_nonneg_right (hB_hi u ⟨le_trans hT_max_in.1 hu.1, hu.2⟩) hδ_pos.le)
+                dsimp [k_hi, k₀]; omega
+            have hT_le : T_bad ⟨k₀, hk₀_mem⟩ ≤ T_max := Finset.le_sup' T_bad (Finset.mem_univ _)
+            have hu' : u ∈ Ico (T_bad ⟨k₀, hk₀_mem⟩) 1 := ⟨le_trans hT_le hu.1, hu.2⟩
+            have hv' : v ∈ Ico (T_bad ⟨k₀, hk₀_mem⟩) 1 := ⟨le_trans hT_le hv.1, hv.2⟩
+            have hlt1 : ϑ u < (k₀ : ℝ) * δ := by
+              have h1 : ϑ u / δ < (k₀ : ℝ) := by dsimp [k₀]; push_cast; exact Int.lt_floor_add_one _
+              exact (div_lt_iff₀ hδ_pos).mp h1
+            have hlt2 : ((k₀ : ℝ) + 1) * δ < ϑ v := by
+              have h1 : (k₀ : ℝ) - 1 ≤ ϑ u / δ := by
+                dsimp [k₀]; push_cast; linarith [Int.floor_le (ϑ u / δ)]
+              have h2 : ((k₀ : ℝ) - 1) * δ ≤ ϑ u := (le_div_iff₀ hδ_pos).mp h1
+              dsimp [δ] at h2 ⊢
+              nlinarith
+            exact hT_bad_prop ⟨k₀, hk₀_mem⟩ u hu' v hv' ⟨hlt1, hlt2⟩
+          rcases hex_k with ⟨k, _, hk_prop⟩
+          refine ⟨(k : ℝ) * δ, ((k : ℝ) + 1) * δ, by linarith, ?_⟩
+          intro φ hφ T hT
+          obtain ⟨u, hu, v, hv, hu_lt, hv_gt⟩ := hk_prop T hT
+          have hivt : φ ∈ ϑ '' Set.uIcc u v := by
+            apply intermediate_value_uIcc
+              (hϑ_cont.mono (fun s hs => by
+                rw [Set.mem_uIcc] at hs
+                rcases hs with ⟨h1, h2⟩ | ⟨h1, h2⟩
+                · exact ⟨le_trans hT.1 (le_trans hu.1 h1), lt_of_le_of_lt h2 hv.2⟩
+                · exact ⟨le_trans hT.1 (le_trans hv.1 h1), lt_of_le_of_lt h2 hu.2⟩))
+            rw [Set.mem_uIcc]
+            exact Or.inl ⟨(lt_trans hu_lt hφ.1).le, (lt_trans hφ.2 hv_gt).le⟩
+          rcases hivt with ⟨t, ht_uicc, ht_eq⟩
+          have ht_in : t ∈ Ico T 1 := by
+            rw [Set.mem_uIcc] at ht_uicc
+            rcases ht_uicc with ⟨h1, h2⟩ | ⟨h1, h2⟩
+            · exact ⟨le_trans hu.1 h1, lt_of_le_of_lt h2 hv.2⟩
+            · exact ⟨le_trans hv.1 h1, lt_of_le_of_lt h2 hu.2⟩
+          exact ⟨t, ht_in, 0, by simp [ht_eq]⟩
+    -- Now use `hex_arc` + `ae_radial_limit_of_injOn_ball` + `holomorphic_zero_at_zero_of_ae_radial_zero_arc`
+    rcases hex_arc with ⟨a, b, hab, harc⟩
+    have hae_rad := ae_radial_limit_of_injOn_ball hg_holo hg_bij.injOn hM_pos hg_bdd
+    have hae_sub : ∀ᵐ φ ∂(MeasureTheory.volume.restrict (Ioo a b)),
+        Tendsto (fun ρ : ℝ => g (circleMap 0 ρ φ) - β) (𝓝[<] 1) (𝓝 0) := by
+      rw [MeasureTheory.ae_restrict_iff' measurableSet_Ioo]
+      filter_upwards [hae_rad] with φ ⟨L, hL⟩ hφ_in
+      -- Construct sequence `t_n ∈ [T_n, 1)` with `Γ (t_n) = circleMap 0 ‖Γ (t_n)‖ φ`
+      let T_seq : ℕ → ℝ := fun n => 1 - (1 - T₀) / ((n : ℝ) + 1)
+      have hT_seq_in : ∀ n : ℕ, T_seq n ∈ Ico T₀ 1 := by
+        intro n
+        have hpos : 0 < (1 - T₀) / ((n : ℝ) + 1) := div_pos (by linarith [hT₀_in.2]) (by positivity)
+        have hle : (1 - T₀) / ((n : ℝ) + 1) ≤ 1 - T₀ :=
+          div_le_self (by linarith [hT₀_in.2]) (by linarith [Nat.cast_nonneg (α := ℝ) n])
+        exact ⟨by dsimp [T_seq]; linarith, by dsimp [T_seq]; linarith⟩
+      choose t_seq ht_seq_in m_seq hm_seq using fun n => harc φ hφ_in (T_seq n) (hT_seq_in n)
+      have hT_seq_lim : Tendsto T_seq atTop (𝓝 1) := by
+        have hdiv : Tendsto (fun n : ℕ => (1 - T₀) / ((n : ℝ) + 1)) atTop (𝓝 0) :=
+          tendsto_const_nhds.div_atTop
+            (tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds)
+        simpa [T_seq] using (tendsto_const_nhds (x := (1 : ℝ))).sub hdiv
+      have ht_seq_lim : Tendsto t_seq atTop (𝓝 1) :=
+        tendsto_of_tendsto_of_tendsto_of_le_of_le hT_seq_lim tendsto_const_nhds
+          (fun n => (ht_seq_in n).1) (fun n => (ht_seq_in n).2.le)
+      have ht_seq_lt : Tendsto t_seq atTop (𝓝[<] (1 : ℝ)) :=
+        tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ht_seq_lim
+          (Filter.Eventually.of_forall fun n => (ht_seq_in n).2)
+      let ρ_seq : ℕ → ℝ := fun n => ‖Γ (t_seq n)‖
+      have hρ_seq_lim : Tendsto ρ_seq atTop (𝓝 1) := hnorm_lim.comp ht_seq_lt
+      have hρ_seq_lt : Tendsto ρ_seq atTop (𝓝[<] (1 : ℝ)) := by
+        refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hρ_seq_lim
+          (Filter.Eventually.of_forall fun n => ?_)
+        have ht_in01 : t_seq n ∈ Ico (0 : ℝ) 1 :=
+          ⟨le_trans hT₀_in.1.le (le_trans (hT_seq_in n).1 (ht_seq_in n).1), (ht_seq_in n).2⟩
+        exact mem_ball_zero_iff.mp (hf_bij.mapsTo (hγ_in (t_seq n) ht_in01))
+      have hg_eq : ∀ n : ℕ, g (circleMap 0 (ρ_seq n) φ) = γ (t_seq n) := by
+        intro n
+        have ht_T₀ : t_seq n ∈ Ico T₀ 1 :=
+          ⟨le_trans (hT_seq_in n).1 (ht_seq_in n).1, (ht_seq_in n).2⟩
+        have ht_01 : t_seq n ∈ Ico (0 : ℝ) 1 := ⟨le_trans hT₀_in.1.le ht_T₀.1, ht_T₀.2⟩
+        have hΓ_cm : Γ (t_seq n) = circleMap 0 (ρ_seq n) φ := by
+          rw [hϑ_eq (t_seq n) ht_T₀, hm_seq n, circleMap_zero]
+          dsimp [ρ_seq]
+          congr 1
+          have hexp_arg : (((φ + 2 * Real.pi * (m_seq n : ℝ) : ℝ) : ℂ) * Complex.I) =
+              (φ : ℂ) * Complex.I + (m_seq n : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := by
+            push_cast; ring
+          rw [hexp_arg, Complex.exp_add, Complex.exp_int_mul_two_pi_mul_I, mul_one]
+        rw [← hΓ_cm]
+        exact hgf (γ (t_seq n)) (hγ_in (t_seq n) ht_01)
+      have hlim_L : Tendsto (fun n => g (circleMap 0 (ρ_seq n) φ)) atTop (𝓝 L) :=
+        hL.comp hρ_seq_lt
+      have hlim_β : Tendsto (fun n => g (circleMap 0 (ρ_seq n) φ)) atTop (𝓝 β) := by
+        simp_rw [hg_eq]
+        exact (hγ_tendsto_Ω.mono_right nhdsWithin_le_nhds).comp ht_seq_lt
+      have hL_eq : L = β := tendsto_nhds_unique hlim_L hlim_β
+      subst hL_eq
+      simpa using hL.sub_const L
+    have hh_holo : RudinRCA.Chapter10.HolomorphicOn (fun w => g w - β) (ball (0 : ℂ) 1) :=
+      fun w hw => (hg_holo w hw).sub (differentiableAt_const β)
+    have hh_bdd : ∀ w ∈ ball (0 : ℂ) 1, ‖g w - β‖ ≤ M + ‖β‖ :=
+      fun w hw => (norm_sub_le _ _).trans (add_le_add_left (hg_bdd w hw) ‖β‖)
+    have h0_eq : g 0 - β = 0 :=
+      holomorphic_zero_at_zero_of_ae_radial_zero_arc hh_holo (by positivity) hh_bdd hab hae_sub
+    have hg0_eq : g 0 = β := sub_eq_zero.mp h0_eq
+    exact hβ_notΩ (hg0_eq ▸ hg_bij.mapsTo (mem_ball_self zero_lt_one))
+  -- Deduce `∃ θ₀ : ℝ, Tendsto ϑ (𝓝[<] 1) (𝓝 θ₀)` from `hϑ_cauchy`
+  let s_seq : ℕ → ℝ := fun n => 1 - (1 - T₀) / ((n : ℝ) + 2)
+  have hs_in : ∀ n : ℕ, s_seq n ∈ Ico T₀ 1 := by
+    intro n
+    have hpos : 0 < (1 - T₀) / ((n : ℝ) + 2) := div_pos (by linarith [hT₀_in.2]) (by positivity)
+    have hle : (1 - T₀) / ((n : ℝ) + 2) ≤ 1 - T₀ :=
+      div_le_self (by linarith [hT₀_in.2]) (by linarith [Nat.cast_nonneg (α := ℝ) n])
+    exact ⟨by dsimp [s_seq]; linarith, by dsimp [s_seq]; linarith⟩
+  have hs_lim : Tendsto s_seq atTop (𝓝 1) := by
+    have hdiv : Tendsto (fun n : ℕ => (1 - T₀) / ((n : ℝ) + 2)) atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop
+        (tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds)
+    simpa [s_seq] using (tendsto_const_nhds (x := (1 : ℝ))).sub hdiv
+  have hcauchy_seq : CauchySeq (fun n => ϑ (s_seq n)) := by
+    rw [Metric.cauchySeq_iff]
+    intro ε hε
+    obtain ⟨T, hT, hT_prop⟩ := hϑ_cauchy ε hε
+    obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp hs_lim (1 - T) (by linarith [hT.2])
+    refine ⟨N, fun m hm n hn => ?_⟩
+    have hm_in : s_seq m ∈ Ico T 1 := by
+      have := hN m hm
+      rw [Real.dist_eq, abs_of_neg (by linarith [(hs_in m).2])] at this
+      exact ⟨by linarith, (hs_in m).2⟩
+    have hn_in : s_seq n ∈ Ico T 1 := by
+      have := hN n hn
+      rw [Real.dist_eq, abs_of_neg (by linarith [(hs_in n).2])] at this
+      exact ⟨by linarith, (hs_in n).2⟩
+    rw [Real.dist_eq]
+    exact hT_prop (s_seq n) hn_in (s_seq m) hm_in
+  obtain ⟨θ₀, hθ₀_seq⟩ := cauchySeq_tendsto_of_complete hcauchy_seq
+  have hϑ_lim : Tendsto ϑ (𝓝[<] (1 : ℝ)) (𝓝 θ₀) := by
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    obtain ⟨T, hT, hT_prop⟩ := hϑ_cauchy (ε / 2) (half_pos hε)
+    obtain ⟨N₁, hN₁⟩ := Metric.tendsto_atTop.mp hs_lim (1 - T) (by linarith [hT.2])
+    obtain ⟨N₂, hN₂⟩ := Metric.tendsto_atTop.mp hθ₀_seq (ε / 2) (half_pos hε)
+    let N := max N₁ N₂
+    have hsN_in : s_seq N ∈ Ico T 1 := by
+      have := hN₁ N (le_max_left N₁ N₂)
+      rw [Real.dist_eq, abs_of_neg (by linarith [(hs_in N).2])] at this
+      exact ⟨by linarith, (hs_in N).2⟩
+    have hsN_close : |ϑ (s_seq N) - θ₀| < ε / 2 := by
+      simpa [Real.dist_eq] using hN₂ N (le_max_right N₁ N₂)
+    filter_upwards [Ioo_mem_nhdsLT hT.2] with t ht
+    have ht_in : t ∈ Ico T 1 := ⟨ht.1.le, ht.2⟩
+    have ht_close : |ϑ t - ϑ (s_seq N)| < ε / 2 := hT_prop (s_seq N) hsN_in t ht_in
+    rw [Real.dist_eq]
+    calc
+      |ϑ t - θ₀| = |(ϑ t - ϑ (s_seq N)) + (ϑ (s_seq N) - θ₀)| := by ring_nf
+      _ ≤ |ϑ t - ϑ (s_seq N)| + |ϑ (s_seq N) - θ₀| := abs_add_le _ _
+      _ < ε / 2 + ε / 2 := add_lt_add ht_close hsN_close
+      _ = ε := add_halves ε
+  refine ⟨Complex.exp ((θ₀ : ℂ) * Complex.I), Complex.norm_exp_ofReal_mul_I θ₀, ?_⟩
+  have hΓ_ev : (fun t : ℝ => ((‖Γ t‖ : ℂ) * Complex.exp ((ϑ t : ℂ) * Complex.I))) =ᶠ[𝓝[<] (1 : ℝ)] Γ := by
+    filter_upwards [Ioo_mem_nhdsLT hT₀_in.2] with t ht
+    exact (hϑ_eq t ⟨ht.1.le, ht.2⟩).symm
+  have hlim_prod : Tendsto (fun t : ℝ => ((‖Γ t‖ : ℂ) * Complex.exp ((ϑ t : ℂ) * Complex.I)))
+      (𝓝[<] (1 : ℝ)) (𝓝 (Complex.exp ((θ₀ : ℂ) * Complex.I))) := by
+    have h1 : Tendsto (fun t : ℝ => ((‖Γ t‖ : ℝ) : ℂ)) (𝓝[<] (1 : ℝ)) (𝓝 1) := by
+      have hc := (Complex.continuous_ofReal.tendsto (1 : ℝ)).comp hnorm_lim
+      rwa [Complex.ofReal_one] at hc
+    have h2 : Tendsto (fun t : ℝ => Complex.exp ((ϑ t : ℂ) * Complex.I)) (𝓝[<] (1 : ℝ))
+        (𝓝 (Complex.exp ((θ₀ : ℂ) * Complex.I))) :=
+      (Complex.continuous_exp.comp (Complex.continuous_ofReal.mul continuous_const)).continuousAt.tendsto.comp hϑ_lim
+    simpa using h1.mul h2
+  exact hlim_prod.congr' hΓ_ev
+
+/-- **Theorem 14.18(a) (Continuous norm-1 extension at a simple boundary point, RCA pp. 289–290):**
+If `Ω` is a bounded open set, `f : Ω → ball 0 1` is a holomorphic bijection, and `β` is a simple
+boundary point of `Ω`, then `f` has a unique limit `w_β` of norm `1` along `𝓝[Ω] β` and extends
+continuously to `Ω ∪ {β}`. -/
+theorem theorem14_18_part_a {Ω : Set ℂ} (hΩ_open : IsOpen Ω)
+    (hΩ_bdd : Bornology.IsBounded Ω) {f : ℂ → ℂ}
+    (hf_holo : RudinRCA.Chapter10.HolomorphicOn f Ω)
+    (hf_bij : BijOn f Ω (ball (0 : ℂ) 1)) {β : ℂ}
+    (hsimple : IsSimpleBoundaryPoint Ω β) :
+    ∃! w_β : ℂ, ‖w_β‖ = 1 ∧ Tendsto f (𝓝[Ω] β) (𝓝 w_β) ∧
+      ∃ F : ℂ → ℂ, EqOn F f Ω ∧ ContinuousOn F (Ω ∪ {β}) ∧ F β = w_β := by
+  have hβ_notΩ : β ∉ Ω := by
+    have hint : interior Ω = Ω := hΩ_open.interior_eq
+    intro hmem
+    exact hsimple.1.2 (hint.symm ▸ hmem)
+  obtain ⟨α₀, hα₀_in, hα₀_lim⟩ := mem_closure_iff_seq_limit.mp hsimple.1.1
+  obtain ⟨γ₀, hγ₀_cont, hγ₀_in, hγ₀_1, t₀, _, ht₀_mem, ht₀_lim, hγ₀_t⟩ :=
+    theorem14_16.2 hsimple α₀ hα₀_in hα₀_lim
+  obtain ⟨w_β, hw_norm, hw_curve⟩ :=
+    lindelof_curve_tendsto hΩ_open hΩ_bdd hf_holo hf_bij hsimple.1 hγ₀_cont hγ₀_in hγ₀_1
+  have ht₀_lt : Tendsto t₀ atTop (𝓝[<] (1 : ℝ)) :=
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ht₀_lim
+      (Filter.Eventually.of_forall fun n => (ht₀_mem n).2)
+  have hα₀_f : Tendsto (fun n => f (α₀ n)) atTop (𝓝 w_β) := by
+    have heq : (fun n => f (γ₀ (t₀ n))) = fun n => f (α₀ n) := funext fun n => by rw [hγ₀_t n]
+    rw [← heq]
+    exact hw_curve.comp ht₀_lt
+  -- Sequential convergence along ANY sequence `z_n ∈ Ω → β` via interleaving with `α₀`
+  have hseq_lim : ∀ z : ℕ → ℂ, (∀ n, z n ∈ Ω) → Tendsto z atTop (𝓝 β) →
+      Tendsto (fun n => f (z n)) atTop (𝓝 w_β) := by
+    intro z hz_in hz_lim
+    let ξ : ℕ → ℂ := fun n => if Even n then α₀ (n / 2) else z (n / 2)
+    have hξ_in : ∀ n, ξ n ∈ Ω := by
+      intro n; dsimp [ξ]; split_ifs <;> [exact hα₀_in _; exact hz_in _]
+    have hξ_lim : Tendsto ξ atTop (𝓝 β) := by
+      rw [Metric.tendsto_atTop]
+      intro ε hε
+      obtain ⟨N₁, hN₁⟩ := Metric.tendsto_atTop.mp hα₀_lim ε hε
+      obtain ⟨N₂, hN₂⟩ := Metric.tendsto_atTop.mp hz_lim ε hε
+      refine ⟨2 * max N₁ N₂ + 2, fun n hn => ?_⟩
+      have hdiv : max N₁ N₂ ≤ n / 2 := by omega
+      dsimp [ξ]
+      split_ifs
+      · exact hN₁ (n / 2) (le_trans (le_max_left N₁ N₂) hdiv)
+      · exact hN₂ (n / 2) (le_trans (le_max_right N₁ N₂) hdiv)
+    obtain ⟨γ, hγ_cont, hγ_in, hγ1, t, _, ht_mem, ht_lim, hγt⟩ :=
+      theorem14_16.2 hsimple ξ hξ_in hξ_lim
+    obtain ⟨w', _, hw'_curve⟩ :=
+      lindelof_curve_tendsto hΩ_open hΩ_bdd hf_holo hf_bij hsimple.1 hγ_cont hγ_in hγ1
+    have ht_lt : Tendsto t atTop (𝓝[<] (1 : ℝ)) :=
+      tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ht_lim
+        (Filter.Eventually.of_forall fun n => (ht_mem n).2)
+    have hξ_f : Tendsto (fun n => f (ξ n)) atTop (𝓝 w') := by
+      have heq : (fun n => f (γ (t n))) = fun n => f (ξ n) := funext fun n => by rw [hγt n]
+      rw [← heq]
+      exact hw'_curve.comp ht_lt
+    have heven_sub : Tendsto (fun k : ℕ => f (ξ (2 * k))) atTop (𝓝 w') :=
+      hξ_f.comp (tendsto_id.const_mul_atTop' (by norm_num : 0 < 2))
+    have heven_eq : (fun k : ℕ => f (ξ (2 * k))) = fun k => f (α₀ k) := by
+      ext k
+      have hev : Even (2 * k) := even_two_mul k
+      have hdv : (2 * k) / 2 = k := by omega
+      simp [ξ, hev, hdv]
+    rw [heven_eq] at heven_sub
+    have hw_eq : w' = w_β := tendsto_nhds_unique heven_sub hα₀_f
+    subst hw_eq
+    have hodd_idx : Tendsto (fun k : ℕ => 2 * k + 1) atTop atTop :=
+      Filter.tendsto_atTop_atTop.mpr fun b => ⟨b, fun k hk => by omega⟩
+    have hodd_sub : Tendsto (fun k : ℕ => f (ξ (2 * k + 1))) atTop (𝓝 w') :=
+      hξ_f.comp hodd_idx
+    have hodd_eq : (fun k : ℕ => f (ξ (2 * k + 1))) = fun k => f (z k) := by
+      ext k
+      have hnev : ¬ Even (2 * k + 1) := by rw [Even]; omega
+      have hdv : (2 * k + 1) / 2 = k := by omega
+      simp [ξ, hnev, hdv]
+    rwa [hodd_eq] at hodd_sub
+  -- Upgrade sequential convergence to `Tendsto f (𝓝[Ω] β) (𝓝 w_β)`
+  have hnhds_lim : Tendsto f (𝓝[Ω] β) (𝓝 w_β) := by
+    by_contra hnot
+    rw [Metric.tendsto_nhdsWithin_nhds] at hnot
+    have hex_bad : ∃ ε > 0, ∀ δ > 0, ∃ x ∈ Ω, dist x β < δ ∧ ε ≤ dist (f x) w_β := by
+      by_contra hno
+      apply hnot
+      intro ε hε
+      by_contra hnoδ
+      exact hno ⟨ε, hε, fun δ hδ => by
+        by_contra hnox
+        exact hnoδ ⟨δ, hδ, fun x hx hdist => lt_of_not_ge fun hge => hnox ⟨x, hx, hdist, hge⟩⟩⟩
+    rcases hex_bad with ⟨ε, hε, hbad⟩
+    choose z hz_in hz_dist hz_far using fun n : ℕ =>
+      hbad (1 / ((n : ℝ) + 1)) (by positivity)
+    have hz_lim : Tendsto z atTop (𝓝 β) := by
+      rw [Metric.tendsto_atTop]
+      intro δ hδ
+      obtain ⟨N, hN⟩ := exists_nat_gt (1 / δ)
+      refine ⟨N, fun n hn => ?_⟩
+      refine lt_trans (hz_dist n) ?_
+      rw [one_div_lt (by positivity) hδ]
+      have : (N : ℝ) ≤ (n : ℝ) := Nat.cast_le.mpr hn
+      linarith
+    have hlim_z := hseq_lim z hz_in hz_lim
+    obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp hlim_z ε hε
+    exact not_lt_of_ge (hz_far N) (hN N le_rfl)
+  -- Construct explicit continuous extension `F = Function.update f β w_β`
+  let F : ℂ → ℂ := Function.update f β w_β
+  have hEqOn : EqOn F f Ω := fun z hz =>
+    Function.update_of_ne (fun h => hβ_notΩ (by rwa [← h])) w_β f
+  have hFβ : F β = w_β := Function.update_self β w_β f
+  have hF_cont : ContinuousOn F (Ω ∪ {β}) := by
+    intro z hz
+    rcases hz with hzΩ | hzβ
+    · have h_ev : F =ᶠ[𝓝 z] f := by
+        filter_upwards [hΩ_open.mem_nhds hzΩ] with y hy
+        exact hEqOn hy
+      exact (((hf_holo z hzΩ).continuousAt.congr h_ev.symm)).continuousWithinAt
+    · rw [Set.mem_singleton_iff] at hzβ
+      subst hzβ
+      rw [ContinuousWithinAt, hFβ, Metric.tendsto_nhdsWithin_nhds]
+      intro ε hε
+      obtain ⟨δ, hδ_pos, hδ⟩ := Metric.tendsto_nhdsWithin_nhds.mp hnhds_lim ε hε
+      refine ⟨δ, hδ_pos, fun y hy hy_dist => ?_⟩
+      rcases hy with hyΩ | hyβ
+      · rw [hEqOn hyΩ]
+        exact hδ hyΩ hy_dist
+      · rw [Set.mem_singleton_iff] at hyβ
+        rw [hyβ, hFβ, dist_self]
+        exact hε
+  refine ⟨w_β, ⟨hw_norm, hnhds_lim, F, hEqOn, hF_cont, hFβ⟩, ?_⟩
+  intro w' ⟨_, hw'_lim, _⟩
+  have : Filter.NeBot (𝓝[Ω] β) := mem_closure_iff_nhdsWithin_neBot.mp hsimple.1.1
+  exact tendsto_nhds_unique hw'_lim hnhds_lim
+
+/-- **Theorem 14.18(b) (Distinct simple boundary points have distinct extension values,
+RCA p. 290):**
+If `Ω` is a bounded open set, `f : Ω → ball 0 1` is a holomorphic bijection, and `β₁, β₂` are
+simple boundary points of `Ω` whose extension values agree, then `β₁ = β₂`. -/
+theorem theorem14_18_part_b {Ω : Set ℂ} (hΩ_open : IsOpen Ω)
+    (hΩ_bdd : Bornology.IsBounded Ω) {f : ℂ → ℂ}
+    (hf_holo : RudinRCA.Chapter10.HolomorphicOn f Ω)
+    (hf_bij : BijOn f Ω (ball (0 : ℂ) 1)) {β₁ β₂ w₀ : ℂ}
+    (hsimple₁ : IsSimpleBoundaryPoint Ω β₁) (hsimple₂ : IsSimpleBoundaryPoint Ω β₂)
+    (hw₁ : Tendsto f (𝓝[Ω] β₁) (𝓝 w₀)) (hw₂ : Tendsto f (𝓝[Ω] β₂) (𝓝 w₀)) :
+    β₁ = β₂ := by
+  by_contra hne
+  have hw₀_norm : ‖w₀‖ = 1 := by
+    obtain ⟨w₁, ⟨hw₁_norm, hw₁_lim, _⟩, _⟩ :=
+      theorem14_18_part_a hΩ_open hΩ_bdd hf_holo hf_bij hsimple₁
+    have : Filter.NeBot (𝓝[Ω] β₁) := mem_closure_iff_nhdsWithin_neBot.mp hsimple₁.1.1
+    rw [tendsto_nhds_unique hw₁ hw₁_lim]
+    exact hw₁_norm
+  have hw₀_ne : w₀ ≠ 0 := by
+    intro h0; rw [h0, norm_zero] at hw₀_norm; norm_num at hw₀_norm
+  obtain ⟨g, hg_holo, hg_bij, hgf, _⟩ := (theorem14_7 hΩ_open hf_holo hf_bij).2.1
+  obtain ⟨M₀, hM₀⟩ := hΩ_bdd.subset_closedBall (0 : ℂ)
+  let M : ℝ := max M₀ 1
+  have hM_pos : 0 < M := lt_max_of_lt_right zero_lt_one
+  have hg_bdd : ∀ w ∈ ball (0 : ℂ) 1, ‖g w‖ ≤ M := by
+    intro w hw
+    exact (mem_closedBall_zero_iff.mp (hM₀ (hg_bij.mapsTo hw))).trans (le_max_left M₀ 1)
+  -- Pick curves `γ₁ → β₁` and `γ₂ → β₂` in `Ω`
+  obtain ⟨α₁, hα₁_in, hα₁_lim⟩ := mem_closure_iff_seq_limit.mp hsimple₁.1.1
+  obtain ⟨γ₁, hγ₁_cont, hγ₁_in, hγ₁_1, _⟩ := theorem14_16.2 hsimple₁ α₁ hα₁_in hα₁_lim
+  obtain ⟨α₂, hα₂_in, hα₂_lim⟩ := mem_closure_iff_seq_limit.mp hsimple₂.1.1
+  obtain ⟨γ₂, hγ₂_cont, hγ₂_in, hγ₂_1, _⟩ := theorem14_16.2 hsimple₂ α₂ hα₂_in hα₂_lim
+  have hγ₁_Ω : Tendsto γ₁ (𝓝[<] (1 : ℝ)) (𝓝[Ω] β₁) :=
+    tendsto_nhdsWithin_of_curve_Icc hγ₁_cont hγ₁_in hγ₁_1
+  have hγ₂_Ω : Tendsto γ₂ (𝓝[<] (1 : ℝ)) (𝓝[Ω] β₂) :=
+    tendsto_nhdsWithin_of_curve_Icc hγ₂_cont hγ₂_in hγ₂_1
+  have hΓ₁_lim : Tendsto (fun t => f (γ₁ t)) (𝓝[<] (1 : ℝ)) (𝓝 w₀) := hw₁.comp hγ₁_Ω
+  have hΓ₂_lim : Tendsto (fun t => f (γ₂ t)) (𝓝[<] (1 : ℝ)) (𝓝 w₀) := hw₂.comp hγ₂_Ω
+  -- Choose `T₀ ∈ (0, 1)` separating `γ₁([T₀, 1))` and `γ₂([T₀, 1))` by `ε₀ = ‖β₁ - β₂‖ / 2`
+  let ε₀ : ℝ := ‖β₁ - β₂‖ / 2
+  have hε₀_pos : 0 < ε₀ := div_pos (norm_sub_pos_iff.mpr hne) two_pos
+  have hev_sep : ∀ᶠ t in 𝓝[<] (1 : ℝ),
+      t ∈ Ioo (0 : ℝ) 1 ∧ ‖γ₁ t - β₁‖ < ε₀ / 2 ∧ ‖γ₂ t - β₂‖ < ε₀ / 2 := by
+    have hc₁ : Tendsto γ₁ (𝓝[<] (1 : ℝ)) (𝓝 β₁) := hγ₁_Ω.mono_right nhdsWithin_le_nhds
+    have hc₂ : Tendsto γ₂ (𝓝[<] (1 : ℝ)) (𝓝 β₂) := hγ₂_Ω.mono_right nhdsWithin_le_nhds
+    filter_upwards [Ioo_mem_nhdsLT (zero_lt_one : (0 : ℝ) < 1),
+      Metric.tendsto_nhds.mp hc₁ (ε₀ / 2) (half_pos hε₀_pos),
+      Metric.tendsto_nhds.mp hc₂ (ε₀ / 2) (half_pos hε₀_pos)] with t ht h₁ h₂
+    rw [Complex.dist_eq] at h₁ h₂
+    exact ⟨ht, h₁, h₂⟩
+  obtain ⟨l₀, hl₀_lt_mem, hl₀_sub⟩ := mem_nhdsLT_iff_exists_Ioo_subset.mp hev_sep
+  have hl₀_lt : l₀ < 1 := hl₀_lt_mem
+  let T₀ : ℝ := (max l₀ 0 + 1) / 2
+  have hT₀_in : T₀ ∈ Ioo (0 : ℝ) 1 := ⟨by positivity, by dsimp [T₀]; linarith [max_lt hl₀_lt zero_lt_one]⟩
+  have hsep : ∀ t₁ ∈ Ico T₀ 1, ∀ t₂ ∈ Ico T₀ 1, ε₀ < ‖γ₁ t₁ - γ₂ t₂‖ := by
+    intro t₁ ht₁ t₂ ht₂
+    have hmax_lt : max l₀ 0 < T₀ := by dsimp [T₀]; linarith [max_lt hl₀_lt zero_lt_one]
+    have h₁ := (hl₀_sub ⟨lt_of_le_of_lt (le_max_left l₀ 0) (lt_of_lt_of_le hmax_lt ht₁.1), ht₁.2⟩).2.1
+    have h₂ := (hl₀_sub ⟨lt_of_le_of_lt (le_max_left l₀ 0) (lt_of_lt_of_le hmax_lt ht₂.1), ht₂.2⟩).2.2
+    have htri : ‖β₁ - β₂‖ ≤ ‖β₁ - γ₁ t₁‖ + ‖γ₁ t₁ - γ₂ t₂‖ + ‖γ₂ t₂ - β₂‖ := by
+      calc
+        ‖β₁ - β₂‖ = ‖(β₁ - γ₁ t₁) + (γ₁ t₁ - γ₂ t₂) + (γ₂ t₂ - β₂)‖ := by ring_nf
+        _ ≤ ‖(β₁ - γ₁ t₁) + (γ₁ t₁ - γ₂ t₂)‖ + ‖γ₂ t₂ - β₂‖ := norm_add_le _ _
+        _ ≤ ‖β₁ - γ₁ t₁‖ + ‖γ₁ t₁ - γ₂ t₂‖ + ‖γ₂ t₂ - β₂‖ :=
+          add_le_add_left (norm_add_le _ _) _
+    rw [norm_sub_rev β₁ (γ₁ t₁)] at htri
+    dsimp [ε₀] at h₁ h₂ ⊢
+    linarith
+  -- Radius bound `d₀` for circular arcs around `w₀`
+  let d₁ : ℝ := ‖f (γ₁ T₀) - w₀‖
+  let d₂ : ℝ := ‖f (γ₂ T₀) - w₀‖
+  have hd₁_pos : 0 < d₁ := by
+    apply norm_sub_pos_iff.mpr
+    intro heq
+    have hlt : ‖f (γ₁ T₀)‖ < 1 :=
+      mem_ball_zero_iff.mp (hf_bij.mapsTo (hγ₁_in T₀ ⟨hT₀_in.1.le, hT₀_in.2⟩))
+    rw [heq, hw₀_norm] at hlt
+    exact lt_irrefl 1 hlt
+  have hd₂_pos : 0 < d₂ := by
+    apply norm_sub_pos_iff.mpr
+    intro heq
+    have hlt : ‖f (γ₂ T₀)‖ < 1 :=
+      mem_ball_zero_iff.mp (hf_bij.mapsTo (hγ₂_in T₀ ⟨hT₀_in.1.le, hT₀_in.2⟩))
+    rw [heq, hw₀_norm] at hlt
+    exact lt_irrefl 1 hlt
+  let d₀ : ℝ := min (min d₁ d₂) 1
+  have hd₀_pos : 0 < d₀ := lt_min (lt_min hd₁_pos hd₂_pos) zero_lt_one
+  have hd₀_le1 : d₀ ≤ 1 := min_le_right _ _
+  -- Shift `w₀` to `0` via `g̃(z) = g(w₀ * (1 - z))` on `D = {z | ‖1 - z‖ < 1}`
+  let D : Set ℂ := {z : ℂ | ‖1 - z‖ < 1}
+  have hD_open : IsOpen D :=
+    isOpen_lt (continuous_norm.comp (continuous_const.sub continuous_id)) continuous_const
+  let g_shift : ℂ → ℂ := fun z => g (w₀ * (1 - z))
+  have hmaps_D : MapsTo (fun z : ℂ => w₀ * (1 - z)) D (ball (0 : ℂ) 1) := by
+    intro z hz
+    rw [mem_ball_zero_iff, norm_mul, hw₀_norm, one_mul]
+    exact hz
+  have hg_shift_holo : RudinRCA.Chapter10.HolomorphicOn g_shift D :=
+    fun z hz => (hg_holo _ (hmaps_D hz)).comp z
+      ((differentiableAt_const (1 : ℂ) |>.sub differentiableAt_id).const_mul w₀)
+  have hg_shift_inj : InjOn g_shift D := by
+    intro z₁ hz₁ z₂ hz₂ heq
+    have hw_eq := hg_bij.injOn (hmaps_D hz₁) (hmaps_D hz₂) heq
+    have hsub_eq := mul_left_cancel₀ hw₀_ne hw_eq
+    linear_combination -hsub_eq
+  have hg_shift_bdd : ∀ z ∈ D, ‖g_shift z‖ ≤ M := fun z hz => hg_bdd _ (hmaps_D hz)
+  have harea := lintegral_polar_deriv_sq_le_of_injOn hD_open hg_shift_holo hg_shift_inj hM_pos hg_shift_bdd
+  -- Key circular-arc lower bound for every `ρ ∈ (0, d₀)`
+  have harc_lower : ∀ ρ ∈ Ioo (0 : ℝ) d₀,
+      ENNReal.ofReal (ε₀ ^ 2 / (Real.pi * ρ)) ≤
+        ∫⁻ θ in Ioo (-Real.pi) Real.pi,
+          (D \ {0}).indicator (fun z => ENNReal.ofReal (‖deriv g_shift z‖ ^ 2))
+            (Complex.polarCoord.symm (ρ, θ)) * ENNReal.ofReal ρ ∂MeasureTheory.volume := by
+    intro ρ hρ
+    have hρ_pos : 0 < ρ := hρ.1
+    have hρ_lt1 : ρ < 1 := lt_of_lt_of_le hρ.2 hd₀_le1
+    let φ_ρ : ℝ := Real.arccos (ρ / 2)
+    have hφ_pos : 0 < φ_ρ := Real.arccos_pos.mpr (by linarith)
+    have hφ_lt_half : φ_ρ < Real.pi / 2 := Real.arccos_lt_pi_div_two.mpr (by positivity)
+    -- `circleMap 0 ρ θ ∈ D` iff `ρ / 2 < Real.cos θ`
+    have hcm_norm_sq : ∀ θ : ℝ, ‖1 - circleMap 0 ρ θ‖ ^ 2 = 1 + ρ ^ 2 - 2 * ρ * Real.cos θ := by
+      intro θ
+      rw [circleMap_zero, Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
+        Complex.sq_norm, Complex.normSq_apply]
+      have hsc : Real.cos θ ^ 2 + Real.sin θ ^ 2 = 1 := Real.cos_sq_add_sin_sq θ
+      simp only [Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im,
+        Complex.add_re, Complex.add_im, Complex.one_re, Complex.one_im,
+        Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
+      nlinarith
+    have hcm_in_D : ∀ θ ∈ Ioo (-φ_ρ) φ_ρ, circleMap 0 ρ θ ∈ D \ {0} := by
+      intro θ hθ
+      have habs_lt : |θ| < φ_ρ := abs_lt.mpr hθ
+      have hcos_gt : ρ / 2 < Real.cos θ := by
+        have h1 : Real.cos φ_ρ < Real.cos |θ| :=
+          Real.strictAntiOn_cos ⟨abs_nonneg θ, le_trans habs_lt.le (by linarith [Real.pi_pos])⟩
+            ⟨hφ_pos.le, by linarith [Real.pi_pos]⟩ habs_lt
+        rw [Real.cos_abs] at h1
+        rwa [Real.cos_arccos (by linarith) (by linarith)] at h1
+      have hsq_lt : ‖1 - circleMap 0 ρ θ‖ ^ 2 < 1 := by
+        rw [hcm_norm_sq]; nlinarith
+      have hlt1 : ‖1 - circleMap 0 ρ θ‖ < 1 := by
+        nlinarith [norm_nonneg (1 - circleMap 0 ρ θ)]
+      refine ⟨hlt1, ?_⟩
+      intro h0
+      rw [Set.mem_singleton_iff] at h0
+      have hn : ‖circleMap 0 ρ θ‖ = ρ := by rw [norm_circleMap_zero, abs_of_pos hρ_pos]
+      rw [h0, norm_zero] at hn
+      linarith
+    -- Find `t₁, t₂ ∈ [T₀, 1)` where `‖f (γ_i t_i) - w₀‖ = ρ`
+    have hex_hit : ∀ (γ : ℝ → ℂ), ContinuousOn γ (Icc (0 : ℝ) 1) →
+        (∀ s ∈ Ico (0 : ℝ) 1, γ s ∈ Ω) →
+        Tendsto (fun t => f (γ t)) (𝓝[<] (1 : ℝ)) (𝓝 w₀) →
+        ρ < ‖f (γ T₀) - w₀‖ →
+        ∃ t ∈ Ico T₀ 1, ∃ θ ∈ Ioo (-φ_ρ) φ_ρ, g_shift (circleMap 0 ρ θ) = γ t := by
+      intro γ hγ_c hγ_Ω hΓ_w₀ hgt_T₀
+      have hev_lt : ∀ᶠ s in 𝓝[<] (1 : ℝ), s ∈ Ioo T₀ 1 ∧ ‖f (γ s) - w₀‖ < ρ := by
+        filter_upwards [Ioo_mem_nhdsLT hT₀_in.2, Metric.tendsto_nhds.mp hΓ_w₀ ρ hρ_pos] with s hs₁ hs₂
+        rw [Complex.dist_eq] at hs₂
+        exact ⟨hs₁, hs₂⟩
+      obtain ⟨s₁, hs₁_in, hs₁_lt⟩ := hev_lt.exists
+      have hcont_dist : ContinuousOn (fun s => ‖f (γ s) - w₀‖) (Icc T₀ s₁) := by
+        have hfγ_cont : ContinuousOn (fun s => f (γ s)) (Icc T₀ s₁) :=
+          (RudinRCA.Chapter10.continuousOn_of_holomorphicOn hf_holo).comp
+            (hγ_c.mono (fun s hs => ⟨le_trans hT₀_in.1.le hs.1, le_trans hs.2 hs₁_in.2.le⟩))
+            (fun s hs => hγ_Ω s ⟨le_trans hT₀_in.1.le hs.1, lt_of_le_of_lt hs.2 hs₁_in.2⟩)
+        exact continuous_norm.comp_continuousOn (hfγ_cont.sub continuousOn_const)
+      have hivt : ρ ∈ (fun s => ‖f (γ s) - w₀‖) '' Icc T₀ s₁ :=
+        intermediate_value_Icc' hs₁_in.1.le hcont_dist ⟨hs₁_lt.le, hgt_T₀.le⟩
+      rcases hivt with ⟨t, ht_icc, ht_eq⟩
+      have ht_in : t ∈ Ico T₀ 1 := ⟨ht_icc.1, lt_of_le_of_lt ht_icc.2 hs₁_in.2⟩
+      let w : ℂ := f (γ t)
+      have hw_ball : w ∈ ball (0 : ℂ) 1 :=
+        hf_bij.mapsTo (hγ_Ω t ⟨le_trans hT₀_in.1.le ht_in.1, ht_in.2⟩)
+      let z : ℂ := 1 - w / w₀
+      have hmul_z : w₀ * (1 - z) = w := by
+        dsimp [z]; field_simp [hw₀_ne]; ring
+      have hz_norm : ‖z‖ = ρ := by
+        have : w₀ * z = w₀ - w := by dsimp [z]; field_simp [hw₀_ne]
+        have hn : ‖w₀ * z‖ = ‖w - w₀‖ := (congrArg norm this).trans (norm_sub_rev w₀ w)
+        rw [norm_mul, hw₀_norm, one_mul] at hn
+        exact hn.trans ht_eq
+      have h1z_lt : ‖1 - z‖ < 1 := by
+        have : 1 - z = w / w₀ := by dsimp [z]; ring
+        rw [this, norm_div, hw₀_norm, div_one]
+        exact mem_ball_zero_iff.mp hw_ball
+      let θ : ℝ := Complex.arg z
+      have hcm_z : circleMap 0 ρ θ = z := by
+        rw [circleMap_zero, ← hz_norm]
+        exact Complex.norm_mul_exp_arg_mul_I z
+      have hθ_in : θ ∈ Ioo (-φ_ρ) φ_ρ := by
+        have hsq_lt : ‖1 - circleMap 0 ρ θ‖ ^ 2 < 1 := by
+          rw [hcm_z]; nlinarith [norm_nonneg (1 - z)]
+        rw [hcm_norm_sq] at hsq_lt
+        have hcos_gt : ρ / 2 < Real.cos θ := by nlinarith
+        have habs_le : |θ| ≤ Real.pi := abs_le.mpr ⟨(Complex.neg_pi_lt_arg z).le, Complex.arg_le_pi z⟩
+        have habs_lt : |θ| < φ_ρ := by
+          by_contra hge
+          have hcos_le : Real.cos |θ| ≤ Real.cos φ_ρ :=
+            Real.strictAntiOn_cos.antitoneOn ⟨hφ_pos.le, by linarith [Real.pi_pos]⟩
+              ⟨abs_nonneg θ, habs_le⟩ (not_lt.mp hge)
+          rw [Real.cos_abs, Real.cos_arccos (by linarith) (by linarith)] at hcos_le
+          linarith
+        exact abs_lt.mp habs_lt
+      refine ⟨t, ht_in, θ, hθ_in, ?_⟩
+      dsimp [g_shift]
+      rw [hcm_z, hmul_z]
+      exact hgf (γ t) (hγ_Ω t ⟨le_trans hT₀_in.1.le ht_in.1, ht_in.2⟩)
+    have hd₁_gt : ρ < d₁ := lt_of_lt_of_le hρ.2 (le_trans (min_le_left _ _) (min_le_left _ _))
+    have hd₂_gt : ρ < d₂ := lt_of_lt_of_le hρ.2 (le_trans (min_le_left _ _) (min_le_right _ _))
+    obtain ⟨t₁, ht₁, θ₁, hθ₁, hg₁⟩ := hex_hit γ₁ hγ₁_cont hγ₁_in hΓ₁_lim hd₁_gt
+    obtain ⟨t₂, ht₂, θ₂, hθ₂, hg₂⟩ := hex_hit γ₂ hγ₂_cont hγ₂_in hΓ₂_lim hd₂_gt
+    -- Bound `ε₀` by the arc-length integral over `[min θ₁ θ₂, max θ₁ θ₂] ⊆ (-φ_ρ, φ_ρ)`
+    let a_θ : ℝ := min θ₁ θ₂
+    let b_θ : ℝ := max θ₁ θ₂
+    have hab_le : a_θ ≤ b_θ := min_le_max
+    have hab_sub : Icc a_θ b_θ ⊆ Ioo (-φ_ρ) φ_ρ := fun θ hθ =>
+      ⟨lt_of_lt_of_le (lt_min hθ₁.1 hθ₂.1) hθ.1, lt_of_le_of_lt hθ.2 (max_lt hθ₁.2 hθ₂.2)⟩
+    have hsep_ab : ε₀ < ‖g_shift (circleMap 0 ρ b_θ) - g_shift (circleMap 0 ρ a_θ)‖ := by
+      dsimp [a_θ, b_θ]
+      rcases le_total θ₁ θ₂ with hle | hle
+      · rw [min_eq_left hle, max_eq_right hle, hg₁, hg₂, norm_sub_rev]
+        exact hsep t₁ ht₁ t₂ ht₂
+      · rw [min_eq_right hle, max_eq_left hle, hg₁, hg₂]
+        exact hsep t₁ ht₁ t₂ ht₂
+    let u_arc : ℝ → ℂ := fun θ =>
+      deriv g_shift (circleMap 0 ρ θ) * (deriv (circleMap 0 ρ) θ)
+    have hderiv_arc : ∀ θ ∈ Set.uIcc a_θ b_θ,
+        HasDerivAt (fun s => g_shift (circleMap 0 ρ s)) (u_arc θ) θ := by
+      intro θ hθ_u
+      rw [Set.uIcc_of_le hab_le] at hθ_u
+      have hcm_in : circleMap 0 ρ θ ∈ D := (hcm_in_D θ (hab_sub hθ_u)).1
+      have hd_cm : HasDerivAt (circleMap 0 ρ) (deriv (circleMap 0 ρ) θ) θ := by
+        rw [deriv_circleMap]
+        exact hasDerivAt_circleMap 0 ρ θ
+      exact HasDerivAt.comp (h₂ := g_shift) (h := circleMap 0 ρ) θ
+        (hg_shift_holo _ hcm_in).hasDerivAt hd_cm
+    have hnorm_u : ∀ θ : ℝ, ‖u_arc θ‖ = ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖ := by
+      intro θ
+      dsimp [u_arc]
+      rw [norm_mul, deriv_circleMap, norm_mul, norm_circleMap_zero, abs_of_pos hρ_pos,
+        Complex.norm_I, mul_one, mul_comm]
+    have hdg_holo := RudinRCA.Chapter10.holomorphicOn_deriv hD_open hg_shift_holo
+    have hcont_norm_u : ContinuousOn (fun θ => ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖) (Icc a_θ b_θ) := by
+      refine continuousOn_const.mul (continuous_norm.comp_continuousOn ?_)
+      exact (RudinRCA.Chapter10.continuousOn_of_holomorphicOn hdg_holo).comp
+        (continuous_circleMap 0 ρ).continuousOn fun θ hθ => (hcm_in_D θ (hab_sub hθ)).1
+    have hint_u : IntervalIntegrable u_arc MeasureTheory.volume a_θ b_θ := by
+      apply ContinuousOn.intervalIntegrable_of_Icc hab_le
+      refine ContinuousOn.mul ?_ ?_
+      · exact (RudinRCA.Chapter10.continuousOn_of_holomorphicOn hdg_holo).comp
+          (continuous_circleMap 0 ρ).continuousOn fun θ hθ => (hcm_in_D θ (hab_sub hθ)).1
+      · have h_eq : deriv (circleMap 0 ρ) = fun θ => circleMap 0 ρ θ * Complex.I :=
+          funext (deriv_circleMap 0 ρ)
+        rw [h_eq]
+        exact ((continuous_circleMap 0 ρ).mul continuous_const).continuousOn
+    have hε₀_le_int : ε₀ ≤ ∫ θ in a_θ..b_θ, ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖ := by
+      have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv_arc hint_u
+      calc
+        ε₀ ≤ ‖g_shift (circleMap 0 ρ b_θ) - g_shift (circleMap 0 ρ a_θ)‖ := hsep_ab.le
+        _ = ‖∫ θ in a_θ..b_θ, u_arc θ‖ := by rw [hftc]
+        _ ≤ ∫ θ in a_θ..b_θ, ‖u_arc θ‖ := intervalIntegral.norm_integral_le_integral_norm hab_le
+        _ = ∫ θ in a_θ..b_θ, ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖ := by simp_rw [hnorm_u]
+    have hε₀_le_lint : ENNReal.ofReal ε₀ ≤
+        ∫⁻ θ in Ioo (-φ_ρ) φ_ρ,
+          ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖) ∂MeasureTheory.volume := by
+      have hint_on : MeasureTheory.IntegrableOn (fun θ => ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖)
+          (Ioc a_θ b_θ) MeasureTheory.volume :=
+        (intervalIntegrable_iff_integrableOn_Ioc_of_le hab_le).mp
+          (hcont_norm_u.intervalIntegrable_of_Icc hab_le)
+      have hnonneg : 0 ≤ᵐ[MeasureTheory.volume.restrict (Ioc a_θ b_θ)]
+          fun θ => ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖ :=
+        Filter.Eventually.of_forall fun _ => mul_nonneg hρ_pos.le (norm_nonneg _)
+      calc
+        ENNReal.ofReal ε₀
+            ≤ ENNReal.ofReal (∫ θ in a_θ..b_θ, ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖) :=
+              ENNReal.ofReal_le_ofReal hε₀_le_int
+        _ = ∫⁻ θ in Ioc a_θ b_θ,
+              ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖) ∂MeasureTheory.volume := by
+              rw [intervalIntegral.integral_of_le hab_le,
+                MeasureTheory.ofReal_integral_eq_lintegral_ofReal hint_on hnonneg]
+        _ ≤ ∫⁻ θ in Ioo (-φ_ρ) φ_ρ,
+              ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖) ∂MeasureTheory.volume :=
+              MeasureTheory.lintegral_mono'
+                (MeasureTheory.Measure.restrict_mono
+                  (fun θ hθ => hab_sub ⟨hθ.1.le, hθ.2⟩) le_rfl) le_rfl
+    -- Apply pointwise `2 c (ρ x) ≤ ρ c^2 + ρ x^2` with `c = ε₀ / (π * ρ)` on `Ioo (-φ_ρ) φ_ρ`
+    let c : ℝ := ε₀ / (Real.pi * ρ)
+    have hc_pos : 0 < c := div_pos hε₀_pos (mul_pos Real.pi_pos hρ_pos)
+    have hpt_amgm : ∀ θ ∈ Ioo (-φ_ρ) φ_ρ,
+        ENNReal.ofReal (2 * c) * ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖) ≤
+          ENNReal.ofReal (ρ * c ^ 2) +
+            ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖ ^ 2) := by
+      intro θ _
+      rw [← ENNReal.ofReal_mul (by positivity),
+        ← ENNReal.ofReal_add (by positivity) (mul_nonneg hρ_pos.le (sq_nonneg _))]
+      apply ENNReal.ofReal_le_ofReal
+      set x : ℝ := ‖deriv g_shift (circleMap 0 ρ θ)‖
+      have hsq : 0 ≤ ρ * (x - c) ^ 2 := mul_nonneg hρ_pos.le (sq_nonneg _)
+      linarith
+    have hsum_ineq : ENNReal.ofReal (2 * ε₀ ^ 2 / (Real.pi * ρ)) ≤
+        ENNReal.ofReal (ε₀ ^ 2 / (Real.pi * ρ)) +
+          ∫⁻ θ in Ioo (-φ_ρ) φ_ρ,
+            ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖ ^ 2) ∂MeasureTheory.volume := by
+      have h1 : ENNReal.ofReal (2 * ε₀ ^ 2 / (Real.pi * ρ)) =
+          ENNReal.ofReal (2 * c) * ENNReal.ofReal ε₀ := by
+        rw [← ENNReal.ofReal_mul (by positivity)]
+        congr 1; dsimp [c]; field_simp [Real.pi_pos.ne', hρ_pos.ne']
+      have hconst_eval : (∫⁻ _θ in Ioo (-φ_ρ) φ_ρ, ENNReal.ofReal (ρ * c ^ 2) ∂MeasureTheory.volume) ≤
+          ENNReal.ofReal (ε₀ ^ 2 / (Real.pi * ρ)) := by
+        rw [MeasureTheory.setLIntegral_const, Real.volume_Ioo, sub_neg_eq_add,
+          ← two_mul, mul_comm, ← ENNReal.ofReal_mul (by positivity)]
+        apply ENNReal.ofReal_le_ofReal
+        have hlen : 2 * φ_ρ ≤ Real.pi := by linarith
+        calc
+          2 * φ_ρ * (ρ * c ^ 2) ≤ Real.pi * (ρ * c ^ 2) :=
+            mul_le_mul_of_nonneg_right hlen (by positivity)
+          _ = ε₀ ^ 2 / (Real.pi * ρ) := by
+            dsimp [c]; field_simp [Real.pi_pos.ne', hρ_pos.ne']
+      calc
+        ENNReal.ofReal (2 * ε₀ ^ 2 / (Real.pi * ρ))
+            = ENNReal.ofReal (2 * c) * ENNReal.ofReal ε₀ := h1
+        _ ≤ ENNReal.ofReal (2 * c) *
+              ∫⁻ θ in Ioo (-φ_ρ) φ_ρ,
+                ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖) ∂MeasureTheory.volume :=
+              mul_le_mul_right hε₀_le_lint _
+        _ = ∫⁻ θ in Ioo (-φ_ρ) φ_ρ,
+              ENNReal.ofReal (2 * c) *
+                ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖) ∂MeasureTheory.volume := by
+              rw [MeasureTheory.lintegral_const_mul' _ _ ENNReal.ofReal_lt_top.ne]
+        _ ≤ ∫⁻ θ in Ioo (-φ_ρ) φ_ρ,
+              (ENNReal.ofReal (ρ * c ^ 2) +
+                ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖ ^ 2)) ∂MeasureTheory.volume :=
+              MeasureTheory.setLIntegral_mono' (μ := MeasureTheory.volume) measurableSet_Ioo hpt_amgm
+        _ = (∫⁻ _θ in Ioo (-φ_ρ) φ_ρ, ENNReal.ofReal (ρ * c ^ 2) ∂MeasureTheory.volume) +
+              ∫⁻ θ in Ioo (-φ_ρ) φ_ρ,
+                ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖ ^ 2) ∂MeasureTheory.volume :=
+              MeasureTheory.lintegral_add_left'
+                (aemeasurable_const (b := ENNReal.ofReal (ρ * c ^ 2))) _
+        _ ≤ ENNReal.ofReal (ε₀ ^ 2 / (Real.pi * ρ)) +
+              ∫⁻ θ in Ioo (-φ_ρ) φ_ρ,
+                ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖ ^ 2) ∂MeasureTheory.volume :=
+              add_le_add_left hconst_eval _
+    have h2_split : ENNReal.ofReal (2 * ε₀ ^ 2 / (Real.pi * ρ)) =
+        ENNReal.ofReal (ε₀ ^ 2 / (Real.pi * ρ)) + ENNReal.ofReal (ε₀ ^ 2 / (Real.pi * ρ)) := by
+      rw [← ENNReal.ofReal_add (by positivity) (by positivity)]
+      congr 1; ring
+    rw [h2_split] at hsum_ineq
+    have hsq_lower : ENNReal.ofReal (ε₀ ^ 2 / (Real.pi * ρ)) ≤
+        ∫⁻ θ in Ioo (-φ_ρ) φ_ρ,
+          ENNReal.ofReal (ρ * ‖deriv g_shift (circleMap 0 ρ θ)‖ ^ 2) ∂MeasureTheory.volume :=
+      (ENNReal.add_le_add_iff_left ENNReal.ofReal_lt_top.ne).mp hsum_ineq
+    refine hsq_lower.trans ?_
+    have hφ_sub : Ioo (-φ_ρ) φ_ρ ⊆ Ioo (-Real.pi) Real.pi :=
+      Ioo_subset_Ioo (by linarith [Real.pi_pos]) (by linarith [Real.pi_pos])
+    refine le_trans ?_
+      (MeasureTheory.lintegral_mono' (MeasureTheory.Measure.restrict_mono hφ_sub le_rfl) le_rfl)
+    refine MeasureTheory.setLIntegral_mono' (μ := MeasureTheory.volume) measurableSet_Ioo fun θ hθ => ?_
+    have hpolar_eq : Complex.polarCoord.symm (ρ, θ) = circleMap 0 ρ θ := by
+      rw [Complex.polarCoord_symm_apply, circleMap_zero, Complex.exp_mul_I,
+        Complex.ofReal_cos, Complex.ofReal_sin]
+    rw [hpolar_eq, Set.indicator_of_mem (hcm_in_D θ hθ), ENNReal.ofReal_mul hρ_pos.le, mul_comm]
+  -- Integrate `harc_lower` over `ρ ∈ Ioo δ d₀` for an explicit small `δ > 0` to exceed `π M^2`
+  let K_exp : ℝ := Real.pi ^ 2 * M ^ 2 / ε₀ ^ 2 + 1
+  have hK_pos : 0 < K_exp := by positivity
+  let δ : ℝ := d₀ * Real.exp (-K_exp)
+  have hδ_pos : 0 < δ := mul_pos hd₀_pos (Real.exp_pos _)
+  have hδ_lt : δ < d₀ := by
+    have hexp_lt : Real.exp (-K_exp) < 1 := Real.exp_lt_one_iff.mpr (by linarith)
+    nlinarith
+  have hlog_eval : (∫⁻ ρ in Ioo δ d₀, ENNReal.ofReal (ε₀ ^ 2 / (Real.pi * ρ)) ∂MeasureTheory.volume) =
+      ENNReal.ofReal ((ε₀ ^ 2 / Real.pi) * K_exp) := by
+    have hcont_inv : ContinuousOn (fun ρ : ℝ => ε₀ ^ 2 / (Real.pi * ρ)) (Icc δ d₀) :=
+      continuousOn_const.div (continuousOn_const.mul continuousOn_id) fun ρ hρ =>
+        (mul_pos Real.pi_pos (lt_of_lt_of_le hδ_pos hρ.1)).ne'
+    have hint_on : MeasureTheory.IntegrableOn (fun ρ : ℝ => ε₀ ^ 2 / (Real.pi * ρ))
+        (Ioc δ d₀) MeasureTheory.volume :=
+      (intervalIntegrable_iff_integrableOn_Ioc_of_le hδ_lt.le).mp
+        (hcont_inv.intervalIntegrable_of_Icc hδ_lt.le)
+    have hnonneg' : 0 ≤ᵐ[MeasureTheory.volume.restrict (Ioc δ d₀)]
+        fun ρ : ℝ => ε₀ ^ 2 / (Real.pi * ρ) := by
+      rw [Filter.EventuallyLE, MeasureTheory.ae_restrict_iff' measurableSet_Ioc]
+      refine Filter.Eventually.of_forall fun ρ hρ => ?_
+      have hρ0 : 0 < ρ := lt_trans hδ_pos hρ.1
+      exact div_nonneg (sq_nonneg _) (mul_nonneg Real.pi_pos.le hρ0.le)
+    have hftc : (∫ ρ in δ..d₀, ε₀ ^ 2 / (Real.pi * ρ)) = (ε₀ ^ 2 / Real.pi) * K_exp := by
+      have hderiv_log : ∀ ρ ∈ Set.uIcc δ d₀,
+          HasDerivAt (fun s : ℝ => (ε₀ ^ 2 / Real.pi) * Real.log s) (ε₀ ^ 2 / (Real.pi * ρ)) ρ := by
+        intro ρ hρ
+        rw [Set.uIcc_of_le hδ_lt.le] at hρ
+        have hρ0 : 0 < ρ := lt_of_lt_of_le hδ_pos hρ.1
+        have hd := (Real.hasDerivAt_log hρ0.ne').const_mul (ε₀ ^ 2 / Real.pi)
+        refine hd.congr_deriv ?_
+        field_simp [Real.pi_pos.ne', hρ0.ne']
+      rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv_log
+        (hcont_inv.intervalIntegrable_of_Icc hδ_lt.le)]
+      have hlog_δ : Real.log δ = Real.log d₀ - K_exp := by
+        dsimp [δ]
+        rw [Real.log_mul hd₀_pos.ne' (Real.exp_pos _).ne', Real.log_exp]
+        ring
+      rw [hlog_δ]; ring
+    rw [MeasureTheory.setLIntegral_congr MeasureTheory.Ioo_ae_eq_Ioc,
+      ← MeasureTheory.ofReal_integral_eq_lintegral_ofReal hint_on hnonneg',
+      ← intervalIntegral.integral_of_le hδ_lt.le, hftc]
+  -- Compare with `harea` via Tonelli on `Ioo δ d₀ ×ˢ Ioo (-π) π ⊆ polarCoord.target`
+  let f_polar : ℝ × ℝ → ENNReal := fun p =>
+    (D \ {0}).indicator (fun z => ENNReal.ofReal (‖deriv g_shift z‖ ^ 2))
+      (Complex.polarCoord.symm p) * ENNReal.ofReal p.1
+  have hf_polar_meas : Measurable f_polar := by
+    let q : ℂ → ENNReal := fun z => ENNReal.ofReal (‖deriv g_shift z‖ ^ 2)
+    have hq_cont : ContinuousOn q (D \ {0}) :=
+      ENNReal.continuous_ofReal.comp_continuousOn
+        ((continuous_norm.comp_continuousOn
+          ((RudinRCA.Chapter10.continuousOn_of_holomorphicOn
+            (RudinRCA.Chapter10.holomorphicOn_deriv hD_open hg_shift_holo)).mono
+              Set.sdiff_subset)).pow 2)
+    have hind_meas : Measurable ((D \ {0}).indicator q) := by
+      rw [← Set.piecewise_eq_indicator]
+      exact hq_cont.measurable_piecewise continuousOn_const
+        (hD_open.sdiff isClosed_singleton).measurableSet
+    have hsymm_cont : Continuous (fun p : ℝ × ℝ => (Complex.polarCoord.symm p : ℂ)) := by
+      have h_eq : (fun p : ℝ × ℝ => (Complex.polarCoord.symm p : ℂ)) =
+          fun p => (p.1 : ℂ) * ((Real.cos p.2 : ℂ) + (Real.sin p.2 : ℂ) * Complex.I) :=
+        funext Complex.polarCoord_symm_apply
+      rw [h_eq]
+      exact (Complex.continuous_ofReal.comp continuous_fst).mul
+        ((Complex.continuous_ofReal.comp (Real.continuous_cos.comp continuous_snd)).add
+          ((Complex.continuous_ofReal.comp (Real.continuous_sin.comp continuous_snd)).mul
+            continuous_const))
+    exact (hind_meas.comp hsymm_cont.measurable).mul
+      (ENNReal.continuous_ofReal.comp continuous_fst).measurable
+  have hsub_target : Ioo δ d₀ ×ˢ Ioo (-Real.pi) Real.pi ⊆ _root_.polarCoord.target := by
+    rw [polarCoord_target]
+    exact prod_mono (fun ρ hρ => lt_trans hδ_pos hρ.1) Subset.rfl
+  have hiter_le : ENNReal.ofReal ((ε₀ ^ 2 / Real.pi) * K_exp) ≤ ENNReal.ofReal (Real.pi * M ^ 2) := by
+    rw [← hlog_eval]
+    calc
+      (∫⁻ ρ in Ioo δ d₀, ENNReal.ofReal (ε₀ ^ 2 / (Real.pi * ρ)) ∂MeasureTheory.volume)
+          ≤ ∫⁻ ρ in Ioo δ d₀,
+              (∫⁻ θ in Ioo (-Real.pi) Real.pi, f_polar (ρ, θ) ∂MeasureTheory.volume)
+              ∂MeasureTheory.volume := by
+            refine MeasureTheory.setLIntegral_mono' (μ := MeasureTheory.volume) measurableSet_Ioo
+              fun ρ hρ => harc_lower ρ ⟨lt_trans hδ_pos hρ.1, hρ.2⟩
+      _ = ∫⁻ p in Ioo δ d₀ ×ˢ Ioo (-Real.pi) Real.pi, f_polar p ∂MeasureTheory.volume := by
+            rw [MeasureTheory.Measure.volume_eq_prod]
+            exact (MeasureTheory.setLIntegral_prod f_polar hf_polar_meas.aemeasurable).symm
+      _ ≤ ∫⁻ p in _root_.polarCoord.target, f_polar p ∂MeasureTheory.volume :=
+            MeasureTheory.lintegral_mono'
+              (MeasureTheory.Measure.restrict_mono hsub_target le_rfl) le_rfl
+      _ ≤ ENNReal.ofReal (Real.pi * M ^ 2) := harea
+  have hreal_le : (ε₀ ^ 2 / Real.pi) * K_exp ≤ Real.pi * M ^ 2 :=
+    (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp hiter_le
+  have hreal_gt : Real.pi * M ^ 2 < (ε₀ ^ 2 / Real.pi) * K_exp := by
+    have hcalc : (ε₀ ^ 2 / Real.pi) * K_exp = Real.pi * M ^ 2 + ε₀ ^ 2 / Real.pi := by
+      dsimp [K_exp]
+      field_simp [Real.pi_pos.ne', hε₀_pos.ne']
+    rw [hcalc]
+    linarith [div_pos (sq_pos_of_pos hε₀_pos) Real.pi_pos]
+  linarith
+
+/-- **Theorem 14.18 (Continuous norm-1 boundary extension and injectivity at simple boundary
+points, RCA pp. 289–290):**
+Let `Ω` be a bounded simply connected region and `f : Ω → ball 0 1` a holomorphic bijection.
+1. **(a)** At each simple boundary point `β` of `Ω`, `f` extends continuously to `Ω ∪ {β}` (and
+   equivalently has a limit `w_β` along `𝓝[Ω] β`), and its extension value at `β` has norm `1`.
+2. **(b)** If `β₁, β₂` are distinct simple boundary points of `Ω`, the extension values of `f` at
+   `β₁` and `β₂` are distinct. -/
+theorem theorem14_18 {Ω : Set ℂ} (hΩ_sc : RudinRCA.Chapter10.BookSimplyConnected Ω)
+    (hΩ_bdd : Bornology.IsBounded Ω) {f : ℂ → ℂ}
+    (hf_holo : RudinRCA.Chapter10.HolomorphicOn f Ω)
+    (hf_bij : BijOn f Ω (ball (0 : ℂ) 1)) :
+    (∀ {β : ℂ}, IsSimpleBoundaryPoint Ω β →
+      ∃! w_β : ℂ, ‖w_β‖ = 1 ∧ Tendsto f (𝓝[Ω] β) (𝓝 w_β) ∧
+        ∃ F : ℂ → ℂ, EqOn F f Ω ∧ ContinuousOn F (Ω ∪ {β}) ∧ F β = w_β) ∧
+    (∀ {β₁ β₂ : ℂ} {F₁ F₂ : ℂ → ℂ},
+      IsSimpleBoundaryPoint Ω β₁ → IsSimpleBoundaryPoint Ω β₂ → β₁ ≠ β₂ →
+      EqOn F₁ f Ω → ContinuousOn F₁ (Ω ∪ {β₁}) →
+      EqOn F₂ f Ω → ContinuousOn F₂ (Ω ∪ {β₂}) →
+      F₁ β₁ ≠ F₂ β₂) := by
+  have hΩ_open : IsOpen Ω := hΩ_sc.1.1
+  refine ⟨fun hsimple => theorem14_18_part_a hΩ_open hΩ_bdd hf_holo hf_bij hsimple, ?_⟩
+  intro β₁ β₂ F₁ F₂ hs₁ hs₂ hne hEq₁ hCont₁ hEq₂ hCont₂ heq_val
+  have hlim₁ : Tendsto f (𝓝[Ω] β₁) (𝓝 (F₁ β₁)) := by
+    have hc := (hCont₁ β₁ (Or.inr (Set.mem_singleton β₁))).mono (Set.subset_union_left)
+    exact hc.tendsto.congr' (eventually_nhdsWithin_of_forall fun z hz => hEq₁ hz)
+  have hlim₂ : Tendsto f (𝓝[Ω] β₂) (𝓝 (F₁ β₁)) := by
+    rw [heq_val]
+    have hc := (hCont₂ β₂ (Or.inr (Set.mem_singleton β₂))).mono (Set.subset_union_left)
+    exact hc.tendsto.congr' (eventually_nhdsWithin_of_forall fun z hz => hEq₂ hz)
+  exact hne (theorem14_18_part_b hΩ_open hΩ_bdd hf_holo hf_bij hs₁ hs₂ hlim₁ hlim₂)
+
+/-! ### Node 14.19: Homeomorphic Extension to the Closure -/
+
+open Classical in
+/-- Canonical boundary extension of `f : ℂ → ℂ` from `Ω` by its within-domain limit
+`limUnder (𝓝[Ω] z) f` outside `Ω`. -/
+def caratheodoryExtension (f : ℂ → ℂ) (Ω : Set ℂ) (z : ℂ) : ℂ :=
+  if z ∈ Ω then f z else limUnder (𝓝[Ω] z) f
+
+theorem caratheodoryExtension_eq_of_mem {f : ℂ → ℂ} {Ω : Set ℂ} {z : ℂ} (hz : z ∈ Ω) :
+    caratheodoryExtension f Ω z = f z := by
+  simp [caratheodoryExtension, hz]
+
+theorem caratheodoryExtension_frontier_spec {Ω : Set ℂ} (hΩ_open : IsOpen Ω)
+    (hΩ_bdd : Bornology.IsBounded Ω) {f : ℂ → ℂ}
+    (hf_holo : RudinRCA.Chapter10.HolomorphicOn f Ω)
+    (hf_bij : BijOn f Ω (ball (0 : ℂ) 1)) {β : ℂ}
+    (hsimple : IsSimpleBoundaryPoint Ω β) :
+    caratheodoryExtension f Ω β ∈ sphere (0 : ℂ) 1 ∧
+      Tendsto f (𝓝[Ω] β) (𝓝 (caratheodoryExtension f Ω β)) := by
+  have hβ_not_mem : β ∉ Ω := by
+    have hβ_fr : β ∈ frontier Ω := hsimple.1
+    rw [frontier, hΩ_open.interior_eq] at hβ_fr
+    exact hβ_fr.2
+  obtain ⟨w_β, ⟨hw_norm, hw_lim, _⟩, _⟩ :=
+    theorem14_18_part_a hΩ_open hΩ_bdd hf_holo hf_bij hsimple
+  have _hneBot : (𝓝[Ω] β).NeBot :=
+    mem_closure_iff_nhdsWithin_neBot.mp hsimple.1.1
+  have heq : caratheodoryExtension f Ω β = w_β := by
+    simp only [caratheodoryExtension, hβ_not_mem, ↓reduceIte]
+    exact hw_lim.limUnder_eq
+  rw [heq]
+  exact ⟨by simp [hw_norm], hw_lim⟩
+
+/-- Every continuous extension of `f` from `Ω` to `closure Ω` agrees on `closure Ω`
+with `caratheodoryExtension f Ω` when `f` has continuous extensions on `closure Ω`. -/
+theorem eqOn_of_continuousOn_closure_eqOn {Ω : Set ℂ} {F G : ℂ → ℂ}
+    (hF : ContinuousOn F (closure Ω)) (hG : ContinuousOn G (closure Ω))
+    (hEq : EqOn F G Ω) :
+    EqOn F G (closure Ω) := by
+  intro z hz
+  have hneBot : (𝓝[Ω] z).NeBot := mem_closure_iff_nhdsWithin_neBot.mp hz
+  have hF_lim : Tendsto F (𝓝[Ω] z) (𝓝 (F z)) :=
+    ((hF z hz).mono subset_closure).tendsto
+  have hG_lim : Tendsto G (𝓝[Ω] z) (𝓝 (G z)) :=
+    ((hG z hz).mono subset_closure).tendsto
+  have hFG_lim : Tendsto F (𝓝[Ω] z) (𝓝 (G z)) :=
+    hG_lim.congr' (eventually_nhdsWithin_of_forall fun w hw => (hEq hw).symm)
+  exact tendsto_nhds_unique hF_lim hFG_lim
+
+/-- Core package for Theorem 14.19: `caratheodoryExtension f Ω` extends `f` to a continuous
+bijection of `closure Ω` onto `closure (ball 0 1) = closedBall 0 1`, mapping `frontier Ω`
+bijectively onto `sphere 0 1`, and inducing homeomorphisms `closure Ω ≃ₜ closure (ball 0 1)`,
+`closure Ω ≃ₜ closedBall 0 1`, and `frontier Ω ≃ₜ sphere 0 1`. -/
+theorem caratheodoryExtension_homeomorph_package {Ω : Set ℂ}
+    (hΩ_open : IsOpen Ω) (hΩ_bdd : Bornology.IsBounded Ω)
+    (hΩ_simple : ∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β)
+    {f : ℂ → ℂ} (hf_holo : RudinRCA.Chapter10.HolomorphicOn f Ω)
+    (hf_bij : BijOn f Ω (ball (0 : ℂ) 1)) :
+    let F := caratheodoryExtension f Ω
+    EqOn F f Ω ∧
+    ContinuousOn F (closure Ω) ∧
+    BijOn F (closure Ω) (closure (ball (0 : ℂ) 1)) ∧
+    BijOn F (closure Ω) (closedBall (0 : ℂ) 1) ∧
+    BijOn F (frontier Ω) (sphere (0 : ℂ) 1) ∧
+    (∃ e : closure Ω ≃ₜ closure (ball (0 : ℂ) 1), ∀ z : closure Ω, (e z : ℂ) = F z) ∧
+    (∃ e_cb : closure Ω ≃ₜ closedBall (0 : ℂ) 1, ∀ z : closure Ω, (e_cb z : ℂ) = F z) ∧
+    (∃ e_bd : frontier Ω ≃ₜ sphere (0 : ℂ) 1, ∀ z : frontier Ω, (e_bd z : ℂ) = F z) := by
+  intro F
+  have hEq : EqOn F f Ω := fun z hz => caratheodoryExtension_eq_of_mem hz
+  have mem_frontier_of_mem_closure_not_mem :
+      ∀ {z : ℂ}, z ∈ closure Ω → z ∉ Ω → z ∈ frontier Ω := by
+    intro z hz hnot
+    rw [frontier, hΩ_open.interior_eq]
+    exact ⟨hz, hnot⟩
+  have hfr_spec : ∀ β ∈ frontier Ω, F β ∈ sphere (0 : ℂ) 1 ∧ Tendsto f (𝓝[Ω] β) (𝓝 (F β)) :=
+    fun β hβ => caratheodoryExtension_frontier_spec hΩ_open hΩ_bdd hf_holo hf_bij (hΩ_simple β hβ)
+  have hCont : ContinuousOn F (closure Ω) := by
+    intro z₀ hz₀
+    by_cases hz₀_in : z₀ ∈ Ω
+    · have hf_cont : ContinuousAt f z₀ := (hf_holo z₀ hz₀_in).continuousAt
+      have hev : F =ᶠ[𝓝 z₀] f :=
+        Filter.eventuallyEq_of_mem (hΩ_open.mem_nhds hz₀_in) fun z hz => (hEq hz)
+      exact (hf_cont.congr hev.symm).continuousWithinAt
+    · have hz₀_fr : z₀ ∈ frontier Ω := mem_frontier_of_mem_closure_not_mem hz₀ hz₀_in
+      have hlim₀ : Tendsto f (𝓝[Ω] z₀) (𝓝 (F z₀)) := (hfr_spec z₀ hz₀_fr).2
+      rw [Metric.continuousWithinAt_iff]
+      intro ε hε
+      obtain ⟨δ, hδ_pos, hδ⟩ := Metric.tendsto_nhdsWithin_nhds.mp hlim₀ (ε / 2) (half_pos hε)
+      refine ⟨δ / 2, half_pos hδ_pos, ?_⟩
+      intro z hz_cl hdist_z
+      by_cases hz_in : z ∈ Ω
+      · rw [hEq hz_in]
+        exact lt_trans (hδ hz_in (lt_trans hdist_z (half_lt_self hδ_pos))) (half_lt_self hε)
+      · have hz_fr : z ∈ frontier Ω := mem_frontier_of_mem_closure_not_mem hz_cl hz_in
+        have hlim_z : Tendsto f (𝓝[Ω] z) (𝓝 (F z)) := (hfr_spec z hz_fr).2
+        obtain ⟨δ_z, hδz_pos, hδz⟩ :=
+          Metric.tendsto_nhdsWithin_nhds.mp hlim_z (ε / 2) (half_pos hε)
+        obtain ⟨w, hw_Ω, hw_dist⟩ :=
+          Metric.mem_closure_iff.mp hz_cl (min (δ / 2) δ_z) (lt_min (half_pos hδ_pos) hδz_pos)
+        have hfw_z : dist (f w) (F z) < ε / 2 := by
+          apply hδz hw_Ω
+          rw [dist_comm]
+          exact lt_of_lt_of_le hw_dist (min_le_right _ _)
+        have hfw_z₀ : dist (f w) (F z₀) < ε / 2 := by
+          apply hδ hw_Ω
+          calc
+            dist w z₀ ≤ dist w z + dist z z₀ := dist_triangle w z z₀
+            _ = dist z w + dist z z₀ := by rw [dist_comm w z]
+            _ < δ / 2 + δ / 2 := add_lt_add (lt_of_lt_of_le hw_dist (min_le_left _ _)) hdist_z
+            _ = δ := add_halves δ
+        calc
+          dist (F z) (F z₀) ≤ dist (F z) (f w) + dist (f w) (F z₀) := dist_triangle _ (f w) _
+          _ = dist (f w) (F z) + dist (f w) (F z₀) := by rw [dist_comm (F z) (f w)]
+          _ < ε / 2 + ε / 2 := add_lt_add hfw_z hfw_z₀
+          _ = ε := add_halves ε
+  have hInj : InjOn F (closure Ω) := by
+    intro z₁ hz₁ z₂ hz₂ heq
+    by_cases h₁ : z₁ ∈ Ω <;> by_cases h₂ : z₂ ∈ Ω
+    · exact hf_bij.injOn h₁ h₂ ((hEq h₁).symm.trans (heq.trans (hEq h₂)))
+    · exfalso
+      have hn₁ : ‖F z₁‖ < 1 := by
+        rw [hEq h₁]; exact mem_ball_zero_iff.mp (hf_bij.mapsTo h₁)
+      have hn₂ : ‖F z₂‖ = 1 := by
+        simpa using (hfr_spec z₂ (mem_frontier_of_mem_closure_not_mem hz₂ h₂)).1
+      rw [heq, hn₂] at hn₁
+      exact lt_irrefl 1 hn₁
+    · exfalso
+      have hn₂ : ‖F z₂‖ < 1 := by
+        rw [hEq h₂]; exact mem_ball_zero_iff.mp (hf_bij.mapsTo h₂)
+      have hn₁ : ‖F z₁‖ = 1 := by
+        simpa using (hfr_spec z₁ (mem_frontier_of_mem_closure_not_mem hz₁ h₁)).1
+      rw [← heq, hn₁] at hn₂
+      exact lt_irrefl 1 hn₂
+    · have hfr₁ := mem_frontier_of_mem_closure_not_mem hz₁ h₁
+      have hfr₂ := mem_frontier_of_mem_closure_not_mem hz₂ h₂
+      have hlim₁ := (hfr_spec z₁ hfr₁).2
+      have hlim₂ : Tendsto f (𝓝[Ω] z₂) (𝓝 (F z₁)) := heq ▸ (hfr_spec z₂ hfr₂).2
+      exact theorem14_18_part_b hΩ_open hΩ_bdd hf_holo hf_bij
+        (hΩ_simple z₁ hfr₁) (hΩ_simple z₂ hfr₂) hlim₁ hlim₂
+  have hcl_ball : closure (ball (0 : ℂ) 1) = closedBall (0 : ℂ) 1 :=
+    closure_ball (0 : ℂ) one_ne_zero
+  have hMaps_cb : MapsTo F (closure Ω) (closedBall (0 : ℂ) 1) := by
+    intro z hz
+    by_cases h : z ∈ Ω
+    · rw [hEq h]; exact ball_subset_closedBall (hf_bij.mapsTo h)
+    · exact sphere_subset_closedBall (hfr_spec z (mem_frontier_of_mem_closure_not_mem hz h)).1
+  have hSurj_cb : SurjOn F (closure Ω) (closedBall (0 : ℂ) 1) := by
+    have hcomp : IsCompact (F '' closure Ω) := hΩ_bdd.isCompact_closure.image_of_continuousOn hCont
+    have hball_sub : ball (0 : ℂ) 1 ⊆ F '' closure Ω := by
+      rw [← hf_bij.image_eq]
+      rintro _ ⟨z, hz, rfl⟩
+      exact ⟨z, subset_closure hz, hEq hz⟩
+    rw [← hcl_ball]
+    exact closure_minimal hball_sub hcomp.isClosed
+  have hBij_cb : BijOn F (closure Ω) (closedBall (0 : ℂ) 1) := ⟨hMaps_cb, hInj, hSurj_cb⟩
+  have hBij_cl : BijOn F (closure Ω) (closure (ball (0 : ℂ) 1)) := by
+    rwa [hcl_ball]
+  have hBij_fr : BijOn F (frontier Ω) (sphere (0 : ℂ) 1) := by
+    refine ⟨fun β hβ => (hfr_spec β hβ).1, hInj.mono frontier_subset_closure, ?_⟩
+    intro w hw
+    obtain ⟨z, hz_cl, hFz⟩ := hSurj_cb (sphere_subset_closedBall hw)
+    have hz_not_Ω : z ∉ Ω := by
+      intro hz_in
+      have hn : ‖F z‖ < 1 := by
+        rw [hEq hz_in]; exact mem_ball_zero_iff.mp (hf_bij.mapsTo hz_in)
+      have hw1 : ‖w‖ = 1 := by simpa using hw
+      rw [hFz, hw1] at hn
+      exact lt_irrefl 1 hn
+    exact ⟨z, mem_frontier_of_mem_closure_not_mem hz_cl hz_not_Ω, hFz⟩
+  have : CompactSpace (closure Ω) := isCompact_iff_compactSpace.mp hΩ_bdd.isCompact_closure
+  have hfr_comp : IsCompact (frontier Ω) :=
+    hΩ_bdd.isCompact_closure.of_isClosed_subset isClosed_frontier frontier_subset_closure
+  have : CompactSpace (frontier Ω) := isCompact_iff_compactSpace.mp hfr_comp
+  let e : closure Ω ≃ₜ closure (ball (0 : ℂ) 1) :=
+    Continuous.homeoOfEquivCompactToT2 (f := hBij_cl.equiv)
+      (hCont.domRestrict.codRestrict fun z => hBij_cl.mapsTo z.2)
+  let e_cb : closure Ω ≃ₜ closedBall (0 : ℂ) 1 :=
+    Continuous.homeoOfEquivCompactToT2 (f := hBij_cb.equiv)
+      (hCont.domRestrict.codRestrict fun z => hBij_cb.mapsTo z.2)
+  let e_bd : frontier Ω ≃ₜ sphere (0 : ℂ) 1 :=
+    Continuous.homeoOfEquivCompactToT2 (f := hBij_fr.equiv)
+      ((hCont.mono frontier_subset_closure).domRestrict.codRestrict fun z => hBij_fr.mapsTo z.2)
+  exact ⟨hEq, hCont, hBij_cl, hBij_cb, hBij_fr,
+    ⟨e, fun _ => rfl⟩, ⟨e_cb, fun _ => rfl⟩, ⟨e_bd, fun _ => rfl⟩⟩
+
+/-- **Theorem 14.19 (Carathéodory–Osgood–Taylor homeomorphic extension to the closure,
+RCA pp. 290–291):**
+If `Ω` is a bounded simply connected region in `ℂ` and every boundary point of `Ω` is simple,
+then every holomorphic bijection `f` of `Ω` onto `U = ball 0 1` extends uniquely to a
+homeomorphism of `closure Ω` onto `closure U` (`= closedBall 0 1`), carrying `frontier Ω`
+homeomorphically onto `sphere 0 1`. -/
+theorem theorem14_19 {Ω : Set ℂ} (hΩ_sc : RudinRCA.Chapter10.BookSimplyConnected Ω)
+    (hΩ_bdd : Bornology.IsBounded Ω)
+    (hΩ_simple : ∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β)
+    {f : ℂ → ℂ} (hf_holo : RudinRCA.Chapter10.HolomorphicOn f Ω)
+    (hf_bij : BijOn f Ω (ball (0 : ℂ) 1)) :
+    (∃ e : closure Ω ≃ₜ closure (ball (0 : ℂ) 1),
+      (∀ z : Ω, (e ⟨z.1, subset_closure z.2⟩ : ℂ) = f z.1) ∧
+      (∀ β : frontier Ω, (e ⟨β.1, frontier_subset_closure β.2⟩ : ℂ) ∈ sphere (0 : ℂ) 1)) ∧
+    (∃ F : ℂ → ℂ, EqOn F f Ω ∧ ContinuousOn F (closure Ω) ∧
+      BijOn F (closure Ω) (closure (ball (0 : ℂ) 1)) ∧
+      BijOn F (frontier Ω) (sphere (0 : ℂ) 1) ∧
+      (∀ z : closure Ω, ∀ e : closure Ω ≃ₜ closure (ball (0 : ℂ) 1),
+        (∀ w : Ω, (e ⟨w.1, subset_closure w.2⟩ : ℂ) = f w.1) →
+        (e z : ℂ) = F z.1)) := by
+  have hΩ_open : IsOpen Ω := hΩ_sc.1.1
+  obtain ⟨hEq, hCont, hBij_cl, _, hBij_fr, ⟨e, he⟩, _, _⟩ :=
+    caratheodoryExtension_homeomorph_package hΩ_open hΩ_bdd hΩ_simple hf_holo hf_bij
+  refine ⟨⟨e, ?_, ?_⟩, ⟨caratheodoryExtension f Ω, hEq, hCont, hBij_cl, hBij_fr, ?_⟩⟩
+  · intro z
+    rw [he]
+    exact hEq z.2
+  · intro β
+    rw [he]
+    exact hBij_fr.mapsTo β.2
+  · classical
+    intro z e' he'
+    let G : ℂ → ℂ := fun w => if hw : w ∈ closure Ω then (e' ⟨w, hw⟩ : ℂ) else 0
+    have hG_cont : ContinuousOn G (closure Ω) := by
+      have h_sub : Continuous (fun p : closure Ω => (e' p : ℂ)) :=
+        continuous_subtype_val.comp e'.continuous
+      rw [continuousOn_iff_continuous_domRestrict]
+      refine h_sub.congr fun p => ?_
+      simp [G]
+    have hG_eq : EqOn G (caratheodoryExtension f Ω) Ω := by
+      intro w hw
+      have hw_cl : w ∈ closure Ω := subset_closure hw
+      simp only [G, hw_cl, ↓reduceDIte]
+      rw [he' ⟨w, hw⟩, hEq hw]
+    have hGF := eqOn_of_continuousOn_closure_eqOn hG_cont hCont hG_eq z.2
+    simpa [G, z.2] using hGF
+
+/-! ### Node 14.20: Jordan-Curve Converse, Three-Point Normalization, and Spherical/Half-Plane Extensions -/
+
+/-- A subset `J ⊆ ℂ` is a Jordan curve if it is homeomorphic to the unit circle `sphere 0 1`. -/
+def IsJordanCurve (J : Set ℂ) : Prop :=
+  Nonempty (J ≃ₜ sphere (0 : ℂ) 1)
+
+/-- A subset `A ⊆ ℂ` is a Jordan arc if it is homeomorphic to `[0, 1]`. -/
+def IsJordanArc (A : Set ℂ) : Prop :=
+  Nonempty (A ≃ₜ Icc (0 : ℝ) 1)
+
+theorem isCompact_of_isJordanCurve {J : Set ℂ} (hJ : IsJordanCurve J) : IsCompact J := by
+  rcases hJ with ⟨e⟩
+  have : CompactSpace (sphere (0 : ℂ) 1) := isCompact_iff_compactSpace.mp (isCompact_sphere 0 1)
+  have : CompactSpace J := e.symm.compactSpace
+  exact isCompact_iff_compactSpace.mpr inferInstance
+
+theorem nonempty_of_isJordanCurve {J : Set ℂ} (hJ : IsJordanCurve J) : J.Nonempty := by
+  rcases hJ with ⟨e⟩
+  exact ⟨(e.symm ⟨1, by simp⟩ : ℂ), (e.symm ⟨1, by simp⟩).2⟩
+
+theorem isCompact_of_isJordanArc {A : Set ℂ} (hA : IsJordanArc A) : IsCompact A := by
+  rcases hA with ⟨e⟩
+  have : CompactSpace (Icc (0 : ℝ) 1) := isCompact_iff_compactSpace.mp isCompact_Icc
+  have : CompactSpace A := e.symm.compactSpace
+  exact isCompact_iff_compactSpace.mpr inferInstance
+
+theorem isConnected_of_isJordanArc {A : Set ℂ} (hA : IsJordanArc A) : IsConnected A := by
+  rcases hA with ⟨e⟩
+  have hrange : Set.range (fun p : Icc (0 : ℝ) 1 => (e.symm p : ℂ)) = A := by
+    ext z
+    constructor
+    · rintro ⟨p, rfl⟩; exact (e.symm p).2
+    · intro hz; exact ⟨e ⟨z, hz⟩, by simp⟩
+  rw [← hrange]
+  have : ConnectedSpace (Icc (0 : ℝ) 1) :=
+    Subtype.connectedSpace (isConnected_Icc zero_le_one)
+  exact isConnected_range (continuous_subtype_val.comp e.symm.continuous)
+
+/-- Integer-valued continuous functions on preconnected sets are constant. -/
+theorem eq_of_isPreconnected_int_cast {α : Type*} [TopologicalSpace α] {S : Set α}
+    (hS : IsPreconnected S) {q : α → ℂ} (hq : ContinuousOn q S)
+    (hint : ∀ x ∈ S, ∃ k : ℤ, q x = k) {x y : α} (hx : x ∈ S) (hy : y ∈ S) :
+    q x = q y := by
+  let g : α → ℝ := fun z => (q z).re
+  have hg : ContinuousOn g S := Complex.continuous_re.comp_continuousOn hq
+  have hg_int : ∀ z ∈ S, ∃ k : ℤ, g z = k := by
+    intro z hz
+    obtain ⟨k, hk⟩ := hint z hz
+    exact ⟨k, by simp [g, hk]⟩
+  have hgx_eq_gy : g x = g y := by
+    by_contra hne
+    obtain ⟨kx, hkx⟩ := hg_int x hx
+    obtain ⟨ky, hky⟩ := hg_int y hy
+    have hkne : kx ≠ ky := fun h => hne (by rw [hkx, hky, h])
+    have himg_pre : IsPreconnected (g '' S) := hS.image g hg
+    by_cases hlt : kx < ky
+    · have hmid_in : ((kx : ℝ) + 1 / 2) ∈ Icc (g x) (g y) := by
+        rw [hkx, hky]
+        have h1 : (kx : ℝ) + 1 ≤ (ky : ℝ) := by exact_mod_cast Int.add_one_le_iff.mpr hlt
+        exact ⟨by linarith, by linarith⟩
+      have hsub := himg_pre.ordConnected.out
+        (⟨x, hx, rfl⟩ : g x ∈ g '' S) (⟨y, hy, rfl⟩ : g y ∈ g '' S)
+      rcases hsub hmid_in with ⟨z, hz, hgz⟩
+      obtain ⟨kz, hkz⟩ := hg_int z hz
+      have h2 : (2 : ℝ) * (kz : ℝ) = 2 * (kx : ℝ) + 1 := by linarith
+      have h2z : (2 * kz : ℤ) = 2 * kx + 1 := by exact_mod_cast h2
+      omega
+    · have hgt : ky < kx := lt_of_le_of_ne (not_lt.mp hlt) hkne.symm
+      have hmid_in : ((ky : ℝ) + 1 / 2) ∈ Icc (g y) (g x) := by
+        rw [hkx, hky]
+        have h1 : (ky : ℝ) + 1 ≤ (kx : ℝ) := by exact_mod_cast Int.add_one_le_iff.mpr hgt
+        exact ⟨by linarith, by linarith⟩
+      have hsub := himg_pre.ordConnected.out
+        (⟨y, hy, rfl⟩ : g y ∈ g '' S) (⟨x, hx, rfl⟩ : g x ∈ g '' S)
+      rcases hsub hmid_in with ⟨z, hz, hgz⟩
+      obtain ⟨kz, hkz⟩ := hg_int z hz
+      have h2 : (2 : ℝ) * (kz : ℝ) = 2 * (ky : ℝ) + 1 := by linarith
+      have h2z : (2 * kz : ℤ) = 2 * ky + 1 := by exact_mod_cast h2
+      omega
+  obtain ⟨kx, hkx⟩ := hint x hx
+  obtain ⟨ky, hky⟩ := hint y hy
+  have hk_eq : (kx : ℝ) = (ky : ℝ) := by simpa [g, hkx, hky] using hgx_eq_gy
+  have hkz_eq : kx = ky := Int.cast_injective hk_eq
+  rw [hkx, hky, hkz_eq]
+
+/-- Borsuk–Eilenberg continuous-logarithm relation for `(z - a) / (z - b)` on `X ⊆ ℂ`. -/
+def HasContLogRatio (X : Set ℂ) (a b : ℂ) : Prop :=
+  ∃ g : ℂ → ℂ, ContinuousOn g X ∧ ∀ z ∈ X, Complex.exp (g z) = (z - a) / (z - b)
+
+theorem hasContLogRatio_refl {X : Set ℂ} {a : ℂ} (ha : a ∉ X) :
+    HasContLogRatio X a a := by
+  refine ⟨fun _ => 0, continuousOn_const, fun z hz => ?_⟩
+  have hne : z - a ≠ 0 := sub_ne_zero.mpr (fun h => ha (h ▸ hz))
+  rw [Complex.exp_zero, div_self hne]
+
+theorem hasContLogRatio_symm {X : Set ℂ} {a b : ℂ} (_ha : a ∉ X) (_hb : b ∉ X)
+    (h : HasContLogRatio X a b) : HasContLogRatio X b a := by
+  rcases h with ⟨g, hg_cont, hg_exp⟩
+  refine ⟨fun z => -g z, hg_cont.neg, fun z hz => ?_⟩
+  rw [Complex.exp_neg, hg_exp z hz, inv_div]
+
+theorem hasContLogRatio_trans {X : Set ℂ} {a b c : ℂ} (hb : b ∉ X)
+    (hab : HasContLogRatio X a b) (hbc : HasContLogRatio X b c) :
+    HasContLogRatio X a c := by
+  rcases hab with ⟨g₁, hg₁_cont, hg₁_exp⟩
+  rcases hbc with ⟨g₂, hg₂_cont, hg₂_exp⟩
+  refine ⟨fun z => g₁ z + g₂ z, hg₁_cont.add hg₂_cont, fun z hz => ?_⟩
+  have hzb : z - b ≠ 0 := sub_ne_zero.mpr (fun h0 => hb (h0 ▸ hz))
+  rw [Complex.exp_add, hg₁_exp z hz, hg₂_exp z hz]
+  field_simp [hzb]
+
+theorem hasContLogRatio_mono {X Y : Set ℂ} (hsub : Y ⊆ X) {a b : ℂ}
+    (h : HasContLogRatio X a b) : HasContLogRatio Y a b := by
+  rcases h with ⟨g, hg_cont, hg_exp⟩
+  exact ⟨g, hg_cont.mono hsub, fun z hz => hg_exp z (hsub hz)⟩
+
+theorem hasContLogRatio_ball_step {X : Set ℂ} {a b : ℂ} {δ : ℝ}
+    (hball : ball a δ ⊆ Xᶜ) (hb : b ∈ ball a (δ / 2)) :
+    HasContLogRatio X a b := by
+  have hδ_pos : 0 < δ := by
+    by_contra hle
+    have hgt := mem_ball.mp hb
+    have hnn : 0 ≤ dist b a := dist_nonneg
+    linarith
+  have hz_dist_a : ∀ z ∈ X, δ ≤ ‖z - a‖ := by
+    intro z hz
+    by_contra hlt
+    have hmem : z ∈ ball a δ := by
+      rw [mem_ball, dist_eq_norm]; exact not_le.mp hlt
+    exact hball hmem hz
+  have hba_lt : ‖b - a‖ < δ / 2 := by simpa [mem_ball, dist_eq_norm] using hb
+  have hz_dist_b : ∀ z ∈ X, δ / 2 < ‖z - b‖ := by
+    intro z hz
+    have htri : ‖z - a‖ ≤ ‖z - b‖ + ‖b - a‖ := by
+      simpa using norm_add_le (z - b) (b - a)
+    linarith [hz_dist_a z hz]
+  let u : ℂ → ℂ := fun z => (z - a) / (z - b)
+  have hu_cont : ContinuousOn u X := by
+    refine (continuousOn_id.sub continuousOn_const).div
+      (continuousOn_id.sub continuousOn_const) fun z hz => ?_
+    exact norm_ne_zero_iff.mp (lt_trans (half_pos hδ_pos) (hz_dist_b z hz)).ne'
+  have hu_slit : ∀ z ∈ X, u z ∈ Complex.slitPlane := by
+    intro z hz
+    have hzb_pos : 0 < ‖z - b‖ := lt_trans (half_pos hδ_pos) (hz_dist_b z hz)
+    have hzb_ne : z - b ≠ 0 := norm_ne_zero_iff.mp hzb_pos.ne'
+    have hu_sub : u z - 1 = (b - a) / (z - b) := by
+      dsimp [u]; field_simp [hzb_ne]; ring
+    have hnorm_lt : ‖u z - 1‖ < 1 := by
+      rw [hu_sub, norm_div, div_lt_one hzb_pos]
+      exact lt_trans hba_lt (hz_dist_b z hz)
+    have hre_pos : 0 < (u z).re := by
+      have habs : |(u z).re - 1| ≤ ‖u z - 1‖ := by
+        simpa [Complex.sub_re, Complex.one_re] using Complex.abs_re_le_norm (u z - 1)
+      linarith [(abs_le.mp habs).1, hnorm_lt]
+    exact Complex.mem_slitPlane_iff.mpr (Or.inl hre_pos)
+  refine ⟨fun z => Complex.log (u z), hu_cont.clog hu_slit, fun z hz => ?_⟩
+  have hre_pos : (u z).re > 0 ∨ (u z).im ≠ 0 := Complex.mem_slitPlane_iff.mp (hu_slit z hz)
+  have hne : u z ≠ 0 := by
+    intro h0; simp [h0] at hre_pos
+  exact Complex.exp_log hne
+
+theorem hasContLogRatio_of_mem_connectedComponentIn {X : Set ℂ} (hX : IsClosed X)
+    {a b : ℂ} (ha : a ∈ Xᶜ) (hb : b ∈ connectedComponentIn Xᶜ a) :
+    HasContLogRatio X a b := by
+  let S : Set ℂ := {w ∈ Xᶜ | HasContLogRatio X a w}
+  have hS_open : IsOpen S := by
+    rw [Metric.isOpen_iff]
+    rintro w ⟨hw_c, haw⟩
+    obtain ⟨δ, hδ_pos, hball⟩ := Metric.isOpen_iff.mp hX.isOpen_compl w hw_c
+    refine ⟨δ / 2, half_pos hδ_pos, fun w' hw' => ?_⟩
+    have hw'_c : w' ∈ Xᶜ := hball (lt_trans hw' (half_lt_self hδ_pos))
+    exact ⟨hw'_c, hasContLogRatio_trans hw_c haw (hasContLogRatio_ball_step hball hw')⟩
+  have hSc_open : IsOpen (Xᶜ \ S) := by
+    rw [Metric.isOpen_iff]
+    rintro w ⟨hw_c, hnaw⟩
+    obtain ⟨δ, hδ_pos, hball⟩ := Metric.isOpen_iff.mp hX.isOpen_compl w hw_c
+    refine ⟨δ / 2, half_pos hδ_pos, fun w' hw' => ?_⟩
+    have hw'_c : w' ∈ Xᶜ := hball (lt_trans hw' (half_lt_self hδ_pos))
+    refine ⟨hw'_c, fun ⟨_, haw'⟩ => hnaw ⟨hw_c, ?_⟩⟩
+    exact hasContLogRatio_trans hw'_c haw'
+      (hasContLogRatio_symm hw_c hw'_c (hasContLogRatio_ball_step hball hw'))
+  have hconn : IsConnected (connectedComponentIn Xᶜ a) :=
+    isConnected_connectedComponentIn_iff.mpr ha
+  let C : Set ℂ := connectedComponentIn Xᶜ a
+  have hC_sub : C ⊆ S ∪ (Xᶜ \ S) := fun z hz => by
+    have hzc : z ∈ Xᶜ := connectedComponentIn_subset Xᶜ a hz
+    by_cases h : z ∈ S
+    · exact Or.inl h
+    · exact Or.inr ⟨hzc, h⟩
+  have ha_in : a ∈ C ∩ S :=
+    ⟨mem_connectedComponentIn ha, ha, hasContLogRatio_refl ha⟩
+  by_contra hnotS
+  have hb_c : b ∈ Xᶜ := connectedComponentIn_subset Xᶜ a hb
+  have hb_in : b ∈ C ∩ (Xᶜ \ S) := ⟨hb, hb_c, fun hS => hnotS hS.2⟩
+  rcases hconn.isPreconnected S (Xᶜ \ S) hS_open hSc_open hC_sub ⟨a, ha_in⟩ ⟨b, hb_in⟩ with
+    ⟨w, _, hwS, _, hnwS⟩
+  exact hnwS hwS
+
+/-- Key Tietze-extension obstruction: if `V` is bounded and open with `frontier V ⊆ X`,
+`a ∈ V`, and `b ∉ V ∪ X`, then `(z - a) / (z - b)` cannot have a continuous logarithm on `X`. -/
+theorem not_hasContLogRatio_of_bounded_open_frontier_subset {X V : Set ℂ}
+    (hX : IsClosed X) (hV_open : IsOpen V) (hV_bdd : Bornology.IsBounded V)
+    (hfr : frontier V ⊆ X) {a b : ℂ} (ha : a ∈ V) (hbV : b ∉ V) (hbX : b ∉ X) :
+    ¬ HasContLogRatio X a b := by
+  rintro ⟨g, hg_cont, hg_exp⟩
+  let g_sub : C(X, ℂ) := ⟨X.domRestrict g, continuousOn_iff_continuous_domRestrict.mp hg_cont⟩
+  obtain ⟨g_ext, hg_ext⟩ := ContinuousMap.exists_restrict_eq hX g_sub
+  have hg_eq : ∀ z ∈ X, g_ext z = g z := by
+    intro z hz
+    have h := congrFun (congrArg DFunLike.coe hg_ext) ⟨z, hz⟩
+    simpa [g_sub] using h
+  classical
+  let F : ℂ → ℂ := fun z => if z ∈ V then (z - b) * Complex.exp (g_ext z) else z - a
+  have hF_cont : Continuous F := by
+    rw [continuous_iff_continuousAt]
+    intro z₀
+    by_cases hz₀ : z₀ ∈ V
+    · have hev : F =ᶠ[𝓝 z₀] fun z => (z - b) * Complex.exp (g_ext z) :=
+        Filter.eventuallyEq_of_mem (hV_open.mem_nhds hz₀) fun z hz => by simp [F, hz]
+      exact (((continuous_id.sub continuous_const).mul
+        (Complex.continuous_exp.comp g_ext.continuous)).continuousAt).congr hev.symm
+    · by_cases hcl : z₀ ∈ closure V
+      · have hz₀_fr : z₀ ∈ frontier V := by
+          rw [frontier, hV_open.interior_eq]
+          exact ⟨hcl, hz₀⟩
+        have hz₀_X : z₀ ∈ X := hfr hz₀_fr
+        have hzb_ne : z₀ - b ≠ 0 := sub_ne_zero.mpr (fun h0 => hbX (h0 ▸ hz₀_X))
+        let f₁ : ℂ → ℂ := fun z => (z - b) * Complex.exp (g_ext z)
+        let f₂ : ℂ → ℂ := fun z => z - a
+        have hf₁_z₀ : f₁ z₀ = z₀ - a := by
+          dsimp [f₁]
+          rw [hg_eq z₀ hz₀_X, hg_exp z₀ hz₀_X, mul_div_cancel₀ _ hzb_ne]
+        have hf₁_c : ContinuousAt f₁ z₀ :=
+          ((continuous_id.sub continuous_const).mul
+            (Complex.continuous_exp.comp g_ext.continuous)).continuousAt
+        have hf₂_c : ContinuousAt f₂ z₀ := (continuous_id.sub continuous_const).continuousAt
+        have hF_z₀ : F z₀ = z₀ - a := by simp [F, hz₀]
+        rw [Metric.continuousAt_iff]
+        intro ε hε
+        obtain ⟨δ₁, hδ₁_pos, hδ₁⟩ := Metric.continuousAt_iff.mp hf₁_c ε hε
+        obtain ⟨δ₂, hδ₂_pos, hδ₂⟩ := Metric.continuousAt_iff.mp hf₂_c ε hε
+        refine ⟨min δ₁ δ₂, lt_min hδ₁_pos hδ₂_pos, fun z hz => ?_⟩
+        by_cases hzv : z ∈ V
+        · have : F z = f₁ z := by simp [F, f₁, hzv]
+          rw [this, hF_z₀, ← hf₁_z₀]
+          exact hδ₁ (lt_of_lt_of_le hz (min_le_left _ _))
+        · have : F z = f₂ z := by simp [F, f₂, hzv]
+          rw [this, hF_z₀]
+          exact hδ₂ (lt_of_lt_of_le hz (min_le_right _ _))
+      · have hev : F =ᶠ[𝓝 z₀] fun z => z - a := by
+          filter_upwards [isClosed_closure.isOpen_compl.mem_nhds hcl] with z hz
+          have hzv : z ∉ V := fun h => hz (subset_closure h)
+          simp [F, hzv]
+        exact ((continuous_id.sub continuous_const).continuousAt).congr hev.symm
+  have hF_ne : ∀ z : ℂ, F z ≠ 0 := by
+    intro z
+    by_cases hzv : z ∈ V
+    · simp only [F, hzv, ↓reduceIte]
+      exact mul_ne_zero (sub_ne_zero.mpr fun h0 => hbV (h0 ▸ hzv)) (Complex.exp_ne_zero _)
+    · simp only [F, hzv, ↓reduceIte]
+      exact sub_ne_zero.mpr fun h0 => hzv (h0 ▸ ha)
+  have h0_not_img : (0 : ℂ) ∉ F '' Set.univ := by
+    rintro ⟨z, _, hz0⟩
+    exact hF_ne z hz0
+  have hsc_univ : IsSimplyConnected (Set.univ : Set ℂ) := by
+    have : ContractibleSpace (Set.univ : Set ℂ) :=
+      convex_univ.contractibleSpace Set.univ_nonempty
+    change SimplyConnectedSpace (Set.univ : Set ℂ)
+    exact inferInstance
+  obtain ⟨L, hL_cont, hL_exp⟩ :=
+    Complex.exists_continuousOn_eqOn_exp_comp hsc_univ isOpen_univ
+      hF_cont.continuousOn h0_not_img
+  obtain ⟨R₀, hR₀⟩ := hV_bdd.subset_ball a
+  let R : ℝ := max R₀ 1
+  have hR_pos : 0 < R := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+  have hV_sub_R : V ⊆ ball a R := hR₀.trans (ball_subset_ball (le_max_left _ _))
+  let γ : ℝ → ℂ := fun θ => a + (R : ℂ) * Complex.exp ((θ : ℂ) * Complex.I)
+  have hγ_not_V : ∀ θ : ℝ, γ θ ∉ V := by
+    intro θ hmem
+    have hlt : ‖γ θ - a‖ < R := by simpa [mem_ball, dist_eq_norm] using hV_sub_R hmem
+    have heq : ‖γ θ - a‖ = R := by
+      dsimp [γ]
+      rw [add_sub_cancel_left, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_pos hR_pos, Complex.norm_exp_ofReal_mul_I, mul_one]
+    exact lt_irrefl R (heq ▸ hlt)
+  let c₀ : ℂ := (2 * Real.pi : ℂ) * Complex.I
+  have hc₀_ne : c₀ ≠ 0 := mul_ne_zero
+    (mul_ne_zero two_ne_zero (Complex.ofReal_ne_zero.mpr Real.pi_pos.ne')) Complex.I_ne_zero
+  let q : ℝ → ℂ := fun θ =>
+    (L (γ θ) - ((Real.log R : ℂ) + (θ : ℂ) * Complex.I)) / c₀
+  have hγ_cont : Continuous γ :=
+    continuous_const.add (continuous_const.mul
+      (Complex.continuous_exp.comp (Complex.continuous_ofReal.mul continuous_const)))
+  have hL_c : Continuous L := continuousOn_univ.mp hL_cont
+  have hq_cont : ContinuousOn q (Icc (0 : ℝ) (2 * Real.pi)) :=
+    (((hL_c.comp hγ_cont).sub
+      (continuous_const.add (Complex.continuous_ofReal.mul continuous_const))).div_const c₀).continuousOn
+  have hq_int : ∀ θ ∈ Icc (0 : ℝ) (2 * Real.pi), ∃ k : ℤ, q θ = k := by
+    intro θ _
+    have hexp_L : Complex.exp (L (γ θ)) = (R : ℂ) * Complex.exp ((θ : ℂ) * Complex.I) := by
+      have h1 : Complex.exp (L (γ θ)) = F (γ θ) := hL_exp (Set.mem_univ (γ θ))
+      rw [h1]
+      simp [F, hγ_not_V θ, γ]
+    have hexp_rhs : Complex.exp ((Real.log R : ℂ) + (θ : ℂ) * Complex.I) =
+        (R : ℂ) * Complex.exp ((θ : ℂ) * Complex.I) := by
+      rw [Complex.exp_add, Complex.ofReal_log hR_pos.le,
+        Complex.exp_log (Complex.ofReal_ne_zero.mpr hR_pos.ne')]
+    obtain ⟨k, hk⟩ := Complex.exp_eq_exp_iff_exists_int.mp (hexp_L.trans hexp_rhs.symm)
+    refine ⟨k, ?_⟩
+    dsimp [q, c₀]
+    have hsub_k : L (γ θ) - ((Real.log R : ℂ) + (θ : ℂ) * Complex.I) =
+        (k : ℂ) * ((2 * Real.pi : ℂ) * Complex.I) := by
+      rw [hk]; ring
+    rw [hsub_k, mul_div_cancel_right₀ _ hc₀_ne]
+  have hq_eq : q 0 = q (2 * Real.pi) :=
+    eq_of_isPreconnected_int_cast isPreconnected_Icc hq_cont hq_int
+      (left_mem_Icc.mpr (by positivity)) (right_mem_Icc.mpr (by positivity))
+  have hγ_per : γ (2 * Real.pi) = γ 0 := by
+    dsimp [γ]
+    have h2pi : ((2 * Real.pi : ℝ) : ℂ) * Complex.I = 2 * (Real.pi : ℂ) * Complex.I := by
+      push_cast; ring
+    rw [h2pi, Complex.exp_two_pi_mul_I]
+    simp
+  dsimp [q] at hq_eq
+  rw [hγ_per] at hq_eq
+  have hnum_eq := (div_left_inj' hc₀_ne).mp hq_eq
+  apply hc₀_ne
+  dsimp [c₀]
+  push_cast at hnum_eq ⊢
+  linear_combination hnum_eq
+
+/-- Exterior `{z : ℂ | R < ‖z‖}` is connected for every `R ≥ 0`. -/
+theorem isConnected_exterior_closedBall {R : ℝ} (hR : 0 ≤ R) :
+    IsConnected {z : ℂ | R < ‖z‖} := by
+  let E : Set ℂ := {z : ℂ | R < ‖z‖}
+  have hbase : ((R + 1 : ℝ) : ℂ) ∈ E := by
+    change R < ‖((R + 1 : ℝ) : ℂ)‖
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith : 0 < R + 1)]
+    linarith
+  have h_to_base : ∀ z ∈ E, JoinedIn E z ((R + 1 : ℝ) : ℂ) := by
+    intro z hz
+    change R < ‖z‖ at hz
+    have hz_pos : 0 < ‖z‖ := lt_of_le_of_lt hR hz
+    let θ : ℝ := Complex.arg z
+    have hj1 : JoinedIn E ((‖z‖ : ℂ)) z := by
+      refine ⟨{
+        toFun := fun t : unitInterval => circleMap 0 ‖z‖ ((t : ℝ) * θ)
+        continuous_toFun := (continuous_circleMap 0 ‖z‖).comp
+          (continuous_subtype_val.mul continuous_const)
+        source' := by simp [circleMap]
+        target' := by
+          simp only [Icc.coe_one, one_mul, circleMap_zero]
+          exact Complex.norm_mul_exp_arg_mul_I z }, ?_⟩
+      intro t
+      change R < ‖circleMap 0 ‖z‖ ((t : ℝ) * θ)‖
+      rw [norm_circleMap_zero, abs_of_pos hz_pos]
+      exact hz
+    have hj2 : JoinedIn E ((‖z‖ : ℂ)) ((R + 1 : ℝ) : ℂ) := by
+      refine ⟨{
+        toFun := fun t : unitInterval =>
+          (((1 - (t : ℝ)) * ‖z‖ + (t : ℝ) * (R + 1) : ℝ) : ℂ)
+        continuous_toFun := Complex.continuous_ofReal.comp
+          (((continuous_const.sub continuous_subtype_val).mul continuous_const).add
+            (continuous_subtype_val.mul continuous_const))
+        source' := by simp
+        target' := by simp }, ?_⟩
+      intro t
+      have ht0 : 0 ≤ (t : ℝ) := t.2.1
+      have ht1 : (t : ℝ) ≤ 1 := t.2.2
+      have hprod : 0 ≤ (1 - (t : ℝ)) * (‖z‖ - R) :=
+        mul_nonneg (sub_nonneg.mpr ht1) (sub_nonneg.mpr hz.le)
+      have hval_gt : R < (1 - (t : ℝ)) * ‖z‖ + (t : ℝ) * (R + 1) := by
+        by_cases ht0' : (t : ℝ) = 0
+        · rw [ht0']; linarith
+        · have ht_pos : 0 < (t : ℝ) := lt_of_le_of_ne ht0 (Ne.symm ht0')
+          linarith
+      have hval_pos : 0 < (1 - (t : ℝ)) * ‖z‖ + (t : ℝ) * (R + 1) := lt_of_le_of_lt hR hval_gt
+      change R < ‖(((1 - (t : ℝ)) * ‖z‖ + (t : ℝ) * (R + 1) : ℝ) : ℂ)‖
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hval_pos]
+      exact hval_gt
+    exact hj1.symm.trans hj2
+  exact IsPathConnected.isConnected
+    ⟨((R + 1 : ℝ) : ℂ), hbase, fun {z} hz => (h_to_base z hz).symm⟩
+
+/-- Every connected component `V` of `Xᶜ` (for closed `X ⊆ ℂ`) is open and has `frontier V ⊆ X`. -/
+theorem isOpen_and_frontier_subset_of_connectedComponentIn_compl {X : Set ℂ} (hX : IsClosed X)
+    {a : ℂ} :
+    IsOpen (connectedComponentIn Xᶜ a) ∧ frontier (connectedComponentIn Xᶜ a) ⊆ X := by
+  have hV_open : IsOpen (connectedComponentIn Xᶜ a) := hX.isOpen_compl.connectedComponentIn
+  refine ⟨hV_open, fun z hz => ?_⟩
+  rw [frontier, hV_open.interior_eq] at hz
+  by_contra hzX
+  have ha : a ∈ Xᶜ := by
+    rcases (connectedComponentIn Xᶜ a).eq_empty_or_nonempty with hemp | ⟨w, hw⟩
+    · rw [hemp, closure_empty] at hz; exact False.elim hz.1
+    · exact by_contra fun hna => by
+        rw [connectedComponentIn_eq_empty hna] at hw; exact hw
+  have hconn : IsConnected (connectedComponentIn Xᶜ a) :=
+    isConnected_connectedComponentIn_iff.mpr ha
+  let W : Set ℂ := insert z (connectedComponentIn Xᶜ a)
+  have hW_conn : IsConnected W := by
+    refine hconn.subset_closure (Set.subset_insert z _) ?_
+    intro y hy
+    rcases eq_or_mem_of_mem_insert hy with rfl | hy'
+    · exact hz.1
+    · exact subset_closure hy'
+  have hW_sub : W ⊆ Xᶜ := by
+    intro y hy
+    rcases eq_or_mem_of_mem_insert hy with rfl | hy'
+    · exact hzX
+    · exact connectedComponentIn_subset Xᶜ a hy'
+  have hz_mem : z ∈ connectedComponentIn Xᶜ a :=
+    hW_conn.isPreconnected.subset_connectedComponentIn (Set.mem_insert_of_mem z (mem_connectedComponentIn ha))
+      hW_sub (Set.mem_insert z _)
+  exact hz.2 hz_mem
+
+/-- For compact `X ⊆ ℂ`, at most one connected component of `Xᶜ` is unbounded; every other
+component of `Xᶜ` is bounded. -/
+theorem bounded_or_eq_unbounded_component_of_isCompact {X : Set ℂ} (hX : IsCompact X) :
+    ∃ u₀ ∈ Xᶜ, ¬ Bornology.IsBounded (connectedComponentIn Xᶜ u₀) ∧
+      ∀ a ∈ Xᶜ, a ∉ connectedComponentIn Xᶜ u₀ →
+        Bornology.IsBounded (connectedComponentIn Xᶜ a) := by
+  obtain ⟨R₀, hR₀⟩ := hX.isBounded.subset_ball (0 : ℂ)
+  let R : ℝ := max R₀ 0
+  have hR_nn : 0 ≤ R := le_max_right _ _
+  have hX_sub : X ⊆ closedBall (0 : ℂ) R :=
+    hR₀.trans ((ball_subset_ball (le_max_left _ _)).trans ball_subset_closedBall)
+  let E : Set ℂ := {z : ℂ | R < ‖z‖}
+  have hE_sub : E ⊆ Xᶜ := by
+    intro z hz hzX
+    have hle : ‖z‖ ≤ R := by simpa using hX_sub hzX
+    exact not_lt_of_ge hle hz
+  let u₀ : ℂ := ((R + 1 : ℝ) : ℂ)
+  have hu₀_E : u₀ ∈ E := by
+    change R < ‖((R + 1 : ℝ) : ℂ)‖
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith : 0 < R + 1)]
+    linarith
+  have hu₀_c : u₀ ∈ Xᶜ := hE_sub hu₀_E
+  have hE_in_U : E ⊆ connectedComponentIn Xᶜ u₀ :=
+    (isConnected_exterior_closedBall hR_nn).isPreconnected.subset_connectedComponentIn hu₀_E hE_sub
+  refine ⟨u₀, hu₀_c, ?_, ?_⟩
+  · intro hbdd
+    obtain ⟨M, hM⟩ := hbdd.subset_ball (0 : ℂ)
+    let M' : ℝ := max (max R M) 0 + 1
+    have hM'_pos : 0 < M' := by positivity
+    have hmem_E : ((M' : ℝ) : ℂ) ∈ E := by
+      change R < ‖((M' : ℝ) : ℂ)‖
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hM'_pos]
+      have : R ≤ max (max R M) 0 := le_trans (le_max_left R M) (le_max_left _ _)
+      linarith
+    have hlt_M : ‖((M' : ℝ) : ℂ)‖ < M := by
+      simpa using hM (hE_in_U hmem_E)
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hM'_pos] at hlt_M
+    have : M ≤ max (max R M) 0 := le_trans (le_max_right R M) (le_max_left _ _)
+    linarith
+  · intro a ha hnot_mem
+    refine (isBounded_closedBall (x := (0 : ℂ)) (r := R)).subset ?_
+    intro z hz
+    simp only [mem_closedBall_zero_iff]
+    by_contra hgt
+    have hz_E : z ∈ E := not_le.mp hgt
+    have hz_u₀ : z ∈ connectedComponentIn Xᶜ u₀ := hE_in_U hz_E
+    have h1 : connectedComponentIn Xᶜ a = connectedComponentIn Xᶜ z :=
+      connectedComponentIn_eq hz
+    have h2 : connectedComponentIn Xᶜ u₀ = connectedComponentIn Xᶜ z :=
+      connectedComponentIn_eq hz_u₀
+    have heq_comp : connectedComponentIn Xᶜ a = connectedComponentIn Xᶜ u₀ :=
+      h1.trans h2.symm
+    exact hnot_mem (heq_comp ▸ mem_connectedComponentIn ha)
+
+/-- **Borsuk–Eilenberg Theorem:** For compact `X ⊆ ℂ` and `a, b ∈ Xᶜ`, `a` and `b` lie in the
+same connected component of `Xᶜ` if and only if `(z - a) / (z - b)` possesses a continuous
+logarithm on `X`. -/
+theorem borsuk_eilenberg_iff {X : Set ℂ} (hX : IsCompact X) {a b : ℂ}
+    (ha : a ∈ Xᶜ) (hb : b ∈ Xᶜ) :
+    b ∈ connectedComponentIn Xᶜ a ↔ HasContLogRatio X a b := by
+  constructor
+  · exact hasContLogRatio_of_mem_connectedComponentIn hX.isClosed ha
+  · intro hlog
+    by_contra hnot
+    obtain ⟨u₀, hu₀_c, _, h_bdd_other⟩ := bounded_or_eq_unbounded_component_of_isCompact hX
+    by_cases ha_u₀ : a ∈ connectedComponentIn Xᶜ u₀
+    · have hb_not_u₀ : b ∉ connectedComponentIn Xᶜ u₀ := by
+        intro hb_u₀
+        have heq := connectedComponentIn_eq ha_u₀
+        rw [heq] at hb_u₀
+        exact hnot hb_u₀
+      have hVb_bdd := h_bdd_other b hb hb_not_u₀
+      obtain ⟨hVb_open, hVb_fr⟩ :=
+        isOpen_and_frontier_subset_of_connectedComponentIn_compl hX.isClosed (a := b)
+      have ha_not_Vb : a ∉ connectedComponentIn Xᶜ b := fun ha_b =>
+        hnot ((connectedComponentIn_eq ha_b).symm ▸ mem_connectedComponentIn hb)
+      exact not_hasContLogRatio_of_bounded_open_frontier_subset hX.isClosed hVb_open hVb_bdd
+        hVb_fr (mem_connectedComponentIn hb) ha_not_Vb ha
+        (hasContLogRatio_symm ha hb hlog)
+    · have hVa_bdd := h_bdd_other a ha ha_u₀
+      obtain ⟨hVa_open, hVa_fr⟩ :=
+        isOpen_and_frontier_subset_of_connectedComponentIn_compl hX.isClosed (a := a)
+      exact not_hasContLogRatio_of_bounded_open_frontier_subset hX.isClosed hVa_open hVa_bdd
+        hVa_fr (mem_connectedComponentIn ha) hnot hb hlog
+
+/-- **Janiszewski's Theorem:** If `K₁, K₂ ⊆ ℂ` are compact with `K₁ ∩ K₂` connected, and
+`a, b ∈ (K₁ ∪ K₂)ᶜ` connect in `K₁ᶜ` and in `K₂ᶜ`, then `a, b` connect in `(K₁ ∪ K₂)ᶜ`. -/
+theorem janiszewski_connectedComponentIn {K₁ K₂ : Set ℂ}
+    (hK₁ : IsCompact K₁) (hK₂ : IsCompact K₂) (hinter : IsConnected (K₁ ∩ K₂))
+    {a b : ℂ} (ha : a ∈ (K₁ ∪ K₂)ᶜ) (hb : b ∈ (K₁ ∪ K₂)ᶜ)
+    (h1 : b ∈ connectedComponentIn K₁ᶜ a) (h2 : b ∈ connectedComponentIn K₂ᶜ a) :
+    b ∈ connectedComponentIn (K₁ ∪ K₂)ᶜ a := by
+  have ha1 : a ∈ K₁ᶜ := fun h => ha (Or.inl h)
+  have hb1 : b ∈ K₁ᶜ := fun h => hb (Or.inl h)
+  have ha2 : a ∈ K₂ᶜ := fun h => ha (Or.inr h)
+  have hb2 : b ∈ K₂ᶜ := fun h => hb (Or.inr h)
+  obtain ⟨g₁, hg₁_c, hg₁_e⟩ := (borsuk_eilenberg_iff hK₁ ha1 hb1).mp h1
+  obtain ⟨g₂, hg₂_c, hg₂_e⟩ := (borsuk_eilenberg_iff hK₂ ha2 hb2).mp h2
+  obtain ⟨z₀, hz₀⟩ := hinter.nonempty
+  let c₀ : ℂ := (2 * Real.pi : ℂ) * Complex.I
+  have hc₀_ne : c₀ ≠ 0 := mul_ne_zero
+    (mul_ne_zero two_ne_zero (Complex.ofReal_ne_zero.mpr Real.pi_pos.ne')) Complex.I_ne_zero
+  let q : ℂ → ℂ := fun z => (g₁ z - g₂ z) / c₀
+  have hq_cont : ContinuousOn q (K₁ ∩ K₂) :=
+    ((hg₁_c.mono Set.inter_subset_left).sub (hg₂_c.mono Set.inter_subset_right)).div_const c₀
+  have hq_int : ∀ z ∈ K₁ ∩ K₂, ∃ k : ℤ, q z = k := by
+    intro z hz
+    have hexp_eq : Complex.exp (g₁ z) = Complex.exp (g₂ z) :=
+      (hg₁_e z hz.1).trans (hg₂_e z hz.2).symm
+    obtain ⟨k, hk⟩ := Complex.exp_eq_exp_iff_exists_int.mp hexp_eq
+    refine ⟨k, ?_⟩
+    dsimp [q, c₀]
+    have hsub : g₁ z - g₂ z = (k : ℂ) * ((2 * Real.pi : ℂ) * Complex.I) := by
+      rw [hk]; ring
+    rw [hsub, mul_div_cancel_right₀ _ hc₀_ne]
+  let Δ : ℂ := g₁ z₀ - g₂ z₀
+  have hdiff_const : ∀ z ∈ K₁ ∩ K₂, g₁ z = g₂ z + Δ := by
+    intro z hz
+    have hq_eq := eq_of_isPreconnected_int_cast hinter.isPreconnected hq_cont hq_int hz hz₀
+    have hnum := (div_left_inj' hc₀_ne).mp hq_eq
+    dsimp [Δ]
+    linear_combination hnum
+  have hexp_Δ : Complex.exp Δ = 1 := by
+    have hza : z₀ - a ≠ 0 := sub_ne_zero.mpr (fun h0 => ha1 (h0 ▸ hz₀.1))
+    have hzb : z₀ - b ≠ 0 := sub_ne_zero.mpr (fun h0 => hb1 (h0 ▸ hz₀.1))
+    dsimp [Δ]
+    rw [Complex.exp_sub, hg₁_e z₀ hz₀.1, hg₂_e z₀ hz₀.2, div_self (div_ne_zero hza hzb)]
+  classical
+  let g : ℂ → ℂ := fun z => if z ∈ K₁ then g₁ z else g₂ z + Δ
+  have hg_on_K₂ : ∀ z ∈ K₂, g z = g₂ z + Δ := by
+    intro z hz
+    by_cases hz1 : z ∈ K₁
+    · simp only [g, hz1, ↓reduceIte]
+      exact hdiff_const z ⟨hz1, hz⟩
+    · simp [g, hz1]
+  have hg_cont : ContinuousOn g (K₁ ∪ K₂) := by
+    intro z₀' hz₀'
+    by_cases h_in1 : z₀' ∈ K₁
+    · by_cases h_in2 : z₀' ∈ K₂
+      · rw [Metric.continuousWithinAt_iff]
+        intro ε hε
+        obtain ⟨δ₁, hδ₁_pos, hδ₁⟩ := Metric.continuousWithinAt_iff.mp (hg₁_c z₀' h_in1) ε hε
+        obtain ⟨δ₂, hδ₂_pos, hδ₂⟩ :=
+          Metric.continuousWithinAt_iff.mp ((hg₂_c.add continuousOn_const) z₀' h_in2) ε hε
+        refine ⟨min δ₁ δ₂, lt_min hδ₁_pos hδ₂_pos, fun w hw hdist => ?_⟩
+        rcases hw with hw1 | hw2
+        · simp only [g, hw1, h_in1, ↓reduceIte]
+          exact hδ₁ hw1 (lt_of_lt_of_le hdist (min_le_left _ _))
+        · rw [hg_on_K₂ w hw2, hg_on_K₂ z₀' h_in2]
+          exact hδ₂ hw2 (lt_of_lt_of_le hdist (min_le_right _ _))
+      · have hev : g =ᶠ[𝓝[K₁ ∪ K₂] z₀'] g₁ := by
+          rw [eventuallyEq_nhdsWithin_iff]
+          filter_upwards [hK₂.isClosed.isOpen_compl.mem_nhds h_in2] with w hw2 hw_u
+          rcases hw_u with hw1 | hw2'
+          · simp [g, hw1]
+          · exact False.elim (hw2 hw2')
+        have hc1 : ContinuousWithinAt g₁ (K₁ ∪ K₂) z₀' := by
+          rw [Metric.continuousWithinAt_iff]
+          intro ε hε
+          obtain ⟨δ₁, hδ₁_pos, hδ₁⟩ := Metric.continuousWithinAt_iff.mp (hg₁_c z₀' h_in1) ε hε
+          obtain ⟨δ₂, hδ₂_pos, hδ₂⟩ :=
+            Metric.isOpen_iff.mp hK₂.isClosed.isOpen_compl z₀' h_in2
+          refine ⟨min δ₁ δ₂, lt_min hδ₁_pos hδ₂_pos, fun w hw hdist => ?_⟩
+          rcases hw with hw1 | hw2
+          · exact hδ₁ hw1 (lt_of_lt_of_le hdist (min_le_left _ _))
+          · exact False.elim (hδ₂ (lt_of_lt_of_le hdist (min_le_right _ _)) hw2)
+        exact hc1.congr_of_eventuallyEq hev (by simp [g, h_in1])
+    · have h_in2 : z₀' ∈ K₂ := hz₀'.resolve_left h_in1
+      have hev : g =ᶠ[𝓝[K₁ ∪ K₂] z₀'] fun w => g₂ w + Δ := by
+        rw [eventuallyEq_nhdsWithin_iff]
+        filter_upwards [hK₁.isClosed.isOpen_compl.mem_nhds h_in1] with w hw1 _
+        have hnot1 : w ∉ K₁ := hw1
+        simp [g, hnot1]
+      have hc2 : ContinuousWithinAt (fun w => g₂ w + Δ) (K₁ ∪ K₂) z₀' := by
+        rw [Metric.continuousWithinAt_iff]
+        intro ε hε
+        obtain ⟨δ₂, hδ₂_pos, hδ₂⟩ :=
+          Metric.continuousWithinAt_iff.mp ((hg₂_c.add continuousOn_const) z₀' h_in2) ε hε
+        obtain ⟨δ₁, hδ₁_pos, hδ₁⟩ :=
+          Metric.isOpen_iff.mp hK₁.isClosed.isOpen_compl z₀' h_in1
+        refine ⟨min δ₁ δ₂, lt_min hδ₁_pos hδ₂_pos, fun w hw hdist => ?_⟩
+        rcases hw with hw1 | hw2
+        · exact False.elim (hδ₁ (lt_of_lt_of_le hdist (min_le_left _ _)) hw1)
+        · exact hδ₂ hw2 (lt_of_lt_of_le hdist (min_le_right _ _))
+      exact hc2.congr_of_eventuallyEq hev (by simp [g, h_in1])
+  have hg_exp : ∀ z ∈ K₁ ∪ K₂, Complex.exp (g z) = (z - a) / (z - b) := by
+    rintro z (hz1 | hz2)
+    · simp [g, hz1, hg₁_e z hz1]
+    · rw [hg_on_K₂ z hz2, Complex.exp_add, hexp_Δ, mul_one, hg₂_e z hz2]
+  exact (borsuk_eilenberg_iff (hK₁.union hK₂) ha hb).mpr ⟨g, hg_cont, hg_exp⟩
+
+/-- **Jordan Arc Non-Separation:** The complement `Aᶜ` of every Jordan arc `A ⊆ ℂ` is connected. -/
+theorem isConnected_compl_of_isJordanArc {A : Set ℂ} (hA : IsJordanArc A) :
+    IsConnected Aᶜ := by
+  have hA_comp : IsCompact A := isCompact_of_isJordanArc hA
+  obtain ⟨R, hR⟩ := hA_comp.isBounded.subset_ball (0 : ℂ)
+  let a₀ : ℂ := ((max R 0 + 1 : ℝ) : ℂ)
+  have ha₀ : a₀ ∈ Aᶜ := by
+    intro hmem
+    have hlt : ‖a₀‖ < R := by simpa using hR hmem
+    have hpos : 0 < max R 0 + 1 := by positivity
+    simp only [a₀, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hpos] at hlt
+    linarith [le_max_left R 0]
+  refine ⟨⟨a₀, ha₀⟩, ?_⟩
+  rcases hA with ⟨e⟩
+  have hall_comp : ∀ b ∈ Aᶜ, b ∈ connectedComponentIn Aᶜ a₀ := by
+    intro b hb
+    rw [borsuk_eilenberg_iff hA_comp ha₀ hb]
+    let p : ℂ → A := fun w => e.symm (Set.projIcc 0 1 zero_le_one w.re)
+    have hp_cont : Continuous (fun w : ℂ => (p w : ℂ)) :=
+      continuous_subtype_val.comp (e.symm.continuous.comp
+        ((continuous_projIcc).comp Complex.continuous_re))
+    let U_map : ℂ → ℂ := fun w => ((p w : ℂ) - a₀) / ((p w : ℂ) - b)
+    have hU_cont : Continuous U_map := by
+      refine (hp_cont.sub continuous_const).div (hp_cont.sub continuous_const) fun w => ?_
+      exact sub_ne_zero.mpr (fun h0 => hb (h0 ▸ (p w).2))
+    have hU_ne0 : (0 : ℂ) ∉ U_map '' Set.univ := by
+      rintro ⟨w, _, hw0⟩
+      have hza : (p w : ℂ) - a₀ ≠ 0 := sub_ne_zero.mpr (fun h0 => ha₀ (h0 ▸ (p w).2))
+      have hzb : (p w : ℂ) - b ≠ 0 := sub_ne_zero.mpr (fun h0 => hb (h0 ▸ (p w).2))
+      exact div_ne_zero hza hzb hw0
+    have hsc_univ : IsSimplyConnected (Set.univ : Set ℂ) := by
+      have : ContractibleSpace (Set.univ : Set ℂ) :=
+        convex_univ.contractibleSpace Set.univ_nonempty
+      change SimplyConnectedSpace (Set.univ : Set ℂ)
+      exact inferInstance
+    obtain ⟨L, hL_cont, hL_exp⟩ :=
+      Complex.exists_continuousOn_eqOn_exp_comp hsc_univ isOpen_univ
+        hU_cont.continuousOn hU_ne0
+    have hL_c : Continuous L := continuousOn_univ.mp hL_cont
+    classical
+    let g : ℂ → ℂ := fun z => if hz : z ∈ A then L (((e ⟨z, hz⟩ : Icc (0 : ℝ) 1) : ℝ) : ℂ) else 0
+    refine ⟨g, ?_, ?_⟩
+    · rw [continuousOn_iff_continuous_domRestrict]
+      have hsub : Continuous (fun q : A => L (((e q : Icc (0 : ℝ) 1) : ℝ) : ℂ)) :=
+        hL_c.comp (Complex.continuous_ofReal.comp (continuous_subtype_val.comp e.continuous))
+      refine hsub.congr fun q => ?_
+      simp [g]
+    · intro z hz
+      simp only [g, hz, ↓reduceDIte]
+      have hexp := hL_exp (Set.mem_univ (((e ⟨z, hz⟩ : Icc (0 : ℝ) 1) : ℝ) : ℂ))
+      dsimp [Function.comp_def, U_map, p] at hexp
+      have hproj : Set.projIcc 0 1 zero_le_one (e ⟨z, hz⟩ : ℝ) = e ⟨z, hz⟩ :=
+        Set.projIcc_of_mem zero_le_one (e ⟨z, hz⟩).2
+      rw [hproj, Homeomorph.symm_apply_apply] at hexp
+      exact hexp
+  have heq : connectedComponentIn Aᶜ a₀ = Aᶜ :=
+    Set.Subset.antisymm (connectedComponentIn_subset Aᶜ a₀) hall_comp
+  rw [← heq]
+  exact (isConnected_connectedComponentIn_iff.mpr ha₀).isPreconnected
+
+/-! ### Subsection 20.1B: Circle Arcs, Component Frontier, Simple Connectedness, and Simplicity -/
+
+/-- Any proper closed arc `exp(t i)` (`t ∈ [a, b]`, `a < b`, `b - a < 2π`) on `sphere 0 1` is a
+Jordan arc. -/
+theorem circleArc_isJordanArc {a b : ℝ} (hab : a < b) (hlen : b - a < 2 * Real.pi) :
+    let S : Set ℂ := (fun t : ℝ => Complex.exp ((t : ℂ) * Complex.I)) '' Icc a b
+    S ⊆ sphere (0 : ℂ) 1 ∧ IsJordanArc S := by
+  intro S
+  have hsub : S ⊆ sphere (0 : ℂ) 1 := by
+    rintro _ ⟨t, _, rfl⟩
+    simp [Complex.norm_exp_ofReal_mul_I]
+  refine ⟨hsub, ?_⟩
+  let φ : Icc (0 : ℝ) 1 → ℂ := fun t =>
+    Complex.exp ((((1 - (t : ℝ)) * a + (t : ℝ) * b : ℝ) : ℂ) * Complex.I)
+  have hφ_cont : Continuous φ :=
+    Complex.continuous_exp.comp
+      ((Complex.continuous_ofReal.comp
+        (((continuous_const.sub continuous_subtype_val).mul continuous_const).add
+          (continuous_subtype_val.mul continuous_const))).mul continuous_const)
+  have hφ_maps : ∀ t : Icc (0 : ℝ) 1, φ t ∈ S := by
+    intro t
+    refine ⟨(1 - (t : ℝ)) * a + (t : ℝ) * b, ?_, rfl⟩
+    have ht0 : 0 ≤ (t : ℝ) := t.2.1
+    have ht1 : (t : ℝ) ≤ 1 := t.2.2
+    exact ⟨by nlinarith, by nlinarith⟩
+  have hφ_inj : Function.Injective φ := by
+    intro t₁ t₂ heq
+    obtain ⟨k, hk⟩ := Complex.exp_eq_exp_iff_exists_int.mp heq
+    have hk_im : ((1 - (t₁ : ℝ)) * a + (t₁ : ℝ) * b) =
+        ((1 - (t₂ : ℝ)) * a + (t₂ : ℝ) * b) + (k : ℝ) * (2 * Real.pi) := by
+      have hmul : ((((1 - (t₁ : ℝ)) * a + (t₁ : ℝ) * b : ℝ) : ℂ) -
+          (((1 - (t₂ : ℝ)) * a + (t₂ : ℝ) * b + (k : ℝ) * (2 * Real.pi) : ℝ) : ℂ)) * Complex.I = 0 := by
+        push_cast at hk ⊢; linear_combination hk
+      have h0 := (mul_eq_zero.mp hmul).resolve_right Complex.I_ne_zero
+      have hreal : ((1 - (t₁ : ℝ)) * a + (t₁ : ℝ) * b) -
+          (((1 - (t₂ : ℝ)) * a + (t₂ : ℝ) * b + (k : ℝ) * (2 * Real.pi))) = 0 := by
+        exact_mod_cast h0
+      linarith
+    have ht₁_0 : 0 ≤ (t₁ : ℝ) := t₁.2.1
+    have ht₁_1 : (t₁ : ℝ) ≤ 1 := t₁.2.2
+    have ht₂_0 : 0 ≤ (t₂ : ℝ) := t₂.2.1
+    have ht₂_1 : (t₂ : ℝ) ≤ 1 := t₂.2.2
+    have hdiff_lt : |(k : ℝ) * (2 * Real.pi)| < 2 * Real.pi := by
+      have h1 : (t₁ : ℝ) - (t₂ : ℝ) ≤ 1 := by linarith
+      have h2 : -1 ≤ (t₁ : ℝ) - (t₂ : ℝ) := by linarith
+      have h3 : (k : ℝ) * (2 * Real.pi) = ((t₁ : ℝ) - (t₂ : ℝ)) * (b - a) := by linarith
+      rw [h3, abs_mul]
+      have habs_t : |(t₁ : ℝ) - (t₂ : ℝ)| ≤ 1 := abs_le.mpr ⟨h2, h1⟩
+      have habs_ba : |b - a| = b - a := abs_of_pos (sub_pos.mpr hab)
+      rw [habs_ba]
+      nlinarith
+    rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * Real.pi)] at hdiff_lt
+    have hk_lt1 : |(k : ℝ)| < 1 := by nlinarith [Real.pi_pos]
+    have hkz_lt1 : |k| < 1 := by exact_mod_cast hk_lt1
+    have hkz_bounds := abs_lt.mp hkz_lt1
+    have hk0 : k = 0 := by omega
+    subst hk0
+    simp only [Int.cast_zero, zero_mul, add_zero] at hk_im
+    have hba_ne : b - a ≠ 0 := (sub_pos.mpr hab).ne'
+    have ht_eq : (t₁ : ℝ) = (t₂ : ℝ) := by nlinarith
+    exact Subtype.ext ht_eq
+  have hφ_surj : ∀ w : S, ∃ t : Icc (0 : ℝ) 1, ⟨φ t, hφ_maps t⟩ = w := by
+    rintro ⟨w, s, hs, rfl⟩
+    let t₀ : ℝ := (s - a) / (b - a)
+    have hba_pos : 0 < b - a := sub_pos.mpr hab
+    have ht₀_mem : t₀ ∈ Icc (0 : ℝ) 1 := by
+      refine ⟨div_nonneg (sub_nonneg.mpr hs.1) hba_pos.le, (div_le_one hba_pos).mpr ?_⟩
+      linarith [hs.2]
+    refine ⟨⟨t₀, ht₀_mem⟩, Subtype.ext ?_⟩
+    dsimp [φ, t₀]
+    congr 2
+    have : (1 - (s - a) / (b - a)) * a + (s - a) / (b - a) * b = s := by
+      field_simp [hba_pos.ne']; ring
+    exact_mod_cast this
+  let f_sub : Icc (0 : ℝ) 1 → S := fun t => ⟨φ t, hφ_maps t⟩
+  have hf_bij : Function.Bijective f_sub :=
+    ⟨fun t₁ t₂ h => hφ_inj (congrArg Subtype.val h), hφ_surj⟩
+  have : CompactSpace (Icc (0 : ℝ) 1) := isCompact_iff_compactSpace.mp isCompact_Icc
+  let e : Icc (0 : ℝ) 1 ≃ₜ S :=
+    Continuous.homeoOfEquivCompactToT2 (f := Equiv.ofBijective f_sub hf_bij)
+      (hφ_cont.codRestrict hφ_maps)
+  exact ⟨e.symm⟩
+
+/-- Splitting `sphere 0 1` into two closed Jordan arcs meeting at `{exp(θ₁ i), exp(θ₂ i)}`. -/
+theorem sphere_split_two_arcs {θ₁ θ₂ : ℝ} (h12 : θ₁ < θ₂) (h21 : θ₂ < θ₁ + 2 * Real.pi) :
+    let S₁ : Set ℂ := (fun t : ℝ => Complex.exp ((t : ℂ) * Complex.I)) '' Icc θ₁ θ₂
+    let S₂ : Set ℂ := (fun t : ℝ => Complex.exp ((t : ℂ) * Complex.I)) '' Icc θ₂ (θ₁ + 2 * Real.pi)
+    S₁ ∪ S₂ = sphere (0 : ℂ) 1 ∧
+      S₁ ∩ S₂ = {Complex.exp ((θ₁ : ℂ) * Complex.I), Complex.exp ((θ₂ : ℂ) * Complex.I)} ∧
+      IsJordanArc S₁ ∧ IsJordanArc S₂ := by
+  intro S₁ S₂
+  have hlen1 : θ₂ - θ₁ < 2 * Real.pi := by linarith
+  have hlen2 : (θ₁ + 2 * Real.pi) - θ₂ < 2 * Real.pi := by linarith
+  obtain ⟨hS₁_sub, hS₁_arc⟩ := circleArc_isJordanArc h12 hlen1
+  obtain ⟨hS₂_sub, hS₂_arc⟩ := circleArc_isJordanArc h21 hlen2
+  refine ⟨?_, ?_, hS₁_arc, hS₂_arc⟩
+  · refine Set.Subset.antisymm (Set.union_subset hS₁_sub hS₂_sub) ?_
+    intro w hw
+    have hw_norm : ‖w‖ = 1 := by simpa using hw
+    let z : ℂ := w * Complex.exp (-(θ₁ : ℂ) * Complex.I)
+    have hz_norm : ‖z‖ = 1 := by
+      dsimp [z]
+      have hneg : -(θ₁ : ℂ) * Complex.I = ((-θ₁ : ℝ) : ℂ) * Complex.I := by push_cast; ring
+      rw [norm_mul, hw_norm, one_mul, hneg, Complex.norm_exp_ofReal_mul_I]
+    let φ : ℝ := if Complex.arg z < 0 then Complex.arg z + 2 * Real.pi else Complex.arg z
+    have hφ_mem : φ ∈ Ico (0 : ℝ) (2 * Real.pi) := by
+      have hgt := Complex.neg_pi_lt_arg z
+      have hle := Complex.arg_le_pi z
+      dsimp [φ]
+      split_ifs with hlt
+      · exact ⟨by linarith, by linarith⟩
+      · exact ⟨not_lt.mp hlt, by linarith [Real.pi_pos]⟩
+    have hexp_φ : Complex.exp ((φ : ℂ) * Complex.I) = z := by
+      have harg_z : Complex.exp ((Complex.arg z : ℂ) * Complex.I) = z := by
+        have h := Complex.norm_mul_exp_arg_mul_I z
+        simpa [hz_norm] using h
+      dsimp [φ]
+      split_ifs with hlt
+      · have hsplit : ((Complex.arg z + 2 * Real.pi : ℝ) : ℂ) * Complex.I =
+            (Complex.arg z : ℂ) * Complex.I + 2 * (Real.pi : ℂ) * Complex.I := by
+          push_cast; ring
+        rw [hsplit, Complex.exp_add, Complex.exp_two_pi_mul_I, mul_one, harg_z]
+      · exact harg_z
+    let θ : ℝ := θ₁ + φ
+    have hexp_θ : Complex.exp ((θ : ℂ) * Complex.I) = w := by
+      have hsplit : ((θ₁ + φ : ℝ) : ℂ) * Complex.I =
+          (θ₁ : ℂ) * Complex.I + (φ : ℂ) * Complex.I := by push_cast; ring
+      dsimp [θ]
+      rw [hsplit, Complex.exp_add, hexp_φ]
+      dsimp [z]
+      rw [mul_comm w _, ← mul_assoc, ← Complex.exp_add]
+      have h0 : (θ₁ : ℂ) * Complex.I + -(θ₁ : ℂ) * Complex.I = 0 := by ring
+      rw [h0, Complex.exp_zero, one_mul]
+    rcases le_or_gt θ θ₂ with hle | hgt
+    · left; exact ⟨θ, ⟨by linarith [hφ_mem.1], hle⟩, hexp_θ⟩
+    · right; exact ⟨θ, ⟨hgt.le, by linarith [hφ_mem.2]⟩, hexp_θ⟩
+  · refine Set.Subset.antisymm ?_ ?_
+    · rintro w ⟨⟨t₁, ht₁, rfl⟩, ⟨t₂, ht₂, heq⟩⟩
+      obtain ⟨k, hk⟩ := Complex.exp_eq_exp_iff_exists_int.mp heq
+      have hrel : t₂ = t₁ + (k : ℝ) * (2 * Real.pi) := by
+        have hmul : (((t₂ : ℝ) : ℂ) - (((t₁ + (k : ℝ) * (2 * Real.pi) : ℝ) : ℂ))) * Complex.I = 0 := by
+          push_cast; linear_combination hk
+        have h0 := (mul_eq_zero.mp hmul).resolve_right Complex.I_ne_zero
+        have hreal : t₂ - (t₁ + (k : ℝ) * (2 * Real.pi)) = 0 := by exact_mod_cast h0
+        linarith
+      have hdiff_nn : 0 ≤ (k : ℝ) * (2 * Real.pi) := by linarith [ht₁.2, ht₂.1]
+      have hdiff_le : (k : ℝ) * (2 * Real.pi) ≤ 2 * Real.pi := by linarith [ht₁.1, ht₂.2]
+      have hk_nn : (0 : ℝ) ≤ (k : ℝ) := by nlinarith [Real.pi_pos]
+      have hk_le1 : (k : ℝ) ≤ 1 := by nlinarith [Real.pi_pos]
+      have hkz_nn : 0 ≤ k := by exact_mod_cast hk_nn
+      have hkz_le1 : k ≤ 1 := by exact_mod_cast hk_le1
+      have hk01 : k = 0 ∨ k = 1 := by omega
+      rcases hk01 with rfl | rfl
+      · right
+        have ht_eq : t₁ = θ₂ := by
+          simp only [Int.cast_zero, zero_mul, add_zero] at hrel
+          linarith [ht₁.2, ht₂.1]
+        rw [ht_eq]; rfl
+      · left
+        have ht_eq : t₁ = θ₁ := by
+          simp only [Int.cast_one, one_mul] at hrel
+          linarith [ht₁.1, ht₂.2]
+        rw [ht_eq]
+    · intro w hw
+      rcases hw with rfl | rfl
+      · refine ⟨⟨θ₁, ⟨le_rfl, h12.le⟩, rfl⟩, ⟨θ₁ + 2 * Real.pi, ⟨h21.le, le_rfl⟩, ?_⟩⟩
+        dsimp only
+        have hsplit : ((θ₁ + 2 * Real.pi : ℝ) : ℂ) * Complex.I =
+            (θ₁ : ℂ) * Complex.I + 2 * (Real.pi : ℂ) * Complex.I := by push_cast; ring
+        rw [hsplit, Complex.exp_add, Complex.exp_two_pi_mul_I, mul_one]
+      · exact ⟨⟨θ₂, ⟨h12.le, le_rfl⟩, rfl⟩, ⟨θ₂, ⟨le_rfl, h21.le⟩, rfl⟩⟩
+
+/-- Image of a Jordan arc subset of `sphere 0 1` under `sphere 0 1 ≃ₜ J` is a Jordan arc in `ℂ`. -/
+theorem isJordanArc_image_of_homeomorph {J S : Set ℂ} (φ : sphere (0 : ℂ) 1 ≃ₜ J)
+    (hS_sub : S ⊆ sphere (0 : ℂ) 1) (hS_arc : IsJordanArc S) :
+    IsJordanArc (Subtype.val '' (φ '' {w : sphere (0 : ℂ) 1 | w.1 ∈ S})) := by
+  rcases hS_arc with ⟨eS⟩
+  let A : Set ℂ := Subtype.val '' (φ '' {w : sphere (0 : ℂ) 1 | w.1 ∈ S})
+  let f : Icc (0 : ℝ) 1 → A := fun t =>
+    let wS := eS.symm t
+    let w_sph : sphere (0 : ℂ) 1 := ⟨wS.1, hS_sub wS.2⟩
+    ⟨(φ w_sph : ℂ), ⟨φ w_sph, ⟨w_sph, wS.2, rfl⟩, rfl⟩⟩
+  have hf_cont : Continuous f := by
+    refine Continuous.subtype_mk ?_ _
+    exact continuous_subtype_val.comp (φ.continuous.comp
+      (Continuous.subtype_mk (continuous_subtype_val.comp eS.symm.continuous) _))
+  have hf_inj : Function.Injective f := by
+    intro t₁ t₂ heq
+    have hval := congrArg Subtype.val heq
+    dsimp [f] at hval
+    have hφ_eq := φ.injective (Subtype.ext hval)
+    have hw_eq := congrArg Subtype.val hφ_eq
+    exact eS.symm.injective (Subtype.ext hw_eq)
+  have hf_surj : Function.Surjective f := by
+    rintro ⟨z, ⟨p, ⟨w_sph, hw_in_S, rfl⟩, rfl⟩⟩
+    refine ⟨eS ⟨w_sph.1, hw_in_S⟩, Subtype.ext ?_⟩
+    dsimp [f]
+    have hsymm : (eS.symm (eS ⟨w_sph.1, hw_in_S⟩)).1 = w_sph.1 :=
+      congrArg Subtype.val (eS.symm_apply_apply _)
+    have hw_eq : (⟨(eS.symm (eS ⟨w_sph.1, hw_in_S⟩)).1,
+        hS_sub (eS.symm (eS ⟨w_sph.1, hw_in_S⟩)).2⟩ : sphere (0 : ℂ) 1) = w_sph :=
+      Subtype.ext hsymm
+    rw [hw_eq]
+  have : CompactSpace (Icc (0 : ℝ) 1) := isCompact_iff_compactSpace.mp isCompact_Icc
+  let eA : Icc (0 : ℝ) 1 ≃ₜ A :=
+    Continuous.homeoOfEquivCompactToT2 (f := Equiv.ofBijective f ⟨hf_inj, hf_surj⟩) hf_cont
+  exact ⟨eA.symm⟩
+
+/-- Local arc decomposition of a Jordan curve `J` near any point `β ∈ J`: for every `ε > 0`,
+`J = A₁ ∪ A₂` where `A₁ ⊆ ball β ε`, `β ∈ A₁ \ A₂`, and `A₁, A₂` are Jordan arcs. -/
+theorem jordanCurve_arc_decomposition {J : Set ℂ} (hJ : IsJordanCurve J)
+    {β : ℂ} (hβ : β ∈ J) {ε : ℝ} (hε : 0 < ε) :
+    ∃ A₁ A₂ : Set ℂ, A₁ ∪ A₂ = J ∧ A₁ ⊆ ball β ε ∧ β ∈ A₁ ∧ β ∉ A₂ ∧
+      IsJordanArc A₁ ∧ IsJordanArc A₂ := by
+  rcases hJ with ⟨e⟩
+  let φ : sphere (0 : ℂ) 1 ≃ₜ J := e.symm
+  let w₀ : sphere (0 : ℂ) 1 := e ⟨β, hβ⟩
+  have hφ_w₀ : (φ w₀ : ℂ) = β := by
+    have : φ w₀ = ⟨β, hβ⟩ := e.symm_apply_apply ⟨β, hβ⟩
+    exact congrArg Subtype.val this
+  have hφ_cont : ContinuousAt (fun w : sphere (0 : ℂ) 1 => (φ w : ℂ)) w₀ :=
+    (continuous_subtype_val.comp φ.continuous).continuousAt
+  obtain ⟨δ, hδ_pos, hδ⟩ := Metric.continuousAt_iff.mp hφ_cont ε hε
+  let θ₀ : ℝ := Complex.arg w₀.1
+  have hw₀_exp : Complex.exp ((θ₀ : ℂ) * Complex.I) = w₀.1 := by
+    have hn : ‖w₀.1‖ = 1 := by simp
+    have h := Complex.norm_mul_exp_arg_mul_I w₀.1
+    simpa [hn] using h
+  have hexp_cont : ContinuousAt (fun t : ℝ => Complex.exp ((t : ℂ) * Complex.I)) θ₀ :=
+    (Complex.continuous_exp.comp (Complex.continuous_ofReal.mul continuous_const)).continuousAt
+  obtain ⟨η, hη_pos, hη⟩ := Metric.continuousAt_iff.mp hexp_cont δ hδ_pos
+  let α : ℝ := min (η / 2) (Real.pi / 2)
+  have hα_pos : 0 < α := lt_min (half_pos hη_pos) (by positivity)
+  have hα_lt_pi : α < Real.pi :=
+    lt_of_le_of_lt (min_le_right _ _) (half_lt_self Real.pi_pos)
+  have h12 : θ₀ - α < θ₀ + α := by linarith
+  have h21 : θ₀ + α < (θ₀ - α) + 2 * Real.pi := by linarith
+  obtain ⟨hS_union, hS_inter, hS₁_arc, hS₂_arc⟩ := sphere_split_two_arcs h12 h21
+  let S₁ : Set ℂ := (fun t : ℝ => Complex.exp ((t : ℂ) * Complex.I)) '' Icc (θ₀ - α) (θ₀ + α)
+  let S₂ : Set ℂ :=
+    (fun t : ℝ => Complex.exp ((t : ℂ) * Complex.I)) '' Icc (θ₀ + α) ((θ₀ - α) + 2 * Real.pi)
+  have hS₁_sub : S₁ ⊆ sphere (0 : ℂ) 1 := by
+    rw [← hS_union]; exact Set.subset_union_left
+  have hS₂_sub : S₂ ⊆ sphere (0 : ℂ) 1 := by
+    rw [← hS_union]; exact Set.subset_union_right
+  let A₁ : Set ℂ := Subtype.val '' (φ '' {w : sphere (0 : ℂ) 1 | w.1 ∈ S₁})
+  let A₂ : Set ℂ := Subtype.val '' (φ '' {w : sphere (0 : ℂ) 1 | w.1 ∈ S₂})
+  refine ⟨A₁, A₂, ?_, ?_, ?_, ?_,
+    isJordanArc_image_of_homeomorph φ hS₁_sub hS₁_arc,
+    isJordanArc_image_of_homeomorph φ hS₂_sub hS₂_arc⟩
+  · ext z
+    constructor
+    · rintro (⟨_, ⟨w, _, rfl⟩, rfl⟩ | ⟨_, ⟨w, _, rfl⟩, rfl⟩) <;> exact (φ w).2
+    · intro hz
+      let w : sphere (0 : ℂ) 1 := φ.symm ⟨z, hz⟩
+      have hw_mem : w.1 ∈ S₁ ∪ S₂ := hS_union.symm ▸ w.2
+      rcases hw_mem with hw1 | hw2
+      · left; exact ⟨⟨z, hz⟩, ⟨w, hw1, φ.apply_symm_apply _⟩, rfl⟩
+      · right; exact ⟨⟨z, hz⟩, ⟨w, hw2, φ.apply_symm_apply _⟩, rfl⟩
+  · rintro z ⟨_, ⟨w, ⟨t, ht, htw⟩, rfl⟩, rfl⟩
+    have ht_dist : dist t θ₀ < η := by
+      rw [Real.dist_eq, abs_lt]
+      have hα_le : α ≤ η / 2 := min_le_left _ _
+      exact ⟨by linarith [ht.1, hη_pos], by linarith [ht.2, hη_pos]⟩
+    have hw_dist : dist w w₀ < δ := by
+      change dist w.1 w₀.1 < δ
+      rw [← htw, ← hw₀_exp]
+      exact hη ht_dist
+    rw [mem_ball, ← hφ_w₀]
+    exact hδ hw_dist
+  · refine ⟨φ w₀, ⟨w₀, ⟨θ₀, ⟨by linarith, by linarith⟩, hw₀_exp⟩, rfl⟩, hφ_w₀⟩
+  · rintro ⟨q, ⟨w, hw2, hw_eq⟩, hval_eq⟩
+    have hp_eq : φ w = φ w₀ := by
+      rw [hw_eq]
+      exact Subtype.ext (hval_eq.trans hφ_w₀.symm)
+    have hw_w₀ : w = w₀ := φ.injective hp_eq
+    rw [hw_w₀] at hw2
+    have hw₀_in1 : w₀.1 ∈ S₁ := ⟨θ₀, ⟨by linarith, by linarith⟩, hw₀_exp⟩
+    have hw₀_inter : w₀.1 ∈ S₁ ∩ S₂ := ⟨hw₀_in1, hw2⟩
+    rw [hS_inter] at hw₀_inter
+    rcases hw₀_inter with hleft | hright
+    · rw [← hw₀_exp] at hleft
+      obtain ⟨k, hk⟩ := Complex.exp_eq_exp_iff_exists_int.mp hleft
+      have hrel : θ₀ = (θ₀ - α) + (k : ℝ) * (2 * Real.pi) := by
+        have hmul : (((θ₀ : ℝ) : ℂ) - ((((θ₀ - α) + (k : ℝ) * (2 * Real.pi) : ℝ) : ℂ))) * Complex.I = 0 := by
+          push_cast at hk ⊢; linear_combination hk
+        have h0 := (mul_eq_zero.mp hmul).resolve_right Complex.I_ne_zero
+        have hreal : θ₀ - ((θ₀ - α) + (k : ℝ) * (2 * Real.pi)) = 0 := by exact_mod_cast h0
+        linarith
+      have hk_val : (k : ℝ) * (2 * Real.pi) = α := by linarith
+      have hk_pos : (0 : ℝ) < (k : ℝ) := by nlinarith [Real.pi_pos]
+      have hk_lt1 : (k : ℝ) < 1 := by nlinarith [Real.pi_pos]
+      have hkz_pos : 0 < k := by exact_mod_cast hk_pos
+      have hkz_lt1 : k < 1 := by exact_mod_cast hk_lt1
+      omega
+    · have hright' : w₀.1 = Complex.exp (((θ₀ + α : ℝ) : ℂ) * Complex.I) := hright
+      rw [← hw₀_exp] at hright'
+      obtain ⟨k, hk⟩ := Complex.exp_eq_exp_iff_exists_int.mp hright'
+      have hrel : θ₀ = (θ₀ + α) + (k : ℝ) * (2 * Real.pi) := by
+        have hmul : (((θ₀ : ℝ) : ℂ) - ((((θ₀ + α) + (k : ℝ) * (2 * Real.pi) : ℝ) : ℂ))) * Complex.I = 0 := by
+          push_cast at hk ⊢; linear_combination hk
+        have h0 := (mul_eq_zero.mp hmul).resolve_right Complex.I_ne_zero
+        have hreal : θ₀ - ((θ₀ + α) + (k : ℝ) * (2 * Real.pi)) = 0 := by exact_mod_cast h0
+        linarith
+      have hk_val : (-(k : ℝ)) * (2 * Real.pi) = α := by linarith
+      have hk_pos : (0 : ℝ) < -(k : ℝ) := by nlinarith [Real.pi_pos]
+      have hk_lt1 : -(k : ℝ) < 1 := by nlinarith [Real.pi_pos]
+      have hkz_pos : 0 < -k := by exact_mod_cast hk_pos
+      have hkz_lt1 : -k < 1 := by exact_mod_cast hk_lt1
+      omega
+
+/-- Every connected component `U` of `Jᶜ` (for a Jordan curve `J`) has `frontier U = J`. -/
+theorem jordanCurve_component_frontier_eq {J : Set ℂ} (hJ : IsJordanCurve J)
+    {a : ℂ} (ha : a ∈ Jᶜ) :
+    frontier (connectedComponentIn Jᶜ a) = J := by
+  have hJ_comp : IsCompact J := isCompact_of_isJordanCurve hJ
+  let U : Set ℂ := connectedComponentIn Jᶜ a
+  obtain ⟨hU_open, hfr_sub⟩ := isOpen_and_frontier_subset_of_connectedComponentIn_compl hJ_comp.isClosed (a := a)
+  refine Set.Subset.antisymm hfr_sub ?_
+  intro β hβ
+  by_contra hnot_fr
+  have hβ_not_U : β ∉ U := fun h => (connectedComponentIn_subset Jᶜ a h) hβ
+  have hβ_not_cl : β ∉ closure U := by
+    intro hcl
+    apply hnot_fr
+    rw [frontier, hU_open.interior_eq]
+    exact ⟨hcl, hβ_not_U⟩
+  obtain ⟨ε, hε_pos, hball_disj⟩ :=
+    Metric.isOpen_iff.mp isClosed_closure.isOpen_compl β hβ_not_cl
+  obtain ⟨A₁, A₂, hA_union, hA₁_ball, hβ_A₁, hβ_not_A₂, _, hA₂_arc⟩ :=
+    jordanCurve_arc_decomposition hJ hβ hε_pos
+  have hfr_sub_A₂ : frontier U ⊆ A₂ := by
+    intro z hz
+    have hz_J : z ∈ J := hfr_sub hz
+    rw [← hA_union] at hz_J
+    rcases hz_J with hz1 | hz2
+    · exfalso
+      have hz_cl : z ∈ closure U := hz.1
+      exact hball_disj (hA₁_ball hz1) hz_cl
+    · exact hz2
+  have hU_sub_A₂c : U ⊆ A₂ᶜ := by
+    intro z hz hzA₂
+    have hzJ : z ∈ J := hA_union ▸ Or.inr hzA₂
+    exact connectedComponentIn_subset Jᶜ a hz hzJ
+  have hA₂_closed : IsClosed A₂ := (isCompact_of_isJordanArc hA₂_arc).isClosed
+  have hA₂c_conn : IsConnected A₂ᶜ := isConnected_compl_of_isJordanArc hA₂_arc
+  -- `U` and `A₂ᶜ \ U` disconnect `A₂ᶜ`, contradicting `β ∈ A₂ᶜ \ U` and `a ∈ U`!
+  have hA₂c_diff_open : IsOpen (A₂ᶜ \ U) := by
+    have heq : A₂ᶜ \ U = A₂ᶜ \ closure U := by
+      ext z
+      constructor
+      · rintro ⟨hz_c, hz_nU⟩
+        refine ⟨hz_c, fun hcl => ?_⟩
+        have hz_fr : z ∈ frontier U := by
+          rw [frontier, hU_open.interior_eq]; exact ⟨hcl, hz_nU⟩
+        exact hz_c (hfr_sub_A₂ hz_fr)
+      · rintro ⟨hz_c, hz_ncl⟩
+        exact ⟨hz_c, fun hzU => hz_ncl (subset_closure hzU)⟩
+    rw [heq]
+    exact hA₂_closed.isOpen_compl.sdiff isClosed_closure
+  have ha_U : a ∈ A₂ᶜ ∩ U := ⟨hU_sub_A₂c (mem_connectedComponentIn ha), mem_connectedComponentIn ha⟩
+  have hβ_diff : β ∈ A₂ᶜ ∩ (A₂ᶜ \ U) := ⟨hβ_not_A₂, hβ_not_A₂, hβ_not_U⟩
+  have hcover : A₂ᶜ ⊆ U ∪ (A₂ᶜ \ U) := fun z hz => by
+    by_cases h : z ∈ U
+    · exact Or.inl h
+    · exact Or.inr ⟨hz, h⟩
+  rcases hA₂c_conn.isPreconnected U (A₂ᶜ \ U) hU_open hA₂c_diff_open hcover
+    ⟨a, ha_U⟩ ⟨β, hβ_diff⟩ with ⟨w, _, hwU, _, hnwU⟩
+  exact hnwU hwU
+
+/-- Every bounded connected component `U` of `Jᶜ` is `BookSimplyConnected`. -/
+theorem jordanCurve_bounded_component_simplyConnected {J : Set ℂ} (hJ : IsJordanCurve J)
+    {a : ℂ} (ha : a ∈ Jᶜ) (hbdd : Bornology.IsBounded (connectedComponentIn Jᶜ a)) :
+    RudinRCA.Chapter10.BookSimplyConnected (connectedComponentIn Jᶜ a) := by
+  let U : Set ℂ := connectedComponentIn Jᶜ a
+  have hJ_comp : IsCompact J := isCompact_of_isJordanCurve hJ
+  obtain ⟨hU_open, _⟩ := isOpen_and_frontier_subset_of_connectedComponentIn_compl hJ_comp.isClosed (a := a)
+  have hU_conn : IsConnected U := isConnected_connectedComponentIn_iff.mpr ha
+  have hU_reg : RudinRCA.Chapter10.IsRegion U := ⟨hU_open, hU_conn⟩
+  -- By Theorem 13.11 (`condB ↔ condD`), it suffices to prove `IsConnected (sphericalCompl U)`
+  have h13_11 := RudinRCA.Chapter13.theorem13_11 hU_reg
+  have hB_iff_D : RudinRCA.Chapter10.BookSimplyConnected U ↔ IsConnected (sphericalCompl U) :=
+    h13_11.2.2.1.trans h13_11.2.2.2.1
+  rw [hB_iff_D]
+  obtain ⟨R₀, hR₀⟩ := hJ_comp.isBounded.subset_ball (0 : ℂ)
+  let R : ℝ := max R₀ 0
+  have hR_nn : 0 ≤ R := le_max_right _ _
+  have hJ_sub : J ⊆ closedBall (0 : ℂ) R :=
+    hR₀.trans ((ball_subset_ball (le_max_left _ _)).trans ball_subset_closedBall)
+  let E : Set ℂ := {z : ℂ | R < ‖z‖}
+  have hE_sub : E ⊆ Jᶜ := by
+    intro z hz hzJ
+    have hle : ‖z‖ ≤ R := by simpa using hJ_sub hzJ
+    exact not_lt_of_ge hle hz
+  let u₀ : ℂ := ((R + 1 : ℝ) : ℂ)
+  have hu₀_E : u₀ ∈ E := by
+    change R < ‖((R + 1 : ℝ) : ℂ)‖
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by linarith : 0 < R + 1)]
+    linarith
+  have hu₀_Jc : u₀ ∈ Jᶜ := hE_sub hu₀_E
+  let U_inf : Set ℂ := connectedComponentIn Jᶜ u₀
+  have hE_sub_Uinf : E ⊆ U_inf :=
+    (isConnected_exterior_closedBall hR_nn).isPreconnected.subset_connectedComponentIn hu₀_E hE_sub
+  have hU_ne_Uinf : Disjoint U U_inf := by
+    refine Set.disjoint_left.mpr fun z hzU hzUinf => ?_
+    have heq : U = U_inf :=
+      (connectedComponentIn_eq hzU).trans (connectedComponentIn_eq hzUinf).symm
+    obtain ⟨M, hM⟩ := hbdd.subset_ball (0 : ℂ)
+    let M' : ℝ := max (max R M) 0 + 1
+    have hM'_pos : 0 < M' := by positivity
+    have hmem_E : ((M' : ℝ) : ℂ) ∈ E := by
+      change R < ‖((M' : ℝ) : ℂ)‖
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hM'_pos]
+      have : R ≤ max (max R M) 0 := le_trans (le_max_left R M) (le_max_left _ _)
+      linarith
+    have hmem_U : ((M' : ℝ) : ℂ) ∈ U := heq ▸ hE_sub_Uinf hmem_E
+    have hlt_M : ‖((M' : ℝ) : ℂ)‖ < M := by simpa using hM hmem_U
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hM'_pos] at hlt_M
+    have : M ≤ max (max R M) 0 := le_trans (le_max_right R M) (le_max_left _ _)
+    linarith
+  -- Step 1: `S_inf := insert ∞ ((↑) '' U_inf ∪ (↑) '' J)` is connected
+  let coeC : ℂ → RiemannSphere := fun z => (z : RiemannSphere)
+  have hcoe_cont : Continuous coeC := OnePoint.continuous_coe
+  have hUinf_conn : IsConnected (coeC '' U_inf) :=
+    (isConnected_connectedComponentIn_iff.mpr hu₀_Jc).image coeC hcoe_cont.continuousOn
+  have h_infty_cl : (∞ : RiemannSphere) ∈ closure (coeC '' U_inf) := by
+    rw [mem_closure_iff_nhds_basis OnePoint.hasBasis_nhds_infty]
+    intro K ⟨hK_closed, hK_comp⟩
+    obtain ⟨M, hM⟩ := hK_comp.isBounded.subset_ball (0 : ℂ)
+    let M' : ℝ := max (max R M) 0 + 1
+    have hM'_pos : 0 < M' := by positivity
+    have hmem_E : ((M' : ℝ) : ℂ) ∈ E := by
+      change R < ‖((M' : ℝ) : ℂ)‖
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hM'_pos]
+      have : R ≤ max (max R M) 0 := le_trans (le_max_left R M) (le_max_left _ _)
+      linarith
+    have hnot_K : ((M' : ℝ) : ℂ) ∉ K := by
+      intro hK
+      have hlt : ‖((M' : ℝ) : ℂ)‖ < M := by simpa using hM hK
+      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hM'_pos] at hlt
+      have : M ≤ max (max R M) 0 := le_trans (le_max_right R M) (le_max_left _ _)
+      linarith
+    refine ⟨coeC ((M' : ℝ) : ℂ), ⟨((M' : ℝ) : ℂ), hE_sub_Uinf hmem_E, rfl⟩,
+      Or.inl ⟨((M' : ℝ) : ℂ), hnot_K, rfl⟩⟩
+  have hJ_cl_Uinf : coeC '' J ⊆ closure (coeC '' U_inf) := by
+    have hJ_sub_cl : J ⊆ closure U_inf := by
+      rw [← jordanCurve_component_frontier_eq hJ hu₀_Jc]
+      exact frontier_subset_closure
+    exact (Set.image_mono hJ_sub_cl).trans (image_closure_subset_closure_image hcoe_cont)
+  let S_base : Set RiemannSphere := insert ∞ (coeC '' U_inf ∪ coeC '' J)
+  have hS_base_conn : IsConnected S_base := by
+    refine hUinf_conn.subset_closure ?_ ?_
+    · intro p hp; exact Set.mem_insert_of_mem _ (Or.inl hp)
+    · intro p hp
+      rcases eq_or_mem_of_mem_insert hp with rfl | (hp1 | hp2)
+      · exact h_infty_cl
+      · exact subset_closure hp1
+      · exact hJ_cl_Uinf hp2
+  -- Step 2: For every `z ∈ Jᶜ \ U`, `T z := S_base ∪ coeC '' connectedComponentIn Jᶜ z` is connected
+  let D_out : Set ℂ := Jᶜ \ U
+  let T : D_out → Set RiemannSphere := fun z =>
+    S_base ∪ coeC '' connectedComponentIn Jᶜ z.1
+  obtain ⟨β₀, hβ₀⟩ := nonempty_of_isJordanCurve hJ
+  have hβ₀_base : coeC β₀ ∈ S_base := Set.mem_insert_of_mem _ (Or.inr ⟨β₀, hβ₀, rfl⟩)
+  have hT_conn : ∀ z : D_out, IsConnected (T z) := by
+    intro z
+    have hz_Jc : z.1 ∈ Jᶜ := z.2.1
+    let Vz : Set ℂ := connectedComponentIn Jᶜ z.1
+    have hVz_conn : IsConnected (coeC '' Vz) :=
+      (isConnected_connectedComponentIn_iff.mpr hz_Jc).image coeC hcoe_cont.continuousOn
+    have hJ_cl_Vz : coeC '' J ⊆ closure (coeC '' Vz) := by
+      have hJ_sub_cl : J ⊆ closure Vz := by
+        rw [← jordanCurve_component_frontier_eq hJ hz_Jc]
+        exact frontier_subset_closure
+      exact (Set.image_mono hJ_sub_cl).trans (image_closure_subset_closure_image hcoe_cont)
+    let Vz_J : Set RiemannSphere := coeC '' Vz ∪ coeC '' J
+    have hVz_J_conn : IsConnected Vz_J := by
+      refine hVz_conn.subset_closure Set.subset_union_left ?_
+      rintro p (hp1 | hp2)
+      · exact subset_closure hp1
+      · exact hJ_cl_Vz hp2
+    have heq_Tz : T z = S_base ∪ Vz_J := by
+      ext p
+      constructor
+      · rintro (hpS | hpVz)
+        · exact Or.inl hpS
+        · exact Or.inr (Or.inl hpVz)
+      · rintro (hpS | hpVz | hpJ)
+        · exact Or.inl hpS
+        · exact Or.inr hpVz
+        · exact Or.inl (Set.mem_insert_of_mem _ (Or.inr hpJ))
+    rw [heq_Tz]
+    exact IsConnected.union ⟨coeC β₀, hβ₀_base, Or.inr ⟨β₀, hβ₀, rfl⟩⟩ hS_base_conn hVz_J_conn
+  -- Step 3: `sphericalCompl U = S_base ∪ ⋃ z, T z`
+  have hsc_eq : sphericalCompl U = S_base ∪ ⋃ z : D_out, T z := by
+    ext p
+    induction p using OnePoint.rec with
+    | infty =>
+      simp only [infinity_mem_sphericalCompl, S_base, Set.mem_union, Set.mem_insert_iff, true_or]
+    | coe w =>
+      simp only [coe_mem_sphericalCompl, Set.mem_union, Set.mem_iUnion]
+      constructor
+      · intro hw_nU
+        by_cases hwJ : w ∈ J
+        · left; exact Set.mem_insert_of_mem _ (Or.inr ⟨w, hwJ, rfl⟩)
+        · right
+          refine ⟨⟨w, hwJ, hw_nU⟩, Or.inr ⟨w, mem_connectedComponentIn hwJ, rfl⟩⟩
+      · rintro (hbase | ⟨z, hz_mem⟩)
+        · rcases eq_or_mem_of_mem_insert hbase with h_eq | (⟨x, hx, hxc⟩ | ⟨x, hx, hxc⟩)
+          · exact False.elim (OnePoint.coe_ne_infty w h_eq)
+          · have hwx : x = w := OnePoint.coe_injective hxc
+            subst hwx
+            exact fun hwU => Set.disjoint_left.mp hU_ne_Uinf hwU hx
+          · have hwx : x = w := OnePoint.coe_injective hxc
+            subst hwx
+            exact fun hwU => connectedComponentIn_subset Jᶜ a hwU hx
+        · rcases hz_mem with hbase | ⟨x, hx, hxc⟩
+          · rcases eq_or_mem_of_mem_insert hbase with h_eq | (⟨y, hy, hyc⟩ | ⟨y, hy, hyc⟩)
+            · exact False.elim (OnePoint.coe_ne_infty w h_eq)
+            · have hwy : y = w := OnePoint.coe_injective hyc
+              subst hwy
+              exact fun hwU => Set.disjoint_left.mp hU_ne_Uinf hwU hy
+            · have hwy : y = w := OnePoint.coe_injective hyc
+              subst hwy
+              exact fun hwU => connectedComponentIn_subset Jᶜ a hwU hy
+          · have hwx : x = w := OnePoint.coe_injective hxc
+            subst hwx
+            intro hwU
+            have heq_comp : connectedComponentIn Jᶜ z.1 = U :=
+              (connectedComponentIn_eq hx).trans (connectedComponentIn_eq hwU).symm
+            exact z.2.2 (heq_comp ▸ mem_connectedComponentIn z.2.1)
+  rw [hsc_eq]
+  let W : Set RiemannSphere := S_base ∪ ⋃ z : D_out, T z
+  have hinf_S : (∞ : RiemannSphere) ∈ S_base := Set.mem_insert ∞ _
+  refine ⟨⟨∞, Or.inl hinf_S⟩, fun u v hu hv hcov ⟨p₁, hp₁W, hp₁u⟩ ⟨p₂, hp₂W, hp₂v⟩ => ?_⟩
+  have hS_cov : S_base ⊆ u ∪ v := Set.subset_union_left.trans hcov
+  have hinf_uv : (∞ : RiemannSphere) ∈ u ∪ v := hS_cov hinf_S
+  rcases hinf_uv with hinf_u | hinf_v
+  · rcases hp₂W with hp₂S | hp₂U
+    · obtain ⟨q, hqS, hquv⟩ := hS_base_conn.isPreconnected u v hu hv hS_cov
+        ⟨∞, hinf_S, hinf_u⟩ ⟨p₂, hp₂S, hp₂v⟩
+      exact ⟨q, Or.inl hqS, hquv⟩
+    · rcases Set.mem_iUnion.mp hp₂U with ⟨z, hp₂Tz⟩
+      have hTz_cov : T z ⊆ u ∪ v :=
+        (Set.subset_iUnion T z).trans (Set.subset_union_right.trans hcov)
+      obtain ⟨q, hqTz, hquv⟩ := (hT_conn z).isPreconnected u v hu hv hTz_cov
+        ⟨∞, Or.inl hinf_S, hinf_u⟩ ⟨p₂, hp₂Tz, hp₂v⟩
+      exact ⟨q, Or.inr (Set.mem_iUnion.mpr ⟨z, hqTz⟩), hquv⟩
+  · rcases hp₁W with hp₁S | hp₁U
+    · obtain ⟨q, hqS, hquv⟩ := hS_base_conn.isPreconnected u v hu hv hS_cov
+        ⟨p₁, hp₁S, hp₁u⟩ ⟨∞, hinf_S, hinf_v⟩
+      exact ⟨q, Or.inl hqS, hquv⟩
+    · rcases Set.mem_iUnion.mp hp₁U with ⟨z, hp₁Tz⟩
+      have hTz_cov : T z ⊆ u ∪ v :=
+        (Set.subset_iUnion T z).trans (Set.subset_union_right.trans hcov)
+      obtain ⟨q, hqTz, hquv⟩ := (hT_conn z).isPreconnected u v hu hv hTz_cov
+        ⟨p₁, hp₁Tz, hp₁u⟩ ⟨∞, Or.inl hinf_S, hinf_v⟩
+      exact ⟨q, Or.inr (Set.mem_iUnion.mpr ⟨z, hqTz⟩), hquv⟩
+
+/-- Local path-connectedness of a bounded connected component `U` of `Jᶜ` at every `β ∈ J`:
+for every `ε > 0`, there is `δ > 0` such that any two points of `U ∩ ball β δ` are joined by a
+continuous path inside `U ∩ ball β ε`. -/
+theorem jordanCurve_bounded_component_locally_joined {J : Set ℂ} (hJ : IsJordanCurve J)
+    {a : ℂ} (_ha : a ∈ Jᶜ) (hbdd : Bornology.IsBounded (connectedComponentIn Jᶜ a))
+    {β : ℂ} (hβ : β ∈ J) {ε : ℝ} (hε : 0 < ε) :
+    ∃ δ > 0, ∀ z₁ ∈ connectedComponentIn Jᶜ a ∩ ball β δ,
+      ∀ z₂ ∈ connectedComponentIn Jᶜ a ∩ ball β δ,
+        JoinedIn (connectedComponentIn Jᶜ a ∩ ball β ε) z₁ z₂ := by
+  let U : Set ℂ := connectedComponentIn Jᶜ a
+  have hJ_comp : IsCompact J := isCompact_of_isJordanCurve hJ
+  obtain ⟨A₁, A₂, hA_union, hA₁_ball, _, hβ_not_A₂, _, hA₂_arc⟩ :=
+    jordanCurve_arc_decomposition hJ hβ hε
+  have hA₂_comp : IsCompact A₂ := isCompact_of_isJordanArc hA₂_arc
+  have hA₂_conn : IsConnected A₂ := isConnected_of_isJordanArc hA₂_arc
+  obtain ⟨R₀, hR₀⟩ := hbdd.isCompact_closure.isBounded.subset_ball β
+  let R : ℝ := max R₀ (ε + 1)
+  have hR_gt_ε : ε < R := lt_of_lt_of_le (by linarith) (le_max_right _ _)
+  have hclU_sub : closure U ⊆ ball β R := hR₀.trans (ball_subset_ball (le_max_left _ _))
+  let C_ann : Set ℂ := closedBall β R \ ball β ε
+  have hC_comp : IsCompact C_ann :=
+    (isCompact_closedBall β R).inter_right isOpen_ball.isClosed_compl
+  let K₁ : Set ℂ := J
+  let K₂ : Set ℂ := A₂ ∪ C_ann
+  have hK₂_comp : IsCompact K₂ := hA₂_comp.union hC_comp
+  have hinter_eq : K₁ ∩ K₂ = A₂ := by
+    ext z
+    simp only [K₁, K₂, C_ann]
+    constructor
+    · rintro ⟨hzJ, hzA₂ | ⟨_, hnot_ball⟩⟩
+      · exact hzA₂
+      · rw [← hA_union] at hzJ
+        rcases hzJ with hz1 | hz2
+        · exact False.elim (hnot_ball (hA₁_ball hz1))
+        · exact hz2
+    · intro hzA₂
+      exact ⟨hA_union ▸ Or.inr hzA₂, Or.inl hzA₂⟩
+  have hinter_conn : IsConnected (K₁ ∩ K₂) := hinter_eq.symm ▸ hA₂_conn
+  have hd_pos : 0 < Metric.infDist β A₂ :=
+    (hA₂_comp.isClosed.notMem_iff_infDist_pos hA₂_conn.nonempty).mp hβ_not_A₂
+  let δ : ℝ := min ε (Metric.infDist β A₂)
+  have hδ_pos : 0 < δ := lt_min hε hd_pos
+  have hball_sub_K₂c : ball β δ ⊆ K₂ᶜ := by
+    intro w hw
+    have hw_ε : w ∈ ball β ε := ball_subset_ball (min_le_left _ _) hw
+    have hw_d : dist β w < Metric.infDist β A₂ := by
+      rw [dist_comm]
+      exact lt_of_lt_of_le (mem_ball.mp hw) (min_le_right _ _)
+    rintro (hwA₂ | ⟨_, hnot_ε⟩)
+    · exact not_lt_of_ge (Metric.infDist_le_dist_of_mem hwA₂) hw_d
+    · exact hnot_ε hw_ε
+  refine ⟨δ, hδ_pos, ?_⟩
+  rintro z₁ ⟨hz₁U, hz₁_δ⟩ z₂ ⟨hz₂U, hz₂_δ⟩
+  have hz₁_K₁c : z₁ ∈ K₁ᶜ := connectedComponentIn_subset Jᶜ a hz₁U
+  have hz₂_K₁c : z₂ ∈ K₁ᶜ := connectedComponentIn_subset Jᶜ a hz₂U
+  have hz₁_K₂c : z₁ ∈ K₂ᶜ := hball_sub_K₂c hz₁_δ
+  have hz₂_K₂c : z₂ ∈ K₂ᶜ := hball_sub_K₂c hz₂_δ
+  have hz₁_union_c : z₁ ∈ (K₁ ∪ K₂)ᶜ := fun h => h.elim hz₁_K₁c hz₁_K₂c
+  have hz₂_union_c : z₂ ∈ (K₁ ∪ K₂)ᶜ := fun h => h.elim hz₂_K₁c hz₂_K₂c
+  have hcomp1 : z₂ ∈ connectedComponentIn K₁ᶜ z₁ := by
+    have heq := connectedComponentIn_eq hz₁U
+    change z₂ ∈ connectedComponentIn Jᶜ z₁
+    rwa [← heq]
+  have hcomp2 : z₂ ∈ connectedComponentIn K₂ᶜ z₁ :=
+    (convex_ball β δ).isPreconnected.subset_connectedComponentIn hz₁_δ hball_sub_K₂c hz₂_δ
+  have hcomp12 : z₂ ∈ connectedComponentIn (K₁ ∪ K₂)ᶜ z₁ :=
+    janiszewski_connectedComponentIn hJ_comp hK₂_comp hinter_conn
+      hz₁_union_c hz₂_union_c hcomp1 hcomp2
+  let W : Set ℂ := connectedComponentIn (K₁ ∪ K₂)ᶜ z₁
+  have hW_open : IsOpen W := (hJ_comp.union hK₂_comp).isClosed.isOpen_compl.connectedComponentIn
+  have hW_conn : IsConnected W := isConnected_connectedComponentIn_iff.mpr hz₁_union_c
+  have hW_pc : IsPathConnected W := hW_open.isConnected_iff_isPathConnected.mp hW_conn
+  obtain ⟨γ_path, hγ_in_W⟩ := hW_pc.joinedIn z₁ (mem_connectedComponentIn hz₁_union_c) z₂ hcomp12
+  have hW_sub_U : W ⊆ U := by
+    have hW_sub_Jc : W ⊆ Jᶜ :=
+      (connectedComponentIn_subset (K₁ ∪ K₂)ᶜ z₁).trans
+        (Set.compl_subset_compl.mpr Set.subset_union_left)
+    have heq := connectedComponentIn_eq hz₁U
+    change W ⊆ connectedComponentIn Jᶜ a
+    rw [heq]
+    exact hW_conn.isPreconnected.subset_connectedComponentIn
+      (mem_connectedComponentIn hz₁_union_c) hW_sub_Jc
+  have hW_sub_ball : W ⊆ ball β ε := by
+    intro w hw
+    have hw_U : w ∈ U := hW_sub_U hw
+    have hw_cb : w ∈ closedBall β R :=
+      ball_subset_closedBall (hclU_sub (subset_closure hw_U))
+    have hw_not_K₂ : w ∉ K₂ := fun h =>
+      connectedComponentIn_subset (K₁ ∪ K₂)ᶜ z₁ hw (Or.inr h)
+    by_contra hnot_ε
+    exact hw_not_K₂ (Or.inr ⟨hw_cb, hnot_ε⟩)
+  exact ⟨γ_path, fun t => ⟨hW_sub_U (hγ_in_W t), hW_sub_ball (hγ_in_W t)⟩⟩
+
+/-- Every boundary point `β ∈ J` of a bounded connected component `U` of `Jᶜ` is simple in
+Rudin's whole-sequence interpolation sense (`14.16`). -/
+theorem jordanCurve_bounded_component_all_simple {J : Set ℂ} (hJ : IsJordanCurve J)
+    {a : ℂ} (ha : a ∈ Jᶜ) (hbdd : Bornology.IsBounded (connectedComponentIn Jᶜ a)) :
+    ∀ β ∈ frontier (connectedComponentIn Jᶜ a),
+      IsSimpleBoundaryPoint (connectedComponentIn Jᶜ a) β := by
+  let U : Set ℂ := connectedComponentIn Jᶜ a
+  have hfr_eq : frontier U = J := jordanCurve_component_frontier_eq hJ ha
+  have hJ_comp : IsCompact J := isCompact_of_isJordanCurve hJ
+  obtain ⟨hU_open, _⟩ := isOpen_and_frontier_subset_of_connectedComponentIn_compl hJ_comp.isClosed (a := a)
+  have hU_conn : IsConnected U := isConnected_connectedComponentIn_iff.mpr ha
+  have hU_pc : IsPathConnected U := hU_open.isConnected_iff_isPathConnected.mp hU_conn
+  intro β hβ_fr
+  have hβ_J : β ∈ J := hfr_eq ▸ hβ_fr
+  refine ⟨hβ_fr, fun α hα_in hα_lim => ?_⟩
+  -- For each `m : ℕ`, get `δ m > 0` for radius `1 / (m + 1 : ℝ)`
+  have hex_δ : ∀ m : ℕ, ∃ δ > 0, ∀ z₁ ∈ U ∩ ball β δ, ∀ z₂ ∈ U ∩ ball β δ,
+      JoinedIn (U ∩ ball β (1 / ((m : ℝ) + 1))) z₁ z₂ :=
+    fun m => jordanCurve_bounded_component_locally_joined hJ ha hbdd hβ_J (by positivity)
+  choose δ hδ_pos hδ_join using hex_δ
+  -- For each `n : ℕ`, choose a path `p n : Path (α n) (α (n + 1))` in `U`, staying inside the
+  -- smallest `ball β (1 / (m + 1))` (`m ≤ n`) whose `δ m`-ball contains both `α n` and `α (n + 1)`
+  classical
+  let goodSet : ℕ → Finset ℕ := fun n =>
+    (Finset.range (n + 1)).filter fun m => α n ∈ ball β (δ m) ∧ α (n + 1) ∈ ball β (δ m)
+  have hex_path : ∀ n : ℕ, ∃ p : Path (α n) (α (n + 1)),
+      (∀ s, p s ∈ U) ∧
+      ∀ m ≤ n, α n ∈ ball β (δ m) → α (n + 1) ∈ ball β (δ m) →
+        ∀ s, p s ∈ ball β (1 / ((m : ℝ) + 1)) := by
+    intro n
+    by_cases hne : (goodSet n).Nonempty
+    · let m_max : ℕ := (goodSet n).max' hne
+      have hm_mem : m_max ∈ goodSet n := Finset.max'_mem (goodSet n) hne
+      simp only [goodSet, Finset.mem_filter, Finset.mem_range] at hm_mem
+      obtain ⟨p, hp_in⟩ :=
+        hδ_join m_max (α n) ⟨hα_in n, hm_mem.2.1⟩ (α (n + 1)) ⟨hα_in (n + 1), hm_mem.2.2⟩
+      refine ⟨p, fun s => (hp_in s).1, fun m hm h1 h2 s => ?_⟩
+      have hm_good : m ∈ goodSet n := by
+        simp only [goodSet, Finset.mem_filter, Finset.mem_range]
+        exact ⟨Nat.lt_succ_of_le hm, h1, h2⟩
+      have hm_le_max : m ≤ m_max := Finset.le_max' (goodSet n) m hm_good
+      have hrad_le : 1 / ((m_max : ℝ) + 1) ≤ 1 / ((m : ℝ) + 1) := by
+        apply one_div_le_one_div_of_le (by positivity)
+        exact_mod_cast Nat.add_le_add_right hm_le_max 1
+      exact ball_subset_ball hrad_le (hp_in s).2
+    · obtain ⟨p, hp_in⟩ := hU_pc.joinedIn (α n) (hα_in n) (α (n + 1)) (hα_in (n + 1))
+      refine ⟨p, hp_in, fun m hm h1 h2 _ => ?_⟩
+      exfalso
+      apply hne
+      refine ⟨m, ?_⟩
+      simp only [goodSet, Finset.mem_filter, Finset.mem_range]
+      exact ⟨Nat.lt_succ_of_le hm, h1, h2⟩
+  choose p hp_U hp_ball using hex_path
+  -- Parameterize `t n := 1 - (1 / 2) ^ (n + 1)` (`t 0 = 1 / 2`, strictly increasing to `1`)
+  let t : ℕ → ℝ := fun n => 1 - (1 / 2 : ℝ) ^ (n + 1)
+  have ht_mono : StrictMono t := by
+    intro n₁ n₂ hlt
+    dsimp [t]
+    have hpow : (1 / 2 : ℝ) ^ (n₂ + 1) < (1 / 2 : ℝ) ^ (n₁ + 1) := by
+      rw [one_div, inv_pow, inv_pow]
+      exact (inv_lt_inv₀ (by positivity) (by positivity)).mpr
+        (pow_lt_pow_right₀ one_lt_two (Nat.add_lt_add_right hlt 1))
+    linarith
+  have ht_in : ∀ n : ℕ, t n ∈ Ioo (0 : ℝ) 1 := by
+    intro n
+    dsimp [t]
+    have hpos : 0 < (1 / 2 : ℝ) ^ (n + 1) := by positivity
+    have hle : (1 / 2 : ℝ) ^ (n + 1) ≤ 1 / 2 := by
+      have h1 : (1 / 2 : ℝ) ^ (n + 1) ≤ (1 / 2 : ℝ) ^ (1 : ℕ) :=
+        pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
+      simpa using h1
+    exact ⟨by linarith, by linarith⟩
+  have ht_lim : Tendsto t atTop (𝓝 1) := by
+    have h0 : Tendsto (fun n : ℕ => (1 / 2 : ℝ) ^ (n + 1)) atTop (𝓝 0) :=
+      (tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)).comp
+        (tendsto_add_atTop_nat 1)
+    have h1 := (tendsto_const_nhds (x := (1 : ℝ))).sub h0
+    simpa [t, one_div] using h1
+  -- Define `γ s`: constant `α 0` on `s ≤ 1/2`, `p n` on `[t n, t (n + 1)]`, and `β` on `s ≥ 1`
+  let segParam : ℕ → ℝ → unitInterval := fun n s =>
+    Set.projIcc 0 1 zero_le_one ((s - t n) / (t (n + 1) - t n))
+  let γ : ℝ → ℂ := fun s =>
+    if s ≤ t 0 then α 0
+    else if hs1 : s < 1 then
+      let n := Nat.find (show ∃ k : ℕ, s ≤ t (k + 1) by
+        obtain ⟨k, hk⟩ := (ht_lim.eventually (Ioi_mem_nhds hs1)).exists
+        exact ⟨k, le_trans (Set.mem_Ioi.mp hk).le (ht_mono (Nat.lt_succ_self k)).le⟩)
+      p n (segParam n s)
+    else β
+  have ht_step_pos : ∀ n : ℕ, 0 < t (n + 1) - t n := fun n => sub_pos.mpr (ht_mono (Nat.lt_succ_self n))
+  -- Show `γ = p n ∘ segParam n` on `[t n, t (n + 1)]`!
+  have hγ_on_seg : ∀ (n : ℕ) {s : ℝ}, s ∈ Icc (t n) (t (n + 1)) → γ s = p n (segParam n s) := by
+    intro n s hs
+    by_cases hs_t0 : s ≤ t 0
+    · have hn0 : n = 0 := by
+        by_contra hne0
+        have ht0_lt : t 0 < t n := ht_mono (Nat.pos_of_ne_zero hne0)
+        linarith [hs.1]
+      subst hn0
+      have hs_eq : s = t 0 := le_antisymm hs_t0 hs.1
+      rw [hs_eq]
+      simp only [γ, le_rfl, ↓reduceIte, segParam, sub_self, zero_div]
+      have hproj0 : Set.projIcc 0 1 zero_le_one 0 = (0 : unitInterval) := by
+        ext; simp
+      rw [hproj0, Path.source]
+    · have hs_lt1 : s < 1 := lt_of_le_of_lt hs.2 (ht_in (n + 1)).2
+      simp only [γ, hs_t0, ↓reduceIte, hs_lt1, ↓reduceDIte]
+      set k := Nat.find (show ∃ k : ℕ, s ≤ t (k + 1) from ⟨n, hs.2⟩)
+      have hk_spec : s ≤ t (k + 1) := Nat.find_spec (⟨n, hs.2⟩ : ∃ k : ℕ, s ≤ t (k + 1))
+      have hk_le_n : k ≤ n := Nat.find_min' _ hs.2
+      by_cases hkn : k = n
+      · rw [hkn]
+      · have hk_lt_n : k + 1 ≤ n := Nat.succ_le_of_lt (lt_of_le_of_ne hk_le_n hkn)
+        have htk1_le_tn : t (k + 1) ≤ t n :=
+          if h_eq : k + 1 = n then h_eq ▸ le_rfl else (ht_mono (lt_of_le_of_ne hk_lt_n h_eq)).le
+        have hs_eq : s = t (k + 1) := le_antisymm hk_spec (le_trans htk1_le_tn hs.1)
+        have hkn1 : k + 1 = n := by
+          by_contra hne
+          have hlt := ht_mono (lt_of_le_of_ne hk_lt_n hne)
+          linarith [hs.1, hk_spec]
+        rw [← hkn1, hs_eq]
+        have hproj1 : segParam k (t (k + 1)) = (1 : unitInterval) := by
+          ext
+          dsimp [segParam]
+          rw [div_self (ht_step_pos k).ne']
+          exact congrArg Subtype.val (Set.projIcc_of_mem zero_le_one (right_mem_Icc.mpr zero_le_one))
+        have hproj0 : segParam (k + 1) (t (k + 1)) = (0 : unitInterval) := by
+          ext
+          dsimp [segParam]
+          rw [sub_self, zero_div]
+          exact congrArg Subtype.val (Set.projIcc_of_mem zero_le_one (left_mem_Icc.mpr zero_le_one))
+        rw [hproj1, hproj0, Path.target, Path.source]
+  -- Evaluate `γ (t n) = α n`
+  have hγ_tn : ∀ n : ℕ, γ (t n) = α n := by
+    intro n
+    rw [hγ_on_seg n ⟨le_rfl, (ht_mono (Nat.lt_succ_self n)).le⟩]
+    have hproj0 : segParam n (t n) = (0 : unitInterval) := by
+      ext
+      dsimp [segParam]
+      rw [sub_self, zero_div]
+      exact congrArg Subtype.val (Set.projIcc_of_mem zero_le_one (left_mem_Icc.mpr zero_le_one))
+    rw [hproj0, Path.source]
+  -- Membership `γ s ∈ U` for `s ∈ [0, 1)`
+  have hγ_in_U : ∀ s ∈ Ico (0 : ℝ) 1, γ s ∈ U := by
+    intro s hs
+    by_cases hs0 : s ≤ t 0
+    · simp only [γ, hs0, ↓reduceIte]; exact hα_in 0
+    · simp only [γ, hs0, ↓reduceIte, hs.2, ↓reduceDIte]
+      exact hp_U _ _
+  -- Continuity of `γ` on `[0, 1)`
+  have hseg_cont : ∀ n : ℕ, Continuous (fun s : ℝ => p n (segParam n s)) := fun n =>
+    (p n).continuous.comp (continuous_projIcc.comp ((continuous_id.sub continuous_const).div_const _))
+  have hγ_cont_Ico : ContinuousOn γ (Ico (0 : ℝ) 1) := by
+    intro s₀ hs₀
+    by_cases hs₀_lt0 : s₀ < t 0
+    · have hev : γ =ᶠ[𝓝 s₀] fun _ => α 0 := by
+        filter_upwards [Iio_mem_nhds hs₀_lt0] with s hs
+        have hslt : s ≤ t 0 := le_of_lt (Set.mem_Iio.mp hs)
+        simp only [γ, hslt, ↓reduceIte]
+      exact (continuousAt_const.congr hev.symm).continuousWithinAt
+    · obtain ⟨N, hN⟩ := (ht_lim.eventually (Ioi_mem_nhds hs₀.2)).exists
+      have hN_le : s₀ ≤ t (N + 1) :=
+        le_trans (Set.mem_Ioi.mp hN).le (ht_mono (Nat.lt_succ_self N)).le
+      -- On `Iio (t (N + 1))`, check continuity at `s₀`
+      by_cases hs₀_eq0 : s₀ = t 0
+      · rw [hs₀_eq0, Metric.continuousWithinAt_iff]
+        intro ε hε
+        obtain ⟨η, hη_pos, hη⟩ :=
+          Metric.continuousAt_iff.mp ((hseg_cont 0).continuousAt (x := t 0)) ε hε
+        let δ' := min η (t 1 - t 0)
+        refine ⟨δ', lt_min hη_pos (ht_step_pos 0), fun s _ hdist => ?_⟩
+        by_cases hs_le : s ≤ t 0
+        · simp [γ, hs_le, hε]
+        · have hs_icc : s ∈ Icc (t 0) (t 1) := by
+            have hd := Real.dist_eq s (t 0) ▸ lt_of_lt_of_le hdist (min_le_right _ _)
+            exact ⟨le_of_not_ge hs_le, by linarith [(abs_lt.mp hd).2]⟩
+          rw [hγ_on_seg 0 hs_icc, hγ_on_seg 0 ⟨le_rfl, (ht_mono zero_lt_one).le⟩]
+          exact hη (lt_of_lt_of_le hdist (min_le_left _ _))
+      · have hs₀_gt0 : t 0 < s₀ := lt_of_le_of_ne (not_lt.mp hs₀_lt0) (Ne.symm hs₀_eq0)
+        -- Pick unique `k` with `t k < s₀ ≤ t (k + 1)`
+        let k := Nat.find (⟨N, hN_le⟩ : ∃ m : ℕ, s₀ ≤ t (m + 1))
+        have hk_le : s₀ ≤ t (k + 1) := Nat.find_spec (⟨N, hN_le⟩ : ∃ m : ℕ, s₀ ≤ t (m + 1))
+        have htk_lt : t k < s₀ := by
+          rcases Nat.eq_zero_or_pos k with hk0 | hk_pos
+          · rw [hk0]; exact hs₀_gt0
+          · obtain ⟨j, hj⟩ := Nat.exists_eq_succ_of_ne_zero hk_pos.ne'
+            have hjk : j < k := by omega
+            rw [hj]
+            exact not_le.mp (Nat.find_min (⟨N, hN_le⟩ : ∃ m : ℕ, s₀ ≤ t (m + 1)) hjk)
+        by_cases hs₀_lt_k1 : s₀ < t (k + 1)
+        · have hev : γ =ᶠ[𝓝 s₀] fun s => p k (segParam k s) := by
+            filter_upwards [Ioo_mem_nhds htk_lt hs₀_lt_k1] with s hs
+            exact hγ_on_seg k ⟨hs.1.le, hs.2.le⟩
+          exact ((hseg_cont k).continuousAt.congr hev.symm).continuousWithinAt
+        · have hs₀_eq : s₀ = t (k + 1) := le_antisymm hk_le (not_lt.mp hs₀_lt_k1)
+          rw [hs₀_eq, Metric.continuousWithinAt_iff]
+          intro ε hε
+          obtain ⟨η₁, hη₁_pos, hη₁⟩ := Metric.continuousAt_iff.mp (hseg_cont k).continuousAt ε hε
+          obtain ⟨η₂, hη₂_pos, hη₂⟩ :=
+            Metric.continuousAt_iff.mp (hseg_cont (k + 1)).continuousAt ε hε
+          let δ' := min (min η₁ η₂) (min (t (k + 1) - t k) (t (k + 2) - t (k + 1)))
+          have hδ'_pos : 0 < δ' := lt_min (lt_min hη₁_pos hη₂_pos)
+            (lt_min (ht_step_pos k) (ht_step_pos (k + 1)))
+          refine ⟨δ', hδ'_pos, fun s _ hdist => ?_⟩
+          rcases le_or_gt s (t (k + 1)) with hs_le | hs_gt
+          · have hd : |s - t (k + 1)| < t (k + 1) - t k := by
+              rw [← Real.dist_eq]
+              exact lt_of_lt_of_le hdist (le_trans (min_le_right _ _) (min_le_left _ _))
+            have hs_icc : s ∈ Icc (t k) (t (k + 1)) :=
+              ⟨by linarith [(abs_lt.mp hd).1], hs_le⟩
+            rw [hγ_on_seg k hs_icc, hγ_on_seg k ⟨(ht_mono (Nat.lt_succ_self k)).le, le_rfl⟩]
+            exact hη₁ (lt_of_lt_of_le hdist (le_trans (min_le_left _ _) (min_le_left _ _)))
+          · have hd : |s - t (k + 1)| < t (k + 2) - t (k + 1) := by
+              rw [← Real.dist_eq]
+              exact lt_of_lt_of_le hdist (le_trans (min_le_right _ _) (min_le_right _ _))
+            have hs_icc : s ∈ Icc (t (k + 1)) (t (k + 2)) :=
+              ⟨hs_gt.le, by linarith [(abs_lt.mp hd).2]⟩
+            rw [hγ_on_seg (k + 1) hs_icc,
+              hγ_on_seg (k + 1) ⟨le_rfl, (ht_mono (Nat.lt_succ_self (k + 1))).le⟩]
+            exact hη₂ (lt_of_lt_of_le hdist (le_trans (min_le_left _ _) (min_le_right _ _)))
+  -- Continuity of `γ` at `s = 1`
+  have hγ_1 : γ 1 = β := by
+    have hnot0 : ¬ (1 : ℝ) ≤ t 0 := not_le.mpr (ht_in 0).2
+    simp [γ, hnot0]
+  have hγ_lim1 : Tendsto γ (𝓝[<] (1 : ℝ)) (𝓝 β) := by
+    rw [Metric.tendsto_nhdsWithin_nhds]
+    intro ε hε
+    obtain ⟨m, hm⟩ := exists_nat_gt (1 / ε)
+    have hrad_lt : 1 / ((m : ℝ) + 1) < ε := by
+      have hm_pos : 0 < (m : ℝ) + 1 := by positivity
+      rw [div_lt_iff₀ hm_pos]
+      have h1 : 1 < (m : ℝ) * ε := (div_lt_iff₀ hε).mp hm
+      linarith
+    obtain ⟨N₀, hN₀⟩ := Metric.tendsto_atTop.mp hα_lim (δ m) (hδ_pos m)
+    let N : ℕ := max N₀ m
+    refine ⟨1 - t N, sub_pos.mpr (ht_in N).2, fun s hs_lt1 hdist => ?_⟩
+    rw [Set.mem_Iio] at hs_lt1
+    have hs_gt_tN : t N < s := by
+      rw [Real.dist_eq, abs_of_neg (sub_neg.mpr hs_lt1)] at hdist
+      linarith
+    have hs_gt_t0 : ¬ s ≤ t 0 := not_le.mpr (lt_of_le_of_lt
+      (if h0 : N = 0 then h0 ▸ le_rfl else (ht_mono (Nat.pos_of_ne_zero h0)).le) hs_gt_tN)
+    obtain ⟨k_ex, hk_ex⟩ := (ht_lim.eventually (Ioi_mem_nhds hs_lt1)).exists
+    have hk_ex_le : s ≤ t (k_ex + 1) :=
+      le_trans (Set.mem_Ioi.mp hk_ex).le (ht_mono (Nat.lt_succ_self k_ex)).le
+    let k := Nat.find (⟨k_ex, hk_ex_le⟩ : ∃ j : ℕ, s ≤ t (j + 1))
+    have hk_spec : s ≤ t (k + 1) := Nat.find_spec (⟨k_ex, hk_ex_le⟩ : ∃ j : ℕ, s ≤ t (j + 1))
+    have hN_le_k : N ≤ k := by
+      by_contra hlt
+      have hk1_le_N : k + 1 ≤ N := Nat.succ_le_of_lt (not_le.mp hlt)
+      have htk1_le_tN : t (k + 1) ≤ t N :=
+        if heq : k + 1 = N then heq ▸ le_rfl else (ht_mono (lt_of_le_of_ne hk1_le_N heq)).le
+      linarith
+    have hγs_eq : γ s = p k (segParam k s) := by
+      simp only [γ, hs_gt_t0, ↓reduceIte, hs_lt1, ↓reduceDIte]
+      rfl
+    rw [hγs_eq]
+    have hm_le_k : m ≤ k := le_trans (le_max_right _ _) hN_le_k
+    have hN₀_le_k : N₀ ≤ k := le_trans (le_max_left _ _) hN_le_k
+    have hαk : α k ∈ ball β (δ m) := hN₀ k hN₀_le_k
+    have hαk1 : α (k + 1) ∈ ball β (δ m) := hN₀ (k + 1) (Nat.le_succ_of_le hN₀_le_k)
+    have hp_in_ball := hp_ball k m hm_le_k hαk hαk1 (segParam k s)
+    exact lt_trans (mem_ball.mp hp_in_ball) hrad_lt
+  have hγ_cont_Icc : ContinuousOn γ (Icc (0 : ℝ) 1) := by
+    intro s hs
+    rcases eq_or_lt_of_le hs.2 with rfl | hslt
+    · rw [ContinuousWithinAt, hγ_1, Metric.tendsto_nhdsWithin_nhds]
+      intro ε hε
+      obtain ⟨δ', hδ'_pos, hδ'⟩ := Metric.tendsto_nhdsWithin_nhds.mp hγ_lim1 ε hε
+      refine ⟨δ', hδ'_pos, fun x hx hdist => ?_⟩
+      rcases eq_or_lt_of_le hx.2 with rfl | hxlt
+      · simp [hγ_1, hε]
+      · exact hδ' hxlt hdist
+    · have hc := hγ_cont_Ico s ⟨hs.1, hslt⟩
+      have hnhds_eq : 𝓝[Icc (0 : ℝ) 1] s = 𝓝[Ico (0 : ℝ) 1] s := by
+        apply nhdsWithin_eq_nhdsWithin' (Iio_mem_nhds hslt)
+        ext x
+        simp only [Set.mem_inter_iff, Set.mem_Icc, Set.mem_Iio, Set.mem_Ico]
+        exact ⟨fun ⟨⟨h1, _⟩, h3⟩ => ⟨⟨h1, h3⟩, h3⟩, fun ⟨⟨h1, h2⟩, h3⟩ => ⟨⟨h1, h2.le⟩, h3⟩⟩
+      rw [ContinuousWithinAt, hnhds_eq]
+      exact hc
+  exact ⟨γ, hγ_cont_Icc, hγ_in_U, t, ht_mono, ht_in, ht_lim, hγ_tn⟩
+
+/-- **Theorem (14.20(a) Jordan-Boundary Converse for Bounded Regions):**
+If `Ω ⊆ ℂ` is a bounded region whose boundary `frontier Ω` is a Jordan curve, then `Ω` is
+automatically simply connected (`BookSimplyConnected Ω`) and **every** boundary point
+`β ∈ frontier Ω` is simple (`IsSimpleBoundaryPoint Ω β`). -/
+theorem jordanBoundary_region_converse {Ω : Set ℂ}
+    (hΩ_reg : RudinRCA.Chapter10.IsRegion Ω) (hΩ_bdd : Bornology.IsBounded Ω)
+    (hJ : IsJordanCurve (frontier Ω)) :
+    RudinRCA.Chapter10.BookSimplyConnected Ω ∧
+      ∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β := by
+  let J : Set ℂ := frontier Ω
+  obtain ⟨z₀, hz₀⟩ := hΩ_reg.2.nonempty
+  have hΩ_sub_Jc : Ω ⊆ Jᶜ := by
+    intro z hz hzJ
+    dsimp [J] at hzJ
+    rw [frontier, hΩ_reg.1.interior_eq] at hzJ
+    exact hzJ.2 hz
+  have hz₀_Jc : z₀ ∈ Jᶜ := hΩ_sub_Jc hz₀
+  -- Show `Ω = connectedComponentIn Jᶜ z₀` (since `Ω` is connected and clopen in `Jᶜ`)
+  have hΩ_eq_comp : Ω = connectedComponentIn Jᶜ z₀ := by
+    refine Set.Subset.antisymm
+      (hΩ_reg.2.isPreconnected.subset_connectedComponentIn hz₀ hΩ_sub_Jc) ?_
+    let U : Set ℂ := connectedComponentIn Jᶜ z₀
+    have hU_conn : IsConnected U := isConnected_connectedComponentIn_iff.mpr hz₀_Jc
+    have hdiff_open : IsOpen (Jᶜ \ Ω) := by
+      have heq : Jᶜ \ Ω = Jᶜ \ closure Ω := by
+        ext w
+        constructor
+        · rintro ⟨hwJc, hwnΩ⟩
+          refine ⟨hwJc, fun hwcl => hwJc ?_⟩
+          dsimp [J]
+          rw [frontier, hΩ_reg.1.interior_eq]
+          exact ⟨hwcl, hwnΩ⟩
+        · rintro ⟨hwJc, hwncl⟩
+          exact ⟨hwJc, fun hwΩ => hwncl (subset_closure hwΩ)⟩
+      rw [heq]
+      exact (isCompact_of_isJordanCurve hJ).isClosed.isOpen_compl.sdiff isClosed_closure
+    intro w hwU
+    by_contra hwnΩ
+    have hwJc : w ∈ Jᶜ := connectedComponentIn_subset Jᶜ z₀ hwU
+    have hcov : U ⊆ Ω ∪ (Jᶜ \ Ω) := fun y hy => by
+      by_cases h : y ∈ Ω
+      · exact Or.inl h
+      · exact Or.inr ⟨connectedComponentIn_subset Jᶜ z₀ hy, h⟩
+    rcases hU_conn.isPreconnected Ω (Jᶜ \ Ω) hΩ_reg.1 hdiff_open hcov
+      ⟨z₀, mem_connectedComponentIn hz₀_Jc, hz₀⟩ ⟨w, hwU, hwJc, hwnΩ⟩ with
+      ⟨q, _, hqΩ, _, hqnΩ⟩
+    exact hqnΩ hqΩ
+  have hcomp_bdd : Bornology.IsBounded (connectedComponentIn Jᶜ z₀) := hΩ_eq_comp ▸ hΩ_bdd
+  have hsc := jordanCurve_bounded_component_simplyConnected hJ hz₀_Jc hcomp_bdd
+  have hsimp := jordanCurve_bounded_component_all_simple hJ hz₀_Jc hcomp_bdd
+  rw [← hΩ_eq_comp] at hsc hsimp
+  exact ⟨hsc, hsimp⟩
+
+/-! ### Part 14.20(b) Core: Positive Cyclic Order on `sphere 0 1` and Disk Automorphism 3-Transitivity -/
+
+/-- Positive (counterclockwise) cyclic order of three points `(w₁, w₂, w₃)` on the unit circle
+`sphere (0 : ℂ) 1`: all three lie on `sphere 0 1` and possess real arguments `θ₁ < θ₂ < θ₃ < θ₁ + 2π`
+with `w_k = exp(i θ_k)`. -/
+def UnitCirclePosCyclic (w₁ w₂ w₃ : ℂ) : Prop :=
+  w₁ ∈ sphere (0 : ℂ) 1 ∧ w₂ ∈ sphere (0 : ℂ) 1 ∧ w₃ ∈ sphere (0 : ℂ) 1 ∧
+  ∃ θ₁ θ₂ θ₃ : ℝ, θ₁ < θ₂ ∧ θ₂ < θ₃ ∧ θ₃ < θ₁ + 2 * Real.pi ∧
+    w₁ = Complex.exp ((θ₁ : ℂ) * Complex.I) ∧
+    w₂ = Complex.exp ((θ₂ : ℂ) * Complex.I) ∧
+    w₃ = Complex.exp ((θ₃ : ℂ) * Complex.I)
+
+/-- Continuous real-valued cyclic orientation determinant on `sphere (0 : ℂ) 1`:
+`Im ((w₃ / w₁ - 1) * conj (w₂ / w₁ - 1))`. -/
+def unitCircleCyclicDet (w₁ w₂ w₃ : ℂ) : ℝ :=
+  ((w₃ / w₁ - 1) * starRingEnd ℂ (w₂ / w₁ - 1)).im
+
+/-- Trigonometric factorization of `unitCircleCyclicDet`:
+for `u₂ = exp(i φ₂)` and `u₃ = exp(i φ₃)`,
+`Im ((u₃ - 1) * conj (u₂ - 1)) = 4 * sin(φ₂ / 2) * sin(φ₃ / 2) * sin((φ₃ - φ₂) / 2)`. -/
+theorem unitCircleCyclicDet_exp_formula (φ₂ φ₃ : ℝ) :
+    ((Complex.exp ((φ₃ : ℂ) * Complex.I) - 1) *
+      starRingEnd ℂ (Complex.exp ((φ₂ : ℂ) * Complex.I) - 1)).im =
+    4 * Real.sin (φ₂ / 2) * Real.sin (φ₃ / 2) * Real.sin ((φ₃ - φ₂) / 2) := by
+  rw [Complex.exp_mul_I, Complex.exp_mul_I,
+    ← Complex.ofReal_cos, ← Complex.ofReal_sin,
+    ← Complex.ofReal_cos, ← Complex.ofReal_sin]
+  simp only [map_sub, map_add, map_mul, map_one, Complex.conj_ofReal, Complex.conj_I,
+    Complex.mul_im, Complex.sub_re, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+    Complex.I_re, Complex.I_im, Complex.one_re, Complex.sub_im, Complex.add_im,
+    Complex.ofReal_im, Complex.one_im, Complex.neg_re, Complex.neg_im]
+  set a : ℝ := φ₂ / 2
+  set b : ℝ := φ₃ / 2
+  have hφ₂ : φ₂ = 2 * a := by dsimp [a]; ring
+  have hφ₃ : φ₃ = 2 * b := by dsimp [b]; ring
+  have hdiff : (2 * b - 2 * a) / 2 = b - a := by ring
+  rw [hφ₂, hφ₃, hdiff, Real.sin_two_mul, Real.sin_two_mul,
+    Real.cos_two_mul, Real.cos_two_mul, Real.sin_sub]
+  have ha_sq : Real.cos a ^ 2 = 1 - Real.sin a ^ 2 := by linarith [Real.sin_sq_add_cos_sq a]
+  have hb_sq : Real.cos b ^ 2 = 1 - Real.sin b ^ 2 := by linarith [Real.sin_sq_add_cos_sq b]
+  rw [ha_sq, hb_sq]
+  ring
+
+/-- Every `u ∈ sphere (0 : ℂ) 1` with `u ≠ 1` has a representation `u = exp(i φ)` with
+`φ ∈ Ioo 0 (2 * π)`. -/
+theorem exists_angle_Ioo_two_pi_of_mem_sphere_ne_one {u : ℂ}
+    (hu : u ∈ sphere (0 : ℂ) 1) (hne : u ≠ 1) :
+    ∃ φ ∈ Ioo (0 : ℝ) (2 * Real.pi), u = Complex.exp ((φ : ℂ) * Complex.I) := by
+  have hu_norm : ‖u‖ = 1 := by simpa using hu
+  have hneg_norm : ‖-u‖ = 1 := by rw [norm_neg, hu_norm]
+  have hexp_neg : Complex.exp ((Complex.arg (-u) : ℂ) * Complex.I) = -u := by
+    have h := Complex.norm_mul_exp_arg_mul_I (-u)
+    rwa [hneg_norm, Complex.ofReal_one, one_mul] at h
+  have harg_gt : -Real.pi < Complex.arg (-u) := Complex.neg_pi_lt_arg (-u)
+  have harg_lt : Complex.arg (-u) < Real.pi := by
+    refine lt_of_le_of_ne (Complex.arg_le_pi (-u)) fun heq => hne ?_
+    rw [heq, Complex.exp_pi_mul_I] at hexp_neg
+    exact neg_injective hexp_neg.symm
+  refine ⟨Complex.arg (-u) + Real.pi, ⟨by linarith, by linarith⟩, ?_⟩
+  push_cast
+  rw [add_mul, Complex.exp_add, hexp_neg, Complex.exp_pi_mul_I]
+  ring
+
+/-- Algebraic-sign characterization of `UnitCirclePosCyclic`:
+for any `w₁, w₂, w₃ : ℂ`, `UnitCirclePosCyclic w₁ w₂ w₃` holds if and only if all three lie on
+`sphere 0 1` and `0 < unitCircleCyclicDet w₁ w₂ w₃`. -/
+theorem unitCirclePosCyclic_iff_det_pos {w₁ w₂ w₃ : ℂ} :
+    UnitCirclePosCyclic w₁ w₂ w₃ ↔
+      w₁ ∈ sphere (0 : ℂ) 1 ∧ w₂ ∈ sphere (0 : ℂ) 1 ∧ w₃ ∈ sphere (0 : ℂ) 1 ∧
+      0 < unitCircleCyclicDet w₁ w₂ w₃ := by
+  constructor
+  · rintro ⟨hw₁, hw₂, hw₃, θ₁, θ₂, θ₃, h12, h23, h31, rfl, rfl, rfl⟩
+    refine ⟨hw₁, hw₂, hw₃, ?_⟩
+    dsimp [unitCircleCyclicDet]
+    have hdiv₂ : Complex.exp ((θ₂ : ℂ) * Complex.I) / Complex.exp ((θ₁ : ℂ) * Complex.I) =
+        Complex.exp (((θ₂ - θ₁ : ℝ) : ℂ) * Complex.I) := by
+      rw [← Complex.exp_sub]; congr 1; push_cast; ring
+    have hdiv₃ : Complex.exp ((θ₃ : ℂ) * Complex.I) / Complex.exp ((θ₁ : ℂ) * Complex.I) =
+        Complex.exp (((θ₃ - θ₁ : ℝ) : ℂ) * Complex.I) := by
+      rw [← Complex.exp_sub]; congr 1; push_cast; ring
+    rw [hdiv₂, hdiv₃, unitCircleCyclicDet_exp_formula]
+    have hs₁ : 0 < Real.sin ((θ₂ - θ₁) / 2) :=
+      Real.sin_pos_of_pos_of_lt_pi (by linarith) (by linarith)
+    have hs₂ : 0 < Real.sin ((θ₃ - θ₁) / 2) :=
+      Real.sin_pos_of_pos_of_lt_pi (by linarith) (by linarith)
+    have hdiff_eq : (θ₃ - θ₁ - (θ₂ - θ₁)) / 2 = (θ₃ - θ₂) / 2 := by ring
+    rw [hdiff_eq]
+    have hs₃ : 0 < Real.sin ((θ₃ - θ₂) / 2) :=
+      Real.sin_pos_of_pos_of_lt_pi (by linarith) (by linarith)
+    positivity
+  · rintro ⟨hw₁, hw₂, hw₃, hdet⟩
+    have hw₁_norm : ‖w₁‖ = 1 := by simpa using hw₁
+    have hw₂_norm : ‖w₂‖ = 1 := by simpa using hw₂
+    have hw₃_norm : ‖w₃‖ = 1 := by simpa using hw₃
+    have hw₁_ne : w₁ ≠ 0 := by intro h0; simp [h0] at hw₁_norm
+    have hne12 : w₂ / w₁ ≠ 1 := by
+      intro h1
+      dsimp [unitCircleCyclicDet] at hdet
+      rw [h1, sub_self, map_zero, mul_zero, Complex.zero_im] at hdet
+      exact lt_irrefl 0 hdet
+    have hne13 : w₃ / w₁ ≠ 1 := by
+      intro h1
+      dsimp [unitCircleCyclicDet] at hdet
+      rw [h1, sub_self, zero_mul, Complex.zero_im] at hdet
+      exact lt_irrefl 0 hdet
+    have hu₂_sph : w₂ / w₁ ∈ sphere (0 : ℂ) 1 := by simp [hw₁_norm, hw₂_norm]
+    have hu₃_sph : w₃ / w₁ ∈ sphere (0 : ℂ) 1 := by simp [hw₁_norm, hw₃_norm]
+    obtain ⟨φ₂, hφ₂_in, hu₂_eq⟩ := exists_angle_Ioo_two_pi_of_mem_sphere_ne_one hu₂_sph hne12
+    obtain ⟨φ₃, hφ₃_in, hu₃_eq⟩ := exists_angle_Ioo_two_pi_of_mem_sphere_ne_one hu₃_sph hne13
+    dsimp [unitCircleCyclicDet] at hdet
+    rw [hu₂_eq, hu₃_eq, unitCircleCyclicDet_exp_formula] at hdet
+    have hs₁ : 0 < Real.sin (φ₂ / 2) :=
+      Real.sin_pos_of_pos_of_lt_pi (by linarith [hφ₂_in.1]) (by linarith [hφ₂_in.2])
+    have hs₂ : 0 < Real.sin (φ₃ / 2) :=
+      Real.sin_pos_of_pos_of_lt_pi (by linarith [hφ₃_in.1]) (by linarith [hφ₃_in.2])
+    have hprod_pos : 0 < 4 * Real.sin (φ₂ / 2) * Real.sin (φ₃ / 2) := by positivity
+    have hs₃ : 0 < Real.sin ((φ₃ - φ₂) / 2) := by
+      by_contra hle
+      have hle' : Real.sin ((φ₃ - φ₂) / 2) ≤ 0 := not_lt.mp hle
+      have : 4 * Real.sin (φ₂ / 2) * Real.sin (φ₃ / 2) * Real.sin ((φ₃ - φ₂) / 2) ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos hprod_pos.le hle'
+      linarith
+    have hφ₂_lt_φ₃ : φ₂ < φ₃ := by
+      by_contra hge
+      have hge' : φ₃ ≤ φ₂ := not_lt.mp hge
+      rcases eq_or_lt_of_le hge' with rfl | hlt
+      · simp at hs₃
+      · have hpos_neg : 0 < Real.sin ((φ₂ - φ₃) / 2) :=
+          Real.sin_pos_of_pos_of_lt_pi (by linarith) (by linarith [hφ₂_in.2, hφ₃_in.1])
+        have hneg_eq : (φ₃ - φ₂) / 2 = -((φ₂ - φ₃) / 2) := by ring
+        rw [hneg_eq, Real.sin_neg] at hs₃
+        linarith
+    let θ₁ : ℝ := Complex.arg w₁
+    have hw₁_exp : w₁ = Complex.exp ((θ₁ : ℂ) * Complex.I) := by
+      have h := Complex.norm_mul_exp_arg_mul_I w₁
+      rw [hw₁_norm, Complex.ofReal_one, one_mul] at h
+      exact h.symm
+    refine ⟨hw₁, hw₂, hw₃, θ₁, θ₁ + φ₂, θ₁ + φ₃,
+      by linarith [hφ₂_in.1], by linarith, by linarith [hφ₃_in.2], hw₁_exp, ?_, ?_⟩
+    · calc
+        w₂ = (w₂ / w₁) * w₁ := (div_mul_cancel₀ w₂ hw₁_ne).symm
+        _ = Complex.exp ((φ₂ : ℂ) * Complex.I) * Complex.exp ((θ₁ : ℂ) * Complex.I) := by
+          rw [hu₂_eq, ← hw₁_exp]
+        _ = Complex.exp (((θ₁ + φ₂ : ℝ) : ℂ) * Complex.I) := by
+          rw [← Complex.exp_add]; congr 1; push_cast; ring
+    · calc
+        w₃ = (w₃ / w₁) * w₁ := (div_mul_cancel₀ w₃ hw₁_ne).symm
+        _ = Complex.exp ((φ₃ : ℂ) * Complex.I) * Complex.exp ((θ₁ : ℂ) * Complex.I) := by
+          rw [hu₃_eq, ← hw₁_exp]
+        _ = Complex.exp (((θ₁ + φ₃ : ℝ) : ℂ) * Complex.I) := by
+          rw [← Complex.exp_add]; congr 1; push_cast; ring
+
+theorem unitCircleCyclicDet_swap (w₁ w₂ w₃ : ℂ) :
+    unitCircleCyclicDet w₁ w₃ w₂ = -unitCircleCyclicDet w₁ w₂ w₃ := by
+  dsimp [unitCircleCyclicDet]
+  have hconj : (w₂ / w₁ - 1) * (starRingEnd ℂ) (w₃ / w₁ - 1) =
+      (starRingEnd ℂ) ((w₃ / w₁ - 1) * (starRingEnd ℂ) (w₂ / w₁ - 1)) := by
+    simp [mul_comm]
+  rw [hconj, Complex.conj_im]
+
+theorem unitCirclePosCyclic_pairwise_ne {w₁ w₂ w₃ : ℂ} (h : UnitCirclePosCyclic w₁ w₂ w₃) :
+    w₁ ≠ w₂ ∧ w₂ ≠ w₃ ∧ w₁ ≠ w₃ := by
+  obtain ⟨_, _, _, hdet⟩ := unitCirclePosCyclic_iff_det_pos.mp h
+  refine ⟨?_, ?_, ?_⟩
+  · intro heq; subst heq
+    dsimp [unitCircleCyclicDet] at hdet
+    by_cases h0 : w₁ = 0 <;> simp [h0] at hdet
+  · intro heq; subst heq
+    dsimp [unitCircleCyclicDet] at hdet
+    have hreal : ((w₂ / w₁ - 1) * (starRingEnd ℂ) (w₂ / w₁ - 1)).im = 0 := by
+      rw [Complex.mul_conj]; exact Complex.ofReal_im _
+    linarith
+  · intro heq; subst heq
+    dsimp [unitCircleCyclicDet] at hdet
+    by_cases h0 : w₁ = 0 <;> simp [h0] at hdet
+
+/-- Exclusive dichotomy for pairwise distinct triples on `sphere (0 : ℂ) 1`:
+exactly one of `(w₁, w₂, w₃)` and `(w₁, w₃, w₂)` is positively cyclically ordered. -/
+theorem unitCirclePosCyclic_dichotomy {w₁ w₂ w₃ : ℂ}
+    (hw₁ : w₁ ∈ sphere (0 : ℂ) 1) (hw₂ : w₂ ∈ sphere (0 : ℂ) 1) (hw₃ : w₃ ∈ sphere (0 : ℂ) 1)
+    (h12 : w₁ ≠ w₂) (h23 : w₂ ≠ w₃) (h13 : w₁ ≠ w₃) :
+    UnitCirclePosCyclic w₁ w₂ w₃ ↔ ¬ UnitCirclePosCyclic w₁ w₃ w₂ := by
+  rw [unitCirclePosCyclic_iff_det_pos, unitCirclePosCyclic_iff_det_pos,
+    unitCircleCyclicDet_swap w₁ w₂ w₃]
+  simp only [hw₁, hw₂, hw₃, true_and, Left.neg_pos_iff, not_lt]
+  constructor
+  · exact le_of_lt
+  · intro hge
+    refine lt_of_le_of_ne hge fun h0 => ?_
+    have hw₁_norm : ‖w₁‖ = 1 := by simpa using hw₁
+    have hw₂_norm : ‖w₂‖ = 1 := by simpa using hw₂
+    have hw₃_norm : ‖w₃‖ = 1 := by simpa using hw₃
+    have hw₁_ne : w₁ ≠ 0 := by intro hz; simp [hz] at hw₁_norm
+    have hne12 : w₂ / w₁ ≠ 1 := fun h => h12 (by rw [div_eq_one_iff_eq hw₁_ne] at h; exact h.symm)
+    have hne13 : w₃ / w₁ ≠ 1 := fun h => h13 (by rw [div_eq_one_iff_eq hw₁_ne] at h; exact h.symm)
+    obtain ⟨φ₂, hφ₂_in, hu₂_eq⟩ := exists_angle_Ioo_two_pi_of_mem_sphere_ne_one
+      (by simp [hw₁_norm, hw₂_norm]) hne12
+    obtain ⟨φ₃, hφ₃_in, hu₃_eq⟩ := exists_angle_Ioo_two_pi_of_mem_sphere_ne_one
+      (by simp [hw₁_norm, hw₃_norm]) hne13
+    dsimp [unitCircleCyclicDet] at h0
+    rw [hu₂_eq, hu₃_eq, unitCircleCyclicDet_exp_formula] at h0
+    have hs₁ : Real.sin (φ₂ / 2) ≠ 0 :=
+      (Real.sin_pos_of_pos_of_lt_pi (by linarith [hφ₂_in.1]) (by linarith [hφ₂_in.2])).ne'
+    have hs₂ : Real.sin (φ₃ / 2) ≠ 0 :=
+      (Real.sin_pos_of_pos_of_lt_pi (by linarith [hφ₃_in.1]) (by linarith [hφ₃_in.2])).ne'
+    have hs₃_zero : Real.sin ((φ₃ - φ₂) / 2) = 0 := by
+      have hprod : 4 * Real.sin (φ₂ / 2) * Real.sin (φ₃ / 2) ≠ 0 :=
+        mul_ne_zero (mul_ne_zero (by norm_num) hs₁) hs₂
+      exact (mul_eq_zero.mp h0.symm).resolve_left hprod
+    have hφ_eq : φ₂ = φ₃ := by
+      by_contra hne_φ
+      rcases lt_or_gt_of_ne hne_φ with hlt | hgt
+      · exact (Real.sin_pos_of_pos_of_lt_pi (by linarith)
+          (by linarith [hφ₂_in.1, hφ₃_in.2])).ne' hs₃_zero
+      · have hpos := Real.sin_pos_of_pos_of_lt_pi (x := (φ₂ - φ₃) / 2) (by linarith)
+          (by linarith [hφ₂_in.2, hφ₃_in.1])
+        have hneg : (φ₃ - φ₂) / 2 = -((φ₂ - φ₃) / 2) := by ring
+        rw [hneg, Real.sin_neg, neg_eq_zero] at hs₃_zero
+        exact hpos.ne' hs₃_zero
+    apply h23
+    calc
+      w₂ = (w₂ / w₁) * w₁ := (div_mul_cancel₀ w₂ hw₁_ne).symm
+      _ = (w₃ / w₁) * w₁ := by rw [hu₂_eq, hu₃_eq, hφ_eq]
+      _ = w₃ := div_mul_cancel₀ w₃ hw₁_ne
+
+theorem unitCirclePosCyclic_rotate_triple {w₁ w₂ w₃ : ℂ} (h : UnitCirclePosCyclic w₁ w₂ w₃) :
+    UnitCirclePosCyclic w₂ w₃ w₁ := by
+  rcases h with ⟨hw₁, hw₂, hw₃, θ₁, θ₂, θ₃, h12, h23, h31, rfl, rfl, rfl⟩
+  refine ⟨hw₂, hw₃, hw₁, θ₂, θ₃, θ₁ + 2 * Real.pi, h23, h31, by linarith, rfl, rfl, ?_⟩
+  push_cast
+  rw [add_mul, Complex.exp_add,
+    show (2 : ℂ) * ↑Real.pi * Complex.I = 2 * Real.pi * Complex.I by ring,
+    Complex.exp_two_pi_mul_I, mul_one]
+
+theorem unitCirclePosCyclic_std : UnitCirclePosCyclic (-1) (-Complex.I) 1 := by
+  refine ⟨by simp, by simp, by simp, -Real.pi, -(Real.pi / 2), 0,
+    by linarith [Real.pi_pos], by linarith [Real.pi_pos], by linarith [Real.pi_pos], ?_, ?_, ?_⟩
+  · rw [Complex.ofReal_neg, neg_mul, Complex.exp_neg, Complex.exp_pi_mul_I]; norm_num
+  · rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
+      Real.cos_neg, Real.sin_neg, Real.cos_pi_div_two, Real.sin_pi_div_two]
+    simp
+  · simp
+
+/-- Standard disk automorphism `ψ_{α, c}(z) = c * RudinRCA.Chapter12.phi α z` (`α ∈ ball 0 1`, `‖c‖ = 1`). -/
+def diskAut (α c z : ℂ) : ℂ :=
+  c * RudinRCA.Chapter12.phi α z
+
+theorem diskAut_props {α c : ℂ} (hα : α ∈ ball (0 : ℂ) 1) (hc : ‖c‖ = 1) :
+    ContinuousOn (diskAut α c) (closedBall (0 : ℂ) 1) ∧
+    DifferentiableOn ℂ (diskAut α c) (ball (0 : ℂ) 1) ∧
+    BijOn (diskAut α c) (ball (0 : ℂ) 1) (ball (0 : ℂ) 1) ∧
+    BijOn (diskAut α c) (sphere (0 : ℂ) 1) (sphere (0 : ℂ) 1) ∧
+    BijOn (diskAut α c) (closedBall (0 : ℂ) 1) (closedBall (0 : ℂ) 1) ∧
+    ∀ z ∈ closedBall (0 : ℂ) 1,
+      RudinRCA.Chapter12.phi (-α) (c⁻¹ * diskAut α c z) = z ∧
+      diskAut α c (RudinRCA.Chapter12.phi (-α) (c⁻¹ * z)) = z := by
+  have hc_ne : c ≠ 0 := by intro h0; simp [h0] at hc
+  obtain ⟨hphi_diff, _, hphi_sph, hphi_ball, hphi_inv, _, _⟩ := RudinRCA.Chapter12.theorem12_4 hα
+  have hden_cb : closedBall (0 : ℂ) 1 ⊆ {z : ℂ | 1 - star α * z ≠ 0} := by
+    intro z hz h0
+    have hα_lt : ‖α‖ < 1 := mem_ball_zero_iff.mp hα
+    have hz_le : ‖z‖ ≤ 1 := mem_closedBall_zero_iff.mp hz
+    have h1 : (1 : ℂ) = star α * z := sub_eq_zero.mp h0
+    have hnorm : (1 : ℝ) = ‖α‖ * ‖z‖ := by
+      have := congrArg norm h1; simpa [norm_mul] using this
+    nlinarith [norm_nonneg α, norm_nonneg z]
+  have hdiff_cb : DifferentiableOn ℂ (diskAut α c) {z : ℂ | 1 - star α * z ≠ 0} :=
+    hphi_diff.const_mul c
+  have hcont_cb : ContinuousOn (diskAut α c) (closedBall (0 : ℂ) 1) :=
+    hdiff_cb.continuousOn.mono hden_cb
+  have hdiff_ball : DifferentiableOn ℂ (diskAut α c) (ball (0 : ℂ) 1) :=
+    hdiff_cb.mono (ball_subset_closedBall.trans hden_cb)
+  have hinv : ∀ z ∈ closedBall (0 : ℂ) 1,
+      RudinRCA.Chapter12.phi (-α) (c⁻¹ * diskAut α c z) = z ∧
+      diskAut α c (RudinRCA.Chapter12.phi (-α) (c⁻¹ * z)) = z := by
+    intro z hz
+    have h1 : c⁻¹ * diskAut α c z = RudinRCA.Chapter12.phi α z := by
+      dsimp [diskAut]; exact inv_mul_cancel_left₀ hc_ne _
+    have hcz_cb : c⁻¹ * z ∈ closedBall (0 : ℂ) 1 := by
+      rw [mem_closedBall_zero_iff, norm_mul, norm_inv, hc, inv_one, one_mul]
+      exact mem_closedBall_zero_iff.mp hz
+    refine ⟨by rw [h1, (hphi_inv z hz).1], ?_⟩
+    dsimp [diskAut]
+    rw [(hphi_inv (c⁻¹ * z) hcz_cb).2, mul_inv_cancel_left₀ hc_ne]
+  have hbij_ball : BijOn (diskAut α c) (ball (0 : ℂ) 1) (ball (0 : ℂ) 1) := by
+    refine ⟨fun z hz => ?_, fun z₁ hz₁ z₂ hz₂ heq => ?_, fun w hw => ?_⟩
+    · rw [mem_ball_zero_iff]; dsimp [diskAut]; rw [norm_mul, hc, one_mul]
+      exact mem_ball_zero_iff.mp (hphi_ball.mapsTo hz)
+    · rw [← (hinv z₁ (ball_subset_closedBall hz₁)).1, heq,
+        (hinv z₂ (ball_subset_closedBall hz₂)).1]
+    · have hcw : c⁻¹ * w ∈ ball (0 : ℂ) 1 := by
+        rw [mem_ball_zero_iff, norm_mul, norm_inv, hc, inv_one, one_mul]
+        exact mem_ball_zero_iff.mp hw
+      obtain ⟨z, hz, hzw⟩ := hphi_ball.surjOn hcw
+      refine ⟨z, hz, ?_⟩
+      dsimp [diskAut]; rw [hzw, mul_inv_cancel_left₀ hc_ne]
+  have hbij_sph : BijOn (diskAut α c) (sphere (0 : ℂ) 1) (sphere (0 : ℂ) 1) := by
+    refine ⟨fun z hz => ?_, fun z₁ hz₁ z₂ hz₂ heq => ?_, fun w hw => ?_⟩
+    · rw [mem_sphere_zero_iff_norm]; dsimp [diskAut]; rw [norm_mul, hc, one_mul]
+      exact mem_sphere_zero_iff_norm.mp (hphi_sph.mapsTo hz)
+    · rw [← (hinv z₁ (sphere_subset_closedBall hz₁)).1, heq,
+        (hinv z₂ (sphere_subset_closedBall hz₂)).1]
+    · have hcw : c⁻¹ * w ∈ sphere (0 : ℂ) 1 := by
+        rw [mem_sphere_zero_iff_norm, norm_mul, norm_inv, hc, inv_one, one_mul]
+        exact mem_sphere_zero_iff_norm.mp hw
+      obtain ⟨z, hz, hzw⟩ := hphi_sph.surjOn hcw
+      refine ⟨z, hz, ?_⟩
+      dsimp [diskAut]; rw [hzw, mul_inv_cancel_left₀ hc_ne]
+  have hbij_cb : BijOn (diskAut α c) (closedBall (0 : ℂ) 1) (closedBall (0 : ℂ) 1) := by
+    have hcb_eq : closedBall (0 : ℂ) 1 = ball (0 : ℂ) 1 ∪ sphere (0 : ℂ) 1 :=
+      ball_union_sphere.symm
+    refine ⟨fun z hz => ?_, fun z₁ hz₁ z₂ hz₂ heq => ?_, fun w hw => ?_⟩
+    · rw [hcb_eq] at hz ⊢
+      exact hz.imp (fun h => hbij_ball.mapsTo h) (fun h => hbij_sph.mapsTo h)
+    · rw [← (hinv z₁ hz₁).1, heq, (hinv z₂ hz₂).1]
+    · rw [hcb_eq] at hw ⊢
+      rcases hw with hw_b | hw_s
+      · obtain ⟨z, hz, hzw⟩ := hbij_ball.surjOn hw_b
+        exact ⟨z, Or.inl hz, hzw⟩
+      · obtain ⟨z, hz, hzw⟩ := hbij_sph.surjOn hw_s
+        exact ⟨z, Or.inr hz, hzw⟩
+  exact ⟨hcont_cb, hdiff_ball, hbij_ball, hbij_sph, hbij_cb, hinv⟩
+
+/-- Every disk automorphism `diskAut α c` (`α ∈ ball 0 1`, `‖c‖ = 1`) preserves
+`UnitCirclePosCyclic`. -/
+theorem diskAut_preserves_posCyclic {α c w₁ w₂ w₃ : ℂ}
+    (hα : α ∈ ball (0 : ℂ) 1) (hc : ‖c‖ = 1) (hcyc : UnitCirclePosCyclic w₁ w₂ w₃) :
+    UnitCirclePosCyclic (diskAut α c w₁) (diskAut α c w₂) (diskAut α c w₃) := by
+  obtain ⟨_, _, _, hbij_sph, _, _⟩ := diskAut_props hα hc
+  obtain ⟨h12, h23, h13⟩ := unitCirclePosCyclic_pairwise_ne hcyc
+  obtain ⟨hw₁, hw₂, hw₃, hdet_pos⟩ := unitCirclePosCyclic_iff_det_pos.mp hcyc
+  rw [unitCirclePosCyclic_iff_det_pos]
+  refine ⟨hbij_sph.mapsTo hw₁, hbij_sph.mapsTo hw₂, hbij_sph.mapsTo hw₃, ?_⟩
+  have hc_ne : c ≠ 0 := by intro h0; simp [h0] at hc
+  have hdet_rot : ∀ β : ℂ,
+      unitCircleCyclicDet (diskAut β c w₁) (diskAut β c w₂) (diskAut β c w₃) =
+      unitCircleCyclicDet (RudinRCA.Chapter12.phi β w₁)
+        (RudinRCA.Chapter12.phi β w₂) (RudinRCA.Chapter12.phi β w₃) := by
+    intro β
+    dsimp [unitCircleCyclicDet, diskAut]
+    rw [mul_div_mul_left _ _ hc_ne, mul_div_mul_left _ _ hc_ne]
+  rw [hdet_rot α]
+  let g : ℂ → ℝ := fun β =>
+    unitCircleCyclicDet (RudinRCA.Chapter12.phi β w₁)
+      (RudinRCA.Chapter12.phi β w₂) (RudinRCA.Chapter12.phi β w₃)
+  have hphi_cont : ∀ w ∈ sphere (0 : ℂ) 1,
+      ContinuousOn (fun β : ℂ => RudinRCA.Chapter12.phi β w) (ball (0 : ℂ) 1) := by
+    intro w hw
+    have hw_norm : ‖w‖ = 1 := by simpa using hw
+    have hden_ne : ∀ β ∈ ball (0 : ℂ) 1, 1 - star β * w ≠ 0 := by
+      intro β hβ h0
+      have hβ_lt : ‖β‖ < 1 := mem_ball_zero_iff.mp hβ
+      have h1 : (1 : ℂ) = star β * w := sub_eq_zero.mp h0
+      have hn : (1 : ℝ) = ‖β‖ := by
+        have := congrArg norm h1; simpa [norm_mul, hw_norm] using this
+      linarith
+    dsimp only [RudinRCA.Chapter12.phi]
+    exact (continuousOn_const.sub continuousOn_id).div
+      (continuousOn_const.sub ((continuous_star.comp_continuousOn continuousOn_id).mul
+        continuousOn_const)) hden_ne
+  have hphi_ne_zero : ∀ β ∈ ball (0 : ℂ) 1, RudinRCA.Chapter12.phi β w₁ ≠ 0 := by
+    intro β hβ h0
+    have hs := (RudinRCA.Chapter12.theorem12_4 hβ).2.2.1.mapsTo hw₁
+    rw [h0] at hs; simp at hs
+  have hg_cont : ContinuousOn g (ball (0 : ℂ) 1) := by
+    dsimp [g, unitCircleCyclicDet]
+    have hc₂ : ContinuousOn (fun β => RudinRCA.Chapter12.phi β w₂ /
+        RudinRCA.Chapter12.phi β w₁ - 1) (ball (0 : ℂ) 1) :=
+      ((hphi_cont w₂ hw₂).div (hphi_cont w₁ hw₁) hphi_ne_zero).sub continuousOn_const
+    have hc₃ : ContinuousOn (fun β => RudinRCA.Chapter12.phi β w₃ /
+        RudinRCA.Chapter12.phi β w₁ - 1) (ball (0 : ℂ) 1) :=
+      ((hphi_cont w₃ hw₃).div (hphi_cont w₁ hw₁) hphi_ne_zero).sub continuousOn_const
+    exact Complex.continuous_im.comp_continuousOn
+      (hc₃.mul (Complex.continuous_conj.comp_continuousOn hc₂))
+  have hg_nz : ∀ β ∈ ball (0 : ℂ) 1, g β ≠ 0 := by
+    intro β hβ h0
+    obtain ⟨_, _, hβ_sph, _, _, _, _⟩ := RudinRCA.Chapter12.theorem12_4 hβ
+    have hw₁' := hβ_sph.mapsTo hw₁
+    have hw₂' := hβ_sph.mapsTo hw₂
+    have hw₃' := hβ_sph.mapsTo hw₃
+    have h12' : RudinRCA.Chapter12.phi β w₁ ≠ RudinRCA.Chapter12.phi β w₂ :=
+      fun heq => h12 (hβ_sph.injOn hw₁ hw₂ heq)
+    have h23' : RudinRCA.Chapter12.phi β w₂ ≠ RudinRCA.Chapter12.phi β w₃ :=
+      fun heq => h23 (hβ_sph.injOn hw₂ hw₃ heq)
+    have h13' : RudinRCA.Chapter12.phi β w₁ ≠ RudinRCA.Chapter12.phi β w₃ :=
+      fun heq => h13 (hβ_sph.injOn hw₁ hw₃ heq)
+    have hdich := unitCirclePosCyclic_dichotomy hw₁' hw₂' hw₃' h12' h23' h13'
+    rw [unitCirclePosCyclic_iff_det_pos, unitCirclePosCyclic_iff_det_pos,
+      unitCircleCyclicDet_swap (RudinRCA.Chapter12.phi β w₁)
+        (RudinRCA.Chapter12.phi β w₂) (RudinRCA.Chapter12.phi β w₃)] at hdich
+    simp only [hw₁', hw₂', hw₃', true_and, Left.neg_pos_iff] at hdich
+    dsimp [g] at h0
+    rw [h0] at hdich
+    simp at hdich
+  have hg0 : 0 < g 0 := by
+    have hp0 : ∀ w : ℂ, RudinRCA.Chapter12.phi 0 w = w := fun w => by
+      simp [RudinRCA.Chapter12.phi]
+    simpa [g, hp0] using hdet_pos
+  by_contra hle
+  have hlt : g α < 0 := lt_of_le_of_ne (not_lt.mp hle) (hg_nz α hα)
+  have himg_conn : IsPreconnected (g '' ball (0 : ℂ) 1) :=
+    (convex_ball (0 : ℂ) 1).isPreconnected.image g hg_cont
+  have hcov : g '' ball (0 : ℂ) 1 ⊆ Iio (0 : ℝ) ∪ Ioi (0 : ℝ) := by
+    rintro y ⟨β, hβ, rfl⟩
+    exact (lt_or_gt_of_ne (hg_nz β hβ)).imp Set.mem_Iio.mpr Set.mem_Ioi.mpr
+  rcases himg_conn (Iio 0) (Ioi 0) isOpen_Iio isOpen_Ioi hcov
+    ⟨g α, ⟨α, hα, rfl⟩, hlt⟩ ⟨g 0, ⟨0, mem_ball_self zero_lt_one, rfl⟩, hg0⟩ with
+    ⟨y, _, hy_lt, hy_gt⟩
+  exact lt_asymm (Set.mem_Iio.mp hy_lt) (Set.mem_Ioi.mp hy_gt)
+
+/-- Uniqueness of disk automorphisms fixing three distinct boundary points on `sphere 0 1`:
+if `diskAut α c` fixes three pairwise distinct points `w₁, w₂, w₃ ∈ sphere 0 1`, then `α = 0`
+and `c = 1`. -/
+theorem diskAut_eq_id_of_three_fixed {α c w₁ w₂ w₃ : ℂ}
+    (hα : α ∈ ball (0 : ℂ) 1) (_hc : ‖c‖ = 1)
+    (hw₁ : w₁ ∈ sphere (0 : ℂ) 1) (hw₂ : w₂ ∈ sphere (0 : ℂ) 1) (hw₃ : w₃ ∈ sphere (0 : ℂ) 1)
+    (h12 : w₁ ≠ w₂) (h23 : w₂ ≠ w₃) (h13 : w₁ ≠ w₃)
+    (hf₁ : diskAut α c w₁ = w₁) (hf₂ : diskAut α c w₂ = w₂) (hf₃ : diskAut α c w₃ = w₃) :
+    α = 0 ∧ c = 1 := by
+  have hquad : ∀ w ∈ sphere (0 : ℂ) 1, diskAut α c w = w →
+      star α * w ^ 2 + (c - 1) * w - c * α = 0 := by
+    intro w hw hfw
+    have hden : 1 - star α * w ≠ 0 := by
+      intro h0
+      have hα_lt : ‖α‖ < 1 := mem_ball_zero_iff.mp hα
+      have hw_norm : ‖w‖ = 1 := by simpa using hw
+      have h1 : (1 : ℂ) = star α * w := sub_eq_zero.mp h0
+      have hn : (1 : ℝ) = ‖α‖ := by
+        have := congrArg norm h1; simpa [norm_mul, hw_norm] using this
+      linarith
+    change c * ((w - α) / (1 - star α * w)) = w at hfw
+    rw [mul_div_assoc', div_eq_iff hden] at hfw
+    linear_combination hfw
+  have hq₁ := hquad w₁ hw₁ hf₁
+  have hq₂ := hquad w₂ hw₂ hf₂
+  have hq₃ := hquad w₃ hw₃ hf₃
+  have hd12 : (w₁ - w₂) * (star α * (w₁ + w₂) + (c - 1)) = 0 := by
+    linear_combination hq₁ - hq₂
+  have hd23 : (w₂ - w₃) * (star α * (w₂ + w₃) + (c - 1)) = 0 := by
+    linear_combination hq₂ - hq₃
+  have hl12 : star α * (w₁ + w₂) + (c - 1) = 0 :=
+    (mul_eq_zero.mp hd12).resolve_left (sub_ne_zero.mpr h12)
+  have hl23 : star α * (w₂ + w₃) + (c - 1) = 0 :=
+    (mul_eq_zero.mp hd23).resolve_left (sub_ne_zero.mpr h23)
+  have hα_diff : (w₁ - w₃) * star α = 0 := by
+    linear_combination hl12 - hl23
+  have hstar_α : star α = 0 := (mul_eq_zero.mp hα_diff).resolve_left (sub_ne_zero.mpr h13)
+  have hα0 : α = 0 := star_eq_zero.mp hstar_α
+  have hc1 : c = 1 := by
+    rw [hstar_α, zero_mul, zero_add] at hl12
+    exact sub_eq_zero.mp hl12
+  exact ⟨hα0, hc1⟩
+
+/-- Two functions continuous on `closedBall (0 : ℂ) 1` that agree on `ball (0 : ℂ) 1` agree on
+`closedBall (0 : ℂ) 1`. -/
+theorem eqOn_closedBall_of_eqOn_ball {f₁ f₂ : ℂ → ℂ}
+    (h₁ : ContinuousOn f₁ (closedBall (0 : ℂ) 1))
+    (h₂ : ContinuousOn f₂ (closedBall (0 : ℂ) 1))
+    (heq : Set.EqOn f₁ f₂ (ball (0 : ℂ) 1)) :
+    Set.EqOn f₁ f₂ (closedBall (0 : ℂ) 1) := by
+  intro z hz
+  have hz_cl : z ∈ closure (ball (0 : ℂ) 1) := by
+    rwa [closure_ball (0 : ℂ) one_ne_zero]
+  obtain ⟨u, hu_mem, hu_lim⟩ := mem_closure_iff_seq_limit.mp hz_cl
+  have hu_cb : ∀ n, u n ∈ closedBall (0 : ℂ) 1 := fun n => ball_subset_closedBall (hu_mem n)
+  have hlim₁ : Tendsto (fun n => f₁ (u n)) atTop (𝓝 (f₁ z)) :=
+    (h₁ z hz).tendsto.comp (tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within u hu_lim
+      (Filter.Eventually.of_forall hu_cb))
+  have hlim₂ : Tendsto (fun n => f₂ (u n)) atTop (𝓝 (f₂ z)) :=
+    (h₂ z hz).tendsto.comp (tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within u hu_lim
+      (Filter.Eventually.of_forall hu_cb))
+  have hfun : (fun n => f₁ (u n)) = (fun n => f₂ (u n)) := funext fun n => heq (hu_mem n)
+  exact tendsto_nhds_unique hlim₁ (hfun ▸ hlim₂)
+
+/-- Inverse of `diskAut α c` (`z ↦ RudinRCA.Chapter12.phi (-α) (c⁻¹ * z)`) is continuous on `closedBall 0 1`,
+differentiable on `ball 0 1`, and maps `ball 0 1` bijectively onto `ball 0 1`. -/
+theorem diskAutInv_props {α c : ℂ} (hα : α ∈ ball (0 : ℂ) 1) (hc : ‖c‖ = 1) :
+    let inv : ℂ → ℂ := fun ζ => RudinRCA.Chapter12.phi (-α) (c⁻¹ * ζ)
+    ContinuousOn inv (closedBall (0 : ℂ) 1) ∧
+    DifferentiableOn ℂ inv (ball (0 : ℂ) 1) ∧
+    BijOn inv (ball (0 : ℂ) 1) (ball (0 : ℂ) 1) := by
+  intro inv
+  obtain ⟨_, _, hAut_ball, _, _, hAut_inv⟩ := diskAut_props hα hc
+  have hnegα : -α ∈ ball (0 : ℂ) 1 := by simpa using hα
+  have hc_inv : ‖c⁻¹‖ = 1 := by rw [norm_inv, hc, inv_one]
+  obtain ⟨hphi_neg_diff, _, _, hphi_neg_ball, _, _, _⟩ := RudinRCA.Chapter12.theorem12_4 hnegα
+  have hden_cb : closedBall (0 : ℂ) 1 ⊆ {ζ : ℂ | 1 - star (-α) * ζ ≠ 0} := by
+    intro ζ hζ h0
+    have hlt : ‖-α‖ < 1 := mem_ball_zero_iff.mp hnegα
+    have hle : ‖ζ‖ ≤ 1 := mem_closedBall_zero_iff.mp hζ
+    have h1 : (1 : ℂ) = star (-α) * ζ := sub_eq_zero.mp h0
+    have hn : (1 : ℝ) = ‖-α‖ * ‖ζ‖ := by
+      have := congrArg norm h1; simpa [norm_mul] using this
+    nlinarith [norm_nonneg (-α), norm_nonneg ζ]
+  refine ⟨?_, ?_, ?_⟩
+  · refine hphi_neg_diff.continuousOn.comp (continuous_const.mul continuous_id).continuousOn ?_
+    intro ζ hζ; apply hden_cb
+    rw [mem_closedBall_zero_iff, norm_mul, hc_inv, one_mul]
+    exact mem_closedBall_zero_iff.mp hζ
+  · refine hphi_neg_diff.comp (differentiable_id.const_mul c⁻¹).differentiableOn ?_
+    intro ζ hζ; apply hden_cb
+    rw [mem_closedBall_zero_iff, norm_mul, hc_inv, one_mul]
+    exact le_of_lt (mem_ball_zero_iff.mp hζ)
+  · refine ⟨fun ζ hζ => ?_, fun u₁ hu₁ u₂ hu₂ heq => ?_, fun v hv => ?_⟩
+    · apply hphi_neg_ball.mapsTo
+      rw [mem_ball_zero_iff, norm_mul, hc_inv, one_mul]
+      exact mem_ball_zero_iff.mp hζ
+    · dsimp [inv] at heq
+      rw [← (hAut_inv u₁ (ball_subset_closedBall hu₁)).2, heq,
+        (hAut_inv u₂ (ball_subset_closedBall hu₂)).2]
+    · exact ⟨diskAut α c v, hAut_ball.mapsTo hv, (hAut_inv v (ball_subset_closedBall hv)).1⟩
+
+/-- Every positively ordered triple `(z₁, z₂, z₃)` on `sphere (0 : ℂ) 1` is mapped to the standard
+positively ordered triple `(-1, -I, 1)` by a disk automorphism `diskAut α c`. -/
+theorem exists_diskAut_to_std {z₁ z₂ z₃ : ℂ} (hcyc : UnitCirclePosCyclic z₁ z₂ z₃) :
+    ∃ α ∈ ball (0 : ℂ) 1, ∃ c : ℂ, ‖c‖ = 1 ∧
+      diskAut α c z₁ = -1 ∧ diskAut α c z₂ = -Complex.I ∧ diskAut α c z₃ = 1 := by
+  obtain ⟨h12, h23, h13⟩ := unitCirclePosCyclic_pairwise_ne hcyc
+  obtain ⟨hz₁, hz₂, hz₃, _⟩ := unitCirclePosCyclic_iff_det_pos.mp hcyc
+  have hz₁_norm : ‖z₁‖ = 1 := by simpa using hz₁
+  have hz₂_norm : ‖z₂‖ = 1 := by simpa using hz₂
+  have hz₃_norm : ‖z₃‖ = 1 := by simpa using hz₃
+  have hz₁_ne : z₁ ≠ 0 := by intro h0; simp [h0] at hz₁_norm
+  have hz₂_ne : z₂ ≠ 0 := by intro h0; simp [h0] at hz₂_norm
+  have hz₃_ne : z₃ ≠ 0 := by intro h0; simp [h0] at hz₃_norm
+  have hconj₁ : starRingEnd ℂ z₁ = 1 / z₁ := by
+    rw [eq_div_iff hz₁_ne, mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq, hz₁_norm]; norm_num
+  have hconj₂ : starRingEnd ℂ z₂ = 1 / z₂ := by
+    rw [eq_div_iff hz₂_ne, mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq, hz₂_norm]; norm_num
+  have hconj₃ : starRingEnd ℂ z₃ = 1 / z₃ := by
+    rw [eq_div_iff hz₃_ne, mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq, hz₃_norm]; norm_num
+  let L : ℂ → ℂ := fun z => ((z₂ - z₃) * (z - z₁)) / ((z₂ - z₁) * (z - z₃))
+  have h21_ne : z₂ - z₁ ≠ 0 := sub_ne_zero.mpr h12.symm
+  have h23_ne : z₂ - z₃ ≠ 0 := sub_ne_zero.mpr h23
+  have h31_ne : z₃ - z₁ ≠ 0 := sub_ne_zero.mpr h13.symm
+  have hcyc_rot : UnitCirclePosCyclic z₂ z₃ z₁ := unitCirclePosCyclic_rotate_triple hcyc
+  obtain ⟨_, _, _, hdet_rot_pos⟩ := unitCirclePosCyclic_iff_det_pos.mp hcyc_rot
+  have hL0_det : L 0 * ((‖z₂ - z₁‖ ^ 2 : ℝ) : ℂ) =
+      (z₁ / z₂ - 1) * starRingEnd ℂ (z₃ / z₂ - 1) := by
+    have hnsq : ((‖z₂ - z₁‖ ^ 2 : ℝ) : ℂ) = (z₂ - z₁) * starRingEnd ℂ (z₂ - z₁) := by
+      rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
+    rw [hnsq]
+    dsimp [L]
+    simp only [map_sub, map_div₀, map_one, zero_sub, hconj₁, hconj₂, hconj₃]
+    field_simp [hz₁_ne, hz₂_ne, hz₃_ne, h21_ne]
+  have hL0_im_pos : 0 < (L 0).im := by
+    have hpos_sq : 0 < ‖z₂ - z₁‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr h21_ne)
+    have him := congrArg Complex.im hL0_det
+    rw [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_add] at him
+    dsimp [unitCircleCyclicDet] at hdet_rot_pos
+    nlinarith
+  have hL_im_id : ∀ z : ℂ, z ≠ z₃ →
+      (L z).im * ‖z - z₃‖ ^ 2 = (L 0).im * (1 - ‖z‖ ^ 2) := by
+    intro z hzz₃
+    have hsub3 : z - z₃ ≠ 0 := sub_ne_zero.mpr hzz₃
+    have hcsub3 : starRingEnd ℂ z - 1 / z₃ ≠ 0 := by
+      rw [← hconj₃, ← map_sub]
+      exact fun h0 => hsub3 (starRingEnd_self_apply (z - z₃) ▸ by rw [h0, map_zero])
+    have hcsub3' : z₃ * starRingEnd ℂ z - 1 ≠ 0 := fun h0 => hcsub3 (by
+      rw [sub_eq_zero, eq_div_iff hz₃_ne, mul_comm]; exact sub_eq_zero.mp h0)
+    have halg : (L z - starRingEnd ℂ (L z)) * (((‖z - z₃‖ ^ 2 : ℝ) : ℂ)) =
+        (L 0 - starRingEnd ℂ (L 0)) * (((1 - ‖z‖ ^ 2 : ℝ) : ℂ)) := by
+      have hn_z3 : ((‖z - z₃‖ ^ 2 : ℝ) : ℂ) = (z - z₃) * ((z₃ * starRingEnd ℂ z - 1) / z₃) := by
+        have h1 : starRingEnd ℂ z - 1 / z₃ = (z₃ * starRingEnd ℂ z - 1) / z₃ := by
+          field_simp [hz₃_ne]
+        rw [← h1, ← hconj₃, ← map_sub, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+      have hn_z : ((1 - ‖z‖ ^ 2 : ℝ) : ℂ) = 1 - z * starRingEnd ℂ z := by
+        rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]; push_cast; ring
+      rw [hn_z3, hn_z]
+      dsimp [L]
+      simp only [map_div₀, map_mul, map_sub, zero_sub, map_neg, hconj₁, hconj₂, hconj₃, one_div]
+      field_simp [hz₁_ne, hz₂_ne, hz₃_ne, h21_ne, hsub3, hcsub3']
+      ring
+    have him_eq := congrArg Complex.im halg
+    have hsub_im : ∀ w : ℂ, (w - starRingEnd ℂ w).im = 2 * w.im := fun w => by
+      simp [Complex.sub_im, Complex.conj_im]; ring
+    simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_add,
+      hsub_im] at him_eq
+    linarith
+  let N : ℂ → ℂ := fun z => (z₂ - z₃) * (z - z₁) - Complex.I * (z₂ - z₁) * (z - z₃)
+  let D : ℂ → ℂ := fun z => (z₂ - z₃) * (z - z₁) + Complex.I * (z₂ - z₁) * (z - z₃)
+  let M : ℂ → ℂ := fun z => N z / D z
+  have hD_ne_on_cb : ∀ z ∈ closedBall (0 : ℂ) 1, D z ≠ 0 := by
+    intro z hz hD0
+    by_cases hzz₃ : z = z₃
+    · subst hzz₃
+      dsimp [D] at hD0
+      simp only [sub_self, mul_zero, add_zero] at hD0
+      exact mul_ne_zero h23_ne h31_ne hD0
+    · have hsub3 : z - z₃ ≠ 0 := sub_ne_zero.mpr hzz₃
+      have hLz_eq : L z = -Complex.I := by
+        dsimp [L]
+        rw [div_eq_iff (mul_ne_zero h21_ne hsub3)]
+        dsimp [D] at hD0
+        linear_combination hD0
+      have him := hL_im_id z hzz₃
+      rw [hLz_eq, Complex.neg_im, Complex.I_im] at him
+      have hpos3 : 0 < ‖z - z₃‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hsub3)
+      have hz_le : ‖z‖ ≤ 1 := mem_closedBall_zero_iff.mp hz
+      have h1z_nn : 0 ≤ 1 - ‖z‖ ^ 2 := by nlinarith [norm_nonneg z]
+      have hrhs_nn : 0 ≤ (L 0).im * (1 - ‖z‖ ^ 2) := mul_nonneg hL0_im_pos.le h1z_nn
+      linarith
+  have hM_cont_cb : ContinuousOn M (closedBall (0 : ℂ) 1) := by
+    dsimp [M, N, D]
+    have hcN : ContinuousOn N (closedBall (0 : ℂ) 1) :=
+      ((continuousOn_const.mul (continuousOn_id.sub continuousOn_const)).sub
+        (continuousOn_const.mul (continuousOn_id.sub continuousOn_const)))
+    have hcD : ContinuousOn D (closedBall (0 : ℂ) 1) :=
+      ((continuousOn_const.mul (continuousOn_id.sub continuousOn_const)).add
+        (continuousOn_const.mul (continuousOn_id.sub continuousOn_const)))
+    exact hcN.div hcD hD_ne_on_cb
+  have hM_diff_ball : DifferentiableOn ℂ M (ball (0 : ℂ) 1) := by
+    have hdiffN : Differentiable ℂ N :=
+      ((differentiable_const _).mul (differentiable_id.sub (differentiable_const _))).sub
+        ((differentiable_const _).mul (differentiable_id.sub (differentiable_const _)))
+    have hdiffD : Differentiable ℂ D :=
+      ((differentiable_const _).mul (differentiable_id.sub (differentiable_const _))).add
+        ((differentiable_const _).mul (differentiable_id.sub (differentiable_const _)))
+    exact (hdiffN.differentiableOn.div hdiffD.differentiableOn
+      fun z hz => hD_ne_on_cb z (ball_subset_closedBall hz))
+  have hM_eq_cayley : ∀ z : ℂ, z ≠ z₃ → D z ≠ 0 → M z = (L z - Complex.I) / (L z + Complex.I) := by
+    intro z hzz₃ hDz
+    have hdenL : (z₂ - z₁) * (z - z₃) ≠ 0 := mul_ne_zero h21_ne (sub_ne_zero.mpr hzz₃)
+    have hLI : L z + Complex.I ≠ 0 := by
+      dsimp [L]
+      rw [div_add' _ _ _ hdenL]
+      refine div_ne_zero ?_ hdenL
+      simpa [D, mul_assoc] using hDz
+    dsimp [M, N, D, L]
+    field_simp [hdenL, hDz, hLI]
+  have hM_bij_ball : BijOn M (ball (0 : ℂ) 1) (ball (0 : ℂ) 1) := by
+    refine ⟨fun z hz => ?_, fun u₁ hu₁ u₂ hu₂ heq => ?_, fun w hw => ?_⟩
+    · have hzz₃ : z ≠ z₃ := by
+        intro heq; rw [heq] at hz
+        have hlt : ‖z₃‖ < 1 := mem_ball_zero_iff.mp hz
+        linarith [hz₃_norm]
+      rw [hM_eq_cayley z hzz₃ (hD_ne_on_cb z (ball_subset_closedBall hz)), mem_ball_zero_iff]
+      have him_pos : 0 < (L z).im := by
+        have hid := hL_im_id z hzz₃
+        have hz_lt : ‖z‖ < 1 := mem_ball_zero_iff.mp hz
+        have h1z_pos : 0 < 1 - ‖z‖ ^ 2 := by nlinarith [norm_nonneg z]
+        have hpos3 : 0 < ‖z - z₃‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr (sub_ne_zero.mpr hzz₃))
+        nlinarith
+      have hLI_ne : L z + Complex.I ≠ 0 := by
+        intro h0; have := congrArg Complex.im h0; simp at this; linarith
+      rw [norm_div, div_lt_one (norm_pos_iff.mpr hLI_ne)]
+      have hsq : ‖L z + Complex.I‖ ^ 2 - ‖L z - Complex.I‖ ^ 2 = 4 * (L z).im := by
+        rw [Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply, Complex.normSq_apply]
+        simp; ring
+      nlinarith [norm_nonneg (L z - Complex.I), norm_nonneg (L z + Complex.I)]
+    · have hu₁_ne : u₁ ≠ z₃ := fun h => by
+        rw [h] at hu₁; linarith [mem_ball_zero_iff.mp hu₁, hz₃_norm]
+      have hu₂_ne : u₂ ≠ z₃ := fun h => by
+        rw [h] at hu₂; linarith [mem_ball_zero_iff.mp hu₂, hz₃_norm]
+      rw [hM_eq_cayley u₁ hu₁_ne (hD_ne_on_cb u₁ (ball_subset_closedBall hu₁)),
+        hM_eq_cayley u₂ hu₂_ne (hD_ne_on_cb u₂ (ball_subset_closedBall hu₂))] at heq
+      have him₁ : 0 < (L u₁).im := by
+        have hid := hL_im_id u₁ hu₁_ne
+        have hlt : ‖u₁‖ < 1 := mem_ball_zero_iff.mp hu₁
+        have h1u : 0 < 1 - ‖u₁‖ ^ 2 := by nlinarith [norm_nonneg u₁]
+        have hp3 : 0 < ‖u₁ - z₃‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr (sub_ne_zero.mpr hu₁_ne))
+        nlinarith
+      have him₂ : 0 < (L u₂).im := by
+        have hid := hL_im_id u₂ hu₂_ne
+        have hlt : ‖u₂‖ < 1 := mem_ball_zero_iff.mp hu₂
+        have h1u : 0 < 1 - ‖u₂‖ ^ 2 := by nlinarith [norm_nonneg u₂]
+        have hp3 : 0 < ‖u₂ - z₃‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr (sub_ne_zero.mpr hu₂_ne))
+        nlinarith
+      have hLI₁ : L u₁ + Complex.I ≠ 0 := fun h0 => by have := congrArg Complex.im h0; simp at this; linarith
+      have hLI₂ : L u₂ + Complex.I ≠ 0 := fun h0 => by have := congrArg Complex.im h0; simp at this; linarith
+      rw [div_eq_div_iff hLI₁ hLI₂] at heq
+      have hL_eq : L u₁ = L u₂ := by
+        have hI2 : (2 * Complex.I : ℂ) ≠ 0 := mul_ne_zero two_ne_zero Complex.I_ne_zero
+        apply mul_left_cancel₀ hI2
+        linear_combination heq
+      dsimp [L] at hL_eq
+      have hd1 : (z₂ - z₁) * (u₁ - z₃) ≠ 0 := mul_ne_zero h21_ne (sub_ne_zero.mpr hu₁_ne)
+      have hd2 : (z₂ - z₁) * (u₂ - z₃) ≠ 0 := mul_ne_zero h21_ne (sub_ne_zero.mpr hu₂_ne)
+      rw [div_eq_div_iff hd1 hd2] at hL_eq
+      have hprod_ne : (z₂ - z₃) * (z₂ - z₁) * (z₃ - z₁) ≠ 0 :=
+        mul_ne_zero (mul_ne_zero h23_ne h21_ne) h31_ne
+      apply sub_eq_zero.mp
+      apply mul_left_cancel₀ hprod_ne
+      linear_combination -hL_eq
+    · have hw_lt : ‖w‖ < 1 := mem_ball_zero_iff.mp hw
+      have h1w : 1 - w ≠ 0 := fun h0 => by
+        have hw1 : w = 1 := (sub_eq_zero.mp h0).symm
+        rw [hw1, norm_one] at hw_lt; exact lt_irrefl 1 hw_lt
+      let ζ : ℂ := Complex.I * (1 + w) / (1 - w)
+      have hζ_im : 0 < ζ.im := by
+        have hmul : ζ * ((‖1 - w‖ ^ 2 : ℝ) : ℂ) = Complex.I * (1 + w) * starRingEnd ℂ (1 - w) := by
+          have hnsq : ((‖1 - w‖ ^ 2 : ℝ) : ℂ) = (1 - w) * starRingEnd ℂ (1 - w) := by
+            rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
+          rw [hnsq]; dsimp [ζ]; field_simp [h1w]
+        have him := congrArg Complex.im hmul
+        rw [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_add] at him
+        have hrhs : (Complex.I * (1 + w) * starRingEnd ℂ (1 - w)).im = 1 - ‖w‖ ^ 2 := by
+          rw [Complex.sq_norm, Complex.normSq_apply]
+          simp [Complex.mul_im, Complex.mul_re]; ring
+        rw [hrhs] at him
+        have hpos_den : 0 < ‖1 - w‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr h1w)
+        have h1w_pos : 0 < 1 - ‖w‖ ^ 2 := by nlinarith [norm_nonneg w]
+        nlinarith
+      have hden_z : (z₂ - z₃) - (z₂ - z₁) * ζ ≠ 0 := by
+        intro h0
+        have hζ_eq : ζ = (z₂ - z₃) / (z₂ - z₁) := by
+          rw [eq_div_iff h21_ne, mul_comm]; exact (sub_eq_zero.mp h0).symm
+        have hsum_zero : ((z₂ - z₃) / (z₂ - z₁) - starRingEnd ℂ ((z₂ - z₃) / (z₂ - z₁))) +
+            (L 0 - starRingEnd ℂ (L 0)) = 0 := by
+          dsimp [L]
+          simp only [map_div₀, map_mul, map_sub, zero_sub, map_neg, hconj₁, hconj₂, hconj₃]
+          field_simp [hz₁_ne, hz₂_ne, hz₃_ne, h21_ne]
+          ring
+        have him_sum := congrArg Complex.im hsum_zero
+        simp only [Complex.add_im, Complex.sub_im, Complex.conj_im, Complex.zero_im] at him_sum
+        rw [← hζ_eq] at him_sum
+        linarith
+      let z : ℂ := (z₁ * (z₂ - z₃) - z₃ * (z₂ - z₁) * ζ) / ((z₂ - z₃) - (z₂ - z₁) * ζ)
+      have hzz₃ : z ≠ z₃ := by
+        intro heq
+        dsimp [z] at heq
+        rw [div_eq_iff hden_z] at heq
+        have : (z₁ - z₃) * (z₂ - z₃) = 0 := by linear_combination heq
+        exact mul_ne_zero (sub_ne_zero.mpr h13) h23_ne this
+      have hLz : L z = ζ := by
+        have hsub3 : z - z₃ = (z₁ - z₃) * (z₂ - z₃) / ((z₂ - z₃) - (z₂ - z₁) * ζ) := by
+          dsimp [z]; field_simp [hden_z]; ring
+        have hsub1 : z - z₁ = (z₁ - z₃) * (z₂ - z₁) * ζ / ((z₂ - z₃) - (z₂ - z₁) * ζ) := by
+          dsimp [z]; field_simp [hden_z]; ring
+        dsimp [L]
+        rw [hsub1, hsub3]
+        have h13_ne : z₁ - z₃ ≠ 0 := sub_ne_zero.mpr h13
+        field_simp [hden_z, h21_ne, h23_ne, h13_ne]
+      have hz_ball : z ∈ ball (0 : ℂ) 1 := by
+        rw [mem_ball_zero_iff]
+        have hid := hL_im_id z hzz₃
+        rw [hLz] at hid
+        have hpos_lhs : 0 < ζ.im * ‖z - z₃‖ ^ 2 :=
+          mul_pos hζ_im (sq_pos_of_pos (norm_pos_iff.mpr (sub_ne_zero.mpr hzz₃)))
+        have h1z_pos : 0 < 1 - ‖z‖ ^ 2 := by nlinarith
+        by_contra hge
+        have hge' : 1 ≤ ‖z‖ := not_lt.mp hge
+        nlinarith [norm_nonneg z]
+      refine ⟨z, hz_ball, ?_⟩
+      rw [hM_eq_cayley z hzz₃ (hD_ne_on_cb z (ball_subset_closedBall hz_ball)), hLz]
+      dsimp [ζ]
+      have hden_cay : Complex.I * (1 + w) / (1 - w) + Complex.I ≠ 0 := by
+        rw [div_add' _ _ _ h1w]
+        refine div_ne_zero ?_ h1w
+        have : Complex.I * (1 + w) + Complex.I * (1 - w) = 2 * Complex.I := by ring
+        rw [this]
+        exact mul_ne_zero two_ne_zero Complex.I_ne_zero
+      field_simp [h1w, hden_cay, Complex.I_ne_zero]
+      ring
+  obtain ⟨α, hα, c, hc, hM_eq⟩ :=
+    RudinRCA.Chapter12.theorem12_6.1.mp ⟨hM_diff_ball, hM_bij_ball⟩
+  obtain ⟨hAut_cont, _, _, _, _, _⟩ := diskAut_props hα hc
+  have hM_eq_cb : Set.EqOn M (diskAut α c) (closedBall (0 : ℂ) 1) :=
+    eqOn_closedBall_of_eqOn_ball hM_cont_cb hAut_cont hM_eq
+  refine ⟨α, hα, c, hc, ?_, ?_, ?_⟩
+  · rw [← hM_eq_cb (sphere_subset_closedBall hz₁)]
+    dsimp [M, N, D]
+    have hne : z₁ - z₃ ≠ 0 := sub_ne_zero.mpr h13
+    have hI : Complex.I * (z₂ - z₁) * (z₁ - z₃) ≠ 0 :=
+      mul_ne_zero (mul_ne_zero Complex.I_ne_zero h21_ne) hne
+    simp only [sub_self, mul_zero, zero_sub, zero_add]
+    exact neg_div_self hI
+  · rw [← hM_eq_cb (sphere_subset_closedBall hz₂)]
+    dsimp [M, N, D]
+    have hprod : (z₂ - z₃) * (z₂ - z₁) ≠ 0 := mul_ne_zero h23_ne h21_ne
+    have h1I : (1 + Complex.I : ℂ) ≠ 0 := by
+      intro h0; have := congrArg Complex.re h0; simp at this
+    have hnum : (z₂ - z₃) * (z₂ - z₁) - Complex.I * (z₂ - z₁) * (z₂ - z₃) =
+        (-Complex.I) * ((1 + Complex.I) * ((z₂ - z₃) * (z₂ - z₁))) := by
+      linear_combination Complex.I_sq * ((z₂ - z₃) * (z₂ - z₁))
+    have hden : (z₂ - z₃) * (z₂ - z₁) + Complex.I * (z₂ - z₁) * (z₂ - z₃) =
+        (1 + Complex.I) * ((z₂ - z₃) * (z₂ - z₁)) := by ring
+    rw [hnum, hden, mul_div_cancel_right₀ _ (mul_ne_zero h1I hprod)]
+  · rw [← hM_eq_cb (sphere_subset_closedBall hz₃)]
+    dsimp [M, N, D]
+    simp only [sub_self, mul_zero, sub_zero, add_zero]
+    exact div_self (mul_ne_zero h23_ne h31_ne)
+
+/-- Full 3-point transitivity and uniqueness of disk automorphisms on positively ordered boundary
+triples on `sphere (0 : ℂ) 1`. -/
+theorem exists_unique_diskAut_three_points {z₁ z₂ z₃ w₁ w₂ w₃ : ℂ}
+    (hz : UnitCirclePosCyclic z₁ z₂ z₃) (hw : UnitCirclePosCyclic w₁ w₂ w₃) :
+    ∃ α ∈ ball (0 : ℂ) 1, ∃ c : ℂ, ‖c‖ = 1 ∧
+      diskAut α c z₁ = w₁ ∧ diskAut α c z₂ = w₂ ∧ diskAut α c z₃ = w₃ ∧
+      ∀ α' ∈ ball (0 : ℂ) 1, ∀ c' : ℂ, ‖c'‖ = 1 →
+        diskAut α' c' z₁ = w₁ → diskAut α' c' z₂ = w₂ → diskAut α' c' z₃ = w₃ →
+        α' = α ∧ c' = c := by
+  obtain ⟨α₁, hα₁, c₁, hc₁, hz₁_eq, hz₂_eq, hz₃_eq⟩ := exists_diskAut_to_std hz
+  obtain ⟨α₂, hα₂, c₂, hc₂, hw₁_eq, hw₂_eq, hw₃_eq⟩ := exists_diskAut_to_std hw
+  obtain ⟨hAut₁_cont, hAut₁_diff, hAut₁_ball, _, hAut₁_cb, _⟩ := diskAut_props hα₁ hc₁
+  obtain ⟨_, _, _, _, _, hAut₂_inv⟩ := diskAut_props hα₂ hc₂
+  obtain ⟨hinv₂_cont, hinv₂_diff, hinv₂_bij⟩ := diskAutInv_props hα₂ hc₂
+  let inv₂ : ℂ → ℂ := fun ζ => RudinRCA.Chapter12.phi (-α₂) (c₂⁻¹ * ζ)
+  let g : ℂ → ℂ := inv₂ ∘ diskAut α₁ c₁
+  obtain ⟨α, hα, c, hc, hg_eq⟩ := RudinRCA.Chapter12.theorem12_6.1.mp
+    ⟨hinv₂_diff.comp hAut₁_diff hAut₁_ball.mapsTo, hinv₂_bij.comp hAut₁_ball⟩
+  obtain ⟨hAut_cont, _, _, _, _, hAut_inv⟩ := diskAut_props hα hc
+  have hg_eq_cb : Set.EqOn g (diskAut α c) (closedBall (0 : ℂ) 1) :=
+    eqOn_closedBall_of_eqOn_ball (hinv₂_cont.comp hAut₁_cont hAut₁_cb.mapsTo) hAut_cont hg_eq
+  obtain ⟨hz₁_s, hz₂_s, hz₃_s, _⟩ := unitCirclePosCyclic_iff_det_pos.mp hz
+  obtain ⟨hw₁_s, hw₂_s, hw₃_s, _⟩ := unitCirclePosCyclic_iff_det_pos.mp hw
+  have h_val₁ : diskAut α c z₁ = w₁ := by
+    rw [← hg_eq_cb (sphere_subset_closedBall hz₁_s)]
+    dsimp [g, inv₂]; rw [hz₁_eq, ← hw₁_eq, (hAut₂_inv w₁ (sphere_subset_closedBall hw₁_s)).1]
+  have h_val₂ : diskAut α c z₂ = w₂ := by
+    rw [← hg_eq_cb (sphere_subset_closedBall hz₂_s)]
+    dsimp [g, inv₂]; rw [hz₂_eq, ← hw₂_eq, (hAut₂_inv w₂ (sphere_subset_closedBall hw₂_s)).1]
+  have h_val₃ : diskAut α c z₃ = w₃ := by
+    rw [← hg_eq_cb (sphere_subset_closedBall hz₃_s)]
+    dsimp [g, inv₂]; rw [hz₃_eq, ← hw₃_eq, (hAut₂_inv w₃ (sphere_subset_closedBall hw₃_s)).1]
+  refine ⟨α, hα, c, hc, h_val₁, h_val₂, h_val₃, ?_⟩
+  intro α' hα' c' hc' h₁' h₂' h₃'
+  obtain ⟨hAut'_cont, hAut'_diff, hAut'_ball, _, hAut'_cb, _⟩ := diskAut_props hα' hc'
+  obtain ⟨hinv₀_cont, hinv₀_diff, hinv₀_bij⟩ := diskAutInv_props hα hc
+  let inv₀ : ℂ → ℂ := fun ζ => RudinRCA.Chapter12.phi (-α) (c⁻¹ * ζ)
+  let q : ℂ → ℂ := inv₀ ∘ diskAut α' c'
+  obtain ⟨β₀, hβ₀, d₀, hd₀, hq_eq⟩ := RudinRCA.Chapter12.theorem12_6.1.mp
+    ⟨hinv₀_diff.comp hAut'_diff hAut'_ball.mapsTo, hinv₀_bij.comp hAut'_ball⟩
+  obtain ⟨hAutβ_cont, _, _, _, _, _⟩ := diskAut_props hβ₀ hd₀
+  have hq_eq_cb : Set.EqOn q (diskAut β₀ d₀) (closedBall (0 : ℂ) 1) :=
+    eqOn_closedBall_of_eqOn_ball (hinv₀_cont.comp hAut'_cont hAut'_cb.mapsTo) hAutβ_cont hq_eq
+  obtain ⟨hz12, hz23, hz13⟩ := unitCirclePosCyclic_pairwise_ne hz
+  have hf_z₁ : diskAut β₀ d₀ z₁ = z₁ := by
+    rw [← hq_eq_cb (sphere_subset_closedBall hz₁_s)]
+    dsimp [q, inv₀]; rw [h₁', ← h_val₁, (hAut_inv z₁ (sphere_subset_closedBall hz₁_s)).1]
+  have hf_z₂ : diskAut β₀ d₀ z₂ = z₂ := by
+    rw [← hq_eq_cb (sphere_subset_closedBall hz₂_s)]
+    dsimp [q, inv₀]; rw [h₂', ← h_val₂, (hAut_inv z₂ (sphere_subset_closedBall hz₂_s)).1]
+  have hf_z₃ : diskAut β₀ d₀ z₃ = z₃ := by
+    rw [← hq_eq_cb (sphere_subset_closedBall hz₃_s)]
+    dsimp [q, inv₀]; rw [h₃', ← h_val₃, (hAut_inv z₃ (sphere_subset_closedBall hz₃_s)).1]
+  obtain ⟨hβ0, hd1⟩ := diskAut_eq_id_of_three_fixed hβ₀ hd₀ hz₁_s hz₂_s hz₃_s hz12 hz23 hz13
+    hf_z₁ hf_z₂ hf_z₃
+  refine (RudinRCA.Chapter12.theorem12_6 (f := id)).2 hα' hα hc' hc fun z hz_b => ?_
+  have hqz : q z = z := by
+    rw [hq_eq_cb (ball_subset_closedBall hz_b), hβ0, hd1]
+    simp [diskAut, RudinRCA.Chapter12.phi]
+  calc
+    c' * RudinRCA.Chapter12.phi α' z = diskAut α' c' z := rfl
+    _ = diskAut α c (inv₀ (diskAut α' c' z)) :=
+      (hAut_inv (diskAut α' c' z) (ball_subset_closedBall (hAut'_ball.mapsTo hz_b))).2.symm
+    _ = diskAut α c (q z) := rfl
+    _ = c * RudinRCA.Chapter12.phi α z := by rw [hqz]; rfl
+
+/-- For `w ∈ ball (0 : ℂ) 1`, `z ↦ z - w` possesses no continuous logarithm on `sphere (0 : ℂ) 1`. -/
+theorem not_exists_continuousOn_exp_eq_sub_on_sphere {w : ℂ} (hw : w ∈ ball (0 : ℂ) 1) :
+    ¬ ∃ M : ℂ → ℂ, ContinuousOn M (sphere (0 : ℂ) 1) ∧
+        ∀ y ∈ sphere (0 : ℂ) 1, Complex.exp (M y) = y - w := by
+  rintro ⟨M, hM_cont, hM_exp⟩
+  have hw_lt : ‖w‖ < 1 := mem_ball_zero_iff.mp hw
+  let γ : ℝ → ℂ := fun θ => Complex.exp ((θ : ℂ) * Complex.I)
+  have hγ_sph : ∀ θ : ℝ, γ θ ∈ sphere (0 : ℂ) 1 := fun θ => by
+    simp [γ, Complex.norm_exp_ofReal_mul_I]
+  have hγ_cont : Continuous γ :=
+    Complex.continuous_exp.comp (Complex.continuous_ofReal.mul continuous_const)
+  let u : ℝ → ℂ := fun θ => 1 - w * Complex.exp (-(θ : ℂ) * Complex.I)
+  have hu_cont : Continuous u :=
+    continuous_const.sub (continuous_const.mul
+      (Complex.continuous_exp.comp ((Complex.continuous_ofReal.neg).mul continuous_const)))
+  have hu_slit : ∀ θ : ℝ, u θ ∈ Complex.slitPlane := by
+    intro θ
+    refine Or.inl ?_
+    have hnorm : ‖w * Complex.exp (-(θ : ℂ) * Complex.I)‖ = ‖w‖ := by
+      have hexp : -(θ : ℂ) * Complex.I = ((-θ : ℝ) : ℂ) * Complex.I := by push_cast; ring
+      rw [norm_mul, hexp, Complex.norm_exp_ofReal_mul_I, mul_one]
+    have hle : (w * Complex.exp (-(θ : ℂ) * Complex.I)).re ≤
+        ‖w * Complex.exp (-(θ : ℂ) * Complex.I)‖ := Complex.re_le_norm _
+    simp only [u, Complex.sub_re, Complex.one_re]
+    linarith
+  let h : ℝ → ℂ := fun θ => Complex.log (u θ)
+  have hh_cont : Continuous h := hu_cont.clog hu_slit
+  let c₀ : ℂ := (2 * Real.pi : ℂ) * Complex.I
+  have hc₀_ne : c₀ ≠ 0 := mul_ne_zero
+    (mul_ne_zero two_ne_zero (Complex.ofReal_ne_zero.mpr Real.pi_pos.ne')) Complex.I_ne_zero
+  let q : ℝ → ℂ := fun θ => (M (γ θ) - ((θ : ℂ) * Complex.I + h θ)) / c₀
+  have hq_cont : ContinuousOn q (Icc (0 : ℝ) (2 * Real.pi)) := by
+    have hMc : Continuous (fun θ => M (γ θ)) :=
+      hM_cont.comp_continuous hγ_cont hγ_sph
+    exact ((hMc.sub ((Complex.continuous_ofReal.mul continuous_const).add hh_cont)).div_const
+      c₀).continuousOn
+  have hq_int : ∀ θ ∈ Icc (0 : ℝ) (2 * Real.pi), ∃ k : ℤ, q θ = k := by
+    intro θ _
+    have hexp1 : Complex.exp (M (γ θ)) = γ θ - w := hM_exp (γ θ) (hγ_sph θ)
+    have hu_ne : u θ ≠ 0 := Complex.slitPlane_ne_zero (hu_slit θ)
+    have hexp2 : Complex.exp ((θ : ℂ) * Complex.I + h θ) = γ θ - w := by
+      rw [Complex.exp_add, Complex.exp_log hu_ne]
+      dsimp [γ, u]
+      rw [mul_sub, mul_one, mul_left_comm, ← Complex.exp_add]
+      simp
+    obtain ⟨k, hk⟩ := Complex.exp_eq_exp_iff_exists_int.mp (hexp1.trans hexp2.symm)
+    refine ⟨k, ?_⟩
+    dsimp [q, c₀]
+    have hsub : M (γ θ) - ((θ : ℂ) * Complex.I + h θ) =
+        (k : ℂ) * ((2 * Real.pi : ℂ) * Complex.I) := by rw [hk]; ring
+    rw [hsub, mul_div_cancel_right₀ _ hc₀_ne]
+  have hq_eq := eq_of_isPreconnected_int_cast isPreconnected_Icc hq_cont hq_int
+    (left_mem_Icc.mpr (by positivity)) (right_mem_Icc.mpr (by positivity))
+  have hγ_per : γ (2 * Real.pi) = γ 0 := by
+    dsimp [γ]
+    have h2pi : ((2 * Real.pi : ℝ) : ℂ) * Complex.I = 2 * (Real.pi : ℂ) * Complex.I := by
+      push_cast; ring
+    rw [h2pi, Complex.exp_two_pi_mul_I]; simp
+  have hh_per : h (2 * Real.pi) = h 0 := by
+    dsimp [h, u]
+    have h2pi : -((2 * Real.pi : ℝ) : ℂ) * Complex.I = -(2 * (Real.pi : ℂ) * Complex.I) := by
+      push_cast; ring
+    rw [h2pi, Complex.exp_neg, Complex.exp_two_pi_mul_I]; simp
+  dsimp [q] at hq_eq
+  rw [hγ_per, hh_per] at hq_eq
+  have hnum := (div_left_inj' hc₀_ne).mp hq_eq
+  apply hc₀_ne
+  dsimp [c₀]
+  push_cast at hnum ⊢
+  linear_combination hnum
+
+/-- Every homeomorphism `H : closedBall (0 : ℂ) 1 ≃ₜ closedBall (0 : ℂ) 1` maps `sphere (0 : ℂ) 1`
+into `sphere (0 : ℂ) 1` and `ball (0 : ℂ) 1` into `ball (0 : ℂ) 1` (hence bijects both). -/
+theorem homeomorph_closedBall_preserves_sphere_and_ball
+    (H : closedBall (0 : ℂ) 1 ≃ₜ closedBall (0 : ℂ) 1) :
+    (∀ ζ (hζ : ζ ∈ sphere (0 : ℂ) 1),
+      (H ⟨ζ, sphere_subset_closedBall hζ⟩ : ℂ) ∈ sphere (0 : ℂ) 1) ∧
+    (∀ z (hz : z ∈ ball (0 : ℂ) 1),
+      (H ⟨z, ball_subset_closedBall hz⟩ : ℂ) ∈ ball (0 : ℂ) 1) := by
+  have h_sph : ∀ (E : closedBall (0 : ℂ) 1 ≃ₜ closedBall (0 : ℂ) 1) ζ
+      (hζ : ζ ∈ sphere (0 : ℂ) 1),
+      (E ⟨ζ, sphere_subset_closedBall hζ⟩ : ℂ) ∈ sphere (0 : ℂ) 1 := by
+    intro E ζ hζ
+    by_contra hnot_sph
+    let pζ : closedBall (0 : ℂ) 1 := ⟨ζ, sphere_subset_closedBall hζ⟩
+    let w : ℂ := (E pζ : ℂ)
+    have hw_cb : w ∈ closedBall (0 : ℂ) 1 := (E pζ).2
+    have hw_ball : w ∈ ball (0 : ℂ) 1 := by
+      rw [← ball_union_sphere] at hw_cb
+      exact hw_cb.resolve_right hnot_sph
+    have hζ_norm : ‖ζ‖ = 1 := by simpa using hζ
+    let rad : ℂ → closedBall (0 : ℂ) 1 := fun z =>
+      ⟨z / ((max (1 : ℝ) ‖z‖ : ℝ) : ℂ), by
+        rw [mem_closedBall_zero_iff, norm_div, Complex.norm_real, Real.norm_eq_abs,
+          abs_of_pos (lt_of_lt_of_le zero_lt_one (le_max_left 1 ‖z‖))]
+        exact div_le_one_of_le₀ (le_max_right 1 ‖z‖) (le_trans zero_le_one (le_max_left 1 ‖z‖))⟩
+    have hrad_cont : Continuous rad := by
+      refine Continuous.subtype_mk ?_ _
+      exact continuous_id.div
+        (Complex.continuous_ofReal.comp (continuous_const.max continuous_norm))
+        fun z => Complex.ofReal_ne_zero.mpr
+          (lt_of_lt_of_le zero_lt_one (le_max_left 1 ‖z‖)).ne'
+    have hrad_id : ∀ x : closedBall (0 : ℂ) 1, rad x.1 = x := by
+      intro x
+      ext
+      dsimp [rad]
+      have hx_le : ‖x.1‖ ≤ 1 := mem_closedBall_zero_iff.mp x.2
+      rw [max_eq_left hx_le, Complex.ofReal_one, div_one]
+    let W : Set ℂ := {z : ℂ | (z * starRingEnd ℂ ζ).re < 1}
+    have hW_open : IsOpen W :=
+      isOpen_lt (Complex.continuous_re.comp (continuous_id.mul continuous_const)) continuous_const
+    have hW_conv : Convex ℝ W := by
+      intro x hx y hy a b ha hb hab
+      change ((a • x + b • y) * starRingEnd ℂ ζ).re < 1
+      have hx' : (x * starRingEnd ℂ ζ).re < 1 := hx
+      have hy' : (y * starRingEnd ℂ ζ).re < 1 := hy
+      have hlin : ((a • x + b • y) * starRingEnd ℂ ζ).re =
+          a * (x * starRingEnd ℂ ζ).re + b * (y * starRingEnd ℂ ζ).re := by
+        simp [Complex.real_smul, add_mul, mul_assoc, Complex.add_re, Complex.mul_re]
+      rw [hlin]
+      rcases eq_or_lt_of_le ha with rfl | ha_pos
+      · simp at hab; subst hab; simpa using hy'
+      · nlinarith
+    have h0_W : (0 : ℂ) ∈ W := by simp [W]
+    have hW_sc : IsSimplyConnected W := by
+      have : ContractibleSpace W := hW_conv.contractibleSpace ⟨0, h0_W⟩
+      change SimplyConnectedSpace W
+      exact inferInstance
+    have hrad_ne_pζ : ∀ z ∈ W, rad z ≠ pζ := by
+      intro z hz heq
+      have hval : z / ((max (1 : ℝ) ‖z‖ : ℝ) : ℂ) = ζ := congrArg Subtype.val heq
+      let m : ℝ := max 1 ‖z‖
+      have hm_pos : 0 < m := lt_of_lt_of_le zero_lt_one (le_max_left 1 ‖z‖)
+      have hz_eq : z = (m : ℂ) * ζ := by
+        rw [mul_comm]; exact (div_eq_iff (Complex.ofReal_ne_zero.mpr hm_pos.ne')).mp hval
+      have hre : (z * starRingEnd ℂ ζ).re = m := by
+        rw [hz_eq, mul_assoc, Complex.mul_conj, Complex.normSq_eq_norm_sq, hζ_norm]
+        simp only [one_pow, Complex.ofReal_one, mul_one, Complex.ofReal_re]
+      have hz' : (z * starRingEnd ℂ ζ).re < 1 := hz
+      linarith [le_max_left (1 : ℝ) ‖z‖]
+    let F : ℂ → ℂ := fun z => (E (rad z) : ℂ) - w
+    have hF_cont : Continuous F :=
+      (continuous_subtype_val.comp (E.continuous.comp hrad_cont)).sub continuous_const
+    have h0_not_img : (0 : ℂ) ∉ F '' W := by
+      rintro ⟨z, hz, hFz⟩
+      have heqE : E (rad z) = E pζ := Subtype.ext (sub_eq_zero.mp hFz)
+      exact hrad_ne_pζ z hz (E.injective heqE)
+    obtain ⟨L, hL_cont, hL_exp⟩ :=
+      Complex.exists_continuousOn_eqOn_exp_comp hW_sc hW_open hF_cont.continuousOn h0_not_img
+    have hcb_diff_sub_W : ∀ x : closedBall (0 : ℂ) 1, x ≠ pζ → x.1 ∈ W := by
+      intro x hx_ne
+      have hx_le : ‖x.1‖ ≤ 1 := mem_closedBall_zero_iff.mp x.2
+      have hne_val : x.1 ≠ ζ := fun h => hx_ne (Subtype.ext h)
+      have hpos : 0 < ‖x.1 - ζ‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr (sub_ne_zero.mpr hne_val))
+      have hexpand : ‖x.1 - ζ‖ ^ 2 = ‖x.1‖ ^ 2 + ‖ζ‖ ^ 2 - 2 * (x.1 * starRingEnd ℂ ζ).re := by
+        rw [Complex.sq_norm, Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
+          Complex.normSq_apply, Complex.normSq_apply]
+        simp [Complex.mul_re]; ring
+      rw [hζ_norm] at hexpand
+      have hx_sq : ‖x.1‖ ^ 2 ≤ 1 := by nlinarith [norm_nonneg x.1]
+      change (x.1 * starRingEnd ℂ ζ).re < 1
+      linarith
+    have hinv_in_W : ∀ y ∈ sphere (0 : ℂ) 1, (E.symm (rad y) : ℂ) ∈ W := by
+      intro y hy
+      refine hcb_diff_sub_W _ fun heq => ?_
+      have hy_eq_w : y = w := by
+        have h1 := congrArg (fun p => (E p : ℂ)) heq
+        have h2 : rad y = ⟨y, sphere_subset_closedBall hy⟩ := hrad_id ⟨y, sphere_subset_closedBall hy⟩
+        rw [h2, E.apply_symm_apply] at h1
+        exact h1
+      rw [← hy_eq_w] at hw_ball
+      have h1 : ‖y‖ = 1 := by simpa using hy
+      have h2 : ‖y‖ < 1 := mem_ball_zero_iff.mp hw_ball
+      linarith
+    let M : ℂ → ℂ := fun y => L (E.symm (rad y) : ℂ)
+    have hM_cont : ContinuousOn M (sphere (0 : ℂ) 1) :=
+      hL_cont.comp (continuous_subtype_val.comp (E.symm.continuous.comp hrad_cont)).continuousOn
+        hinv_in_W
+    refine not_exists_continuousOn_exp_eq_sub_on_sphere hw_ball ⟨M, hM_cont, fun y hy => ?_⟩
+    have hexp : Complex.exp (M y) = F (E.symm (rad y) : ℂ) := hL_exp (hinv_in_W y hy)
+    rw [hexp]
+    dsimp [F]
+    have hrad_y : rad y = ⟨y, sphere_subset_closedBall hy⟩ := hrad_id ⟨y, sphere_subset_closedBall hy⟩
+    rw [hrad_id (E.symm (rad y)), E.apply_symm_apply, hrad_y]
+  refine ⟨h_sph H, fun z hz => ?_⟩
+  by_contra hnot_ball
+  let pz : closedBall (0 : ℂ) 1 := ⟨z, ball_subset_closedBall hz⟩
+  have h_cb : ((H pz : ℂ)) ∈ ball (0 : ℂ) 1 ∪ sphere (0 : ℂ) 1 := by
+    rw [ball_union_sphere]; exact (H pz).2
+  have h_in_sph : (H pz : ℂ) ∈ sphere (0 : ℂ) 1 := h_cb.resolve_left hnot_ball
+  have hz_sph := h_sph H.symm (H pz : ℂ) h_in_sph
+  have heq : (⟨(H pz : ℂ), sphere_subset_closedBall h_in_sph⟩ : closedBall (0 : ℂ) 1) = H pz :=
+    Subtype.ext rfl
+  rw [heq, H.symm_apply_apply] at hz_sph
+  have h1 : ‖z‖ < 1 := mem_ball_zero_iff.mp hz
+  have h2 : ‖z‖ = 1 := by simpa using hz_sph
+  linarith
+
+/-! ### Part 2: Continuity, Homeomorphism, and Spherical Holomorphicity of Möbius Maps -/
+
+theorem continuous_moebiusAffine {a b : ℂ} (ha : a ≠ 0) :
+    Continuous (moebiusMap a b 0 1) := by
+  rw [continuous_iff_continuousAt]
+  intro p
+  induction p using OnePoint.rec with
+  | infty =>
+    have hinf : moebiusMap a b 0 1 ∞ = ∞ := by simp
+    rw [ContinuousAt, hinf, (OnePoint.hasBasis_nhds_infty).tendsto_right_iff]
+    rintro K ⟨_, hK_compact⟩
+    let K' : Set ℂ := (fun w : ℂ => a⁻¹ * (w - b)) '' K
+    have hK'_compact : IsCompact K' :=
+      hK_compact.image (continuous_const.mul (continuous_id.sub continuous_const))
+    have hK'_closed : IsClosed K' := hK'_compact.isClosed
+    have hmem : (((↑) : ℂ → RiemannSphere) '' K'ᶜ ∪ {∞}) ∈ 𝓝 (∞ : RiemannSphere) :=
+      OnePoint.hasBasis_nhds_infty.mem_of_mem ⟨hK'_closed, hK'_compact⟩
+    filter_upwards [hmem] with q hq
+    induction q using OnePoint.rec with
+    | infty =>
+      simp only [moebiusMap_infty, ↓reduceIte]
+      exact Or.inr rfl
+    | coe z =>
+      simp only [moebiusMap_coe, zero_mul, zero_add, one_ne_zero, ↓reduceIte, div_one]
+      refine Or.inl ⟨a * z + b, fun hmemK => ?_, rfl⟩
+      rcases hq with ⟨w, hw_not_K', hwz⟩ | hinf_eq
+      · apply hw_not_K'
+        rw [OnePoint.coe_injective hwz]
+        refine ⟨a * z + b, hmemK, ?_⟩
+        field_simp [ha]; ring
+      · exact OnePoint.coe_ne_infty z hinf_eq
+  | coe z =>
+    let g : RiemannSphere → RiemannSphere :=
+      OnePoint.rec ∞ (fun w : ℂ => ((a * w + b : ℂ) : RiemannSphere))
+    have hev : moebiusMap a b 0 1 =ᶠ[𝓝 (z : RiemannSphere)] g := by
+      filter_upwards [OnePoint.isOpenEmbedding_coe.isOpen_range.mem_nhds ⟨z, rfl⟩] with q hq
+      rcases hq with ⟨w, rfl⟩
+      simp only [moebiusMap_coe, zero_mul, zero_add, one_ne_zero, ↓reduceIte, div_one]
+      rfl
+    refine ContinuousAt.congr ?_ hev.symm
+    have hc : Continuous (fun w : ℂ => ((a * w + b : ℂ) : RiemannSphere)) :=
+      OnePoint.continuous_coe.comp ((continuous_const.mul continuous_id).add continuous_const)
+    rw [ContinuousAt, Tendsto]
+    have hmap : map g (𝓝 (z : RiemannSphere)) =
+        map (fun w : ℂ => ((a * w + b : ℂ) : RiemannSphere)) (𝓝 z) := by
+      rw [← OnePoint.isOpenEmbedding_coe.map_nhds_eq z, Filter.map_map]
+      rfl
+    rw [hmap]
+    exact hc.continuousAt
+
+theorem continuous_moebiusInv : Continuous moebiusInv := by
+  rw [continuous_iff_continuousAt]
+  intro p
+  induction p using OnePoint.rec with
+  | infty =>
+    have hinf : moebiusInv ∞ = ((0 : ℂ) : RiemannSphere) := by simp [moebiusInv]
+    rw [ContinuousAt, hinf, tendsto_iff_forall_eventually_mem]
+    intro V hV
+    have hpre : ((↑) : ℂ → RiemannSphere) ⁻¹' V ∈ 𝓝 (0 : ℂ) :=
+      OnePoint.continuous_coe.continuousAt.preimage_mem_nhds hV
+    obtain ⟨ε, hε_pos, hball⟩ := Metric.mem_nhds_iff.mp hpre
+    let K : Set ℂ := closedBall (0 : ℂ) (1 / ε)
+    have hmem : (((↑) : ℂ → RiemannSphere) '' Kᶜ ∪ {∞}) ∈ 𝓝 (∞ : RiemannSphere) :=
+      OnePoint.hasBasis_nhds_infty.mem_of_mem ⟨isClosed_closedBall, isCompact_closedBall 0 (1 / ε)⟩
+    filter_upwards [hmem] with q hq
+    induction q using OnePoint.rec with
+    | infty =>
+      simpa [moebiusInv] using hball (mem_ball_self hε_pos)
+    | coe z =>
+      have hz_not_K : z ∉ K := by
+        rcases hq with ⟨w, hw, hwz⟩ | hinf_eq
+        · exact OnePoint.coe_injective hwz ▸ hw
+        · exact False.elim (OnePoint.coe_ne_infty z hinf_eq)
+      have hz_gt : 1 / ε < ‖z‖ := not_le.mp (by simpa [K] using hz_not_K)
+      have hz_ne : z ≠ 0 := by
+        intro h0; rw [h0, norm_zero] at hz_gt; linarith [one_div_pos.mpr hε_pos]
+      have hinv : moebiusInv (z : RiemannSphere) = ((z⁻¹ : ℂ) : RiemannSphere) := by
+        simp [moebiusInv, hz_ne]
+      rw [hinv]
+      apply hball
+      rw [mem_ball_zero_iff, norm_inv]
+      exact inv_lt_of_inv_lt₀ hε_pos (by simpa [one_div] using hz_gt)
+  | coe z =>
+    by_cases hz : z = 0
+    · subst hz
+      have h0 : moebiusInv ((0 : ℂ) : RiemannSphere) = ∞ := by simp [moebiusInv]
+      rw [ContinuousAt, h0, (OnePoint.hasBasis_nhds_infty).tendsto_right_iff]
+      rintro K ⟨_, hK_compact⟩
+      obtain ⟨R, hR_pos, hK_sub⟩ : ∃ R > 0, K ⊆ closedBall (0 : ℂ) R := by
+        obtain ⟨R₀, hR₀⟩ := hK_compact.isBounded.subset_closedBall 0
+        exact ⟨max R₀ 1, lt_of_lt_of_le zero_lt_one (le_max_right _ _),
+          hR₀.trans (closedBall_subset_closedBall (le_max_left _ _))⟩
+      have hU_open : IsOpen (((↑) : ℂ → RiemannSphere) '' ball (0 : ℂ) (1 / R)) :=
+        OnePoint.isOpenEmbedding_coe.isOpenMap _ isOpen_ball
+      have hU_nhds : ((↑) : ℂ → RiemannSphere) '' ball (0 : ℂ) (1 / R) ∈
+          𝓝 ((0 : ℂ) : RiemannSphere) :=
+        hU_open.mem_nhds ⟨0, mem_ball_self (one_div_pos.mpr hR_pos), rfl⟩
+      filter_upwards [hU_nhds] with q hq
+      rcases hq with ⟨w, hw_ball, rfl⟩
+      by_cases hw0 : w = 0
+      · subst hw0
+        simp only [moebiusInv, moebiusMap_coe, mul_zero, add_zero, ↓reduceIte]
+        exact Or.inr rfl
+      · have hinv : moebiusInv (w : RiemannSphere) = ((w⁻¹ : ℂ) : RiemannSphere) := by
+          simp [moebiusInv, hw0]
+        rw [hinv]
+        refine Or.inl ⟨w⁻¹, fun hwK => ?_, rfl⟩
+        have hw_le : ‖w⁻¹‖ ≤ R := mem_closedBall_zero_iff.mp (hK_sub hwK)
+        have hw_lt : ‖w‖ < 1 / R := mem_ball_zero_iff.mp hw_ball
+        have hgt : R < ‖w⁻¹‖ := by
+          rw [norm_inv]
+          exact lt_inv_of_lt_inv₀ (norm_pos_iff.mpr hw0) (by simpa [one_div] using hw_lt)
+        linarith
+    · have hU_open : IsOpen (((↑) : ℂ → RiemannSphere) '' {w : ℂ | w ≠ 0}) :=
+        OnePoint.isOpenEmbedding_coe.isOpenMap _ isOpen_ne
+      have hU_nhds : ((↑) : ℂ → RiemannSphere) '' {w : ℂ | w ≠ 0} ∈
+          𝓝 (z : RiemannSphere) := hU_open.mem_nhds ⟨z, hz, rfl⟩
+      let g : RiemannSphere → RiemannSphere :=
+        OnePoint.rec ∞ (fun w : ℂ => ((w⁻¹ : ℂ) : RiemannSphere))
+      have hev : moebiusInv =ᶠ[𝓝 (z : RiemannSphere)] g := by
+        filter_upwards [hU_nhds] with q hq
+        rcases hq with ⟨w, hw, rfl⟩
+        have hw' : w ≠ 0 := hw
+        simp only [moebiusInv, moebiusMap_coe, zero_mul, zero_add, one_mul, add_zero, hw',
+          ↓reduceIte, one_div]
+        rfl
+      refine ContinuousAt.congr ?_ hev.symm
+      rw [ContinuousAt, Tendsto]
+      have hmap : map g (𝓝 (z : RiemannSphere)) =
+          map (fun w : ℂ => ((w⁻¹ : ℂ) : RiemannSphere)) (𝓝 z) := by
+        rw [← OnePoint.isOpenEmbedding_coe.map_nhds_eq z, Filter.map_map]; rfl
+      rw [hmap]
+      exact OnePoint.continuous_coe.continuousAt.comp (continuousAt_inv₀ hz)
+
+/-- Every Möbius transformation `moebiusMap a b c d` (`a * d - b * c ≠ 0`) is continuous on
+`RiemannSphere`. -/
+theorem moebiusMap_continuous {a b c d : ℂ} (hdet : a * d - b * c ≠ 0) :
+    Continuous (moebiusMap a b c d) := by
+  have hgen : ∀ {f : RiemannSphere → RiemannSphere},
+      GeneratedByElementaryMoebius f → Continuous f := by
+    intro f hf
+    induction hf with
+    | id => exact continuous_id
+    | trans β _ ih =>
+      exact (continuous_moebiusAffine one_ne_zero).comp ih
+    | rot u hu _ ih =>
+      have hu_ne : u ≠ 0 := by intro h0; simp [h0] at hu
+      exact (continuous_moebiusAffine hu_ne).comp ih
+    | dil r hr _ ih =>
+      exact (continuous_moebiusAffine (Complex.ofReal_ne_zero.mpr hr.ne')).comp ih
+    | inv _ ih =>
+      exact continuous_moebiusInv.comp ih
+  exact hgen (moebiusMap_generatedByElementary hdet)
+
+/-- Every Möbius transformation `moebiusMap a b c d` (`a * d - b * c ≠ 0`) as a homeomorphism
+`RiemannSphere ≃ₜ RiemannSphere`. -/
+def moebiusHomeomorph {a b c d : ℂ} (hdet : a * d - b * c ≠ 0) :
+    RiemannSphere ≃ₜ RiemannSphere where
+  toFun := moebiusMap a b c d
+  invFun := moebiusMap d (-b) (-c) a
+  left_inv := moebiusMap_inv_left hdet
+  right_inv := moebiusMap_inv_right hdet
+  continuous_toFun := moebiusMap_continuous hdet
+  continuous_invFun := moebiusMap_continuous (by intro h0; apply hdet; linear_combination h0)
+
+/-- Retraction extracting the finite complex coordinate (`0` at `∞`, `z` at `↑z`). -/
+def sphereFinitePart (p : RiemannSphere) : ℂ :=
+  OnePoint.rec 0 id p
+
+@[simp] theorem sphereFinitePart_infty : sphereFinitePart ∞ = 0 := rfl
+@[simp] theorem sphereFinitePart_coe (z : ℂ) : sphereFinitePart (z : RiemannSphere) = z := rfl
+
+/-- Standard local chart center on `RiemannSphere`: `0` at `∞`, `z` at `↑z`. -/
+def sphereChartCenter (p : RiemannSphere) : ℂ :=
+  sphereFinitePart p
+
+@[simp] theorem sphereChartCenter_infty : sphereChartCenter ∞ = 0 := rfl
+@[simp] theorem sphereChartCenter_coe (z : ℂ) : sphereChartCenter (z : RiemannSphere) = z := rfl
+
+/-- Standard local incoming chart `ℂ → RiemannSphere`: `moebiusInv ∘ coe` near `∞`, `coe` near `↑z`. -/
+def sphereChartIn (p : RiemannSphere) (ζ : ℂ) : RiemannSphere :=
+  OnePoint.rec (moebiusInv (ζ : RiemannSphere)) (fun _ => (ζ : RiemannSphere)) p
+
+@[simp] theorem sphereChartIn_infty (ζ : ℂ) :
+    sphereChartIn ∞ ζ = moebiusInv (ζ : RiemannSphere) := rfl
+@[simp] theorem sphereChartIn_coe (z ζ : ℂ) :
+    sphereChartIn (z : RiemannSphere) ζ = (ζ : RiemannSphere) := rfl
+
+/-- Standard local outgoing chart `RiemannSphere → ℂ`: `sphereFinitePart ∘ moebiusInv` near `∞`,
+`sphereFinitePart` near `↑w`. -/
+def sphereChartOut (q : RiemannSphere) (r : RiemannSphere) : ℂ :=
+  OnePoint.rec (sphereFinitePart (moebiusInv r)) (fun _ => sphereFinitePart r) q
+
+@[simp] theorem sphereChartOut_infty (r : RiemannSphere) :
+    sphereChartOut ∞ r = sphereFinitePart (moebiusInv r) := rfl
+@[simp] theorem sphereChartOut_coe (w : ℂ) (r : RiemannSphere) :
+    sphereChartOut (w : RiemannSphere) r = sphereFinitePart r := rfl
+
+theorem moebiusInv_involutive (p : RiemannSphere) :
+    moebiusInv (moebiusInv p) = p := by
+  have hdet_inv : (0 : ℂ) * 0 - 1 * 1 ≠ 0 := by norm_num
+  have hscale : ∀ q : RiemannSphere, moebiusMap 0 (-1) (-1) 0 q = moebiusInv q := fun q => by
+    have := moebiusMap_scale (neg_ne_zero.mpr one_ne_zero) 0 1 1 0 q
+    simpa [moebiusInv] using this
+  rw [← hscale (moebiusInv p)]
+  exact moebiusMap_inv_left hdet_inv p
+
+@[simp] theorem sphereChartIn_center (p : RiemannSphere) :
+    sphereChartIn p (sphereChartCenter p) = p := by
+  induction p using OnePoint.rec <;> simp [moebiusInv]
+
+@[simp] theorem sphereChartOut_self (q : RiemannSphere) :
+    sphereChartOut q q = sphereChartCenter q := by
+  induction q using OnePoint.rec <;> simp [moebiusInv]
+
+theorem continuous_sphereChartIn (p : RiemannSphere) :
+    Continuous (sphereChartIn p) := by
+  induction p using OnePoint.rec with
+  | infty => exact continuous_moebiusInv.comp OnePoint.continuous_coe
+  | coe _ => exact OnePoint.continuous_coe
+
+theorem eventually_sphereChartIn_out (q : RiemannSphere) :
+    ∀ᶠ r in 𝓝 q, sphereChartIn q (sphereChartOut q r) = r := by
+  induction q using OnePoint.rec with
+  | infty =>
+    have hmem : ({((0 : ℂ) : RiemannSphere)}ᶜ : Set RiemannSphere) ∈ 𝓝 (∞ : RiemannSphere) :=
+      isClosed_singleton.isOpen_compl.mem_nhds (OnePoint.coe_ne_infty 0).symm
+    filter_upwards [hmem] with r hr
+    induction r using OnePoint.rec with
+    | infty => simp [moebiusInv]
+    | coe w =>
+      have hw : w ≠ 0 := fun h0 => hr (by simp [h0])
+      have h1 : moebiusInv (w : RiemannSphere) = ((w⁻¹ : ℂ) : RiemannSphere) := by
+        simp [moebiusInv, hw]
+      simp only [sphereChartOut_infty, sphereChartIn_infty, h1, sphereFinitePart_coe]
+      rw [← h1]
+      exact moebiusInv_involutive (w : RiemannSphere)
+  | coe w =>
+    filter_upwards [OnePoint.isOpenEmbedding_coe.isOpen_range.mem_nhds ⟨w, rfl⟩] with r hr
+    rcases hr with ⟨u, rfl⟩
+    simp
+
+/-- Holomorphicity of a map `f : RiemannSphere → RiemannSphere` on a subset `Ω ⊆ RiemannSphere`,
+expressed in the standard local complex charts `(ℂ, id)` on `ℂ` and `(ℂ, 1/z)` near `∞`. -/
+def SphericalHolomorphicOn (f : RiemannSphere → RiemannSphere) (Ω : Set RiemannSphere) : Prop :=
+  ContinuousOn f Ω ∧
+  ∀ p ∈ Ω, DifferentiableAt ℂ (fun ζ : ℂ => sphereChartOut (f p) (f (sphereChartIn p ζ)))
+    (sphereChartCenter p)
+
+theorem sphericalHolomorphicOn_id (Ω : Set RiemannSphere) :
+    SphericalHolomorphicOn id Ω := by
+  refine ⟨continuousOn_id, fun p _ => ?_⟩
+  induction p using OnePoint.rec with
+  | infty =>
+    have hfun : (fun ζ : ℂ => sphereChartOut (id ∞) (id (sphereChartIn ∞ ζ))) = id := by
+      ext ζ; simp [moebiusInv_involutive]
+    rw [hfun]; exact differentiableAt_id
+  | coe z =>
+    have hfun : (fun ζ : ℂ => sphereChartOut (id (z : RiemannSphere))
+        (id (sphereChartIn (z : RiemannSphere) ζ))) = id := by
+      ext ζ; simp
+    rw [hfun]; exact differentiableAt_id
+
+theorem SphericalHolomorphicOn.mono {f : RiemannSphere → RiemannSphere}
+    {Ω₁ Ω₂ : Set RiemannSphere} (hf : SphericalHolomorphicOn f Ω₂) (hsub : Ω₁ ⊆ Ω₂) :
+    SphericalHolomorphicOn f Ω₁ :=
+  ⟨hf.1.mono hsub, fun p hp => hf.2 p (hsub hp)⟩
+
+theorem SphericalHolomorphicOn.congr {f g : RiemannSphere → RiemannSphere}
+    {Ω : Set RiemannSphere} (hΩ : IsOpen Ω) (hf : SphericalHolomorphicOn f Ω)
+    (heq : Set.EqOn f g Ω) : SphericalHolomorphicOn g Ω := by
+  refine ⟨hf.1.congr heq.symm, fun p hp => ?_⟩
+  rw [← heq hp]
+  refine (hf.2 p hp).congr_of_eventuallyEq ?_
+  have h_in : ∀ᶠ ζ in 𝓝 (sphereChartCenter p), sphereChartIn p ζ ∈ Ω := by
+    have hc : ContinuousAt (sphereChartIn p) (sphereChartCenter p) :=
+      (continuous_sphereChartIn p).continuousAt
+    refine hc.preimage_mem_nhds ?_
+    rw [sphereChartIn_center]
+    exact hΩ.mem_nhds hp
+  filter_upwards [h_in] with ζ hζ
+  rw [heq hζ]
+
+theorem SphericalHolomorphicOn.comp {f g : RiemannSphere → RiemannSphere}
+    {Ω₁ Ω₂ : Set RiemannSphere} (hΩ₁ : IsOpen Ω₁)
+    (hg : SphericalHolomorphicOn g Ω₂) (hf : SphericalHolomorphicOn f Ω₁)
+    (hmaps : MapsTo f Ω₁ Ω₂) :
+    SphericalHolomorphicOn (g ∘ f) Ω₁ := by
+  refine ⟨hg.1.comp hf.1 hmaps, fun p hp => ?_⟩
+  have hfp : f p ∈ Ω₂ := hmaps hp
+  have hf_at : ContinuousAt f p := hf.1.continuousAt (hΩ₁.mem_nhds hp)
+  have hd_f := hf.2 p hp
+  have hd_g := hg.2 (f p) hfp
+  have hcenter : sphereChartOut (f p) (f (sphereChartIn p (sphereChartCenter p))) =
+      sphereChartCenter (f p) := by
+    rw [sphereChartIn_center, sphereChartOut_self]
+  rw [← hcenter] at hd_g
+  have hd_comp := hd_g.comp (sphereChartCenter p) hd_f
+  refine hd_comp.congr_of_eventuallyEq ?_
+  have hc_in : ContinuousAt (fun ζ => f (sphereChartIn p ζ)) (sphereChartCenter p) := by
+    have h1 := (continuous_sphereChartIn p).continuousAt (x := sphereChartCenter p)
+    have h2 : ContinuousAt f (sphereChartIn p (sphereChartCenter p)) := by
+      rwa [sphereChartIn_center]
+    exact h2.comp h1
+  have hev_q : ∀ᶠ r in 𝓝 (f (sphereChartIn p (sphereChartCenter p))),
+      sphereChartIn (f p) (sphereChartOut (f p) r) = r := by
+    rw [sphereChartIn_center]
+    exact eventually_sphereChartIn_out (f p)
+  filter_upwards [hc_in.preimage_mem_nhds hev_q] with ζ hζ
+  dsimp [Function.comp_def] at hζ ⊢
+  rw [hζ]
+
+theorem sphericalHolomorphicOn_moebiusAffine {a b : ℂ} (ha : a ≠ 0) :
+    SphericalHolomorphicOn (moebiusMap a b 0 1) Set.univ := by
+  refine ⟨(continuous_moebiusAffine ha).continuousOn, fun p _ => ?_⟩
+  induction p using OnePoint.rec with
+  | infty =>
+    have hinf : moebiusMap a b 0 1 ∞ = ∞ := by simp
+    rw [hinf, sphereChartCenter_infty]
+    let φ : ℂ → ℂ := fun ζ => ζ / (a + b * ζ)
+    have hφ_diff : DifferentiableAt ℂ φ 0 :=
+      differentiableAt_id.div
+        ((differentiableAt_const a).add ((differentiableAt_const b).mul differentiableAt_id))
+        (by simp [ha])
+    refine hφ_diff.congr_of_eventuallyEq ?_
+    have hopen : IsOpen {ζ : ℂ | a + b * ζ ≠ 0} :=
+      isOpen_ne_fun (continuous_const.add (continuous_const.mul continuous_id)) continuous_const
+    filter_upwards [hopen.mem_nhds (by simp [ha] : a + b * 0 ≠ 0)] with ζ hζ
+    by_cases hζ0 : ζ = 0
+    · subst hζ0; simp [φ, moebiusInv]
+    · have h1 : sphereChartIn ∞ ζ = ((ζ⁻¹ : ℂ) : RiemannSphere) := by
+        simp [moebiusInv, hζ0]
+      have h2 : moebiusMap a b 0 1 ((ζ⁻¹ : ℂ) : RiemannSphere) =
+          (((a * ζ⁻¹ + b : ℂ)) : RiemannSphere) := by simp
+      have hnz : a * ζ⁻¹ + b ≠ 0 := by
+        have heq : a * ζ⁻¹ + b = (a + b * ζ) / ζ := by field_simp [hζ0]
+        rw [heq]; exact div_ne_zero hζ hζ0
+      have h3 : sphereChartOut ∞ (((a * ζ⁻¹ + b : ℂ)) : RiemannSphere) = (a * ζ⁻¹ + b)⁻¹ := by
+        simp [moebiusInv, hnz]
+      rw [h1, h2, h3]
+      dsimp [φ]
+      field_simp [hζ0, hζ]
+  | coe z =>
+    have hfun : (fun ζ : ℂ => sphereChartOut (moebiusMap a b 0 1 (z : RiemannSphere))
+        (moebiusMap a b 0 1 (sphereChartIn (z : RiemannSphere) ζ))) =
+        fun ζ => a * ζ + b := by
+      ext ζ; simp
+    rw [hfun]
+    exact ((differentiableAt_const a).mul differentiableAt_id).add (differentiableAt_const b)
+
+theorem sphericalHolomorphicOn_moebiusInv :
+    SphericalHolomorphicOn moebiusInv Set.univ := by
+  refine ⟨continuous_moebiusInv.continuousOn, fun p _ => ?_⟩
+  induction p using OnePoint.rec with
+  | infty =>
+    have hfun : (fun ζ : ℂ => sphereChartOut (moebiusInv ∞)
+        (moebiusInv (sphereChartIn ∞ ζ))) = id := by
+      ext ζ
+      have hinf : moebiusInv ∞ = ((0 : ℂ) : RiemannSphere) := by simp [moebiusInv]
+      rw [hinf]
+      simp [moebiusInv_involutive]
+    rw [hfun]; exact differentiableAt_id
+  | coe z =>
+    by_cases hz : z = 0
+    · subst hz
+      have hfun : (fun ζ : ℂ => sphereChartOut (moebiusInv ((0 : ℂ) : RiemannSphere))
+          (moebiusInv (sphereChartIn ((0 : ℂ) : RiemannSphere) ζ))) = id := by
+        ext ζ
+        have h0 : moebiusInv ((0 : ℂ) : RiemannSphere) = ∞ := by simp [moebiusInv]
+        rw [h0]
+        simp [moebiusInv_involutive]
+      rw [hfun]; exact differentiableAt_id
+    · rw [sphereChartCenter_coe]
+      have hval : moebiusInv (z : RiemannSphere) = ((z⁻¹ : ℂ) : RiemannSphere) := by
+        simp [moebiusInv, hz]
+      rw [hval]
+      refine (differentiableAt_inv hz).congr_of_eventuallyEq ?_
+      filter_upwards [isOpen_ne.mem_nhds hz] with ζ hζ
+      simp [moebiusInv, hζ]
+
+/-- Every Möbius transformation `moebiusMap a b c d` (`a * d - b * c ≠ 0`) is globally
+spherical-holomorphic on `RiemannSphere`. -/
+theorem moebiusMap_sphericalHolomorphicOn {a b c d : ℂ} (hdet : a * d - b * c ≠ 0) :
+    SphericalHolomorphicOn (moebiusMap a b c d) Set.univ := by
+  have hgen : ∀ {f : RiemannSphere → RiemannSphere},
+      GeneratedByElementaryMoebius f → SphericalHolomorphicOn f Set.univ := by
+    intro f hf
+    induction hf with
+    | id => exact sphericalHolomorphicOn_id Set.univ
+    | trans β _ ih =>
+      exact (sphericalHolomorphicOn_moebiusAffine one_ne_zero).comp isOpen_univ ih (mapsTo_univ _ _)
+    | rot u hu _ ih =>
+      have hu_ne : u ≠ 0 := by intro h0; simp [h0] at hu
+      exact (sphericalHolomorphicOn_moebiusAffine hu_ne).comp isOpen_univ ih (mapsTo_univ _ _)
+    | dil r hr _ ih =>
+      exact (sphericalHolomorphicOn_moebiusAffine
+        (Complex.ofReal_ne_zero.mpr hr.ne')).comp isOpen_univ ih (mapsTo_univ _ _)
+    | inv _ ih =>
+      exact sphericalHolomorphicOn_moebiusInv.comp isOpen_univ ih (mapsTo_univ _ _)
+  exact hgen (moebiusMap_generatedByElementary hdet)
+
+/-- Compatibility between `SphericalHolomorphicOn` and planar `HolomorphicOn` on open sets `Ω₀ ⊆ ℂ`
+whose image avoids `∞`. -/
+theorem sphericalHolomorphicOn_coe_iff {Ω₀ : Set ℂ} (hΩ₀ : IsOpen Ω₀)
+    {f : RiemannSphere → RiemannSphere}
+    (hfin : ∀ z ∈ Ω₀, f (z : RiemannSphere) ≠ ∞) :
+    SphericalHolomorphicOn f (((↑) : ℂ → RiemannSphere) '' Ω₀) ↔
+    RudinRCA.Chapter10.HolomorphicOn
+      (fun z : ℂ => sphereFinitePart (f (z : RiemannSphere))) Ω₀ := by
+  let g : ℂ → ℂ := fun z => sphereFinitePart (f (z : RiemannSphere))
+  have hfg : ∀ z ∈ Ω₀, f (z : RiemannSphere) = (g z : RiemannSphere) := by
+    intro z hz
+    generalize hq : f (z : RiemannSphere) = q
+    induction q using OnePoint.rec with
+    | infty => exact False.elim (hfin z hz hq)
+    | coe w => simp [g, hq]
+  constructor
+  · intro hf z hz
+    have hd := hf.2 (z : RiemannSphere) ⟨z, hz, rfl⟩
+    rw [hfg z hz] at hd
+    simpa [g] using hd
+  · intro hg
+    refine ⟨?_, ?_⟩
+    · intro p hp
+      rcases hp with ⟨z, hz, rfl⟩
+      have hopen_img : IsOpen (((↑) : ℂ → RiemannSphere) '' Ω₀) :=
+        OnePoint.isOpenEmbedding_coe.isOpenMap _ hΩ₀
+      let F : RiemannSphere → RiemannSphere := OnePoint.rec ∞ (fun w : ℂ => (g w : RiemannSphere))
+      refine ContinuousAt.continuousWithinAt ?_
+      have hev : f =ᶠ[𝓝 (z : RiemannSphere)] F := by
+        filter_upwards [hopen_img.mem_nhds ⟨z, hz, rfl⟩] with q hq
+        rcases hq with ⟨w, hw, rfl⟩
+        exact hfg w hw
+      refine ContinuousAt.congr ?_ hev.symm
+      rw [ContinuousAt, Tendsto]
+      have hmap : map F (𝓝 (z : RiemannSphere)) =
+          map (fun w : ℂ => (g w : RiemannSphere)) (𝓝 z) := by
+        rw [← OnePoint.isOpenEmbedding_coe.map_nhds_eq z, Filter.map_map]; rfl
+      rw [hmap]
+      exact OnePoint.continuous_coe.continuousAt.comp (hg z hz).continuousAt
+    · rintro p ⟨z, hz, rfl⟩
+      rw [hfg z hz]
+      simpa [g] using hg z hz
+
+/-! ### Part 3: Spherical Regions, Simple Connectedness, Simple Boundary Points, and Half-Plane Möbius Maps -/
+
+/-- A region in `RiemannSphere` is a nonempty connected open subset. -/
+def IsSphericalRegion (Ω : Set RiemannSphere) : Prop :=
+  IsOpen Ω ∧ IsConnected Ω
+
+/-- Simple connectedness for a spherical region `Ω ⊆ RiemannSphere` (exact `RiemannSphere`
+analog of `RudinRCA.Chapter10.BookSimplyConnected`). -/
+def SphericalSimplyConnected (Ω : Set RiemannSphere) : Prop :=
+  IsSphericalRegion Ω ∧ ∀ γ : ℝ → RiemannSphere,
+    ContinuousOn γ (Icc (0 : ℝ) 1) → γ '' Icc (0 : ℝ) 1 ⊆ Ω → γ 0 = γ 1 →
+    RudinRCA.Chapter10.IsNullHomotopicIn Ω γ
+
+/-- Simple boundary point for a region `Ω ⊆ RiemannSphere` (exact `RiemannSphere` analog of
+`IsSimpleBoundaryPoint` in Definition `14.16`). -/
+def IsSphericalSimpleBoundaryPoint (Ω : Set RiemannSphere) (β : RiemannSphere) : Prop :=
+  β ∈ frontier Ω ∧
+  ∀ α : ℕ → RiemannSphere, (∀ n, α n ∈ Ω) → Tendsto α atTop (𝓝 β) →
+    ∃ γ : ℝ → RiemannSphere, ContinuousOn γ (Icc (0 : ℝ) 1) ∧
+      (∀ s ∈ Ico (0 : ℝ) 1, γ s ∈ Ω) ∧
+      ∃ t : ℕ → ℝ, StrictMono t ∧ (∀ n, t n ∈ Ioo (0 : ℝ) 1) ∧
+        Tendsto t atTop (𝓝 1) ∧ ∀ n, γ (t n) = α n
+
+theorem isSphericalRegion_image_homeomorph (e : RiemannSphere ≃ₜ RiemannSphere)
+    {Ω : Set RiemannSphere} (hΩ : IsSphericalRegion Ω) :
+    IsSphericalRegion (e '' Ω) :=
+  ⟨e.isOpenMap _ hΩ.1, hΩ.2.image e e.continuous.continuousOn⟩
+
+theorem sphericalSimplyConnected_image_homeomorph (e : RiemannSphere ≃ₜ RiemannSphere)
+    {Ω : Set RiemannSphere} (h : SphericalSimplyConnected Ω) :
+    SphericalSimplyConnected (e '' Ω) := by
+  refine ⟨isSphericalRegion_image_homeomorph e h.1, fun γ hγc hγΩ hγcl => ?_⟩
+  let γ₀ : ℝ → RiemannSphere := fun t => e.symm (γ t)
+  have hγ₀_c : ContinuousOn γ₀ (Icc (0 : ℝ) 1) := e.symm.continuous.comp_continuousOn hγc
+  have hγ₀_Ω : γ₀ '' Icc (0 : ℝ) 1 ⊆ Ω := by
+    rintro _ ⟨t, ht, rfl⟩
+    rcases hγΩ ⟨t, ht, rfl⟩ with ⟨p, hp, hp_eq⟩
+    dsimp [γ₀]; rw [← hp_eq, e.symm_apply_apply]; exact hp
+  have hγ₀_cl : γ₀ 0 = γ₀ 1 := by dsimp [γ₀]; rw [hγcl]
+  rcases h.2 γ₀ hγ₀_c hγ₀_Ω hγ₀_cl with
+    ⟨c₀, hc₀, _, _, _, _, _, _, H₀, hH₀_cont, hH₀_in, hH₀_0, hH₀_1, hH₀_loop⟩
+  refine ⟨e c₀, ⟨c₀, hc₀, rfl⟩, hγc, continuousOn_const, hγΩ, ?_, hγcl, rfl,
+    e ∘ H₀, e.continuous.comp_continuousOn hH₀_cont, ?_, ?_, ?_, ?_⟩
+  · rintro _ ⟨_, _, rfl⟩; exact ⟨c₀, hc₀, rfl⟩
+  · rintro _ ⟨q, hq, rfl⟩; exact ⟨H₀ q, hH₀_in ⟨q, hq, rfl⟩, rfl⟩
+  · intro s hs; dsimp only [Function.comp_def]; rw [hH₀_0 s hs]; exact e.apply_symm_apply (γ s)
+  · intro s hs; dsimp only [Function.comp_def]; rw [hH₀_1 s hs]
+  · intro t ht; dsimp only [Function.comp_def]; rw [hH₀_loop t ht]
+
+theorem isSphericalSimpleBoundaryPoint_image_homeomorph (e : RiemannSphere ≃ₜ RiemannSphere)
+    {Ω : Set RiemannSphere} {β : RiemannSphere}
+    (hβ : IsSphericalSimpleBoundaryPoint Ω β) :
+    IsSphericalSimpleBoundaryPoint (e '' Ω) (e β) := by
+  refine ⟨by rw [← e.image_frontier]; exact ⟨β, hβ.1, rfl⟩, fun α hα_mem hα_lim => ?_⟩
+  let α₀ : ℕ → RiemannSphere := e.symm ∘ α
+  have hα₀_mem : ∀ n, α₀ n ∈ Ω := fun n => by
+    rcases hα_mem n with ⟨p, hp, hp_eq⟩
+    dsimp [α₀]; rw [← hp_eq, e.symm_apply_apply]; exact hp
+  have hα₀_lim : Tendsto α₀ atTop (𝓝 β) := by
+    simpa [α₀] using (e.symm.continuous.tendsto (e β)).comp hα_lim
+  obtain ⟨γ₀, hγ₀_c, hγ₀_in, t, ht_mono, ht_mem, ht_lim, hγ₀_t⟩ := hβ.2 α₀ hα₀_mem hα₀_lim
+  refine ⟨e ∘ γ₀, e.continuous.comp_continuousOn hγ₀_c,
+    fun s hs => ⟨γ₀ s, hγ₀_in s hs, rfl⟩, t, ht_mono, ht_mem, ht_lim, fun n => ?_⟩
+  dsimp only [Function.comp_def]
+  rw [hγ₀_t n]; exact e.apply_symm_apply (α n)
+
+/-- Closure and frontier of `((↑) : ℂ → RiemannSphere) '' S` for a bounded set `S ⊆ ℂ`. -/
+theorem closure_and_frontier_coe_of_isBounded {S : Set ℂ} (hS_open : IsOpen S)
+    (hS_bdd : Bornology.IsBounded S) :
+    closure (((↑) : ℂ → RiemannSphere) '' S) = ((↑) : ℂ → RiemannSphere) '' closure S ∧
+    frontier (((↑) : ℂ → RiemannSphere) '' S) = ((↑) : ℂ → RiemannSphere) '' frontier S := by
+  have hcl_compact : IsCompact (closure S) := hS_bdd.isCompact_closure
+  have himg_closed : IsClosed (((↑) : ℂ → RiemannSphere) '' closure S) :=
+    (hcl_compact.image OnePoint.continuous_coe).isClosed
+  have hcl_eq : closure (((↑) : ℂ → RiemannSphere) '' S) =
+      ((↑) : ℂ → RiemannSphere) '' closure S := by
+    refine Subset.antisymm ?_ ?_
+    · exact closure_minimal (Set.image_mono subset_closure) himg_closed
+    · exact image_closure_subset_closure_image OnePoint.continuous_coe
+  refine ⟨hcl_eq, ?_⟩
+  have hopen_img : IsOpen (((↑) : ℂ → RiemannSphere) '' S) :=
+    OnePoint.isOpenEmbedding_coe.isOpenMap _ hS_open
+  rw [frontier, hcl_eq, hopen_img.interior_eq]
+  ext p
+  constructor
+  · rintro ⟨⟨z, hz_cl, rfl⟩, hnot⟩
+    exact ⟨z, ⟨hz_cl, by rw [hS_open.interior_eq]; exact fun hz => hnot ⟨z, hz, rfl⟩⟩, rfl⟩
+  · rintro ⟨z, ⟨hz_cl, hz_not⟩, rfl⟩
+    rw [hS_open.interior_eq] at hz_not
+    refine ⟨⟨z, hz_cl, rfl⟩, ?_⟩
+    rintro ⟨w, hw, heq⟩
+    exact hz_not (OnePoint.coe_injective heq ▸ hw)
+
+/-- If `Ω₀ ⊆ ℂ` is a bounded region and `((↑) : ℂ → RiemannSphere) '' Ω₀` satisfies
+`SphericalSimplyConnected` and all spherical boundary points are simple, then `Ω₀` satisfies
+`BookSimplyConnected Ω₀` and all planar boundary points are simple (and conversely). -/
+theorem bounded_plane_region_spherical_iff {Ω₀ : Set ℂ}
+    (hΩ₀_open : IsOpen Ω₀) (hΩ₀_bdd : Bornology.IsBounded Ω₀) :
+    (IsSphericalRegion (((↑) : ℂ → RiemannSphere) '' Ω₀) ↔ RudinRCA.Chapter10.IsRegion Ω₀) ∧
+    (SphericalSimplyConnected (((↑) : ℂ → RiemannSphere) '' Ω₀) ↔
+      RudinRCA.Chapter10.BookSimplyConnected Ω₀) ∧
+    ((∀ β ∈ frontier (((↑) : ℂ → RiemannSphere) '' Ω₀),
+        IsSphericalSimpleBoundaryPoint (((↑) : ℂ → RiemannSphere) '' Ω₀) β) ↔
+      (∀ β₀ ∈ frontier Ω₀, IsSimpleBoundaryPoint Ω₀ β₀)) := by
+  let S : Set RiemannSphere := ((↑) : ℂ → RiemannSphere) '' Ω₀
+  obtain ⟨_, hfr_eq⟩ := closure_and_frontier_coe_of_isBounded hΩ₀_open hΩ₀_bdd
+  have hreg_iff : IsSphericalRegion S ↔ RudinRCA.Chapter10.IsRegion Ω₀ := by
+    constructor
+    · rintro ⟨_, hconn⟩
+      refine ⟨hΩ₀_open, ?_⟩
+      have hpre : Ω₀ = ((↑) : ℂ → RiemannSphere) ⁻¹' S :=
+        (Set.preimage_image_eq Ω₀ OnePoint.coe_injective).symm
+      rcases hconn.nonempty with ⟨_, z₀, hz₀, rfl⟩
+      refine ⟨⟨z₀, hz₀⟩, ?_⟩
+      intro U V hU hV hsub hU_ne hV_ne
+      have hU' : IsOpen (((↑) : ℂ → RiemannSphere) '' U) :=
+        OnePoint.isOpenEmbedding_coe.isOpenMap _ hU
+      have hV' : IsOpen (((↑) : ℂ → RiemannSphere) '' V) :=
+        OnePoint.isOpenEmbedding_coe.isOpenMap _ hV
+      have hsub' : S ⊆ ((↑) : ℂ → RiemannSphere) '' U ∪ ((↑) : ℂ → RiemannSphere) '' V := by
+        rintro _ ⟨z, hz, rfl⟩
+        exact (hsub hz).imp (fun h => ⟨z, h, rfl⟩) (fun h => ⟨z, h, rfl⟩)
+      rcases hU_ne with ⟨z₁, hz₁, hz₁U⟩
+      rcases hV_ne with ⟨z₂, hz₂, hz₂V⟩
+      rcases hconn.isPreconnected _ _ hU' hV' hsub'
+        ⟨z₁, ⟨z₁, hz₁, rfl⟩, z₁, hz₁U, rfl⟩ ⟨z₂, ⟨z₂, hz₂, rfl⟩, z₂, hz₂V, rfl⟩ with
+        ⟨_, ⟨z, hz, rfl⟩, ⟨u, hu, hu_eq⟩, ⟨v, hv, hv_eq⟩⟩
+      exact ⟨z, hz, OnePoint.coe_injective hu_eq ▸ hu, OnePoint.coe_injective hv_eq ▸ hv⟩
+    · rintro ⟨hopen, hconn⟩
+      exact ⟨OnePoint.isOpenEmbedding_coe.isOpenMap _ hopen,
+        hconn.image _ OnePoint.continuous_coe.continuousOn⟩
+  have hret_at : ∀ z : ℂ, ContinuousAt sphereFinitePart (z : RiemannSphere) := by
+    intro z
+    rw [ContinuousAt, Tendsto]
+    have hmap : map sphereFinitePart (𝓝 (z : RiemannSphere)) = 𝓝 z := by
+      rw [← OnePoint.isOpenEmbedding_coe.map_nhds_eq z, Filter.map_map]
+      simp [Function.comp_def]
+    rw [hmap, sphereFinitePart_coe]
+  have hret_cont_on_range : ContinuousOn sphereFinitePart
+      (Set.range ((↑) : ℂ → RiemannSphere)) := by
+    rintro p ⟨z, rfl⟩
+    exact (hret_at z).continuousWithinAt
+  refine ⟨hreg_iff, ?_, ?_⟩
+  · constructor
+    · rintro ⟨hS_reg, hS_sc⟩
+      refine ⟨hreg_iff.mp hS_reg, fun γ hγc hγΩ hγcl => ?_⟩
+      let γS : ℝ → RiemannSphere := fun t => (γ t : RiemannSphere)
+      have hγSc : ContinuousOn γS (Icc (0 : ℝ) 1) :=
+        OnePoint.continuous_coe.comp_continuousOn hγc
+      have hγS_in : γS '' Icc (0 : ℝ) 1 ⊆ S := by
+        rintro _ ⟨t, ht, rfl⟩; exact ⟨γ t, hγΩ ⟨t, ht, rfl⟩, rfl⟩
+      have hγS_cl : γS 0 = γS 1 := by dsimp [γS]; rw [hγcl]
+      rcases hS_sc γS hγSc hγS_in hγS_cl with
+        ⟨_, ⟨z₀, hz₀, rfl⟩, _, _, _, _, _, _, HS, hHS_c, hHS_in, hHS_0, hHS_1, hHS_loop⟩
+      have hHS_range : Set.MapsTo HS (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1)
+          (Set.range ((↑) : ℂ → RiemannSphere)) := by
+        intro q hq
+        rcases hHS_in ⟨q, hq, rfl⟩ with ⟨z, _, hzq⟩
+        exact ⟨z, hzq⟩
+      refine ⟨z₀, hz₀, hγc, continuousOn_const, hγΩ, ?_, hγcl, rfl,
+        sphereFinitePart ∘ HS, hret_cont_on_range.comp hHS_c hHS_range,
+        ?_, ?_, ?_, ?_⟩
+      · rintro _ ⟨_, _, rfl⟩; exact hz₀
+      · rintro _ ⟨q, hq, rfl⟩
+        rcases hHS_in ⟨q, hq, rfl⟩ with ⟨z, hz, hzq⟩
+        dsimp only [Function.comp_def]; rw [← hzq, sphereFinitePart_coe]; exact hz
+      · intro s hs; dsimp only [Function.comp_def]; rw [hHS_0 s hs]; rfl
+      · intro s hs; dsimp only [Function.comp_def]; rw [hHS_1 s hs]; rfl
+      · intro t ht; dsimp only [Function.comp_def]; rw [hHS_loop t ht]
+    · rintro ⟨hΩ₀_reg, hΩ₀_sc⟩
+      refine ⟨hreg_iff.mpr hΩ₀_reg, fun γS hγSc hγS_in hγS_cl => ?_⟩
+      have hγS_range : Set.MapsTo γS (Icc (0 : ℝ) 1) (Set.range ((↑) : ℂ → RiemannSphere)) := by
+        intro t ht
+        rcases hγS_in ⟨t, ht, rfl⟩ with ⟨z, _, hzt⟩
+        exact ⟨z, hzt⟩
+      let γ : ℝ → ℂ := sphereFinitePart ∘ γS
+      have hγc : ContinuousOn γ (Icc (0 : ℝ) 1) := hret_cont_on_range.comp hγSc hγS_range
+      have hγ_coe : ∀ t ∈ Icc (0 : ℝ) 1, (γ t : RiemannSphere) = γS t := by
+        intro t ht
+        rcases hγS_in ⟨t, ht, rfl⟩ with ⟨z, _, hzt⟩
+        dsimp [γ]; rw [← hzt, sphereFinitePart_coe]
+      have hγΩ : γ '' Icc (0 : ℝ) 1 ⊆ Ω₀ := by
+        rintro _ ⟨t, ht, rfl⟩
+        rcases hγS_in ⟨t, ht, rfl⟩ with ⟨z, hz, hzt⟩
+        dsimp [γ]; rw [← hzt, sphereFinitePart_coe]; exact hz
+      have hγcl : γ 0 = γ 1 := by
+        dsimp [γ]; rw [hγS_cl]
+      rcases hΩ₀_sc γ hγc hγΩ hγcl with
+        ⟨z₀, hz₀, _, _, _, _, _, _, H₀, hH₀_c, hH₀_in, hH₀_0, hH₀_1, hH₀_loop⟩
+      refine ⟨(z₀ : RiemannSphere), ⟨z₀, hz₀, rfl⟩, hγSc, continuousOn_const, hγS_in, ?_,
+        hγS_cl, rfl, ((↑) : ℂ → RiemannSphere) ∘ H₀,
+        OnePoint.continuous_coe.comp_continuousOn hH₀_c, ?_, ?_, ?_, ?_⟩
+      · rintro _ ⟨_, _, rfl⟩; exact ⟨z₀, hz₀, rfl⟩
+      · rintro _ ⟨q, hq, rfl⟩; exact ⟨H₀ q, hH₀_in ⟨q, hq, rfl⟩, rfl⟩
+      · intro s hs; dsimp only [Function.comp_def]; rw [hH₀_0 s hs]; exact hγ_coe s hs
+      · intro s hs; dsimp only [Function.comp_def]; rw [hH₀_1 s hs]
+      · intro t ht; dsimp only [Function.comp_def]; rw [hH₀_loop t ht]
+  · constructor
+    · intro hall β₀ hβ₀
+      refine ⟨hβ₀, fun α hα_mem hα_lim => ?_⟩
+      have hβS : (β₀ : RiemannSphere) ∈ frontier S := by
+        rw [hfr_eq]; exact ⟨β₀, hβ₀, rfl⟩
+      obtain ⟨γS, hγS_c, hγS_in, t, ht_mono, ht_mem, ht_lim, hγS_t⟩ :=
+        (hall (β₀ : RiemannSphere) hβS).2 (fun n => (α n : RiemannSphere))
+          (fun n => ⟨α n, hα_mem n, rfl⟩)
+          (OnePoint.continuous_coe.continuousAt.tendsto.comp hα_lim)
+      have hγS_1 : γS 1 = (β₀ : RiemannSphere) := by
+        have ht_nhds : Tendsto t atTop (𝓝[Icc (0 : ℝ) 1] 1) :=
+          tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within t ht_lim
+            (Filter.Eventually.of_forall fun n => Ioo_subset_Icc_self (ht_mem n))
+        have hlim1 : Tendsto (γS ∘ t) atTop (𝓝 (γS 1)) :=
+          (hγS_c 1 (right_mem_Icc.mpr zero_le_one)).tendsto.comp ht_nhds
+        have hlim2 : Tendsto (γS ∘ t) atTop (𝓝 (β₀ : RiemannSphere)) := by
+          have heq : γS ∘ t = fun n => (α n : RiemannSphere) := funext hγS_t
+          rw [heq]
+          exact OnePoint.continuous_coe.continuousAt.tendsto.comp hα_lim
+        exact tendsto_nhds_unique hlim1 hlim2
+      have hγS_range : Set.MapsTo γS (Icc (0 : ℝ) 1) (Set.range ((↑) : ℂ → RiemannSphere)) := by
+        intro s hs
+        by_cases hs1 : s = 1
+        · rw [hs1, hγS_1]; exact ⟨β₀, rfl⟩
+        · have hs_lt : s < 1 := lt_of_le_of_ne hs.2 hs1
+          rcases hγS_in s ⟨hs.1, hs_lt⟩ with ⟨z, _, hzs⟩
+          exact ⟨z, hzs⟩
+      refine ⟨sphereFinitePart ∘ γS, hret_cont_on_range.comp hγS_c hγS_range,
+        fun s hs => ?_, t, ht_mono, ht_mem, ht_lim, fun n => ?_⟩
+      · rcases hγS_in s hs with ⟨z, hz, hzs⟩
+        dsimp only [Function.comp_def]; rw [← hzs, sphereFinitePart_coe]; exact hz
+      · dsimp only [Function.comp_def]; rw [hγS_t n, sphereFinitePart_coe]
+    · intro hall β hβ
+      rw [hfr_eq] at hβ
+      rcases hβ with ⟨β₀, hβ₀, rfl⟩
+      refine ⟨by rw [hfr_eq]; exact ⟨β₀, hβ₀, rfl⟩, fun αS hαS_mem hαS_lim => ?_⟩
+      have hαS_fin : ∀ n, ∃ z ∈ Ω₀, αS n = (z : RiemannSphere) := fun n => by
+        rcases hαS_mem n with ⟨z, hz, hzn⟩
+        exact ⟨z, hz, hzn.symm⟩
+      let α : ℕ → ℂ := sphereFinitePart ∘ αS
+      have hα_coe : ∀ n, (α n : RiemannSphere) = αS n := fun n => by
+        rcases hαS_fin n with ⟨z, _, hzn⟩
+        dsimp [α]; rw [hzn, sphereFinitePart_coe]
+      have hα_mem : ∀ n, α n ∈ Ω₀ := fun n => by
+        rcases hαS_fin n with ⟨z, hz, hzn⟩
+        dsimp [α]; rw [hzn, sphereFinitePart_coe]; exact hz
+      have hα_lim : Tendsto α atTop (𝓝 β₀) :=
+        (hret_at β₀).tendsto.comp hαS_lim
+      obtain ⟨γ, hγ_c, hγ_in, t, ht_mono, ht_mem, ht_lim, hγ_t⟩ :=
+        (hall β₀ hβ₀).2 α hα_mem hα_lim
+      refine ⟨((↑) : ℂ → RiemannSphere) ∘ γ, OnePoint.continuous_coe.comp_continuousOn hγ_c,
+        fun s hs => ⟨γ s, hγ_in s hs, rfl⟩, t, ht_mono, ht_mem, ht_lim, fun n => ?_⟩
+      dsimp only [Function.comp_def]; rw [hγ_t n, hα_coe n]
+
+/-- Reduction of any spherical region `Ω ⊆ RiemannSphere` whose complement has nonempty interior
+to a **bounded** planar region `Ω₀ ⊆ ℂ` via an invertible Möbius transformation `moebiusMap a b c d`. -/
+theorem spherical_region_moebius_to_bounded_plane {Ω : Set RiemannSphere}
+    (hΩ_sc : SphericalSimplyConnected Ω)
+    (hcompl_int : (interior Ωᶜ).Nonempty)
+    (hsimple : ∀ β ∈ frontier Ω, IsSphericalSimpleBoundaryPoint Ω β) :
+    ∃ a b c d : ℂ, a * d - b * c ≠ 0 ∧ ∃ Ω₀ : Set ℂ,
+      RudinRCA.Chapter10.IsRegion Ω₀ ∧
+      Bornology.IsBounded Ω₀ ∧
+      RudinRCA.Chapter10.BookSimplyConnected Ω₀ ∧
+      (∀ β₀ ∈ frontier Ω₀, IsSimpleBoundaryPoint Ω₀ β₀) ∧
+      moebiusMap a b c d '' Ω = ((↑) : ℂ → RiemannSphere) '' Ω₀ := by
+  obtain ⟨p₀, hp₀⟩ := hcompl_int
+  obtain ⟨a, b, c, d, hdet, hMp₀⟩ :
+      ∃ a b c d : ℂ, a * d - b * c ≠ 0 ∧ moebiusMap a b c d p₀ = ∞ := by
+    induction p₀ using OnePoint.rec with
+    | infty => exact ⟨1, 0, 0, 1, by norm_num, by simp⟩
+    | coe z₀ => exact ⟨0, 1, 1, -z₀, by norm_num, by simp⟩
+  let e := moebiusHomeomorph hdet
+  have he_fun : (e : RiemannSphere → RiemannSphere) = moebiusMap a b c d := rfl
+  have hinf_int : (∞ : RiemannSphere) ∈ interior ((e '' Ω)ᶜ) := by
+    have hcompl_eq : (e '' Ω)ᶜ = e '' (Ωᶜ) := (e.image_compl Ω).symm
+    rw [hcompl_eq, ← e.image_interior]
+    exact ⟨p₀, hp₀, hMp₀⟩
+  have hnhds_inf : (e '' Ω)ᶜ ∈ 𝓝 (∞ : RiemannSphere) :=
+    mem_interior_iff_mem_nhds.mp hinf_int
+  obtain ⟨K, ⟨_, hK_compact⟩, hK_sub⟩ := OnePoint.hasBasis_nhds_infty.mem_iff.mp hnhds_inf
+  let Ω₀ : Set ℂ := ((↑) : ℂ → RiemannSphere) ⁻¹' (e '' Ω)
+  have hΩ₀_open : IsOpen Ω₀ :=
+    (e.isOpenMap _ hΩ_sc.1.1).preimage OnePoint.continuous_coe
+  have hΩ₀_sub_K : Ω₀ ⊆ K := by
+    intro z hz
+    by_contra hzK
+    have hmem_compl : (z : RiemannSphere) ∈ ((↑) : ℂ → RiemannSphere) '' Kᶜ ∪ {∞} :=
+      Or.inl ⟨z, hzK, rfl⟩
+    exact hK_sub hmem_compl hz
+  have hΩ₀_bdd : Bornology.IsBounded Ω₀ := hK_compact.isBounded.subset hΩ₀_sub_K
+  have hinf_not : (∞ : RiemannSphere) ∉ e '' Ω :=
+    fun hmem => mem_of_mem_nhds hnhds_inf hmem
+  have himg_eq : e '' Ω = ((↑) : ℂ → RiemannSphere) '' Ω₀ := by
+    ext q
+    induction q using OnePoint.rec with
+    | infty =>
+      constructor
+      · intro h; exact False.elim (hinf_not h)
+      · rintro ⟨z, _, hz⟩; exact False.elim (OnePoint.coe_ne_infty z hz)
+    | coe z =>
+      constructor
+      · intro hz; exact ⟨z, hz, rfl⟩
+      · rintro ⟨w, hw, hwz⟩; exact OnePoint.coe_injective hwz ▸ hw
+  have hS_sc : SphericalSimplyConnected (((↑) : ℂ → RiemannSphere) '' Ω₀) := by
+    rw [← himg_eq]
+    exact sphericalSimplyConnected_image_homeomorph e hΩ_sc
+  have hS_simple : ∀ β ∈ frontier (((↑) : ℂ → RiemannSphere) '' Ω₀),
+      IsSphericalSimpleBoundaryPoint (((↑) : ℂ → RiemannSphere) '' Ω₀) β := by
+    rw [← himg_eq]
+    intro β hβ
+    rw [← e.image_frontier] at hβ
+    rcases hβ with ⟨β', hβ', rfl⟩
+    exact isSphericalSimpleBoundaryPoint_image_homeomorph e (hsimple β' hβ')
+  obtain ⟨hreg_iff, hsc_iff, hsimp_iff⟩ := bounded_plane_region_spherical_iff hΩ₀_open hΩ₀_bdd
+  have hΩ₀_sc : RudinRCA.Chapter10.BookSimplyConnected Ω₀ := hsc_iff.mp hS_sc
+  exact ⟨a, b, c, d, hdet, Ω₀, hΩ₀_sc.1, hΩ₀_bdd, hΩ₀_sc, hsimp_iff.mp hS_simple, himg_eq⟩
+
+/-- Explicit Möbius transformation `moebiusMap (1 - c) (1 + c) (-u) u` (`det = 2 * u ≠ 0`)
+carrying `((↑) : ℂ → RiemannSphere) '' ball (0 : ℂ) 1` bijectively onto
+`((↑) : ℂ → RiemannSphere) '' H` for every open half-plane `H = {w : ℂ | c < (u * w).re}` (`u ≠ 0`). -/
+theorem openHalfPlane_moebius_bij {H : Set ℂ} (hH : IsOpenHalfPlane H) :
+    ∃ a b c d : ℂ, a * d - b * c ≠ 0 ∧
+      BijOn (moebiusMap a b c d)
+        (((↑) : ℂ → RiemannSphere) '' ball (0 : ℂ) 1)
+        (((↑) : ℂ → RiemannSphere) '' H) := by
+  rcases hH with ⟨u, r, hu, rfl⟩
+  let a : ℂ := 1 - (r : ℂ)
+  let b : ℂ := 1 + (r : ℂ)
+  let c : ℂ := -u
+  let d : ℂ := u
+  have hdet : a * d - b * c ≠ 0 := by
+    have heq : a * d - b * c = 2 * u := by dsimp [a, b, c, d]; ring
+    rw [heq]; exact mul_ne_zero two_ne_zero hu
+  obtain ⟨_, _, _, _, _, _, hcay_bij⟩ := cayleyMap_props
+  have hval : ∀ z : ℂ, z ≠ 1 →
+      moebiusMap a b c d (z : RiemannSphere) =
+        (((cayleyMap z + (r : ℂ)) / u : ℂ) : RiemannSphere) := by
+    intro z hz1
+    have h1z : 1 - z ≠ 0 := sub_ne_zero.mpr hz1.symm
+    have hden_eq : c * z + d = u * (1 - z) := by dsimp [c, d]; ring
+    have hden : c * z + d ≠ 0 := by rw [hden_eq]; exact mul_ne_zero hu h1z
+    simp only [moebiusMap_coe, hden, ↓reduceIte, OnePoint.coe_eq_coe]
+    rw [hden_eq]
+    dsimp [a, b, cayleyMap]
+    field_simp [hu, h1z]
+    ring
+  refine ⟨a, b, c, d, hdet, ?_, (moebiusMap_bijective hdet).1.injOn, ?_⟩
+  · rintro _ ⟨z, hz, rfl⟩
+    have hz1 : z ≠ 1 := by
+      intro h1; rw [h1] at hz; simp at hz
+    rw [hval z hz1]
+    refine ⟨(cayleyMap z + (r : ℂ)) / u, ?_, rfl⟩
+    have hw : 0 < (cayleyMap z).re := hcay_bij.mapsTo hz
+    change r < (u * ((cayleyMap z + (r : ℂ)) / u)).re
+    rw [mul_div_cancel₀ _ hu, Complex.add_re, Complex.ofReal_re]
+    linarith
+  · rintro _ ⟨w, hw, rfl⟩
+    have hw' : r < (u * w).re := hw
+    let t : ℂ := u * w - (r : ℂ)
+    have ht : t ∈ {ζ : ℂ | 0 < ζ.re} := by
+      change 0 < (u * w - (r : ℂ)).re
+      rw [Complex.sub_re, Complex.ofReal_re]
+      exact sub_pos.mpr hw'
+    obtain ⟨z, hz, hzt⟩ := hcay_bij.surjOn ht
+    have hz1 : z ≠ 1 := by
+      intro h1; rw [h1] at hz; simp at hz
+    refine ⟨(z : RiemannSphere), ⟨z, hz, rfl⟩, ?_⟩
+    rw [hval z hz1, hzt, OnePoint.coe_eq_coe]
+    dsimp [t]
+    field_simp [hu]; ring
+
+/-! ### Final Glue: Public Theorems `14.20(a)`, `14.20(b)`, `14.20(c)`, `14.20(d)`, and `14.20` -/
+
+private theorem mem_frontier_of_mem_closure_not_mem {α : Type*} [TopologicalSpace α]
+    {s : Set α} {x : α} (hx : x ∈ closure s) (hnot : x ∉ s) : x ∈ frontier s :=
+  ⟨hx, fun h => hnot (interior_subset h)⟩
+
+theorem bounded_subset_ne_univ {S : Set ℂ} (hS : Bornology.IsBounded S) :
+    S ≠ Set.univ := by
+  intro hall
+  obtain ⟨R, hR⟩ := hS.subset_ball (0 : ℂ)
+  let z : ℂ := ((max R 0 + 1 : ℝ) : ℂ)
+  have hz_mem : z ∈ ball (0 : ℂ) R := hR (hall ▸ Set.mem_univ z)
+  have hz_lt : ‖z‖ < R := mem_ball_zero_iff.mp hz_mem
+  have hz_pos : 0 < max R 0 + 1 := by linarith [le_max_right R 0]
+  have hz_norm : ‖z‖ = max R 0 + 1 := by
+    dsimp [z]
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hz_pos]
+  linarith [le_max_left R 0]
+
+theorem exists_riemann_map_of_bounded {Ω : Set ℂ}
+    (hΩ_sc : RudinRCA.Chapter10.BookSimplyConnected Ω) (hΩ_bdd : Bornology.IsBounded Ω) :
+    ∃ f₀ : ℂ → ℂ, RudinRCA.Chapter10.HolomorphicOn f₀ Ω ∧ BijOn f₀ Ω (ball (0 : ℂ) 1) :=
+  theorem14_8.1 hΩ_sc.1 hΩ_sc (bounded_subset_ne_univ hΩ_bdd)
+
+theorem unitDisc_all_simple :
+    RudinRCA.Chapter10.BookSimplyConnected (ball (0 : ℂ) 1) ∧
+    ∀ β ∈ frontier (ball (0 : ℂ) 1), IsSimpleBoundaryPoint (ball (0 : ℂ) 1) β := by
+  refine jordanBoundary_region_converse
+    (RudinRCA.Chapter10.disc_isRegion 0 zero_lt_one) isBounded_ball ?_
+  rw [frontier_ball (0 : ℂ) one_ne_zero]
+  exact ⟨Homeomorph.refl _⟩
+
+/-- **14.20(a) (Jordan-curve boundary characterization and closed-disc homeomorphism,
+RCA p. 291):**
+1. *(Forward)* Under `14.19`'s hypotheses (`Ω` bounded simply connected region, every boundary point
+   simple), `frontier Ω` is a Jordan curve and `closure Ω` is homeomorphic to `closedBall 0 1`.
+2. *(Converse — stated without proof in Rudin; proved in full here)* Every bounded region `Ω ⊆ ℂ`
+   whose boundary `frontier Ω` is a Jordan curve is simply connected (`BookSimplyConnected Ω`) and
+   has only simple boundary points (`∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β`).
+3. *(Equivalence)* For every bounded region `Ω ⊆ ℂ`,
+   `(BookSimplyConnected Ω ∧ ∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β) ↔
+     IsJordanCurve (frontier Ω)`. -/
+theorem theorem14_20_part_a :
+    (∀ {Ω : Set ℂ}, RudinRCA.Chapter10.BookSimplyConnected Ω →
+      Bornology.IsBounded Ω →
+      (∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β) →
+      IsJordanCurve (frontier Ω) ∧ Nonempty (closure Ω ≃ₜ closedBall (0 : ℂ) 1)) ∧
+    (∀ {Ω : Set ℂ}, RudinRCA.Chapter10.IsRegion Ω →
+      Bornology.IsBounded Ω →
+      IsJordanCurve (frontier Ω) →
+      RudinRCA.Chapter10.BookSimplyConnected Ω ∧
+        ∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β) ∧
+    (∀ {Ω : Set ℂ}, RudinRCA.Chapter10.IsRegion Ω →
+      Bornology.IsBounded Ω →
+      ((RudinRCA.Chapter10.BookSimplyConnected Ω ∧
+          ∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β) ↔
+        IsJordanCurve (frontier Ω))) := by
+  have hfwd : ∀ {Ω : Set ℂ}, RudinRCA.Chapter10.BookSimplyConnected Ω →
+      Bornology.IsBounded Ω →
+      (∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β) →
+      IsJordanCurve (frontier Ω) ∧ Nonempty (closure Ω ≃ₜ closedBall (0 : ℂ) 1) := by
+    intro Ω hΩ_sc hΩ_bdd hΩ_simple
+    obtain ⟨f₀, hf₀_holo, hf₀_bij⟩ := exists_riemann_map_of_bounded hΩ_sc hΩ_bdd
+    obtain ⟨_, _, _, _, _, _, ⟨e_cb, _⟩, ⟨e_bd, _⟩⟩ :=
+      caratheodoryExtension_homeomorph_package hΩ_sc.1.1 hΩ_bdd hΩ_simple hf₀_holo hf₀_bij
+    exact ⟨⟨e_bd⟩, ⟨e_cb⟩⟩
+  refine ⟨hfwd, fun hΩ_reg hΩ_bdd hJ => jordanBoundary_region_converse hΩ_reg hΩ_bdd hJ,
+    fun hΩ_reg hΩ_bdd => ⟨fun ⟨hsc, hsimp⟩ => (hfwd hsc hΩ_bdd hsimp).1,
+      fun hJ => jordanBoundary_region_converse hΩ_reg hΩ_bdd hJ⟩⟩
+
+/-- Any continuous bijection `G : closure Ω → closedBall (0 : ℂ) 1` that is holomorphic on `Ω`
+(where `Ω` is a bounded simply connected region with simple boundary points) automatically maps `Ω`
+bijectively onto `ball 0 1`, maps `frontier Ω` bijectively onto `sphere 0 1`, and factors on
+`closure Ω` as `diskAut α c ∘ caratheodoryExtension f₀ Ω` for any reference Riemann map `f₀`. -/
+theorem closure_bijOn_closedBall_factorization {Ω : Set ℂ}
+    (hΩ_sc : RudinRCA.Chapter10.BookSimplyConnected Ω)
+    (hΩ_bdd : Bornology.IsBounded Ω)
+    (hΩ_simple : ∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β)
+    {f₀ : ℂ → ℂ} (hf₀_holo : RudinRCA.Chapter10.HolomorphicOn f₀ Ω)
+    (hf₀_bij : BijOn f₀ Ω (ball (0 : ℂ) 1))
+    {G : ℂ → ℂ} (hG_cont : ContinuousOn G (closure Ω))
+    (hG_holo : RudinRCA.Chapter10.HolomorphicOn G Ω)
+    (hG_bij_cb : BijOn G (closure Ω) (closedBall (0 : ℂ) 1)) :
+    BijOn G Ω (ball (0 : ℂ) 1) ∧
+    BijOn G (frontier Ω) (sphere (0 : ℂ) 1) ∧
+    ∃ α ∈ ball (0 : ℂ) 1, ∃ c : ℂ, ‖c‖ = 1 ∧
+      Set.EqOn G (diskAut α c ∘ caratheodoryExtension f₀ Ω) (closure Ω) := by
+  have hΩ_open : IsOpen Ω := hΩ_sc.1.1
+  let F₀ : ℂ → ℂ := caratheodoryExtension f₀ Ω
+  obtain ⟨hF₀_eq, hF₀_cont, _, hF₀_bij_cb, hF₀_bij_fr, _, ⟨e₀, he₀⟩, _⟩ :=
+    caratheodoryExtension_homeomorph_package hΩ_open hΩ_bdd hΩ_simple hf₀_holo hf₀_bij
+  have : CompactSpace (closure Ω) := isCompact_iff_compactSpace.mp hΩ_bdd.isCompact_closure
+  let eG : closure Ω ≃ₜ closedBall (0 : ℂ) 1 :=
+    Continuous.homeoOfEquivCompactToT2 (f := hG_bij_cb.equiv)
+      (hG_cont.domRestrict.codRestrict fun z => hG_bij_cb.mapsTo z.2)
+  have heG : ∀ z : closure Ω, (eG z : ℂ) = G z.1 := fun _ => rfl
+  let H : closedBall (0 : ℂ) 1 ≃ₜ closedBall (0 : ℂ) 1 := e₀.symm.trans eG
+  obtain ⟨hH_sph, hH_ball⟩ := homeomorph_closedBall_preserves_sphere_and_ball H
+  obtain ⟨hHinv_sph, hHinv_ball⟩ := homeomorph_closedBall_preserves_sphere_and_ball H.symm
+  have hHG : ∀ z : closure Ω, (H (e₀ z) : ℂ) = G z.1 := fun z => by
+    simp [H, heG]
+  have hG_maps_ball : MapsTo G Ω (ball (0 : ℂ) 1) := by
+    intro z hz
+    have hz_cl : z ∈ closure Ω := subset_closure hz
+    have hF₀_z : F₀ z ∈ ball (0 : ℂ) 1 := by dsimp [F₀]; rw [hF₀_eq hz]; exact hf₀_bij.mapsTo hz
+    have he₀_eq : e₀ ⟨z, hz_cl⟩ = ⟨F₀ z, ball_subset_closedBall hF₀_z⟩ :=
+      Subtype.ext (he₀ ⟨z, hz_cl⟩)
+    have := hH_ball (F₀ z) hF₀_z
+    rwa [← he₀_eq, hHG ⟨z, hz_cl⟩] at this
+  have hG_maps_sph : MapsTo G (frontier Ω) (sphere (0 : ℂ) 1) := by
+    intro β hβ
+    have hβ_cl : β ∈ closure Ω := frontier_subset_closure hβ
+    have hF₀_β : F₀ β ∈ sphere (0 : ℂ) 1 := hF₀_bij_fr.mapsTo hβ
+    have he₀_eq : e₀ ⟨β, hβ_cl⟩ = ⟨F₀ β, sphere_subset_closedBall hF₀_β⟩ :=
+      Subtype.ext (he₀ ⟨β, hβ_cl⟩)
+    have := hH_sph (F₀ β) hF₀_β
+    rwa [← he₀_eq, hHG ⟨β, hβ_cl⟩] at this
+  have hcl_decomp : ∀ z ∈ closure Ω, z ∈ Ω ∨ z ∈ frontier Ω := by
+    intro z hz
+    by_cases h : z ∈ Ω
+    · exact Or.inl h
+    · exact Or.inr (mem_frontier_of_mem_closure_not_mem hz h)
+  have hG_bij_ball : BijOn G Ω (ball (0 : ℂ) 1) := by
+    refine ⟨hG_maps_ball, hG_bij_cb.injOn.mono subset_closure, fun w hw => ?_⟩
+    obtain ⟨z, hz_cl, hGz⟩ := hG_bij_cb.surjOn (ball_subset_closedBall hw)
+    rcases hcl_decomp z hz_cl with hz_Ω | hz_fr
+    · exact ⟨z, hz_Ω, hGz⟩
+    · exfalso
+      have h1 : ‖w‖ = 1 := by rw [← hGz]; simpa using hG_maps_sph hz_fr
+      have h2 : ‖w‖ < 1 := mem_ball_zero_iff.mp hw
+      linarith
+  have hG_bij_sph : BijOn G (frontier Ω) (sphere (0 : ℂ) 1) := by
+    refine ⟨hG_maps_sph, hG_bij_cb.injOn.mono frontier_subset_closure, fun w hw => ?_⟩
+    obtain ⟨z, hz_cl, hGz⟩ := hG_bij_cb.surjOn (sphere_subset_closedBall hw)
+    rcases hcl_decomp z hz_cl with hz_Ω | hz_fr
+    · exfalso
+      have h1 : ‖w‖ < 1 := by rw [← hGz]; exact mem_ball_zero_iff.mp (hG_maps_ball hz_Ω)
+      have h2 : ‖w‖ = 1 := by simpa using hw
+      linarith
+    · exact ⟨z, hz_fr, hGz⟩
+  obtain ⟨ψ₀, hψ₀_holo, hψ₀_bij, hψ₀_left, hψ₀_right⟩ :=
+    (theorem14_7 hΩ_open hf₀_holo hf₀_bij).2.1
+  have hcomp_diff : DifferentiableOn ℂ (G ∘ ψ₀) (ball (0 : ℂ) 1) := by
+    intro w hw
+    exact ((hG_holo (ψ₀ w) (hψ₀_bij.mapsTo hw)).comp w (hψ₀_holo w hw)).differentiableWithinAt
+  have hcomp_bij : BijOn (G ∘ ψ₀) (ball (0 : ℂ) 1) (ball (0 : ℂ) 1) :=
+    hG_bij_ball.comp hψ₀_bij
+  obtain ⟨α, hα, c, hc, hcomp_aut⟩ :=
+    RudinRCA.Chapter12.theorem12_6.1.mp ⟨hcomp_diff, hcomp_bij⟩
+  obtain ⟨hAut_cont, _, _, _, _, _⟩ := diskAut_props hα hc
+  have heq_Ω : Set.EqOn G (diskAut α c ∘ F₀) Ω := by
+    intro z hz
+    have h1 := hcomp_aut (f₀ z) (hf₀_bij.mapsTo hz)
+    dsimp [Function.comp_def] at h1 ⊢
+    rw [hψ₀_left z hz] at h1
+    dsimp [F₀]
+    rw [h1, hF₀_eq hz]
+    rfl
+  have heq_cl : Set.EqOn G (diskAut α c ∘ F₀) (closure Ω) :=
+    eqOn_of_continuousOn_closure_eqOn hG_cont (hAut_cont.comp hF₀_cont hF₀_bij_cb.mapsTo) heq_Ω
+  exact ⟨hG_bij_ball, hG_bij_sph, α, hα, c, hc, heq_cl⟩
+
+/-- Positive (conformal / counterclockwise) cyclic order of three boundary points
+`β₁, β₂, β₃ ∈ frontier Ω` of a planar region `Ω ⊆ ℂ`: `β₁, β₂, β₃` lie on `frontier Ω` and are
+mapped to a positively cyclically ordered triple on `sphere (0 : ℂ) 1` by some (equivalently, every)
+closure homeomorphism `closure Ω → closedBall (0 : ℂ) 1` holomorphic on `Ω`. -/
+def BoundaryPosCyclic (Ω : Set ℂ) (β₁ β₂ β₃ : ℂ) : Prop :=
+  β₁ ∈ frontier Ω ∧ β₂ ∈ frontier Ω ∧ β₃ ∈ frontier Ω ∧
+  ∃ F : ℂ → ℂ, ContinuousOn F (closure Ω) ∧ RudinRCA.Chapter10.HolomorphicOn F Ω ∧
+    BijOn F (closure Ω) (closedBall (0 : ℂ) 1) ∧
+    UnitCirclePosCyclic (F β₁) (F β₂) (F β₃)
+
+/-- Conformal invariance and exclusive dichotomy of `BoundaryPosCyclic` on `frontier Ω`. -/
+theorem boundaryPosCyclic_invariance_and_dichotomy {Ω : Set ℂ}
+    (hΩ_sc : RudinRCA.Chapter10.BookSimplyConnected Ω)
+    (hΩ_bdd : Bornology.IsBounded Ω)
+    (hΩ_simple : ∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β) :
+    (∀ {β₁ β₂ β₃ : ℂ} {F : ℂ → ℂ},
+      β₁ ∈ frontier Ω → β₂ ∈ frontier Ω → β₃ ∈ frontier Ω →
+      ContinuousOn F (closure Ω) → RudinRCA.Chapter10.HolomorphicOn F Ω →
+      BijOn F (closure Ω) (closedBall (0 : ℂ) 1) →
+      (BoundaryPosCyclic Ω β₁ β₂ β₃ ↔ UnitCirclePosCyclic (F β₁) (F β₂) (F β₃))) ∧
+    (∀ {β₁ β₂ β₃ : ℂ},
+      β₁ ∈ frontier Ω → β₂ ∈ frontier Ω → β₃ ∈ frontier Ω →
+      β₁ ≠ β₂ → β₂ ≠ β₃ → β₁ ≠ β₃ →
+      (BoundaryPosCyclic Ω β₁ β₂ β₃ ↔ ¬ BoundaryPosCyclic Ω β₁ β₃ β₂)) := by
+  obtain ⟨f₀, hf₀_holo, hf₀_bij⟩ := exists_riemann_map_of_bounded hΩ_sc hΩ_bdd
+  have hinv : ∀ {β₁ β₂ β₃ : ℂ} {F : ℂ → ℂ},
+      β₁ ∈ frontier Ω → β₂ ∈ frontier Ω → β₃ ∈ frontier Ω →
+      ContinuousOn F (closure Ω) → RudinRCA.Chapter10.HolomorphicOn F Ω →
+      BijOn F (closure Ω) (closedBall (0 : ℂ) 1) →
+      (BoundaryPosCyclic Ω β₁ β₂ β₃ ↔ UnitCirclePosCyclic (F β₁) (F β₂) (F β₃)) := by
+    intro β₁ β₂ β₃ F hβ₁ hβ₂ hβ₃ hF_cont hF_holo hF_bij
+    constructor
+    · rintro ⟨_, _, _, G, hG_cont, hG_holo, hG_bij, hG_cyc⟩
+      obtain ⟨_, _, α₁, hα₁, c₁, hc₁, hF_eq⟩ :=
+        closure_bijOn_closedBall_factorization hΩ_sc hΩ_bdd hΩ_simple hf₀_holo hf₀_bij
+          hF_cont hF_holo hF_bij
+      obtain ⟨_, _, α₂, hα₂, c₂, hc₂, hG_eq⟩ :=
+        closure_bijOn_closedBall_factorization hΩ_sc hΩ_bdd hΩ_simple hf₀_holo hf₀_bij
+          hG_cont hG_holo hG_bij
+      obtain ⟨_, _, _, _, _, hAut₂_inv⟩ := diskAut_props hα₂ hc₂
+      obtain ⟨hinv₂_cont, hinv₂_diff, hinv₂_bij⟩ := diskAutInv_props hα₂ hc₂
+      obtain ⟨_, _, _, _, hF₀_bij_fr, _, _, _⟩ :=
+        caratheodoryExtension_homeomorph_package hΩ_sc.1.1 hΩ_bdd hΩ_simple hf₀_holo hf₀_bij
+      let inv₂ : ℂ → ℂ := fun ζ => RudinRCA.Chapter12.phi (-α₂) (c₂⁻¹ * ζ)
+      obtain ⟨α₃, hα₃, c₃, hc₃, hinv₂_eq⟩ :=
+        RudinRCA.Chapter12.theorem12_6.1.mp ⟨hinv₂_diff, hinv₂_bij⟩
+      obtain ⟨hAut₃_cont, _, _, _, _, _⟩ := diskAut_props hα₃ hc₃
+      have hinv₂_cb : Set.EqOn inv₂ (diskAut α₃ c₃) (closedBall (0 : ℂ) 1) :=
+        eqOn_closedBall_of_eqOn_ball hinv₂_cont hAut₃_cont hinv₂_eq
+      let F₀ : ℂ → ℂ := caratheodoryExtension f₀ Ω
+      have hF₀_cyc : UnitCirclePosCyclic (F₀ β₁) (F₀ β₂) (F₀ β₃) := by
+        have h1 : diskAut α₃ c₃ (G β₁) = F₀ β₁ := by
+          rw [← hinv₂_cb (hG_bij.mapsTo (frontier_subset_closure hβ₁)),
+            hG_eq (frontier_subset_closure hβ₁)]
+          exact (hAut₂_inv (F₀ β₁) (sphere_subset_closedBall (hF₀_bij_fr.mapsTo hβ₁))).1
+        have h2 : diskAut α₃ c₃ (G β₂) = F₀ β₂ := by
+          rw [← hinv₂_cb (hG_bij.mapsTo (frontier_subset_closure hβ₂)),
+            hG_eq (frontier_subset_closure hβ₂)]
+          exact (hAut₂_inv (F₀ β₂) (sphere_subset_closedBall (hF₀_bij_fr.mapsTo hβ₂))).1
+        have h3 : diskAut α₃ c₃ (G β₃) = F₀ β₃ := by
+          rw [← hinv₂_cb (hG_bij.mapsTo (frontier_subset_closure hβ₃)),
+            hG_eq (frontier_subset_closure hβ₃)]
+          exact (hAut₂_inv (F₀ β₃) (sphere_subset_closedBall (hF₀_bij_fr.mapsTo hβ₃))).1
+        rw [← h1, ← h2, ← h3]
+        exact diskAut_preserves_posCyclic hα₃ hc₃ hG_cyc
+      rw [hF_eq (frontier_subset_closure hβ₁), hF_eq (frontier_subset_closure hβ₂),
+        hF_eq (frontier_subset_closure hβ₃)]
+      exact diskAut_preserves_posCyclic hα₁ hc₁ hF₀_cyc
+    · intro hcyc
+      exact ⟨hβ₁, hβ₂, hβ₃, F, hF_cont, hF_holo, hF_bij, hcyc⟩
+  refine ⟨hinv, fun {β₁ β₂ β₃} hβ₁ hβ₂ hβ₃ h12 h23 h13 => ?_⟩
+  let F₀ : ℂ → ℂ := caratheodoryExtension f₀ Ω
+  obtain ⟨hF₀_eq, hF₀_cont, _, hF₀_bij_cb, hF₀_bij_fr, _, _, _⟩ :=
+    caratheodoryExtension_homeomorph_package hΩ_sc.1.1 hΩ_bdd hΩ_simple hf₀_holo hf₀_bij
+  have hF₀_holo : RudinRCA.Chapter10.HolomorphicOn F₀ Ω :=
+    fun z hz => (hf₀_holo z hz).congr_of_eventuallyEq
+      (Filter.eventuallyEq_of_mem (hΩ_sc.1.1.mem_nhds hz) fun w hw => hF₀_eq hw)
+  rw [hinv hβ₁ hβ₂ hβ₃ hF₀_cont hF₀_holo hF₀_bij_cb,
+    hinv hβ₁ hβ₃ hβ₂ hF₀_cont hF₀_holo hF₀_bij_cb]
+  exact unitCirclePosCyclic_dichotomy
+    (hF₀_bij_fr.mapsTo hβ₁) (hF₀_bij_fr.mapsTo hβ₂) (hF₀_bij_fr.mapsTo hβ₃)
+    (fun h => h12 (hF₀_bij_fr.injOn hβ₁ hβ₂ h))
+    (fun h => h23 (hF₀_bij_fr.injOn hβ₂ hβ₃ h))
+    (fun h => h13 (hF₀_bij_fr.injOn hβ₁ hβ₃ h))
+
+/-- **14.20(b) (Unique three-point boundary normalization in compatible cyclic order,
+RCA p. 291):**
+Let `Ω` be a bounded simply connected region in `ℂ` whose boundary points are all simple, let
+`β₁, β₂, β₃ ∈ frontier Ω` be three distinct boundary points, and let `w₁, w₂, w₃ ∈ sphere 0 1` be
+three distinct points on the unit circle.
+1. If `(β₁, β₂, β₃)` and `(w₁, w₂, w₃)` have compatible cyclic order
+   (`BoundaryPosCyclic Ω β₁ β₂ β₃ ↔ UnitCirclePosCyclic w₁ w₂ w₃`), there exists a unique closure
+   homeomorphism `F : closure Ω → closedBall 0 1` holomorphic in `Ω` satisfying
+   `F β₁ = w₁`, `F β₂ = w₂`, and `F β₃ = w₃` (moreover `F` maps `Ω` bijectively onto `ball 0 1`
+   and `frontier Ω` bijectively onto `sphere 0 1`).
+2. Conversely, the existence of such a map implies compatible cyclic order
+   (`BoundaryPosCyclic Ω β₁ β₂ β₃ ↔ UnitCirclePosCyclic w₁ w₂ w₃`). -/
+theorem theorem14_20_part_b {Ω : Set ℂ}
+    (hΩ_sc : RudinRCA.Chapter10.BookSimplyConnected Ω)
+    (hΩ_bdd : Bornology.IsBounded Ω)
+    (hΩ_simple : ∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β)
+    {β₁ β₂ β₃ w₁ w₂ w₃ : ℂ}
+    (hβ₁ : β₁ ∈ frontier Ω) (hβ₂ : β₂ ∈ frontier Ω) (hβ₃ : β₃ ∈ frontier Ω)
+    (hβ12 : β₁ ≠ β₂) (hβ23 : β₂ ≠ β₃) (hβ13 : β₁ ≠ β₃)
+    (hw₁ : w₁ ∈ sphere (0 : ℂ) 1) (hw₂ : w₂ ∈ sphere (0 : ℂ) 1) (hw₃ : w₃ ∈ sphere (0 : ℂ) 1)
+    (hw12 : w₁ ≠ w₂) (hw23 : w₂ ≠ w₃) (hw13 : w₁ ≠ w₃) :
+    ((BoundaryPosCyclic Ω β₁ β₂ β₃ ↔ UnitCirclePosCyclic w₁ w₂ w₃) →
+      ∃ F : ℂ → ℂ,
+        ContinuousOn F (closure Ω) ∧
+        RudinRCA.Chapter10.HolomorphicOn F Ω ∧
+        BijOn F Ω (ball (0 : ℂ) 1) ∧
+        BijOn F (frontier Ω) (sphere (0 : ℂ) 1) ∧
+        BijOn F (closure Ω) (closedBall (0 : ℂ) 1) ∧
+        (∃ e : closure Ω ≃ₜ closedBall (0 : ℂ) 1, ∀ z : closure Ω, (e z : ℂ) = F z.1) ∧
+        F β₁ = w₁ ∧ F β₂ = w₂ ∧ F β₃ = w₃ ∧
+        ∀ G : ℂ → ℂ,
+          ContinuousOn G (closure Ω) →
+          RudinRCA.Chapter10.HolomorphicOn G Ω →
+          BijOn G (closure Ω) (closedBall (0 : ℂ) 1) →
+          G β₁ = w₁ → G β₂ = w₂ → G β₃ = w₃ →
+          Set.EqOn G F (closure Ω)) ∧
+    ((∃ F : ℂ → ℂ,
+        ContinuousOn F (closure Ω) ∧
+        RudinRCA.Chapter10.HolomorphicOn F Ω ∧
+        BijOn F (closure Ω) (closedBall (0 : ℂ) 1) ∧
+        F β₁ = w₁ ∧ F β₂ = w₂ ∧ F β₃ = w₃) →
+      (BoundaryPosCyclic Ω β₁ β₂ β₃ ↔ UnitCirclePosCyclic w₁ w₂ w₃)) := by
+  obtain ⟨hinv, hdich_β⟩ := boundaryPosCyclic_invariance_and_dichotomy hΩ_sc hΩ_bdd hΩ_simple
+  refine ⟨fun hcompat => ?_, ?_⟩
+  · obtain ⟨f₀, hf₀_holo, hf₀_bij⟩ := exists_riemann_map_of_bounded hΩ_sc hΩ_bdd
+    let F₀ : ℂ → ℂ := caratheodoryExtension f₀ Ω
+    obtain ⟨hF₀_eq, hF₀_cont, _, hF₀_bij_cb, hF₀_bij_fr, _, ⟨e₀, he₀⟩, _⟩ :=
+      caratheodoryExtension_homeomorph_package hΩ_sc.1.1 hΩ_bdd hΩ_simple hf₀_holo hf₀_bij
+    have hF₀_holo : RudinRCA.Chapter10.HolomorphicOn F₀ Ω :=
+      fun z hz => (hf₀_holo z hz).congr_of_eventuallyEq
+        (Filter.eventuallyEq_of_mem (hΩ_sc.1.1.mem_nhds hz) fun w hw => hF₀_eq hw)
+    have hz₁_s : F₀ β₁ ∈ sphere (0 : ℂ) 1 := hF₀_bij_fr.mapsTo hβ₁
+    have hz₂_s : F₀ β₂ ∈ sphere (0 : ℂ) 1 := hF₀_bij_fr.mapsTo hβ₂
+    have hz₃_s : F₀ β₃ ∈ sphere (0 : ℂ) 1 := hF₀_bij_fr.mapsTo hβ₃
+    obtain ⟨α, hα, c, hc, hv₁, hv₂, hv₃, huniq_aut⟩ :
+        ∃ α ∈ ball (0 : ℂ) 1, ∃ c : ℂ, ‖c‖ = 1 ∧
+          diskAut α c (F₀ β₁) = w₁ ∧ diskAut α c (F₀ β₂) = w₂ ∧ diskAut α c (F₀ β₃) = w₃ ∧
+          ∀ α' ∈ ball (0 : ℂ) 1, ∀ c' : ℂ, ‖c'‖ = 1 →
+            diskAut α' c' (F₀ β₁) = w₁ → diskAut α' c' (F₀ β₂) = w₂ →
+            diskAut α' c' (F₀ β₃) = w₃ → α' = α ∧ c' = c := by
+      by_cases hpos : UnitCirclePosCyclic w₁ w₂ w₃
+      · have hβ_pos : BoundaryPosCyclic Ω β₁ β₂ β₃ := hcompat.mpr hpos
+        have hF₀_pos : UnitCirclePosCyclic (F₀ β₁) (F₀ β₂) (F₀ β₃) :=
+          (hinv hβ₁ hβ₂ hβ₃ hF₀_cont hF₀_holo hF₀_bij_cb).mp hβ_pos
+        exact exists_unique_diskAut_three_points hF₀_pos hpos
+      · have hw_swap : UnitCirclePosCyclic w₁ w₃ w₂ := by
+          by_contra hnot
+          exact hpos ((unitCirclePosCyclic_dichotomy hw₁ hw₂ hw₃ hw12 hw23 hw13).mpr hnot)
+        have hnot_β : ¬ BoundaryPosCyclic Ω β₁ β₂ β₃ := fun hb => hpos (hcompat.mp hb)
+        have hβ_swap : BoundaryPosCyclic Ω β₁ β₃ β₂ := by
+          by_contra hnot
+          exact hnot_β ((hdich_β hβ₁ hβ₂ hβ₃ hβ12 hβ23 hβ13).mpr hnot)
+        have hF₀_swap : UnitCirclePosCyclic (F₀ β₁) (F₀ β₃) (F₀ β₂) :=
+          (hinv hβ₁ hβ₃ hβ₂ hF₀_cont hF₀_holo hF₀_bij_cb).mp hβ_swap
+        obtain ⟨α, hα, c, hc, hv₁, hv₃, hv₂, hu⟩ :=
+          exists_unique_diskAut_three_points hF₀_swap hw_swap
+        exact ⟨α, hα, c, hc, hv₁, hv₂, hv₃,
+          fun α' hα' c' hc' h₁' h₂' h₃' => hu α' hα' c' hc' h₁' h₃' h₂'⟩
+    obtain ⟨hAut_cont, hAut_diff, hAut_ball, hAut_sph, hAut_cb, _⟩ := diskAut_props hα hc
+    let F : ℂ → ℂ := diskAut α c ∘ F₀
+    have hF_cont : ContinuousOn F (closure Ω) := hAut_cont.comp hF₀_cont hF₀_bij_cb.mapsTo
+    have hF₀_bij_Ω : BijOn F₀ Ω (ball (0 : ℂ) 1) := by
+      refine ⟨fun z hz => by dsimp [F₀]; rw [hF₀_eq hz]; exact hf₀_bij.mapsTo hz,
+        fun z₁ hz₁ z₂ hz₂ h => hf₀_bij.injOn hz₁ hz₂
+          (by dsimp [F₀] at h; rwa [← hF₀_eq hz₁, ← hF₀_eq hz₂]),
+        fun w hw => ?_⟩
+      obtain ⟨z, hz, hzw⟩ := hf₀_bij.surjOn hw
+      exact ⟨z, hz, by dsimp [F₀]; rw [hF₀_eq hz, hzw]⟩
+    have hF_holo : RudinRCA.Chapter10.HolomorphicOn F Ω := by
+      intro z hz
+      exact (hAut_diff (F₀ z) (hF₀_bij_Ω.mapsTo hz)).differentiableAt
+        (isOpen_ball.mem_nhds (hF₀_bij_Ω.mapsTo hz)) |>.comp z (hF₀_holo z hz)
+    have hF_bij_ball : BijOn F Ω (ball (0 : ℂ) 1) := hAut_ball.comp hF₀_bij_Ω
+    have hF_bij_sph : BijOn F (frontier Ω) (sphere (0 : ℂ) 1) := hAut_sph.comp hF₀_bij_fr
+    have hF_bij_cb : BijOn F (closure Ω) (closedBall (0 : ℂ) 1) := hAut_cb.comp hF₀_bij_cb
+    have : CompactSpace (closure Ω) := isCompact_iff_compactSpace.mp hΩ_bdd.isCompact_closure
+    let eF : closure Ω ≃ₜ closedBall (0 : ℂ) 1 :=
+      Continuous.homeoOfEquivCompactToT2 (f := hF_bij_cb.equiv)
+        (hF_cont.domRestrict.codRestrict fun z => hF_bij_cb.mapsTo z.2)
+    refine ⟨F, hF_cont, hF_holo, hF_bij_ball, hF_bij_sph, hF_bij_cb, ⟨eF, fun _ => rfl⟩,
+      hv₁, hv₂, hv₃, ?_⟩
+    intro G hG_cont hG_holo hG_bij_cb hG₁ hG₂ hG₃
+    obtain ⟨_, _, α', hα', c', hc', hG_eq⟩ :=
+      closure_bijOn_closedBall_factorization hΩ_sc hΩ_bdd hΩ_simple hf₀_holo hf₀_bij
+        hG_cont hG_holo hG_bij_cb
+    have ha₁ : diskAut α' c' (F₀ β₁) = w₁ := by
+      rw [← hG₁]; exact (hG_eq (frontier_subset_closure hβ₁)).symm
+    have ha₂ : diskAut α' c' (F₀ β₂) = w₂ := by
+      rw [← hG₂]; exact (hG_eq (frontier_subset_closure hβ₂)).symm
+    have ha₃ : diskAut α' c' (F₀ β₃) = w₃ := by
+      rw [← hG₃]; exact (hG_eq (frontier_subset_closure hβ₃)).symm
+    obtain ⟨rfl, rfl⟩ := huniq_aut α' hα' c' hc' ha₁ ha₂ ha₃
+    exact hG_eq
+  · rintro ⟨F, hF_cont, hF_holo, hF_bij, rfl, rfl, rfl⟩
+    exact hinv hβ₁ hβ₂ hβ₃ hF_cont hF_holo hF_bij
+
+/-- Target region `T ⊆ RiemannSphere` Möbius-equivalent to the open unit disc
+`((↑) : ℂ → RiemannSphere) '' ball (0 : ℂ) 1` (covering both `U` itself and every open half-plane
+`H ⊆ ℂ` via `openHalfPlane_moebius_bij`). -/
+def IsMoebiusDiscTarget (T : Set RiemannSphere) : Prop :=
+  ∃ a b c d : ℂ, a * d - b * c ≠ 0 ∧
+    BijOn (moebiusMap a b c d) T (((↑) : ℂ → RiemannSphere) '' ball (0 : ℂ) 1)
+
+/-- Positive cyclic order on `frontier Ω` for a spherical region `Ω ⊆ RiemannSphere`:
+`β₁, β₂, β₃ ∈ frontier Ω` are mapped to a positively cyclically ordered triple on `sphere 0 1` by
+some (equivalently, every) closure homeomorphism `closure Ω → closure (((↑) '' ball 0 1))` that is
+spherical-holomorphic on `Ω`. -/
+def SphericalBoundaryPosCyclic (Ω : Set RiemannSphere) (β₁ β₂ β₃ : RiemannSphere) : Prop :=
+  β₁ ∈ frontier Ω ∧ β₂ ∈ frontier Ω ∧ β₃ ∈ frontier Ω ∧
+  ∃ F : RiemannSphere → RiemannSphere,
+    ContinuousOn F (closure Ω) ∧ SphericalHolomorphicOn F Ω ∧
+    BijOn F (closure Ω) (closure (((↑) : ℂ → RiemannSphere) '' ball (0 : ℂ) 1)) ∧
+    UnitCirclePosCyclic (sphereFinitePart (F β₁)) (sphereFinitePart (F β₂))
+      (sphereFinitePart (F β₃))
+
+theorem isMoebiusDiscTarget_unitDisc :
+    IsMoebiusDiscTarget (((↑) : ℂ → RiemannSphere) '' ball (0 : ℂ) 1) := by
+  refine ⟨1, 0, 0, 1, by norm_num, ?_⟩
+  have hid : moebiusMap 1 0 0 1 = id := funext moebiusMap_id
+  rw [hid]
+  exact bijOn_id _
+
+theorem isMoebiusDiscTarget_openHalfPlane {H : Set ℂ} (hH : IsOpenHalfPlane H) :
+    IsMoebiusDiscTarget (((↑) : ℂ → RiemannSphere) '' H) := by
+  obtain ⟨a, b, c, d, hdet, hbij⟩ := openHalfPlane_moebius_bij hH
+  have hdet' : d * a - (-b) * (-c) ≠ 0 := by intro h0; apply hdet; linear_combination h0
+  refine ⟨d, -b, -c, a, hdet', ?_, (moebiusMap_bijective hdet').1.injOn, ?_⟩
+  · intro q hq
+    obtain ⟨p, hp, rfl⟩ := hbij.surjOn hq
+    rw [moebiusMap_inv_left hdet]
+    exact hp
+  · intro p hp
+    exact ⟨moebiusMap a b c d p, hbij.mapsTo hp, moebiusMap_inv_left hdet p⟩
+
+/-- Two continuous maps `F₁, F₂ : RiemannSphere → RiemannSphere` on `closure Ω` that agree on `Ω`
+agree on `closure Ω`. -/
+theorem eqOn_closure_riemannSphere {Ω : Set RiemannSphere}
+    {F₁ F₂ : RiemannSphere → RiemannSphere}
+    (h₁ : ContinuousOn F₁ (closure Ω)) (h₂ : ContinuousOn F₂ (closure Ω))
+    (heq : Set.EqOn F₁ F₂ Ω) : Set.EqOn F₁ F₂ (closure Ω) := by
+  have hsub : Ω ⊆ {p ∈ closure Ω | F₁ p = F₂ p} := fun p hp => ⟨subset_closure hp, heq hp⟩
+  have hclosed_eq : IsClosed {p ∈ closure Ω | F₁ p = F₂ p} := by
+    let S : Set (closure Ω) := {q : closure Ω | F₁ q.1 = F₂ q.1}
+    have hS_closed : IsClosed S :=
+      isClosed_eq h₁.domRestrict h₂.domRestrict
+    obtain ⟨C, hC_closed, hCS⟩ := isClosed_induced_iff.mp hS_closed
+    have heq_set : {p ∈ closure Ω | F₁ p = F₂ p} = closure Ω ∩ C := by
+      ext p
+      constructor
+      · rintro ⟨hp_cl, hp_eq⟩
+        have hmemS : (⟨p, hp_cl⟩ : closure Ω) ∈ S := hp_eq
+        rw [← hCS] at hmemS
+        exact ⟨hp_cl, hmemS⟩
+      · rintro ⟨hp_cl, hp_C⟩
+        have hmemS : (⟨p, hp_cl⟩ : closure Ω) ∈ S := by rw [← hCS]; exact hp_C
+        exact ⟨hp_cl, hmemS⟩
+    rw [heq_set]
+    exact isClosed_closure.inter hC_closed
+  intro p hp
+  exact (closure_minimal hsub hclosed_eq hp).2
+
+/-- **14.20(c) (Riemann-sphere & open half-plane Carathéodory extension and three-point
+normalization, RCA p. 291):**
+Let `Ω ⊆ RiemannSphere` be a simply connected spherical region whose complement has nonempty
+interior and whose boundary points are all simple, and let `T ⊆ RiemannSphere` be any Möbius-disc
+target (`IsMoebiusDiscTarget T`, which holds in particular for the open unit disc
+`((↑) : ℂ → RiemannSphere) '' ball 0 1` and for every open half-plane
+`((↑) : ℂ → RiemannSphere) '' H` with `IsOpenHalfPlane H`):
+1. Every spherical holomorphic bijection `f : Ω → T` extends uniquely to a continuous map
+   `F : closure Ω → closure T` inducing a homeomorphism `closure Ω ≃ₜ closure T` and carrying
+   `frontier Ω` bijectively onto `frontier T`.
+2. Given three distinct `β₁, β₂, β₃ ∈ frontier Ω` and three distinct `q₁, q₂, q₃ ∈ frontier T` in
+   compatible cyclic order (`SphericalBoundaryPosCyclic Ω β₁ β₂ β₃ ↔ SphericalBoundaryPosCyclic T q₁ q₂ q₃`),
+   there is a unique closure homeomorphism `F : closure Ω → closure T` spherical-holomorphic in `Ω`
+   taking `F β₁ = q₁`, `F β₂ = q₂`, `F β₃ = q₃` (and conversely, existence of such `F` implies
+   compatible cyclic order). -/
+theorem theorem14_20_part_c :
+    IsMoebiusDiscTarget (((↑) : ℂ → RiemannSphere) '' ball (0 : ℂ) 1) ∧
+    (∀ {H : Set ℂ}, IsOpenHalfPlane H →
+      IsMoebiusDiscTarget (((↑) : ℂ → RiemannSphere) '' H)) ∧
+    (∀ {Ω T : Set RiemannSphere},
+      SphericalSimplyConnected Ω →
+      (interior Ωᶜ).Nonempty →
+      (∀ β ∈ frontier Ω, IsSphericalSimpleBoundaryPoint Ω β) →
+      IsMoebiusDiscTarget T →
+      (∀ {f : RiemannSphere → RiemannSphere},
+        SphericalHolomorphicOn f Ω → BijOn f Ω T →
+        ∃ F : RiemannSphere → RiemannSphere,
+          Set.EqOn F f Ω ∧
+          ContinuousOn F (closure Ω) ∧
+          SphericalHolomorphicOn F Ω ∧
+          BijOn F (closure Ω) (closure T) ∧
+          BijOn F (frontier Ω) (frontier T) ∧
+          (∃ e : closure Ω ≃ₜ closure T, ∀ p : closure Ω, (e p : RiemannSphere) = F p.1) ∧
+          ∀ G : RiemannSphere → RiemannSphere,
+            ContinuousOn G (closure Ω) → Set.EqOn G f Ω →
+            Set.EqOn G F (closure Ω)) ∧
+      (∀ {β₁ β₂ β₃ q₁ q₂ q₃ : RiemannSphere},
+        β₁ ∈ frontier Ω → β₂ ∈ frontier Ω → β₃ ∈ frontier Ω →
+        β₁ ≠ β₂ → β₂ ≠ β₃ → β₁ ≠ β₃ →
+        q₁ ∈ frontier T → q₂ ∈ frontier T → q₃ ∈ frontier T →
+        q₁ ≠ q₂ → q₂ ≠ q₃ → q₁ ≠ q₃ →
+        ((SphericalBoundaryPosCyclic Ω β₁ β₂ β₃ ↔ SphericalBoundaryPosCyclic T q₁ q₂ q₃) →
+          ∃ F : RiemannSphere → RiemannSphere,
+            ContinuousOn F (closure Ω) ∧
+            SphericalHolomorphicOn F Ω ∧
+            BijOn F Ω T ∧
+            BijOn F (frontier Ω) (frontier T) ∧
+            BijOn F (closure Ω) (closure T) ∧
+            (∃ e : closure Ω ≃ₜ closure T, ∀ p : closure Ω, (e p : RiemannSphere) = F p.1) ∧
+            F β₁ = q₁ ∧ F β₂ = q₂ ∧ F β₃ = q₃ ∧
+            ∀ G : RiemannSphere → RiemannSphere,
+              ContinuousOn G (closure Ω) →
+              SphericalHolomorphicOn G Ω →
+              BijOn G (closure Ω) (closure T) →
+              G β₁ = q₁ → G β₂ = q₂ → G β₃ = q₃ →
+              Set.EqOn G F (closure Ω)) ∧
+        ((∃ F : RiemannSphere → RiemannSphere,
+            ContinuousOn F (closure Ω) ∧
+            SphericalHolomorphicOn F Ω ∧
+            BijOn F (closure Ω) (closure T) ∧
+            F β₁ = q₁ ∧ F β₂ = q₂ ∧ F β₃ = q₃) →
+          (SphericalBoundaryPosCyclic Ω β₁ β₂ β₃ ↔
+            SphericalBoundaryPosCyclic T q₁ q₂ q₃)))) := by
+  refine ⟨isMoebiusDiscTarget_unitDisc, fun hH => isMoebiusDiscTarget_openHalfPlane hH, ?_⟩
+  intro Ω T hΩ_sc hcompl_int hΩ_simple hT
+  obtain ⟨a₁, b₁, c₁, d₁, hdet₁, Ω₀, hΩ₀_reg, hΩ₀_bdd, hΩ₀_sc, hΩ₀_simple, himg_Ω⟩ :=
+    spherical_region_moebius_to_bounded_plane hΩ_sc hcompl_int hΩ_simple
+  rcases hT with ⟨a₂, b₂, c₂, d₂, hdet₂, hbij_T⟩
+  let e₁ := moebiusHomeomorph hdet₁
+  let e₂ := moebiusHomeomorph hdet₂
+  have hdet₁' : d₁ * a₁ - (-b₁) * (-c₁) ≠ 0 := by intro h0; apply hdet₁; linear_combination h0
+  have hdet₂' : d₂ * a₂ - (-b₂) * (-c₂) ≠ 0 := by intro h0; apply hdet₂; linear_combination h0
+  let US : Set RiemannSphere := ((↑) : ℂ → RiemannSphere) '' ball (0 : ℂ) 1
+  obtain ⟨hcl_US, hfr_US⟩ := closure_and_frontier_coe_of_isBounded isOpen_ball isBounded_ball
+  rw [closure_ball (0 : ℂ) one_ne_zero] at hcl_US
+  rw [frontier_ball (0 : ℂ) one_ne_zero] at hfr_US
+  obtain ⟨hcl_Ω₀, hfr_Ω₀⟩ := closure_and_frontier_coe_of_isBounded hΩ₀_reg.1 hΩ₀_bdd
+  have he₁_cl : e₁ '' closure Ω = ((↑) : ℂ → RiemannSphere) '' closure Ω₀ := by
+    rw [e₁.image_closure, show (e₁ : RiemannSphere → RiemannSphere) = moebiusMap a₁ b₁ c₁ d₁ from rfl,
+      himg_Ω, hcl_Ω₀]
+  have he₁_fr : e₁ '' frontier Ω = ((↑) : ℂ → RiemannSphere) '' frontier Ω₀ := by
+    rw [e₁.image_frontier, show (e₁ : RiemannSphere → RiemannSphere) = moebiusMap a₁ b₁ c₁ d₁ from rfl,
+      himg_Ω, hfr_Ω₀]
+  have he₂_img : e₂ '' T = US := hbij_T.image_eq
+  have he₂_cl : e₂ '' closure T = ((↑) : ℂ → RiemannSphere) '' closedBall (0 : ℂ) 1 := by
+    rw [e₂.image_closure, he₂_img, hcl_US]
+  have he₂_fr : e₂ '' frontier T = ((↑) : ℂ → RiemannSphere) '' sphere (0 : ℂ) 1 := by
+    rw [e₂.image_frontier, he₂_img, hfr_US]
+  have hret_at : ∀ z : ℂ, ContinuousAt sphereFinitePart (z : RiemannSphere) := by
+    intro z
+    rw [ContinuousAt, Tendsto]
+    have hmap : map sphereFinitePart (𝓝 (z : RiemannSphere)) = 𝓝 z := by
+      rw [← OnePoint.isOpenEmbedding_coe.map_nhds_eq z, Filter.map_map]
+      simp [Function.comp_def]
+    rw [hmap, sphereFinitePart_coe]
+  have hret_cont : ContinuousOn sphereFinitePart (Set.range ((↑) : ℂ → RiemannSphere)) := by
+    rintro p ⟨z, rfl⟩; exact (hret_at z).continuousWithinAt
+  have he₁_cl_maps : MapsTo (sphereFinitePart ∘ e₁) (closure Ω) (closure Ω₀) := by
+    intro p hp
+    have hp' : e₁ p ∈ ((↑) : ℂ → RiemannSphere) '' closure Ω₀ := by
+      rw [← he₁_cl]; exact ⟨p, hp, rfl⟩
+    rcases hp' with ⟨z, hz, hzp⟩
+    dsimp [Function.comp_def]; rw [← hzp, sphereFinitePart_coe]; exact hz
+  have he₁_cl_range : MapsTo e₁ (closure Ω) (Set.range ((↑) : ℂ → RiemannSphere)) := by
+    intro p hp
+    have hp' : e₁ p ∈ ((↑) : ℂ → RiemannSphere) '' closure Ω₀ := by
+      rw [← he₁_cl]; exact ⟨p, hp, rfl⟩
+    rcases hp' with ⟨z, _, hzp⟩; exact ⟨z, hzp⟩
+  -- Transport bridge: any `G` with `ContinuousOn G (closure Ω)`, `SphericalHolomorphicOn G Ω`,
+  -- `BijOn G (closure Ω) (closure T)` induces `G₀ : closure Ω₀ → closedBall 0 1`!
+  have hbridge_to_plane : ∀ {G : RiemannSphere → RiemannSphere},
+      ContinuousOn G (closure Ω) →
+      SphericalHolomorphicOn G Ω →
+      BijOn G (closure Ω) (closure T) →
+      let G₀ : ℂ → ℂ := fun z => sphereFinitePart (e₂ (G (e₁.symm (z : RiemannSphere))))
+      ContinuousOn G₀ (closure Ω₀) ∧
+      RudinRCA.Chapter10.HolomorphicOn G₀ Ω₀ ∧
+      BijOn G₀ (closure Ω₀) (closedBall (0 : ℂ) 1) ∧
+      ∀ p ∈ closure Ω, G p = e₂.symm ((G₀ (sphereFinitePart (e₁ p)) : ℂ) : RiemannSphere) := by
+    intro G hG_cont hG_holo hG_bij G₀
+    have he₁_symm_cl : MapsTo (fun z : ℂ => e₁.symm (z : RiemannSphere)) (closure Ω₀) (closure Ω) := by
+      intro z hz
+      have hmem : (z : RiemannSphere) ∈ e₁ '' closure Ω := by rw [he₁_cl]; exact ⟨z, hz, rfl⟩
+      rcases hmem with ⟨p, hp, hpz⟩
+      dsimp; rw [← hpz, e₁.symm_apply_apply]; exact hp
+    have he₂G_range : MapsTo (fun z : ℂ => e₂ (G (e₁.symm (z : RiemannSphere))))
+        (closure Ω₀) (Set.range ((↑) : ℂ → RiemannSphere)) := by
+      intro z hz
+      have hmem : e₂ (G (e₁.symm (z : RiemannSphere))) ∈ e₂ '' closure T :=
+        ⟨G (e₁.symm (z : RiemannSphere)), hG_bij.mapsTo (he₁_symm_cl hz), rfl⟩
+      rw [he₂_cl] at hmem
+      rcases hmem with ⟨w, _, hw⟩; exact ⟨w, hw⟩
+    have hG₀_cont : ContinuousOn G₀ (closure Ω₀) := by
+      have hc_in : ContinuousOn (fun z : ℂ => e₂ (G (e₁.symm (z : RiemannSphere)))) (closure Ω₀) :=
+        e₂.continuous.comp_continuousOn
+          (hG_cont.comp (e₁.symm.continuous.comp OnePoint.continuous_coe).continuousOn he₁_symm_cl)
+      exact hret_cont.comp hc_in he₂G_range
+    have hG₀_holo : RudinRCA.Chapter10.HolomorphicOn G₀ Ω₀ := by
+      let S₀ : Set RiemannSphere := ((↑) : ℂ → RiemannSphere) '' Ω₀
+      have hS₀_open : IsOpen S₀ := OnePoint.isOpenEmbedding_coe.isOpenMap _ hΩ₀_reg.1
+      have he₁_symm_Ω₀ : MapsTo e₁.symm S₀ Ω := by
+        rintro _ ⟨z, hz, rfl⟩
+        have hmem : (z : RiemannSphere) ∈ e₁ '' Ω := by
+          rw [show (e₁ : RiemannSphere → RiemannSphere) = moebiusMap a₁ b₁ c₁ d₁ from rfl, himg_Ω]
+          exact ⟨z, hz, rfl⟩
+        rcases hmem with ⟨p, hp, hpz⟩
+        rw [← hpz, e₁.symm_apply_apply]; exact hp
+      have hcomp_sph : SphericalHolomorphicOn (e₂ ∘ G ∘ e₁.symm) S₀ := by
+        have h1 : SphericalHolomorphicOn e₁.symm S₀ :=
+          (moebiusMap_sphericalHolomorphicOn hdet₁').mono (subset_univ _)
+        have h2 : SphericalHolomorphicOn (G ∘ e₁.symm) S₀ :=
+          hG_holo.comp hS₀_open h1 he₁_symm_Ω₀
+        have h3 : SphericalHolomorphicOn e₂ Set.univ :=
+          moebiusMap_sphericalHolomorphicOn hdet₂
+        exact h3.comp hS₀_open h2 (mapsTo_univ _ _)
+      have hfin : ∀ z ∈ Ω₀, (e₂ ∘ G ∘ e₁.symm) (z : RiemannSphere) ≠ ∞ := by
+        intro z hz hinf
+        rcases he₂G_range (subset_closure hz) with ⟨w, hw⟩
+        exact OnePoint.coe_ne_infty w (hw.trans hinf)
+      exact (sphericalHolomorphicOn_coe_iff hΩ₀_reg.1 hfin).mp hcomp_sph
+    have hG₀_bij : BijOn G₀ (closure Ω₀) (closedBall (0 : ℂ) 1) := by
+      refine ⟨fun z hz => ?_, fun z₁ hz₁ z₂ hz₂ heq => ?_, fun w hw => ?_⟩
+      · have hmem : e₂ (G (e₁.symm (z : RiemannSphere))) ∈ e₂ '' closure T :=
+          ⟨G (e₁.symm (z : RiemannSphere)), hG_bij.mapsTo (he₁_symm_cl hz), rfl⟩
+        rw [he₂_cl] at hmem
+        rcases hmem with ⟨w, hw_cb, hw_eq⟩
+        dsimp [G₀]; rw [← hw_eq, sphereFinitePart_coe]; exact hw_cb
+      · rcases he₂G_range hz₁ with ⟨w₁, hw₁⟩
+        rcases he₂G_range hz₂ with ⟨w₂, hw₂⟩
+        dsimp at hw₁ hw₂
+        have hw12 : w₁ = w₂ := by
+          have h1 : G₀ z₁ = w₁ := by dsimp [G₀]; rw [← hw₁, sphereFinitePart_coe]
+          have h2 : G₀ z₂ = w₂ := by dsimp [G₀]; rw [← hw₂, sphereFinitePart_coe]
+          rw [← h1, ← h2, heq]
+        have he₂_eq : e₂ (G (e₁.symm (z₁ : RiemannSphere))) =
+            e₂ (G (e₁.symm (z₂ : RiemannSphere))) := by rw [← hw₁, ← hw₂, hw12]
+        have hG_eq := e₂.injective he₂_eq
+        have he₁_eq := hG_bij.injOn (he₁_symm_cl hz₁) (he₁_symm_cl hz₂) hG_eq
+        exact OnePoint.coe_injective (e₁.symm.injective he₁_eq)
+      · have hw_in : (w : RiemannSphere) ∈ e₂ '' closure T := by
+          rw [he₂_cl]; exact ⟨w, hw, rfl⟩
+        rcases hw_in with ⟨q, hq_cl, hqw⟩
+        obtain ⟨p, hp_cl, hGp⟩ := hG_bij.surjOn hq_cl
+        have hp_e₁ : e₁ p ∈ ((↑) : ℂ → RiemannSphere) '' closure Ω₀ := by
+          rw [← he₁_cl]; exact ⟨p, hp_cl, rfl⟩
+        rcases hp_e₁ with ⟨z, hz_cl, hzp⟩
+        refine ⟨z, hz_cl, ?_⟩
+        dsimp [G₀]
+        have hsymm : e₁.symm (z : RiemannSphere) = p := by rw [hzp, e₁.symm_apply_apply]
+        rw [hsymm, hGp, hqw, sphereFinitePart_coe]
+    refine ⟨hG₀_cont, hG₀_holo, hG₀_bij, fun p hp => ?_⟩
+    have hp_e₁ : e₁ p ∈ ((↑) : ℂ → RiemannSphere) '' closure Ω₀ := by
+      rw [← he₁_cl]; exact ⟨p, hp, rfl⟩
+    rcases hp_e₁ with ⟨z, hz_cl, hzp⟩
+    rcases he₂G_range hz_cl with ⟨w, hw⟩
+    dsimp at hw
+    have hsymm : e₁.symm (z : RiemannSphere) = p := by rw [hzp, e₁.symm_apply_apply]
+    rw [hsymm] at hw
+    dsimp [G₀]
+    rw [← hzp, sphereFinitePart_coe, hsymm, ← hw, sphereFinitePart_coe, hw, e₂.symm_apply_apply]
+  -- Also characterize `SphericalBoundaryPosCyclic` on `Ω` via `BoundaryPosCyclic Ω₀` and on `T` via `UnitCirclePosCyclic`!
+  have hcyc_Ω_iff : ∀ {β₁ β₂ β₃ : RiemannSphere},
+      β₁ ∈ frontier Ω → β₂ ∈ frontier Ω → β₃ ∈ frontier Ω →
+      (SphericalBoundaryPosCyclic Ω β₁ β₂ β₃ ↔
+        BoundaryPosCyclic Ω₀ (sphereFinitePart (e₁ β₁)) (sphereFinitePart (e₁ β₂))
+          (sphereFinitePart (e₁ β₃))) := by
+    intro β₁ β₂ β₃ hβ₁ hβ₂ hβ₃
+    have hβᵢ_fr₀ : ∀ {β : RiemannSphere}, β ∈ frontier Ω → sphereFinitePart (e₁ β) ∈ frontier Ω₀ := by
+      intro β hβ
+      have hm : e₁ β ∈ ((↑) : ℂ → RiemannSphere) '' frontier Ω₀ := by
+        rw [← he₁_fr]; exact ⟨β, hβ, rfl⟩
+      rcases hm with ⟨z, hz, hzb⟩
+      rw [← hzb, sphereFinitePart_coe]; exact hz
+    constructor
+    · rintro ⟨_, _, _, F, hF_cont, hF_holo, hF_bij, hF_cyc⟩
+      -- Apply `hbridge_to_plane` with `T := US`, `e₂ := id` (`moebiusHomeomorph (1*1 - 0*0 ≠ 0)`)
+      have he₁_symm_cl : MapsTo (fun z : ℂ => e₁.symm (z : RiemannSphere)) (closure Ω₀) (closure Ω) := by
+        intro z hz
+        have hmem : (z : RiemannSphere) ∈ e₁ '' closure Ω := by rw [he₁_cl]; exact ⟨z, hz, rfl⟩
+        rcases hmem with ⟨p, hp, hpz⟩
+        dsimp; rw [← hpz, e₁.symm_apply_apply]; exact hp
+      let F₀ : ℂ → ℂ := fun z => sphereFinitePart (F (e₁.symm (z : RiemannSphere)))
+      have hF_range : MapsTo (fun z : ℂ => F (e₁.symm (z : RiemannSphere))) (closure Ω₀)
+          (Set.range ((↑) : ℂ → RiemannSphere)) := by
+        intro z hz
+        have hm := hF_bij.mapsTo (he₁_symm_cl hz)
+        rw [hcl_US] at hm; rcases hm with ⟨w, _, hw⟩; exact ⟨w, hw⟩
+      have hF₀_cont : ContinuousOn F₀ (closure Ω₀) :=
+        hret_cont.comp (hF_cont.comp (e₁.symm.continuous.comp OnePoint.continuous_coe).continuousOn
+          he₁_symm_cl) hF_range
+      have hF₀_holo : RudinRCA.Chapter10.HolomorphicOn F₀ Ω₀ := by
+        let S₀ : Set RiemannSphere := ((↑) : ℂ → RiemannSphere) '' Ω₀
+        have hS₀_open : IsOpen S₀ := OnePoint.isOpenEmbedding_coe.isOpenMap _ hΩ₀_reg.1
+        have he₁_symm_Ω₀ : MapsTo e₁.symm S₀ Ω := by
+          rintro _ ⟨z, hz, rfl⟩
+          have hm : (z : RiemannSphere) ∈ e₁ '' Ω := by
+            rw [show (e₁ : RiemannSphere → RiemannSphere) = moebiusMap a₁ b₁ c₁ d₁ from rfl, himg_Ω]
+            exact ⟨z, hz, rfl⟩
+          rcases hm with ⟨p, hp, hpz⟩; rw [← hpz, e₁.symm_apply_apply]; exact hp
+        have hcomp_sph : SphericalHolomorphicOn (F ∘ e₁.symm) S₀ :=
+          hF_holo.comp hS₀_open ((moebiusMap_sphericalHolomorphicOn hdet₁').mono (subset_univ _))
+            he₁_symm_Ω₀
+        have hfin : ∀ z ∈ Ω₀, (F ∘ e₁.symm) (z : RiemannSphere) ≠ ∞ := by
+          intro z hz hinf
+          rcases hF_range (subset_closure hz) with ⟨w, hw⟩
+          exact OnePoint.coe_ne_infty w (hw.trans hinf)
+        exact (sphericalHolomorphicOn_coe_iff hΩ₀_reg.1 hfin).mp hcomp_sph
+      have hF₀_bij : BijOn F₀ (closure Ω₀) (closedBall (0 : ℂ) 1) := by
+        refine ⟨fun z hz => ?_, fun z₁ hz₁ z₂ hz₂ heq => ?_, fun w hw => ?_⟩
+        · have hm := hF_bij.mapsTo (he₁_symm_cl hz)
+          rw [hcl_US] at hm; rcases hm with ⟨w, hw_cb, hw_eq⟩
+          dsimp [F₀]; rw [← hw_eq, sphereFinitePart_coe]; exact hw_cb
+        · rcases hF_range hz₁ with ⟨w₁, hw₁⟩
+          rcases hF_range hz₂ with ⟨w₂, hw₂⟩
+          dsimp at hw₁ hw₂
+          have hw12 : w₁ = w₂ := by
+            have h1 : F₀ z₁ = w₁ := by dsimp [F₀]; rw [← hw₁, sphereFinitePart_coe]
+            have h2 : F₀ z₂ = w₂ := by dsimp [F₀]; rw [← hw₂, sphereFinitePart_coe]
+            rw [← h1, ← h2, heq]
+          have hFeq : F (e₁.symm (z₁ : RiemannSphere)) = F (e₁.symm (z₂ : RiemannSphere)) := by
+            rw [← hw₁, ← hw₂, hw12]
+          exact OnePoint.coe_injective
+            (e₁.symm.injective (hF_bij.injOn (he₁_symm_cl hz₁) (he₁_symm_cl hz₂) hFeq))
+        · have hw_cl : (w : RiemannSphere) ∈ closure US := by rw [hcl_US]; exact ⟨w, hw, rfl⟩
+          obtain ⟨p, hp_cl, hFp⟩ := hF_bij.surjOn hw_cl
+          have hp_e₁ : e₁ p ∈ ((↑) : ℂ → RiemannSphere) '' closure Ω₀ := by
+            rw [← he₁_cl]; exact ⟨p, hp_cl, rfl⟩
+          rcases hp_e₁ with ⟨z, hz_cl, hzp⟩
+          refine ⟨z, hz_cl, ?_⟩
+          dsimp [F₀]; rw [hzp, e₁.symm_apply_apply, hFp, sphereFinitePart_coe]
+      have hval : ∀ {β : RiemannSphere}, β ∈ frontier Ω → F₀ (sphereFinitePart (e₁ β)) = sphereFinitePart (F β) := by
+        intro β hβ
+        have hm : e₁ β ∈ ((↑) : ℂ → RiemannSphere) '' frontier Ω₀ := by
+          rw [← he₁_fr]; exact ⟨β, hβ, rfl⟩
+        rcases hm with ⟨z, _, hzb⟩
+        dsimp [F₀]; rw [← hzb, sphereFinitePart_coe, hzb, e₁.symm_apply_apply]
+      refine ⟨hβᵢ_fr₀ hβ₁, hβᵢ_fr₀ hβ₂, hβᵢ_fr₀ hβ₃, F₀, hF₀_cont, hF₀_holo, hF₀_bij, ?_⟩
+      rwa [hval hβ₁, hval hβ₂, hval hβ₃]
+    · rintro ⟨_, _, _, F₀, hF₀_cont, hF₀_holo, hF₀_bij, hF₀_cyc⟩
+      let F : RiemannSphere → RiemannSphere :=
+        fun p => ((F₀ (sphereFinitePart (e₁ p)) : ℂ) : RiemannSphere)
+      have hF_cont : ContinuousOn F (closure Ω) :=
+        OnePoint.continuous_coe.comp_continuousOn
+          (hF₀_cont.comp (hret_cont.comp e₁.continuous.continuousOn he₁_cl_range) he₁_cl_maps)
+      have hF_holo : SphericalHolomorphicOn F Ω := by
+        let G_mid : RiemannSphere → RiemannSphere :=
+          fun r => ((F₀ (sphereFinitePart r) : ℂ) : RiemannSphere)
+        let S₀ : Set RiemannSphere := ((↑) : ℂ → RiemannSphere) '' Ω₀
+        have hfin : ∀ z ∈ Ω₀, G_mid (z : RiemannSphere) ≠ ∞ := fun z _ => OnePoint.coe_ne_infty _
+        have hG_mid : SphericalHolomorphicOn G_mid S₀ := by
+          refine (sphericalHolomorphicOn_coe_iff hΩ₀_reg.1 hfin).mpr ?_
+          simpa [G_mid] using hF₀_holo
+        have he₁_maps : MapsTo e₁ Ω S₀ := by
+          intro p hp
+          dsimp [S₀]
+          change moebiusMap a₁ b₁ c₁ d₁ p ∈ _
+          rw [← himg_Ω]; exact ⟨p, hp, rfl⟩
+        exact hG_mid.comp hΩ_sc.1.1 ((moebiusMap_sphericalHolomorphicOn hdet₁).mono (subset_univ _))
+          he₁_maps
+      have hF_bij : BijOn F (closure Ω) (closure US) := by
+        rw [hcl_US]
+        refine ⟨fun p hp => ⟨F₀ (sphereFinitePart (e₁ p)), hF₀_bij.mapsTo (he₁_cl_maps hp), rfl⟩,
+          fun p₁ hp₁ p₂ hp₂ heq => ?_, ?_⟩
+        · have hF₀_eq := OnePoint.coe_injective heq
+          have hfin_eq := hF₀_bij.injOn (he₁_cl_maps hp₁) (he₁_cl_maps hp₂) hF₀_eq
+          dsimp [Function.comp_def] at hfin_eq
+          rcases he₁_cl_range hp₁ with ⟨z₁, hz₁⟩
+          rcases he₁_cl_range hp₂ with ⟨z₂, hz₂⟩
+          rw [← hz₁, ← hz₂, sphereFinitePart_coe, sphereFinitePart_coe] at hfin_eq
+          exact e₁.injective (by rw [← hz₁, ← hz₂, hfin_eq])
+        · rintro _ ⟨w, hw_cb, rfl⟩
+          obtain ⟨z, hz_cl, hF₀z⟩ := hF₀_bij.surjOn hw_cb
+          have hz_in : (z : RiemannSphere) ∈ e₁ '' closure Ω := by rw [he₁_cl]; exact ⟨z, hz_cl, rfl⟩
+          rcases hz_in with ⟨p, hp_cl, hpz⟩
+          refine ⟨p, hp_cl, ?_⟩
+          dsimp [F]; rw [hpz, sphereFinitePart_coe, hF₀z]
+      refine ⟨hβ₁, hβ₂, hβ₃, F, hF_cont, hF_holo, hF_bij, ?_⟩
+      simpa [F] using hF₀_cyc
+  have hcyc_T_iff : ∀ {q₁ q₂ q₃ : RiemannSphere},
+      q₁ ∈ frontier T → q₂ ∈ frontier T → q₃ ∈ frontier T →
+      (SphericalBoundaryPosCyclic T q₁ q₂ q₃ ↔
+        UnitCirclePosCyclic (sphereFinitePart (e₂ q₁)) (sphereFinitePart (e₂ q₂))
+          (sphereFinitePart (e₂ q₃))) := by
+    intro q₁ q₂ q₃ hq₁ hq₂ hq₃
+    have he₂_bij_cl : BijOn e₂ (closure T) (closure US) := by
+      rw [hcl_US]
+      refine ⟨fun p hp => by rw [← he₂_cl]; exact ⟨p, hp, rfl⟩, e₂.injective.injOn, fun r hr => ?_⟩
+      rw [← he₂_cl] at hr; rcases hr with ⟨p, hp, rfl⟩; exact ⟨p, hp, rfl⟩
+    have he₂_holo : SphericalHolomorphicOn e₂ T :=
+      (moebiusMap_sphericalHolomorphicOn hdet₂).mono (subset_univ _)
+    constructor
+    · rintro ⟨_, _, _, F, hF_cont, hF_holo, hF_bij, hF_cyc⟩
+      -- `G₀(z) := sphereFinitePart (F (e₂.symm ↑z))` is a closure homeomorphism of `closedBall 0 1` holomorphic on `ball 0 1`!
+      have he₂_symm_cl : MapsTo (fun z : ℂ => e₂.symm (z : RiemannSphere))
+          (closedBall (0 : ℂ) 1) (closure T) := by
+        intro z hz
+        have hm : (z : RiemannSphere) ∈ e₂ '' closure T := by rw [he₂_cl]; exact ⟨z, hz, rfl⟩
+        rcases hm with ⟨p, hp, hpz⟩; dsimp; rw [← hpz, e₂.symm_apply_apply]; exact hp
+      let G₀ : ℂ → ℂ := fun z => sphereFinitePart (F (e₂.symm (z : RiemannSphere)))
+      have hF_range : MapsTo (fun z : ℂ => F (e₂.symm (z : RiemannSphere)))
+          (closedBall (0 : ℂ) 1) (Set.range ((↑) : ℂ → RiemannSphere)) := by
+        intro z hz
+        have hm := hF_bij.mapsTo (he₂_symm_cl hz)
+        rw [hcl_US] at hm; rcases hm with ⟨w, _, hw⟩; exact ⟨w, hw⟩
+      have hG₀_cont : ContinuousOn G₀ (closure (ball (0 : ℂ) 1)) := by
+        rw [closure_ball (0 : ℂ) one_ne_zero]
+        exact hret_cont.comp (hF_cont.comp (e₂.symm.continuous.comp OnePoint.continuous_coe).continuousOn
+          he₂_symm_cl) hF_range
+      have hG₀_holo : RudinRCA.Chapter10.HolomorphicOn G₀ (ball (0 : ℂ) 1) := by
+        have hUS_open : IsOpen US := OnePoint.isOpenEmbedding_coe.isOpenMap _ isOpen_ball
+        have he₂_symm_US : MapsTo e₂.symm US T := by
+          rintro _ ⟨z, hz, rfl⟩
+          have hm : (z : RiemannSphere) ∈ e₂ '' T := by rw [he₂_img]; exact ⟨z, hz, rfl⟩
+          rcases hm with ⟨p, hp, hpz⟩; rw [← hpz, e₂.symm_apply_apply]; exact hp
+        have hT_open : IsOpen T := by
+          have : T = e₂ ⁻¹' US := by
+            ext p; constructor
+            · intro hp; rw [← he₂_img]; exact ⟨p, hp, rfl⟩
+            · intro hp; rw [← he₂_img] at hp; rcases hp with ⟨q, hq, hqp⟩
+              exact e₂.injective hqp ▸ hq
+          rw [this]; exact hUS_open.preimage e₂.continuous
+        have hcomp_sph : SphericalHolomorphicOn (F ∘ e₂.symm) US :=
+          hF_holo.comp hUS_open ((moebiusMap_sphericalHolomorphicOn hdet₂').mono (subset_univ _))
+            he₂_symm_US
+        have hfin : ∀ z ∈ ball (0 : ℂ) 1, (F ∘ e₂.symm) (z : RiemannSphere) ≠ ∞ := by
+          intro z hz hinf
+          rcases hF_range (ball_subset_closedBall hz) with ⟨w, hw⟩
+          exact OnePoint.coe_ne_infty w (hw.trans hinf)
+        exact (sphericalHolomorphicOn_coe_iff isOpen_ball hfin).mp hcomp_sph
+      have hG₀_bij : BijOn G₀ (closure (ball (0 : ℂ) 1)) (closedBall (0 : ℂ) 1) := by
+        rw [closure_ball (0 : ℂ) one_ne_zero]
+        refine ⟨fun z hz => ?_, fun z₁ hz₁ z₂ hz₂ heq => ?_, fun w hw => ?_⟩
+        · have hm := hF_bij.mapsTo (he₂_symm_cl hz)
+          rw [hcl_US] at hm; rcases hm with ⟨w, hw_cb, hw_eq⟩
+          dsimp [G₀]; rw [← hw_eq, sphereFinitePart_coe]; exact hw_cb
+        · rcases hF_range hz₁ with ⟨w₁, hw₁⟩
+          rcases hF_range hz₂ with ⟨w₂, hw₂⟩
+          dsimp at hw₁ hw₂
+          have hw12 : w₁ = w₂ := by
+            have h1 : G₀ z₁ = w₁ := by dsimp [G₀]; rw [← hw₁, sphereFinitePart_coe]
+            have h2 : G₀ z₂ = w₂ := by dsimp [G₀]; rw [← hw₂, sphereFinitePart_coe]
+            rw [← h1, ← h2, heq]
+          have hFeq : F (e₂.symm (z₁ : RiemannSphere)) = F (e₂.symm (z₂ : RiemannSphere)) := by
+            rw [← hw₁, ← hw₂, hw12]
+          exact OnePoint.coe_injective
+            (e₂.symm.injective (hF_bij.injOn (he₂_symm_cl hz₁) (he₂_symm_cl hz₂) hFeq))
+        · have hw_cl : (w : RiemannSphere) ∈ closure US := by rw [hcl_US]; exact ⟨w, hw, rfl⟩
+          obtain ⟨p, hp_cl, hFp⟩ := hF_bij.surjOn hw_cl
+          have hp_e₂ : e₂ p ∈ ((↑) : ℂ → RiemannSphere) '' closedBall (0 : ℂ) 1 := by
+            rw [← he₂_cl]; exact ⟨p, hp_cl, rfl⟩
+          rcases hp_e₂ with ⟨z, hz_cb, hzp⟩
+          refine ⟨z, hz_cb, ?_⟩
+          dsimp [G₀]; rw [hzp, e₂.symm_apply_apply, hFp, sphereFinitePart_coe]
+      obtain ⟨hU_sc, hU_simple⟩ := unitDisc_all_simple
+      obtain ⟨_, _, α, hα, c, hc, hG₀_aut⟩ :=
+        closure_bijOn_closedBall_factorization hU_sc isBounded_ball hU_simple
+          (fun _ _ => differentiableAt_id) (bijOn_id _) hG₀_cont hG₀_holo hG₀_bij
+      have hF₀_id : Set.EqOn (caratheodoryExtension id (ball (0 : ℂ) 1)) id
+          (closure (ball (0 : ℂ) 1)) := by
+        obtain ⟨hEq, hCont, _, _, _, _, _, _⟩ :=
+          caratheodoryExtension_homeomorph_package isOpen_ball isBounded_ball hU_simple
+            (fun _ _ => differentiableAt_id) (bijOn_id _)
+        exact eqOn_of_continuousOn_closure_eqOn hCont continuousOn_id hEq
+      obtain ⟨_, _, _, _, _, hAut_inv⟩ := diskAut_props hα hc
+      obtain ⟨hinv_cont, hinv_diff, hinv_bij⟩ := diskAutInv_props hα hc
+      obtain ⟨α', hα', c', hc', hinv_eq⟩ :=
+        RudinRCA.Chapter12.theorem12_6.1.mp ⟨hinv_diff, hinv_bij⟩
+      obtain ⟨hAut'_cont, _, _, _, _, _⟩ := diskAut_props hα' hc'
+      have hinv_cb : Set.EqOn (fun ζ => RudinRCA.Chapter12.phi (-α) (c⁻¹ * ζ))
+          (diskAut α' c') (closedBall (0 : ℂ) 1) :=
+        eqOn_closedBall_of_eqOn_ball hinv_cont hAut'_cont hinv_eq
+      have hval : ∀ {q : RiemannSphere}, q ∈ frontier T →
+          diskAut α' c' (sphereFinitePart (F q)) = sphereFinitePart (e₂ q) := by
+        intro q hq
+        have hm : e₂ q ∈ ((↑) : ℂ → RiemannSphere) '' sphere (0 : ℂ) 1 := by
+          rw [← he₂_fr]; exact ⟨q, hq, rfl⟩
+        rcases hm with ⟨z, hz_sph, hzq⟩
+        have hz_cb : z ∈ closedBall (0 : ℂ) 1 := sphere_subset_closedBall hz_sph
+        have hz_cl : z ∈ closure (ball (0 : ℂ) 1) := by
+          rwa [closure_ball (0 : ℂ) one_ne_zero]
+        have hG₀_z : G₀ z = sphereFinitePart (F q) := by
+          dsimp [G₀]; rw [hzq, e₂.symm_apply_apply]
+        have hG₀_aut_z : G₀ z = diskAut α c z := by
+          have := hG₀_aut hz_cl
+          dsimp [Function.comp_def] at this
+          rw [this, hF₀_id hz_cl]; rfl
+        rw [← hzq, sphereFinitePart_coe, ← hG₀_z, hG₀_aut_z,
+          ← hinv_cb ((diskAut_props hα hc).2.2.2.2.1.mapsTo hz_cb)]
+        exact (hAut_inv z hz_cb).1
+      rw [← hval hq₁, ← hval hq₂, ← hval hq₃]
+      exact diskAut_preserves_posCyclic hα' hc' hF_cyc
+    · intro hcyc
+      exact ⟨hq₁, hq₂, hq₃, e₂, e₂.continuous.continuousOn, he₂_holo, he₂_bij_cl, hcyc⟩
+  -- Now prove both parts of `14.20(c)`:
+  refine ⟨?_, ?_⟩
+  · -- Part 1: Extension of any spherical holomorphic bijection `f : Ω → T`
+    intro f hf_holo hf_bij
+    let S₀ : Set RiemannSphere := ((↑) : ℂ → RiemannSphere) '' Ω₀
+    have hS₀_open : IsOpen S₀ := OnePoint.isOpenEmbedding_coe.isOpenMap _ hΩ₀_reg.1
+    have he₁_symm_Ω₀ : MapsTo e₁.symm S₀ Ω := by
+      rintro _ ⟨z, hz, rfl⟩
+      have hm : (z : RiemannSphere) ∈ e₁ '' Ω := by
+        rw [show (e₁ : RiemannSphere → RiemannSphere) = moebiusMap a₁ b₁ c₁ d₁ from rfl, himg_Ω]
+        exact ⟨z, hz, rfl⟩
+      rcases hm with ⟨p, hp, hpz⟩; rw [← hpz, e₁.symm_apply_apply]; exact hp
+    have he₂f_maps : ∀ z ∈ Ω₀, e₂ (f (e₁.symm (z : RiemannSphere))) ∈ US := by
+      intro z hz
+      have h1 : e₁.symm (z : RiemannSphere) ∈ Ω := he₁_symm_Ω₀ ⟨z, hz, rfl⟩
+      exact hbij_T.mapsTo (hf_bij.mapsTo h1)
+    let f₀ : ℂ → ℂ := fun z => sphereFinitePart (e₂ (f (e₁.symm (z : RiemannSphere))))
+    have hf₀_holo : RudinRCA.Chapter10.HolomorphicOn f₀ Ω₀ := by
+      have hcomp_sph : SphericalHolomorphicOn (e₂ ∘ f ∘ e₁.symm) S₀ := by
+        have h1 : SphericalHolomorphicOn e₁.symm S₀ :=
+          (moebiusMap_sphericalHolomorphicOn hdet₁').mono (subset_univ _)
+        have h2 : SphericalHolomorphicOn (f ∘ e₁.symm) S₀ := hf_holo.comp hS₀_open h1 he₁_symm_Ω₀
+        exact (moebiusMap_sphericalHolomorphicOn hdet₂).comp hS₀_open h2 (mapsTo_univ _ _)
+      have hfin : ∀ z ∈ Ω₀, (e₂ ∘ f ∘ e₁.symm) (z : RiemannSphere) ≠ ∞ := by
+        intro z hz hinf
+        rcases he₂f_maps z hz with ⟨w, _, hw⟩
+        exact OnePoint.coe_ne_infty w (hw.trans hinf)
+      exact (sphericalHolomorphicOn_coe_iff hΩ₀_reg.1 hfin).mp hcomp_sph
+    have hf₀_bij : BijOn f₀ Ω₀ (ball (0 : ℂ) 1) := by
+      refine ⟨fun z hz => ?_, fun z₁ hz₁ z₂ hz₂ heq => ?_, fun w hw => ?_⟩
+      · rcases he₂f_maps z hz with ⟨w, hw, hw_eq⟩
+        dsimp [f₀]; rw [← hw_eq, sphereFinitePart_coe]; exact hw
+      · rcases he₂f_maps z₁ hz₁ with ⟨w₁, _, hw₁⟩
+        rcases he₂f_maps z₂ hz₂ with ⟨w₂, _, hw₂⟩
+        have hw12 : w₁ = w₂ := by
+          have h1 : f₀ z₁ = w₁ := by dsimp [f₀]; rw [← hw₁, sphereFinitePart_coe]
+          have h2 : f₀ z₂ = w₂ := by dsimp [f₀]; rw [← hw₂, sphereFinitePart_coe]
+          rw [← h1, ← h2, heq]
+        have he₂_eq : e₂ (f (e₁.symm (z₁ : RiemannSphere))) =
+            e₂ (f (e₁.symm (z₂ : RiemannSphere))) := by rw [← hw₁, ← hw₂, hw12]
+        exact OnePoint.coe_injective (e₁.symm.injective
+          (hf_bij.injOn (he₁_symm_Ω₀ ⟨z₁, hz₁, rfl⟩) (he₁_symm_Ω₀ ⟨z₂, hz₂, rfl⟩)
+            (e₂.injective he₂_eq)))
+      · obtain ⟨q, hq_T, hqw⟩ := hbij_T.surjOn ⟨w, hw, rfl⟩
+        obtain ⟨p, hp_Ω, hfp⟩ := hf_bij.surjOn hq_T
+        have hp_e₁ : e₁ p ∈ S₀ := by
+          dsimp [S₀]
+          rw [show (e₁ : RiemannSphere → RiemannSphere) = moebiusMap a₁ b₁ c₁ d₁ from rfl,
+            ← himg_Ω]
+          exact ⟨p, hp_Ω, rfl⟩
+        rcases hp_e₁ with ⟨z, hz_Ω₀, hzp⟩
+        refine ⟨z, hz_Ω₀, ?_⟩
+        dsimp [f₀]
+        have hsymm : e₁.symm (z : RiemannSphere) = p := by rw [hzp, e₁.symm_apply_apply]
+        rw [hsymm, hfp]
+        change sphereFinitePart (moebiusMap a₂ b₂ c₂ d₂ q) = w
+        rw [hqw, sphereFinitePart_coe]
+    obtain ⟨hF₀_eq, hF₀_cont, _, hF₀_bij_cb, hF₀_bij_fr, _, _, _⟩ :=
+      caratheodoryExtension_homeomorph_package hΩ₀_reg.1 hΩ₀_bdd hΩ₀_simple hf₀_holo hf₀_bij
+    let F₀ : ℂ → ℂ := caratheodoryExtension f₀ Ω₀
+    let F : RiemannSphere → RiemannSphere :=
+      fun p => e₂.symm ((F₀ (sphereFinitePart (e₁ p)) : ℂ) : RiemannSphere)
+    have hF_eq_f : Set.EqOn F f Ω := by
+      intro p hp
+      have hp_e₁ : e₁ p ∈ S₀ := by
+        dsimp [S₀]
+        rw [show (e₁ : RiemannSphere → RiemannSphere) = moebiusMap a₁ b₁ c₁ d₁ from rfl, ← himg_Ω]
+        exact ⟨p, hp, rfl⟩
+      rcases hp_e₁ with ⟨z, hz, hzp⟩
+      dsimp [F, F₀]
+      rw [← hzp, sphereFinitePart_coe, hF₀_eq hz]
+      dsimp [f₀]
+      have hsymm : e₁.symm (z : RiemannSphere) = p := by rw [hzp, e₁.symm_apply_apply]
+      rw [hsymm]
+      rcases he₂f_maps z hz with ⟨w, _, hw⟩
+      rw [hsymm] at hw
+      rw [← hw, sphereFinitePart_coe, hw, e₂.symm_apply_apply]
+    have hF_cont : ContinuousOn F (closure Ω) :=
+      e₂.symm.continuous.comp_continuousOn (OnePoint.continuous_coe.comp_continuousOn
+        (hF₀_cont.comp (hret_cont.comp e₁.continuous.continuousOn he₁_cl_range) he₁_cl_maps))
+    have hF_holo : SphericalHolomorphicOn F Ω := hf_holo.congr hΩ_sc.1.1 hF_eq_f.symm
+    have hF_bij_cl : BijOn F (closure Ω) (closure T) := by
+      refine ⟨fun p hp => ?_, fun p₁ hp₁ p₂ hp₂ heq => ?_, fun q hq => ?_⟩
+      · have hw_cb : F₀ (sphereFinitePart (e₁ p)) ∈ closedBall (0 : ℂ) 1 :=
+          hF₀_bij_cb.mapsTo (he₁_cl_maps hp)
+        have hm : ((F₀ (sphereFinitePart (e₁ p)) : ℂ) : RiemannSphere) ∈ e₂ '' closure T := by
+          rw [he₂_cl]; exact ⟨_, hw_cb, rfl⟩
+        rcases hm with ⟨q, hq, hq_eq⟩
+        dsimp [F]; rw [← hq_eq, e₂.symm_apply_apply]; exact hq
+      · have h1 := OnePoint.coe_injective (e₂.symm.injective heq)
+        have h2 := hF₀_bij_cb.injOn (he₁_cl_maps hp₁) (he₁_cl_maps hp₂) h1
+        dsimp [Function.comp_def] at h2
+        rcases he₁_cl_range hp₁ with ⟨z₁, hz₁⟩
+        rcases he₁_cl_range hp₂ with ⟨z₂, hz₂⟩
+        rw [← hz₁, ← hz₂, sphereFinitePart_coe, sphereFinitePart_coe] at h2
+        exact e₁.injective (by rw [← hz₁, ← hz₂, h2])
+      · have hm : e₂ q ∈ ((↑) : ℂ → RiemannSphere) '' closedBall (0 : ℂ) 1 := by
+          rw [← he₂_cl]; exact ⟨q, hq, rfl⟩
+        rcases hm with ⟨w, hw_cb, hwq⟩
+        obtain ⟨z, hz_cl, hF₀z⟩ := hF₀_bij_cb.surjOn hw_cb
+        have hz_in : (z : RiemannSphere) ∈ e₁ '' closure Ω := by rw [he₁_cl]; exact ⟨z, hz_cl, rfl⟩
+        rcases hz_in with ⟨p, hp_cl, hpz⟩
+        refine ⟨p, hp_cl, ?_⟩
+        dsimp [F, F₀]; rw [hpz, sphereFinitePart_coe, hF₀z, hwq, e₂.symm_apply_apply]
+    have hF_bij_fr : BijOn F (frontier Ω) (frontier T) := by
+      refine ⟨fun p hp => ?_, hF_bij_cl.injOn.mono frontier_subset_closure, fun q hq => ?_⟩
+      · have hp_e₁ : e₁ p ∈ ((↑) : ℂ → RiemannSphere) '' frontier Ω₀ := by
+          rw [← he₁_fr]; exact ⟨p, hp, rfl⟩
+        rcases hp_e₁ with ⟨z, hz_fr, hzp⟩
+        have hw_sph : F₀ (sphereFinitePart (e₁ p)) ∈ sphere (0 : ℂ) 1 := by
+          rw [← hzp, sphereFinitePart_coe]; exact hF₀_bij_fr.mapsTo hz_fr
+        have hm : ((F₀ (sphereFinitePart (e₁ p)) : ℂ) : RiemannSphere) ∈ e₂ '' frontier T := by
+          rw [he₂_fr]; exact ⟨_, hw_sph, rfl⟩
+        rcases hm with ⟨q, hq, hq_eq⟩
+        dsimp [F]; rw [← hq_eq, e₂.symm_apply_apply]; exact hq
+      · have hm : e₂ q ∈ ((↑) : ℂ → RiemannSphere) '' sphere (0 : ℂ) 1 := by
+          rw [← he₂_fr]; exact ⟨q, hq, rfl⟩
+        rcases hm with ⟨w, hw_sph, hwq⟩
+        obtain ⟨z, hz_fr, hF₀z⟩ := hF₀_bij_fr.surjOn hw_sph
+        have hz_in : (z : RiemannSphere) ∈ e₁ '' frontier Ω := by rw [he₁_fr]; exact ⟨z, hz_fr, rfl⟩
+        rcases hz_in with ⟨p, hp_fr, hpz⟩
+        refine ⟨p, hp_fr, ?_⟩
+        dsimp [F, F₀]; rw [hpz, sphereFinitePart_coe, hF₀z, hwq, e₂.symm_apply_apply]
+    have : CompactSpace (closure Ω) := isCompact_iff_compactSpace.mp isClosed_closure.isCompact
+    let e_cl : closure Ω ≃ₜ closure T :=
+      Continuous.homeoOfEquivCompactToT2 (f := hF_bij_cl.equiv)
+        (hF_cont.domRestrict.codRestrict fun p => hF_bij_cl.mapsTo p.2)
+    refine ⟨F, hF_eq_f, hF_cont, hF_holo, hF_bij_cl, hF_bij_fr, ⟨e_cl, fun _ => rfl⟩,
+      fun G hG_cont hG_eq => eqOn_closure_riemannSphere hG_cont hF_cont (hG_eq.trans hF_eq_f.symm)⟩
+  · -- Part 2: 3-point boundary normalization on `(Ω, T)` via `14.20(b)` on `Ω₀`!
+    intro β₁ β₂ β₃ q₁ q₂ q₃ hβ₁ hβ₂ hβ₃ hβ12 hβ23 hβ13 hq₁ hq₂ hq₃ hq12 hq23 hq13
+    let z₁ : ℂ := sphereFinitePart (e₁ β₁)
+    let z₂ : ℂ := sphereFinitePart (e₁ β₂)
+    let z₃ : ℂ := sphereFinitePart (e₁ β₃)
+    let w₁ : ℂ := sphereFinitePart (e₂ q₁)
+    let w₂ : ℂ := sphereFinitePart (e₂ q₂)
+    let w₃ : ℂ := sphereFinitePart (e₂ q₃)
+    have hz_coe : ∀ {β : RiemannSphere}, β ∈ frontier Ω →
+        ((sphereFinitePart (e₁ β) : ℂ) : RiemannSphere) = e₁ β ∧
+        sphereFinitePart (e₁ β) ∈ frontier Ω₀ := by
+      intro β hβ
+      have hm : e₁ β ∈ ((↑) : ℂ → RiemannSphere) '' frontier Ω₀ := by
+        rw [← he₁_fr]; exact ⟨β, hβ, rfl⟩
+      rcases hm with ⟨z, hz, hzb⟩
+      rw [← hzb, sphereFinitePart_coe]; exact ⟨rfl, hz⟩
+    have hw_coe : ∀ {q : RiemannSphere}, q ∈ frontier T →
+        ((sphereFinitePart (e₂ q) : ℂ) : RiemannSphere) = e₂ q ∧
+        sphereFinitePart (e₂ q) ∈ sphere (0 : ℂ) 1 := by
+      intro q hq
+      have hm : e₂ q ∈ ((↑) : ℂ → RiemannSphere) '' sphere (0 : ℂ) 1 := by
+        rw [← he₂_fr]; exact ⟨q, hq, rfl⟩
+      rcases hm with ⟨w, hw, hwq⟩
+      rw [← hwq, sphereFinitePart_coe]; exact ⟨rfl, hw⟩
+    have hz₁ : z₁ ∈ frontier Ω₀ := (hz_coe hβ₁).2
+    have hz₂ : z₂ ∈ frontier Ω₀ := (hz_coe hβ₂).2
+    have hz₃ : z₃ ∈ frontier Ω₀ := (hz_coe hβ₃).2
+    have hw₁_s : w₁ ∈ sphere (0 : ℂ) 1 := (hw_coe hq₁).2
+    have hw₂_s : w₂ ∈ sphere (0 : ℂ) 1 := (hw_coe hq₂).2
+    have hw₃_s : w₃ ∈ sphere (0 : ℂ) 1 := (hw_coe hq₃).2
+    have hz12 : z₁ ≠ z₂ := fun h => hβ12 (e₁.injective (by
+      rw [← (hz_coe hβ₁).1, ← (hz_coe hβ₂).1]; exact congrArg ((↑) : ℂ → RiemannSphere) h))
+    have hz23 : z₂ ≠ z₃ := fun h => hβ23 (e₁.injective (by
+      rw [← (hz_coe hβ₂).1, ← (hz_coe hβ₃).1]; exact congrArg ((↑) : ℂ → RiemannSphere) h))
+    have hz13 : z₁ ≠ z₃ := fun h => hβ13 (e₁.injective (by
+      rw [← (hz_coe hβ₁).1, ← (hz_coe hβ₃).1]; exact congrArg ((↑) : ℂ → RiemannSphere) h))
+    have hw12 : w₁ ≠ w₂ := fun h => hq12 (e₂.injective (by
+      rw [← (hw_coe hq₁).1, ← (hw_coe hq₂).1]; exact congrArg ((↑) : ℂ → RiemannSphere) h))
+    have hw23 : w₂ ≠ w₃ := fun h => hq23 (e₂.injective (by
+      rw [← (hw_coe hq₂).1, ← (hw_coe hq₃).1]; exact congrArg ((↑) : ℂ → RiemannSphere) h))
+    have hw13 : w₁ ≠ w₃ := fun h => hq13 (e₂.injective (by
+      rw [← (hw_coe hq₁).1, ← (hw_coe hq₃).1]; exact congrArg ((↑) : ℂ → RiemannSphere) h))
+    obtain ⟨hb_fwd, hb_rev⟩ := theorem14_20_part_b hΩ₀_sc hΩ₀_bdd hΩ₀_simple
+      hz₁ hz₂ hz₃ hz12 hz23 hz13 hw₁_s hw₂_s hw₃_s hw12 hw23 hw13
+    rw [hcyc_Ω_iff hβ₁ hβ₂ hβ₃, hcyc_T_iff hq₁ hq₂ hq₃]
+    refine ⟨fun hcompat => ?_, ?_⟩
+    · obtain ⟨F₀, hF₀_cont, hF₀_holo, hF₀_bij_ball, hF₀_bij_sph, hF₀_bij_cb, _,
+        hF₀_1, hF₀_2, hF₀_3, hF₀_uniq⟩ := hb_fwd hcompat
+      let F : RiemannSphere → RiemannSphere :=
+        fun p => e₂.symm ((F₀ (sphereFinitePart (e₁ p)) : ℂ) : RiemannSphere)
+      have hF_cont : ContinuousOn F (closure Ω) :=
+        e₂.symm.continuous.comp_continuousOn (OnePoint.continuous_coe.comp_continuousOn
+          (hF₀_cont.comp (hret_cont.comp e₁.continuous.continuousOn he₁_cl_range) he₁_cl_maps))
+      have hF_holo : SphericalHolomorphicOn F Ω := by
+        let G_mid : RiemannSphere → RiemannSphere :=
+          fun r => ((F₀ (sphereFinitePart r) : ℂ) : RiemannSphere)
+        let S₀ : Set RiemannSphere := ((↑) : ℂ → RiemannSphere) '' Ω₀
+        have hS₀_open : IsOpen S₀ := OnePoint.isOpenEmbedding_coe.isOpenMap _ hΩ₀_reg.1
+        have hfin : ∀ z ∈ Ω₀, G_mid (z : RiemannSphere) ≠ ∞ := fun _ _ => OnePoint.coe_ne_infty _
+        have hG_mid : SphericalHolomorphicOn G_mid S₀ :=
+          (sphericalHolomorphicOn_coe_iff hΩ₀_reg.1 hfin).mpr (by simpa [G_mid] using hF₀_holo)
+        have he₁_maps : MapsTo e₁ Ω S₀ := fun p hp => by
+          dsimp [S₀]
+          change moebiusMap a₁ b₁ c₁ d₁ p ∈ _
+          rw [← himg_Ω]; exact ⟨p, hp, rfl⟩
+        have hcomp1 : SphericalHolomorphicOn (G_mid ∘ e₁) Ω :=
+          hG_mid.comp hΩ_sc.1.1 ((moebiusMap_sphericalHolomorphicOn hdet₁).mono (subset_univ _))
+            he₁_maps
+        exact (moebiusMap_sphericalHolomorphicOn hdet₂').comp hΩ_sc.1.1 hcomp1 (mapsTo_univ _ _)
+      have hF_bij_Ω : BijOn F Ω T := by
+        refine ⟨fun p hp => ?_, fun p₁ hp₁ p₂ hp₂ heq => ?_, fun q hq => ?_⟩
+        · have hp_e₁ : e₁ p ∈ ((↑) : ℂ → RiemannSphere) '' Ω₀ := by
+            change moebiusMap a₁ b₁ c₁ d₁ p ∈ _
+            rw [← himg_Ω]; exact ⟨p, hp, rfl⟩
+          rcases hp_e₁ with ⟨z, hz, hzp⟩
+          have hw_ball : F₀ (sphereFinitePart (e₁ p)) ∈ ball (0 : ℂ) 1 := by
+            rw [← hzp, sphereFinitePart_coe]; exact hF₀_bij_ball.mapsTo hz
+          have hm : ((F₀ (sphereFinitePart (e₁ p)) : ℂ) : RiemannSphere) ∈ e₂ '' T := by
+            rw [he₂_img]; exact ⟨_, hw_ball, rfl⟩
+          rcases hm with ⟨q, hq, hq_eq⟩
+          dsimp [F]; rw [← hq_eq, e₂.symm_apply_apply]; exact hq
+        · have h1 := OnePoint.coe_injective (e₂.symm.injective heq)
+          have h2 := hF₀_bij_cb.injOn (he₁_cl_maps (subset_closure hp₁))
+            (he₁_cl_maps (subset_closure hp₂)) h1
+          dsimp [Function.comp_def] at h2
+          rcases he₁_cl_range (subset_closure hp₁) with ⟨u₁, hu₁⟩
+          rcases he₁_cl_range (subset_closure hp₂) with ⟨u₂, hu₂⟩
+          rw [← hu₁, ← hu₂, sphereFinitePart_coe, sphereFinitePart_coe] at h2
+          exact e₁.injective (by rw [← hu₁, ← hu₂, h2])
+        · have hm : e₂ q ∈ US := hbij_T.mapsTo hq
+          rcases hm with ⟨w, hw_ball, hwq⟩
+          obtain ⟨z, hz_Ω₀, hF₀z⟩ := hF₀_bij_ball.surjOn hw_ball
+          have hz_in : (z : RiemannSphere) ∈ e₁ '' Ω := by
+            rw [show (e₁ : RiemannSphere → RiemannSphere) = moebiusMap a₁ b₁ c₁ d₁ from rfl, himg_Ω]
+            exact ⟨z, hz_Ω₀, rfl⟩
+          rcases hz_in with ⟨p, hp_Ω, hpz⟩
+          refine ⟨p, hp_Ω, ?_⟩
+          dsimp [F]; rw [hpz, sphereFinitePart_coe, hF₀z, hwq, e₂.symm_apply_apply]
+      have hF_bij_cl : BijOn F (closure Ω) (closure T) := by
+        refine ⟨fun p hp => ?_, fun p₁ hp₁ p₂ hp₂ heq => ?_, fun q hq => ?_⟩
+        · have hw_cb := hF₀_bij_cb.mapsTo (he₁_cl_maps hp)
+          have hm : ((F₀ (sphereFinitePart (e₁ p)) : ℂ) : RiemannSphere) ∈ e₂ '' closure T := by
+            rw [he₂_cl]; exact ⟨_, hw_cb, rfl⟩
+          rcases hm with ⟨q, hq, hq_eq⟩
+          dsimp [F]; rw [← hq_eq, e₂.symm_apply_apply]; exact hq
+        · have h1 := OnePoint.coe_injective (e₂.symm.injective heq)
+          have h2 := hF₀_bij_cb.injOn (he₁_cl_maps hp₁) (he₁_cl_maps hp₂) h1
+          dsimp [Function.comp_def] at h2
+          rcases he₁_cl_range hp₁ with ⟨u₁, hu₁⟩
+          rcases he₁_cl_range hp₂ with ⟨u₂, hu₂⟩
+          rw [← hu₁, ← hu₂, sphereFinitePart_coe, sphereFinitePart_coe] at h2
+          exact e₁.injective (by rw [← hu₁, ← hu₂, h2])
+        · have hm : e₂ q ∈ ((↑) : ℂ → RiemannSphere) '' closedBall (0 : ℂ) 1 := by
+            rw [← he₂_cl]; exact ⟨q, hq, rfl⟩
+          rcases hm with ⟨w, hw_cb, hwq⟩
+          obtain ⟨z, hz_cl, hF₀z⟩ := hF₀_bij_cb.surjOn hw_cb
+          have hz_in : (z : RiemannSphere) ∈ e₁ '' closure Ω := by rw [he₁_cl]; exact ⟨z, hz_cl, rfl⟩
+          rcases hz_in with ⟨p, hp_cl, hpz⟩
+          refine ⟨p, hp_cl, ?_⟩
+          dsimp [F]; rw [hpz, sphereFinitePart_coe, hF₀z, hwq, e₂.symm_apply_apply]
+      have hF_bij_fr : BijOn F (frontier Ω) (frontier T) := by
+        refine ⟨fun p hp => ?_, hF_bij_cl.injOn.mono frontier_subset_closure, fun q hq => ?_⟩
+        · have hw_sph := hF₀_bij_sph.mapsTo (hz_coe hp).2
+          have hm : ((F₀ (sphereFinitePart (e₁ p)) : ℂ) : RiemannSphere) ∈ e₂ '' frontier T := by
+            rw [he₂_fr]; exact ⟨_, hw_sph, rfl⟩
+          rcases hm with ⟨q, hq, hq_eq⟩
+          dsimp [F]; rw [← hq_eq, e₂.symm_apply_apply]; exact hq
+        · have hm : e₂ q ∈ ((↑) : ℂ → RiemannSphere) '' sphere (0 : ℂ) 1 := by
+            rw [← he₂_fr]; exact ⟨q, hq, rfl⟩
+          rcases hm with ⟨w, hw_sph, hwq⟩
+          obtain ⟨z, hz_fr, hF₀z⟩ := hF₀_bij_sph.surjOn hw_sph
+          have hz_in : (z : RiemannSphere) ∈ e₁ '' frontier Ω := by rw [he₁_fr]; exact ⟨z, hz_fr, rfl⟩
+          rcases hz_in with ⟨p, hp_fr, hpz⟩
+          refine ⟨p, hp_fr, ?_⟩
+          dsimp [F]; rw [hpz, sphereFinitePart_coe, hF₀z, hwq, e₂.symm_apply_apply]
+      have : CompactSpace (closure Ω) := isCompact_iff_compactSpace.mp isClosed_closure.isCompact
+      let e_cl : closure Ω ≃ₜ closure T :=
+        Continuous.homeoOfEquivCompactToT2 (f := hF_bij_cl.equiv)
+          (hF_cont.domRestrict.codRestrict fun p => hF_bij_cl.mapsTo p.2)
+      have hv₁ : F β₁ = q₁ := by dsimp [F]; rw [hF₀_1, (hw_coe hq₁).1, e₂.symm_apply_apply]
+      have hv₂ : F β₂ = q₂ := by dsimp [F]; rw [hF₀_2, (hw_coe hq₂).1, e₂.symm_apply_apply]
+      have hv₃ : F β₃ = q₃ := by dsimp [F]; rw [hF₀_3, (hw_coe hq₃).1, e₂.symm_apply_apply]
+      refine ⟨F, hF_cont, hF_holo, hF_bij_Ω, hF_bij_fr, hF_bij_cl, ⟨e_cl, fun _ => rfl⟩,
+        hv₁, hv₂, hv₃, ?_⟩
+      intro G hG_cont hG_holo hG_bij hG₁ hG₂ hG₃
+      obtain ⟨hG₀_cont, hG₀_holo, hG₀_bij, hG_rep⟩ := hbridge_to_plane hG_cont hG_holo hG_bij
+      let G₀ : ℂ → ℂ := fun z => sphereFinitePart (e₂ (G (e₁.symm (z : RiemannSphere))))
+      have hG₀_1 : G₀ z₁ = w₁ := by
+        dsimp [G₀, z₁, w₁]; rw [(hz_coe hβ₁).1, e₁.symm_apply_apply, hG₁]
+      have hG₀_2 : G₀ z₂ = w₂ := by
+        dsimp [G₀, z₂, w₂]; rw [(hz_coe hβ₂).1, e₁.symm_apply_apply, hG₂]
+      have hG₀_3 : G₀ z₃ = w₃ := by
+        dsimp [G₀, z₃, w₃]; rw [(hz_coe hβ₃).1, e₁.symm_apply_apply, hG₃]
+      have hGF₀ := hF₀_uniq G₀ hG₀_cont hG₀_holo hG₀_bij hG₀_1 hG₀_2 hG₀_3
+      intro p hp
+      rw [hG_rep p hp]
+      dsimp [F]
+      congr 2
+      exact hGF₀ (he₁_cl_maps hp)
+    · rintro ⟨F, hF_cont, hF_holo, hF_bij, hF₁, hF₂, hF₃⟩
+      obtain ⟨hF₀_cont, hF₀_holo, hF₀_bij, _⟩ := hbridge_to_plane hF_cont hF_holo hF_bij
+      let F₀ : ℂ → ℂ := fun z => sphereFinitePart (e₂ (F (e₁.symm (z : RiemannSphere))))
+      refine hb_rev ⟨F₀, hF₀_cont, hF₀_holo, hF₀_bij, ?_, ?_, ?_⟩
+      · dsimp [F₀, z₁, w₁]; rw [(hz_coe hβ₁).1, e₁.symm_apply_apply, hF₁]
+      · dsimp [F₀, z₂, w₂]; rw [(hz_coe hβ₂).1, e₁.symm_apply_apply, hF₂]
+      · dsimp [F₀, z₃, w₃]; rw [(hz_coe hβ₃).1, e₁.symm_apply_apply, hF₃]
+
+/-- **14.20(d) (Conformal homeomorphism between closures of two bounded Jordan domains,
+RCA p. 291):**
+Let `Ω₁` and `Ω₂` be bounded simply connected regions in `ℂ` whose boundary points are all simple.
+1. Composing a Riemann map `f₁ : Ω₁ → U` with the inverse of a Riemann map `f₂ : Ω₂ → U` and their
+   `14.19` extensions yields a holomorphic bijection `Ω₁ → Ω₂` extending to a homeomorphism
+   `closure Ω₁ ≃ₜ closure Ω₂` (carrying `frontier Ω₁` bijectively onto `frontier Ω₂`).
+2. More generally, **every** holomorphic bijection `h : Ω₁ → Ω₂` extends uniquely to a continuous
+   bijection `H : closure Ω₁ → closure Ω₂` inducing a homeomorphism `closure Ω₁ ≃ₜ closure Ω₂` and
+   carrying `frontier Ω₁` bijectively onto `frontier Ω₂`. -/
+theorem theorem14_20_part_d {Ω₁ Ω₂ : Set ℂ}
+    (hΩ₁_sc : RudinRCA.Chapter10.BookSimplyConnected Ω₁)
+    (hΩ₁_bdd : Bornology.IsBounded Ω₁)
+    (hΩ₁_simple : ∀ β ∈ frontier Ω₁, IsSimpleBoundaryPoint Ω₁ β)
+    (hΩ₂_sc : RudinRCA.Chapter10.BookSimplyConnected Ω₂)
+    (hΩ₂_bdd : Bornology.IsBounded Ω₂)
+    (hΩ₂_simple : ∀ β ∈ frontier Ω₂, IsSimpleBoundaryPoint Ω₂ β) :
+    (∀ {h : ℂ → ℂ}, RudinRCA.Chapter10.HolomorphicOn h Ω₁ → BijOn h Ω₁ Ω₂ →
+      ∃ H : ℂ → ℂ,
+        Set.EqOn H h Ω₁ ∧
+        ContinuousOn H (closure Ω₁) ∧
+        RudinRCA.Chapter10.HolomorphicOn H Ω₁ ∧
+        BijOn H (closure Ω₁) (closure Ω₂) ∧
+        BijOn H (frontier Ω₁) (frontier Ω₂) ∧
+        (∃ e : closure Ω₁ ≃ₜ closure Ω₂, ∀ z : closure Ω₁, (e z : ℂ) = H z.1) ∧
+        ∀ K : ℂ → ℂ, ContinuousOn K (closure Ω₁) → Set.EqOn K h Ω₁ →
+          Set.EqOn K H (closure Ω₁)) ∧
+    (∃ H : ℂ → ℂ,
+      ContinuousOn H (closure Ω₁) ∧
+      RudinRCA.Chapter10.HolomorphicOn H Ω₁ ∧
+      BijOn H Ω₁ Ω₂ ∧
+      BijOn H (closure Ω₁) (closure Ω₂) ∧
+      BijOn H (frontier Ω₁) (frontier Ω₂) ∧
+      ∃ e : closure Ω₁ ≃ₜ closure Ω₂, ∀ z : closure Ω₁, (e z : ℂ) = H z.1) := by
+  have hext : ∀ {h : ℂ → ℂ}, RudinRCA.Chapter10.HolomorphicOn h Ω₁ → BijOn h Ω₁ Ω₂ →
+      ∃ H : ℂ → ℂ,
+        Set.EqOn H h Ω₁ ∧
+        ContinuousOn H (closure Ω₁) ∧
+        RudinRCA.Chapter10.HolomorphicOn H Ω₁ ∧
+        BijOn H (closure Ω₁) (closure Ω₂) ∧
+        BijOn H (frontier Ω₁) (frontier Ω₂) ∧
+        (∃ e : closure Ω₁ ≃ₜ closure Ω₂, ∀ z : closure Ω₁, (e z : ℂ) = H z.1) ∧
+        ∀ K : ℂ → ℂ, ContinuousOn K (closure Ω₁) → Set.EqOn K h Ω₁ →
+          Set.EqOn K H (closure Ω₁) := by
+    intro h hh_holo hh_bij
+    obtain ⟨f₂, hf₂_holo, hf₂_bij⟩ := exists_riemann_map_of_bounded hΩ₂_sc hΩ₂_bdd
+    let f₁ : ℂ → ℂ := f₂ ∘ h
+    have hf₁_holo : RudinRCA.Chapter10.HolomorphicOn f₁ Ω₁ :=
+      fun z hz => (hf₂_holo (h z) (hh_bij.mapsTo hz)).comp z (hh_holo z hz)
+    have hf₁_bij : BijOn f₁ Ω₁ (ball (0 : ℂ) 1) := hf₂_bij.comp hh_bij
+    obtain ⟨hF₁_eq, hF₁_cont, _, hF₁_bij_cb, hF₁_bij_fr, _, ⟨e₁, he₁⟩, _⟩ :=
+      caratheodoryExtension_homeomorph_package hΩ₁_sc.1.1 hΩ₁_bdd hΩ₁_simple hf₁_holo hf₁_bij
+    obtain ⟨hF₂_eq, hF₂_cont, _, hF₂_bij_cb, hF₂_bij_fr, _, ⟨e₂, he₂⟩, _⟩ :=
+      caratheodoryExtension_homeomorph_package hΩ₂_sc.1.1 hΩ₂_bdd hΩ₂_simple hf₂_holo hf₂_bij
+    let e : closure Ω₁ ≃ₜ closure Ω₂ := e₁.trans e₂.symm
+    classical
+    let H : ℂ → ℂ := fun z => if hz : z ∈ closure Ω₁ then (e ⟨z, hz⟩ : ℂ) else 0
+    have hH_val : ∀ z (hz : z ∈ closure Ω₁), H z = (e ⟨z, hz⟩ : ℂ) := fun z hz => by
+      simp only [H, hz, ↓reduceDIte]
+    have hH_eq : Set.EqOn H h Ω₁ := by
+      intro z hz
+      have hz_cl : z ∈ closure Ω₁ := subset_closure hz
+      have hhz_cl : h z ∈ closure Ω₂ := subset_closure (hh_bij.mapsTo hz)
+      have he₁₂ : e₁ ⟨z, hz_cl⟩ = e₂ ⟨h z, hhz_cl⟩ := by
+        ext
+        rw [he₁, he₂, hF₁_eq hz, hF₂_eq (hh_bij.mapsTo hz)]
+        rfl
+      rw [hH_val z hz_cl]
+      dsimp [e]
+      rw [he₁₂, e₂.symm_apply_apply]
+    have hH_cont : ContinuousOn H (closure Ω₁) := by
+      rw [continuousOn_iff_continuous_domRestrict]
+      refine (continuous_subtype_val.comp e.continuous).congr fun p => ?_
+      dsimp [Set.domRestrict]
+      exact (hH_val p.1 p.2).symm
+    have hH_holo : RudinRCA.Chapter10.HolomorphicOn H Ω₁ :=
+      fun z hz => (hh_holo z hz).congr_of_eventuallyEq
+        (Filter.eventuallyEq_of_mem (hΩ₁_sc.1.1.mem_nhds hz) fun w hw => hH_eq hw)
+    have hH_bij_cl : BijOn H (closure Ω₁) (closure Ω₂) := by
+      refine ⟨fun z hz => by rw [hH_val z hz]; exact (e ⟨z, hz⟩).2,
+        fun z₁ hz₁ z₂ hz₂ heq => ?_, fun w hw => ?_⟩
+      · rw [hH_val z₁ hz₁, hH_val z₂ hz₂] at heq
+        exact congrArg Subtype.val (e.injective (Subtype.ext heq))
+      · refine ⟨(e.symm ⟨w, hw⟩ : ℂ), (e.symm ⟨w, hw⟩).2, ?_⟩
+        rw [hH_val _ (e.symm ⟨w, hw⟩).2]
+        simp
+    have hH_bij_fr : BijOn H (frontier Ω₁) (frontier Ω₂) := by
+      refine ⟨fun β hβ => ?_, hH_bij_cl.injOn.mono frontier_subset_closure, fun γ hγ => ?_⟩
+      · have hβ_cl : β ∈ closure Ω₁ := frontier_subset_closure hβ
+        refine mem_frontier_of_mem_closure_not_mem (hH_bij_cl.mapsTo hβ_cl) ?_
+        intro hmem₂
+        have he₁_sph : (e₁ ⟨β, hβ_cl⟩ : ℂ) ∈ sphere (0 : ℂ) 1 := by
+          rw [he₁]; exact hF₁_bij_fr.mapsTo hβ
+        have he₂_eq : e₂ ⟨H β, subset_closure hmem₂⟩ = e₁ ⟨β, hβ_cl⟩ := by
+          have : ⟨H β, subset_closure hmem₂⟩ = e ⟨β, hβ_cl⟩ :=
+            Subtype.ext (hH_val β hβ_cl)
+          rw [this]; dsimp [e]; exact e₂.apply_symm_apply _
+        have hball : (e₂ ⟨H β, subset_closure hmem₂⟩ : ℂ) ∈ ball (0 : ℂ) 1 := by
+          rw [he₂, hF₂_eq hmem₂]; exact hf₂_bij.mapsTo hmem₂
+        rw [he₂_eq] at hball
+        have h1 : ‖(e₁ ⟨β, hβ_cl⟩ : ℂ)‖ = 1 := by simpa using he₁_sph
+        have h2 : ‖(e₁ ⟨β, hβ_cl⟩ : ℂ)‖ < 1 := mem_ball_zero_iff.mp hball
+        linarith
+      · obtain ⟨z, hz_cl, hHz⟩ := hH_bij_cl.surjOn (frontier_subset_closure hγ)
+        refine ⟨z, mem_frontier_of_mem_closure_not_mem hz_cl fun hz_in => ?_, hHz⟩
+        rw [hH_eq hz_in] at hHz
+        have hγ_not_Ω₂ : γ ∉ Ω₂ := by
+          rw [frontier, hΩ₂_sc.1.1.interior_eq] at hγ; exact hγ.2
+        exact hγ_not_Ω₂ (hHz ▸ hh_bij.mapsTo hz_in)
+    refine ⟨H, hH_eq, hH_cont, hH_holo, hH_bij_cl, hH_bij_fr,
+      ⟨e, fun z => (hH_val z.1 z.2).symm⟩,
+      fun K hK_cont hK_eq => eqOn_of_continuousOn_closure_eqOn hK_cont hH_cont
+        (hK_eq.trans hH_eq.symm)⟩
+  refine ⟨hext, ?_⟩
+  obtain ⟨f₁, hf₁_holo, hf₁_bij⟩ := exists_riemann_map_of_bounded hΩ₁_sc hΩ₁_bdd
+  obtain ⟨f₂, hf₂_holo, hf₂_bij⟩ := exists_riemann_map_of_bounded hΩ₂_sc hΩ₂_bdd
+  obtain ⟨ψ₂, hψ₂_holo, hψ₂_bij, _, _⟩ := (theorem14_7 hΩ₂_sc.1.1 hf₂_holo hf₂_bij).2.1
+  let h : ℂ → ℂ := ψ₂ ∘ f₁
+  have hh_holo : RudinRCA.Chapter10.HolomorphicOn h Ω₁ :=
+    fun z hz => (hψ₂_holo (f₁ z) (hf₁_bij.mapsTo hz)).comp z (hf₁_holo z hz)
+  have hh_bij : BijOn h Ω₁ Ω₂ := hψ₂_bij.comp hf₁_bij
+  obtain ⟨H, hH_eq, hH_cont, hH_holo, hH_bij_cl, hH_bij_fr, he, _⟩ := hext hh_holo hh_bij
+  have hH_bij_Ω : BijOn H Ω₁ Ω₂ := by
+    refine ⟨fun z hz => by rw [hH_eq hz]; exact hh_bij.mapsTo hz,
+      fun z₁ hz₁ z₂ hz₂ heq => hh_bij.injOn hz₁ hz₂ (by rwa [← hH_eq hz₁, ← hH_eq hz₂]),
+      fun w hw => ?_⟩
+    obtain ⟨z, hz, hzw⟩ := hh_bij.surjOn hw
+    exact ⟨z, hz, by rw [hH_eq hz, hzw]⟩
+  exact ⟨H, hH_cont, hH_holo, hH_bij_Ω, hH_bij_cl, hH_bij_fr, he⟩
+
+/-- **Node 14.20 (Remarks on Carathéodory boundary correspondence, Jordan curves, three-point
+normalization, Riemann-sphere / half-plane domains, and two-region composition, RCA p. 291):**
+Combined package of all four printed subclaims `(a)`–`(d)`:
+- `(a)` Forward Jordan-curve boundary + closed-disc homeomorphism under `14.19`, **and** the full
+  converse that every bounded region with Jordan-curve boundary is simply connected with all
+  boundary points simple (`theorem14_20_part_a`);
+- `(b)` Unique three-point boundary normalization in compatible cyclic order (`theorem14_20_part_b`);
+- `(c)` Extension of both `14.19` and three-point normalization to simply connected spherical
+  regions `Ω ⊆ RiemannSphere` with `(interior Ωᶜ).Nonempty` and simple boundary points, with `U`
+  replaceable by any open half-plane `IsOpenHalfPlane H` (`theorem14_20_part_c`);
+- `(d)` Holomorphic interior correspondence extending to a closure homeomorphism between any two
+  such bounded regions (`theorem14_20_part_d`). -/
+theorem theorem14_20 :
+    ((∀ {Ω : Set ℂ}, RudinRCA.Chapter10.BookSimplyConnected Ω →
+        Bornology.IsBounded Ω →
+        (∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β) →
+        IsJordanCurve (frontier Ω) ∧ Nonempty (closure Ω ≃ₜ closedBall (0 : ℂ) 1)) ∧
+      (∀ {Ω : Set ℂ}, RudinRCA.Chapter10.IsRegion Ω →
+        Bornology.IsBounded Ω →
+        IsJordanCurve (frontier Ω) →
+        RudinRCA.Chapter10.BookSimplyConnected Ω ∧
+          ∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β)) ∧
+    (∀ {Ω : Set ℂ},
+      RudinRCA.Chapter10.BookSimplyConnected Ω →
+      Bornology.IsBounded Ω →
+      (∀ β ∈ frontier Ω, IsSimpleBoundaryPoint Ω β) →
+      ∀ {β₁ β₂ β₃ w₁ w₂ w₃ : ℂ},
+        β₁ ∈ frontier Ω → β₂ ∈ frontier Ω → β₃ ∈ frontier Ω →
+        β₁ ≠ β₂ → β₂ ≠ β₃ → β₁ ≠ β₃ →
+        w₁ ∈ sphere (0 : ℂ) 1 → w₂ ∈ sphere (0 : ℂ) 1 → w₃ ∈ sphere (0 : ℂ) 1 →
+        w₁ ≠ w₂ → w₂ ≠ w₃ → w₁ ≠ w₃ →
+        ((BoundaryPosCyclic Ω β₁ β₂ β₃ ↔ UnitCirclePosCyclic w₁ w₂ w₃) ↔
+          ∃ F : ℂ → ℂ,
+            ContinuousOn F (closure Ω) ∧
+            RudinRCA.Chapter10.HolomorphicOn F Ω ∧
+            BijOn F (closure Ω) (closedBall (0 : ℂ) 1) ∧
+            F β₁ = w₁ ∧ F β₂ = w₂ ∧ F β₃ = w₃ ∧
+            ∀ G : ℂ → ℂ,
+              ContinuousOn G (closure Ω) →
+              RudinRCA.Chapter10.HolomorphicOn G Ω →
+              BijOn G (closure Ω) (closedBall (0 : ℂ) 1) →
+              G β₁ = w₁ → G β₂ = w₂ → G β₃ = w₃ →
+              Set.EqOn G F (closure Ω))) ∧
+    (IsMoebiusDiscTarget (((↑) : ℂ → RiemannSphere) '' ball (0 : ℂ) 1) ∧
+      (∀ {H : Set ℂ}, IsOpenHalfPlane H →
+        IsMoebiusDiscTarget (((↑) : ℂ → RiemannSphere) '' H)) ∧
+      ∀ {Ω T : Set RiemannSphere},
+        SphericalSimplyConnected Ω →
+        (interior Ωᶜ).Nonempty →
+        (∀ β ∈ frontier Ω, IsSphericalSimpleBoundaryPoint Ω β) →
+        IsMoebiusDiscTarget T →
+        (∀ {f : RiemannSphere → RiemannSphere},
+          SphericalHolomorphicOn f Ω → BijOn f Ω T →
+          ∃ e : closure Ω ≃ₜ closure T,
+            ∀ p : Ω, (e ⟨p.1, subset_closure p.2⟩ : RiemannSphere) = f p.1) ∧
+        (∀ {β₁ β₂ β₃ q₁ q₂ q₃ : RiemannSphere},
+          β₁ ∈ frontier Ω → β₂ ∈ frontier Ω → β₃ ∈ frontier Ω →
+          β₁ ≠ β₂ → β₂ ≠ β₃ → β₁ ≠ β₃ →
+          q₁ ∈ frontier T → q₂ ∈ frontier T → q₃ ∈ frontier T →
+          q₁ ≠ q₂ → q₂ ≠ q₃ → q₁ ≠ q₃ →
+          (SphericalBoundaryPosCyclic Ω β₁ β₂ β₃ ↔ SphericalBoundaryPosCyclic T q₁ q₂ q₃) →
+          ∃ F : RiemannSphere → RiemannSphere,
+            ContinuousOn F (closure Ω) ∧
+            SphericalHolomorphicOn F Ω ∧
+            BijOn F Ω T ∧
+            BijOn F (closure Ω) (closure T) ∧
+            F β₁ = q₁ ∧ F β₂ = q₂ ∧ F β₃ = q₃ ∧
+            ∀ G : RiemannSphere → RiemannSphere,
+              ContinuousOn G (closure Ω) →
+              SphericalHolomorphicOn G Ω →
+              BijOn G (closure Ω) (closure T) →
+              G β₁ = q₁ → G β₂ = q₂ → G β₃ = q₃ →
+              Set.EqOn G F (closure Ω))) ∧
+    (∀ {Ω₁ Ω₂ : Set ℂ},
+      RudinRCA.Chapter10.BookSimplyConnected Ω₁ →
+      Bornology.IsBounded Ω₁ →
+      (∀ β ∈ frontier Ω₁, IsSimpleBoundaryPoint Ω₁ β) →
+      RudinRCA.Chapter10.BookSimplyConnected Ω₂ →
+      Bornology.IsBounded Ω₂ →
+      (∀ β ∈ frontier Ω₂, IsSimpleBoundaryPoint Ω₂ β) →
+      ∃ H : ℂ → ℂ,
+        ContinuousOn H (closure Ω₁) ∧
+        RudinRCA.Chapter10.HolomorphicOn H Ω₁ ∧
+        BijOn H Ω₁ Ω₂ ∧
+        BijOn H (closure Ω₁) (closure Ω₂) ∧
+        BijOn H (frontier Ω₁) (frontier Ω₂) ∧
+        ∃ e : closure Ω₁ ≃ₜ closure Ω₂, ∀ z : closure Ω₁, (e z : ℂ) = H z.1) := by
+  refine ⟨⟨theorem14_20_part_a.1, theorem14_20_part_a.2.1⟩, ?_, ?_, ?_⟩
+  · intro Ω hΩ_sc hΩ_bdd hΩ_simple β₁ β₂ β₃ w₁ w₂ w₃
+      hβ₁ hβ₂ hβ₃ hβ12 hβ23 hβ13 hw₁ hw₂ hw₃ hw12 hw23 hw13
+    obtain ⟨hfwd, hrev⟩ := theorem14_20_part_b hΩ_sc hΩ_bdd hΩ_simple
+      hβ₁ hβ₂ hβ₃ hβ12 hβ23 hβ13 hw₁ hw₂ hw₃ hw12 hw23 hw13
+    constructor
+    · intro hcompat
+      obtain ⟨F, hFc, hFh, _, _, hFcb, _, h1, h2, h3, hu⟩ := hfwd hcompat
+      exact ⟨F, hFc, hFh, hFcb, h1, h2, h3, hu⟩
+    · rintro ⟨F, hFc, hFh, hFcb, h1, h2, h3, _⟩
+      exact hrev ⟨F, hFc, hFh, hFcb, h1, h2, h3⟩
+  · obtain ⟨hU, hH, hmain⟩ := theorem14_20_part_c
+    refine ⟨hU, hH, fun hΩ_sc hcompl hsimp hT => ?_⟩
+    obtain ⟨hext, h3pt⟩ := hmain hΩ_sc hcompl hsimp hT
+    refine ⟨fun hf_holo hf_bij => ?_,
+      fun hβ₁ hβ₂ hβ₃ hβ12 hβ23 hβ13 hq₁ hq₂ hq₃ hq12 hq23 hq13 hcompat => ?_⟩
+    · obtain ⟨F, hFeq, _, _, _, _, ⟨e, he⟩, _⟩ := hext hf_holo hf_bij
+      exact ⟨e, fun p => by rw [he]; exact hFeq p.2⟩
+    · obtain ⟨F, hFc, hFh, hFΩ, _, hFcl, _, h1, h2, h3, hu⟩ :=
+        (h3pt hβ₁ hβ₂ hβ₃ hβ12 hβ23 hβ13 hq₁ hq₂ hq₃ hq12 hq23 hq13).1 hcompat
+      exact ⟨F, hFc, hFh, hFΩ, hFcl, h1, h2, h3, hu⟩
+  · intro Ω₁ Ω₂ h1_sc h1_bdd h1_simp h2_sc h2_bdd h2_simp
+    exact (theorem14_20_part_d h1_sc h1_bdd h1_simp h2_sc h2_bdd h2_simp).2
+
 /-! ### Nodes 14.21 and 14.22: Annuli and Conformal Classification by Radius Ratio -/
 
 /-- **Definition 14.21 (Open annulus `A(r, R)`, RCA pp. 291–292):**
@@ -7170,6 +14165,130 @@ theorem theorem14_22 {r₁ R₁ r₂ R₂ : ℝ}
 #print axioms mem_combTopSegment_iff
 #print axioms combRegion_bookSimplyConnected
 #print axioms theorem14_17
+#print axioms eq_of_isPreconnected_forall_int
+#print axioms exists_continuousOn_angle_Icc
+#print axioms exists_continuousOn_angle_Ico
+#print axioms lintegral_polar_deriv_sq_le_of_injOn
+#print axioms ae_radial_limit_of_injOn_ball
+#print axioms holomorphic_zero_at_zero_of_ae_radial_zero_arc
+#print axioms tendsto_norm_one_nhdsWithin
+#print axioms tendsto_nhdsWithin_of_curve_Icc
+#print axioms lindelof_curve_tendsto
+#print axioms theorem14_18_part_a
+#print axioms theorem14_18_part_b
+#print axioms theorem14_18
+#print axioms caratheodoryExtension
+#print axioms caratheodoryExtension_eq_of_mem
+#print axioms caratheodoryExtension_frontier_spec
+#print axioms eqOn_of_continuousOn_closure_eqOn
+#print axioms caratheodoryExtension_homeomorph_package
+#print axioms theorem14_19
+#print axioms IsJordanCurve
+#print axioms IsJordanArc
+#print axioms isCompact_of_isJordanCurve
+#print axioms nonempty_of_isJordanCurve
+#print axioms isCompact_of_isJordanArc
+#print axioms isConnected_of_isJordanArc
+#print axioms eq_of_isPreconnected_int_cast
+#print axioms HasContLogRatio
+#print axioms hasContLogRatio_refl
+#print axioms hasContLogRatio_symm
+#print axioms hasContLogRatio_trans
+#print axioms hasContLogRatio_mono
+#print axioms hasContLogRatio_ball_step
+#print axioms hasContLogRatio_of_mem_connectedComponentIn
+#print axioms not_hasContLogRatio_of_bounded_open_frontier_subset
+#print axioms isConnected_exterior_closedBall
+#print axioms isOpen_and_frontier_subset_of_connectedComponentIn_compl
+#print axioms bounded_or_eq_unbounded_component_of_isCompact
+#print axioms borsuk_eilenberg_iff
+#print axioms janiszewski_connectedComponentIn
+#print axioms isConnected_compl_of_isJordanArc
+#print axioms circleArc_isJordanArc
+#print axioms sphere_split_two_arcs
+#print axioms isJordanArc_image_of_homeomorph
+#print axioms jordanCurve_arc_decomposition
+#print axioms jordanCurve_component_frontier_eq
+#print axioms jordanCurve_bounded_component_simplyConnected
+#print axioms jordanCurve_bounded_component_locally_joined
+#print axioms jordanCurve_bounded_component_all_simple
+#print axioms jordanBoundary_region_converse
+#print axioms UnitCirclePosCyclic
+#print axioms unitCircleCyclicDet
+#print axioms unitCircleCyclicDet_exp_formula
+#print axioms exists_angle_Ioo_two_pi_of_mem_sphere_ne_one
+#print axioms unitCirclePosCyclic_iff_det_pos
+#print axioms unitCircleCyclicDet_swap
+#print axioms unitCirclePosCyclic_pairwise_ne
+#print axioms unitCirclePosCyclic_dichotomy
+#print axioms unitCirclePosCyclic_rotate_triple
+#print axioms unitCirclePosCyclic_std
+#print axioms diskAut
+#print axioms diskAut_props
+#print axioms diskAut_preserves_posCyclic
+#print axioms diskAut_eq_id_of_three_fixed
+#print axioms eqOn_closedBall_of_eqOn_ball
+#print axioms diskAutInv_props
+#print axioms exists_diskAut_to_std
+#print axioms exists_unique_diskAut_three_points
+#print axioms not_exists_continuousOn_exp_eq_sub_on_sphere
+#print axioms homeomorph_closedBall_preserves_sphere_and_ball
+#print axioms continuous_moebiusAffine
+#print axioms continuous_moebiusInv
+#print axioms moebiusMap_continuous
+#print axioms moebiusHomeomorph
+#print axioms sphereFinitePart
+#print axioms sphereFinitePart_infty
+#print axioms sphereFinitePart_coe
+#print axioms sphereChartCenter
+#print axioms sphereChartCenter_infty
+#print axioms sphereChartCenter_coe
+#print axioms sphereChartIn
+#print axioms sphereChartIn_infty
+#print axioms sphereChartIn_coe
+#print axioms sphereChartOut
+#print axioms sphereChartOut_infty
+#print axioms sphereChartOut_coe
+#print axioms moebiusInv_involutive
+#print axioms sphereChartIn_center
+#print axioms sphereChartOut_self
+#print axioms continuous_sphereChartIn
+#print axioms eventually_sphereChartIn_out
+#print axioms SphericalHolomorphicOn
+#print axioms sphericalHolomorphicOn_id
+#print axioms SphericalHolomorphicOn.mono
+#print axioms SphericalHolomorphicOn.congr
+#print axioms SphericalHolomorphicOn.comp
+#print axioms sphericalHolomorphicOn_moebiusAffine
+#print axioms sphericalHolomorphicOn_moebiusInv
+#print axioms moebiusMap_sphericalHolomorphicOn
+#print axioms sphericalHolomorphicOn_coe_iff
+#print axioms IsSphericalRegion
+#print axioms SphericalSimplyConnected
+#print axioms IsSphericalSimpleBoundaryPoint
+#print axioms isSphericalRegion_image_homeomorph
+#print axioms sphericalSimplyConnected_image_homeomorph
+#print axioms isSphericalSimpleBoundaryPoint_image_homeomorph
+#print axioms closure_and_frontier_coe_of_isBounded
+#print axioms bounded_plane_region_spherical_iff
+#print axioms spherical_region_moebius_to_bounded_plane
+#print axioms openHalfPlane_moebius_bij
+#print axioms bounded_subset_ne_univ
+#print axioms exists_riemann_map_of_bounded
+#print axioms unitDisc_all_simple
+#print axioms theorem14_20_part_a
+#print axioms closure_bijOn_closedBall_factorization
+#print axioms BoundaryPosCyclic
+#print axioms boundaryPosCyclic_invariance_and_dichotomy
+#print axioms theorem14_20_part_b
+#print axioms IsMoebiusDiscTarget
+#print axioms SphericalBoundaryPosCyclic
+#print axioms isMoebiusDiscTarget_unitDisc
+#print axioms isMoebiusDiscTarget_openHalfPlane
+#print axioms eqOn_closure_riemannSphere
+#print axioms theorem14_20_part_c
+#print axioms theorem14_20_part_d
+#print axioms theorem14_20
 #print axioms annulus
 #print axioms annulus_isOpen
 #print axioms annulus_isRegion
