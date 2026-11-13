@@ -11,8 +11,8 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 3 | Lp-Spaces | 17 | 0 |
 | 4 | Elementary Hilbert Space Theory | 26 | 26 |
 | 5 | Examples of Banach Space Techniques | 25 | 25 |
-| 6 | Complex Measures | 19 | 8 |
-| 7 | Differentiation | 26 | 24 |
+| 6 | Complex Measures | 19 | 19 |
+| 7 | Differentiation | 26 | 26 |
 | 8 | Integration on Product Spaces | 18 | 18 |
 | 9 | Fourier Transforms | 23 | 23 |
 | 10 | Elementary Properties of Holomorphic Functions | 44 | 44 |
@@ -67,7 +67,21 @@ PR: [#48](https://github.com/derekblair/formalize-everything/pull/48).
 Coordinator-appointed crossed review passed (`PASS WITH ISSUES`, zero blocking findings; see FE #38) and PR [#79](https://github.com/derekblair/formalize-everything/pull/79) merged (`aba161c6`). The main table above
 continues to count only independently reviewed work landed on main.
 
-Cluster C independently enumerated 45 numbered nodes (6.1–6.19 and 7.1–7.26); see [SCOPING-C.md](SCOPING-C.md) for printed statements, pages, subclauses, pinned Mathlib claims checks, and uncovered obligations, and [COVERAGE-C.md](COVERAGE-C.md) for the live module ledger. `RudinRCA/Chapter06.lean` (`442` lines, blob `a7cbfb23ef0326a9f9222b1d098fc58839d6f58a`) is imported into the audited graph on `main` (`FE #82`, PR #84), proving **8/19** complete Chapter 6 nodes (`6.1`, `6.2`, `6.4`, `6.5`, `6.6`, `6.7`, `6.8`, `6.17`) at the programme bar (`Done: 8` after coordinator-appointed crossed review); `RudinRCA/Chapter07.lean` (`5,393` lines, blob `23a686de561f79fc7a3f1d7ff43f8d66e10b2686`) is wired into the audited graph for `FE #86` (FE #86, PR #89, crossed review PASS), proving **24/26** complete Chapter 7 nodes (`7.1`–`7.22`, `7.25`, `7.26`) at the programme bar (`Done: 24`, bringing the main-table `Done` sum from `132/456` on `main` to `156/456`); the remaining `11/19` Chapter 6 nodes (`6.3`, `6.9`–`6.16`, `6.18`, `6.19`) and `2/26` Chapter 7 gap nodes (`7.23`, `7.24`) remain pending.
+## Cluster C Stage 3 (Chapters 6–7; FE #102)
+
+Cluster C independently enumerated all **45** numbered nodes (`6.1`–`6.19` and `7.1`–`7.26`; unnumbered Jordan-minimality corollary after `6.14` belongs to `6.14`, exercises excluded); see [SCOPING-C.md](SCOPING-C.md) for printed statements, pages, subclauses, pinned Mathlib claims checks, and uncovered obligations, and [COVERAGE-C.md](COVERAGE-C.md) for the live module ledger.
+
+Stage 3 (`FE #102`, umbrella `#36`, cluster `#39`, branch `coordinator/rca-cluster-c-stage3-20261112` from `main` `e30ccaad350fb3c6140755f5cf6626ba0a014604`; advances Cluster C from `32/45` on `main` to **45/45** complete nodes and advances the main-table `Done` sum from `281/456` on `main` `e30ccaad` to `294/456` on this branch for the `13/13` remaining nodes verified proved in full, pending coordinator-appointed crossed review):
+
+| Chapter | Inventoried | Complete nodes proved (`Done`) | Pending | Coverage ledger |
+|---|---:|---:|---:|---|
+| 6 | 19 | 19 | 0 | [Cluster C coverage](COVERAGE-C.md) |
+| 7 | 26 | 26 | 0 | [Cluster C coverage](COVERAGE-C.md) |
+| **Cluster C** | **45** | **45** | **0** | [SCOPING-C.md](SCOPING-C.md), [COVERAGE-C.md](COVERAGE-C.md) |
+
+- `RudinRCA/Chapter06.lean` (`4,503` lines, blob `1b6377c5c094e92ef8d434c205fbbd8ee1b0e1e5`; `245` total source declarations / `232` public source / `231` public value / `162` `#print axioms` records / `358` `AuditA` constants, `+283` over the `75` baseline from `FE #82` / PR #84 on `main` `e30ccaad`) proves **19/19** Chapter 6 nodes (`6.1`–`6.19`) in full: total variation (`6.1`–`6.2`), exact `1/π` complex subset-sum lemma (`6.3`), finiteness and Banach-space norm of complex variation (`6.4`–`6.5`), Jordan positive/negative variations (`6.6`), polymorphic absolute continuity / mutual singularity (`6.7`–`6.8`), strictly positive weight `0 < w(x) < 1` everywhere for `σ`-finite `μ` (`6.9`), Lebesgue–Radon–Nikodym decomposition and density uniqueness (`6.10`, plus `σ`-finite positive local-`L¹` extension and counting/Lebesgue counterexamples; unblocks `FE #88` Stage 3), `ε`–`δ` absolute continuity without `σ`-finiteness plus unbounded positive counterexample (`6.11`), polar decomposition `dμ = h d|μ|` with `‖h(x)‖ = 1` at every `x` (`6.12`), variation of `g dμ` (`6.13`), Hahn decomposition and Jordan minimality corollary (`6.14`), `L^q` pairing bound, `(L^∞)*` non-representability counterexample, and arbitrary-measure `1 < p < ∞` duality (`6.15`), full `(L^p)* ≅ L^q` isometric representation for `1 ≤ p < ∞` and `σ`-finite `μ` (`6.16`), `L²` Hilbert specialization (`6.17`), `C_c(X) → C₀(X)` unique norm-preserving extension and polar complex integral (`6.18`), and complex Riesz–Markov–Kakutani representation with exact norm `‖Φ‖ = |μ|(X)` on arbitrary locally compact Hausdorff `X` (`6.19`; unblocks `FE #88` Stage 3).
+- `RudinRCA/Chapter07.lean` (`6,864` lines, blob `416c39253f3a3519f288e97a7f427534ed12326b`; `228` total source declarations / `168` public source & value / `451` `AuditA` constants, `+126` over the `325` baseline from `FE #86` / PR #89 on `main` `e30ccaad`) proves **26/26** Chapter 7 nodes (`7.1`–`7.26`) in full: extending the reviewed `24/26` foundation (`7.1`–`7.22`, `7.25`, `7.26`), Stage 3 proves Kuhn's cubical Sperner lemma and Brouwer's fixed-point theorem from scratch to establish the Brouwer image-ball lemma on `closedBall 0 1` (`7.23`), and uses `7.23` together with `σ`-compact Borel measurability of `T(B(x, r))` and singular-case compact thickening to prove the pointwise ball volume-ratio theorem `m(T(B(x, r))) / m(B(x, r)) → |det T'(x)|` assuming `T` is continuous on open `V` and differentiable **only** at the single point `x ∈ V` (`7.24`).
+- Clean-slate `lake build` exited `0` (`8,942` jobs, `0` errors; `0` warnings in `RudinRCA/Chapter07.lean`); whole-book `AuditA` passed across `4,121` project declarations across `17` audited modules (`+409` over the `3,712` baseline on `main` `e30ccaad`, axiom union strictly `{propext, Classical.choice, Quot.sound}`, zero `sorry`).
 
 ## Cluster D development branch
 
@@ -144,7 +158,7 @@ representation theorem 2.14 remains pending. Chapter 3
 contains four proved results: a counterexample and three facts about the
 explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
 remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
-Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; main-table `Done` total is 281/456 after landing the 31/34 Cluster F Stage 2 nodes in FE #42 (PR #101, crossed review PASS WITH ISSUES) on top of the 250/456 total from the 71/90 Cluster E Stage 2 nodes in FE #88 (PR #91, crossed review PASS WITH ISSUES) and the 179/456 baseline on `main` including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES)).
+Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; `main` at `e30ccaad` reached 281/456 after landing the 31/34 Cluster F Stage 2 nodes in FE #42 (PR #101, crossed review PASS WITH ISSUES) on top of the 250/456 total from the 71/90 Cluster E Stage 2 nodes in FE #88 (PR #91, crossed review PASS WITH ISSUES) and the 179/456 baseline on `main` including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES); branch `coordinator/rca-cluster-c-stage3-20261112` adds the remaining 13 Cluster C Stage 3 nodes in FE #102 for a main-table `Done` sum of 294/456 pending crossed review).
 
 ## Cluster F Stage 2 (Chapters 13–14; FE #42)
 
