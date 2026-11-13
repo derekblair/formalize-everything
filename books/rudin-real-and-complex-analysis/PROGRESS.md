@@ -144,13 +144,13 @@ representation theorem 2.14 remains pending. Chapter 3
 contains four proved results: a counterexample and three facts about the
 explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
 remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
-Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; main-table `Done` total is 250/456 after landing the 71/90 Cluster E Stage 2 nodes in FE #88 (PR #91, crossed review PASS WITH ISSUES) on top of the 179/456 baseline on `main` including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES)).
+Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; main-table `Done` total is 281/456 after landing the 31/34 Cluster F Stage 2 nodes in FE #42 (PR #101, crossed review PASS WITH ISSUES) on top of the 250/456 total from the 71/90 Cluster E Stage 2 nodes in FE #88 (PR #91, crossed review PASS WITH ISSUES) and the 179/456 baseline on `main` including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES)).
 
 ## Cluster F Stage 2 (Chapters 13–14; FE #42)
 
 The independent inventory in [SCOPING-F.md](SCOPING-F.md) counts all **34** numbered nodes of Chapters 13–14 (`13.1`–`13.12` and `14.1`–`14.22`), including definitions, remarks, and exposition with substantive assertions; unnumbered corollaries (`|a₁| ≤ 1` under `14.13`) belong to their numbered parent and exercises are excluded. Per the printed third edition, Runge is `13.6`/`13.7`/`13.9`, `13.10` is Mittag-Leffler, `13.12` is harmonicity of `log |f|`, and Mergelyan (`20.5`) is outside Cluster F.
 
-Stage 2 (`FE #42`, umbrella `#36`, branch `coordinator/rca-cluster-f-stage2-20261112`; main-table `Done` advances from `250/456` on `main` `35efa215` to `281/456` on this branch for the `31/34` nodes verified proved in full, awaiting coordinator-appointed independent crossed review before landing on `main`):
+Stage 2 (`FE #42`, umbrella `#36`, branch `coordinator/rca-cluster-f-stage2-20261112`; main-table `Done` advances from `250/456` on `main` `35efa215` to `281/456` on this branch for the `31/34` nodes verified proved in full, coordinator-appointed crossed review passed — PASS WITH ISSUES, zero blocking findings; PR #101):
 
 | Chapter | Inventoried | Complete nodes proved (`Done`) | Pending | Coverage ledger |
 |---|---:|---:|---:|---|
@@ -173,7 +173,7 @@ chapter numbers and discloses the discrepancy; see [SCOPING-H.md](SCOPING-H.md).
 No separate Stage 1 lane inventory was supplied. Counts here were independently
 enumerated from the printed third-edition scan. Exercises are excluded.
 
-Reviewed changes through PR #91 have landed on `main` (`250/456` total: `179/456` baseline on `main` from FE #86 / PR #89 and FE #87 / PR #90 plus the `71/90` Cluster E Stage 2 nodes in FE #88 landed by PR #91 after coordinator-appointed crossed review (PASS WITH ISSUES, zero blocking findings; see FE #88); Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
+Reviewed changes through PR #101 have landed on `main` (`281/456` total: `250/456` from FE #86 / PR #89, FE #87 / PR #90 and FE #88 / PR #91 plus the `31/34` Cluster F Stage 2 nodes in FE #42 landed by PR #101 after coordinator-appointed crossed review (PASS WITH ISSUES, zero blocking findings; see FE #42); Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
 successful supporting lemma does not imply completion of its entire book node.
 
 ## Cluster E Stage 2 (Chapters 10–12; FE #88)

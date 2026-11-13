@@ -36,7 +36,7 @@ MODULES = (
     "RudinRCA/AuditE",
     "RudinRCA",
 )
-LIVE_PROJECT_DECLARATIONS = 3086
+LIVE_PROJECT_DECLARATIONS = 3712
 
 
 @dataclass(frozen=True)
