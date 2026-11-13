@@ -71,7 +71,7 @@ continues to count only independently reviewed work landed on main.
 
 Cluster C independently enumerated all **45** numbered nodes (`6.1`–`6.19` and `7.1`–`7.26`; unnumbered Jordan-minimality corollary after `6.14` belongs to `6.14`, exercises excluded); see [SCOPING-C.md](SCOPING-C.md) for printed statements, pages, subclauses, pinned Mathlib claims checks, and uncovered obligations, and [COVERAGE-C.md](COVERAGE-C.md) for the live module ledger.
 
-Stage 3 (`FE #102`, umbrella `#36`, cluster `#39`, branch `coordinator/rca-cluster-c-stage3-20261112` from `main` `e30ccaad350fb3c6140755f5cf6626ba0a014604`; advances Cluster C from `32/45` on `main` to **45/45** complete nodes and advances the main-table `Done` sum from `281/456` on `main` `e30ccaad` to `294/456` on this branch for the `13/13` remaining nodes verified proved in full, pending coordinator-appointed crossed review):
+Stage 3 (`FE #102`, umbrella `#36`, cluster `#39`, branch `coordinator/rca-cluster-c-stage3-20261112` authored from `main` `e30ccaad350fb3c6140755f5cf6626ba0a014604` [`281/456 → 294/456`] and rebased onto `main` `687afd232feddf5997dcfcbd89c2ce6e667050e4`; advances Cluster C from `32/45` on `main` to **45/45** complete nodes and advances the main-table `Done` sum from `355/456` on `main` `687afd23` to `368/456` on this branch for the `13/13` remaining nodes verified proved in full, coordinator-appointed crossed review passed — PASS WITH ISSUES, zero blocking findings; PR #104):
 
 | Chapter | Inventoried | Complete nodes proved (`Done`) | Pending | Coverage ledger |
 |---|---:|---:|---:|---|
@@ -158,7 +158,7 @@ representation theorem 2.14 remains pending. Chapter 3
 contains four proved results: a counterexample and three facts about the
 explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
 remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
-Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; `main` at `e30ccaad` reached 281/456 after landing the 31/34 Cluster F Stage 2 nodes in FE #42 (PR #101, crossed review PASS WITH ISSUES) on top of the 250/456 total from the 71/90 Cluster E Stage 2 nodes in FE #88 (PR #91, crossed review PASS WITH ISSUES) and the 179/456 baseline on `main` including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES); branch `coordinator/rca-cluster-c-stage3-20261112` adds the remaining 13 Cluster C Stage 3 nodes in FE #102 for a main-table `Done` sum of 294/456 pending crossed review).
+Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; main-table `Done` total is 368/456 after landing the remaining 13 Cluster C Stage 3 nodes in FE #102 (PR #104, crossed review PASS WITH ISSUES) on top of the 355/456 total at `main` `687afd23` from the 74/75 Cluster G Stage 2 nodes in FE #43 (PR #103, crossed review PASS), the 281/456 total at `main` `e30ccaad` from the 31/34 Cluster F Stage 2 nodes in FE #42 (PR #101, crossed review PASS WITH ISSUES), the 250/456 total from the 71/90 Cluster E Stage 2 nodes in FE #88 (PR #91, crossed review PASS WITH ISSUES), and the 179/456 baseline on `main` including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES)).
 
 ## Cluster F Stage 2 (Chapters 13–14; FE #42)
 
@@ -203,7 +203,7 @@ chapter numbers and discloses the discrepancy; see [SCOPING-H.md](SCOPING-H.md).
 No separate Stage 1 lane inventory was supplied. Counts here were independently
 enumerated from the printed third-edition scan. Exercises are excluded.
 
-Reviewed changes through PR #101 have landed on `main` (`281/456` total: `250/456` from FE #86 / PR #89, FE #87 / PR #90 and FE #88 / PR #91 plus the `31/34` Cluster F Stage 2 nodes in FE #42 landed by PR #101 after coordinator-appointed crossed review (PASS WITH ISSUES, zero blocking findings; see FE #42); Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
+Reviewed changes through PR #104 have landed on `main` (`368/456` total: `281/456` through FE #42 / PR #101 (`250/456` from FE #86 / PR #89, FE #87 / PR #90 and FE #88 / PR #91 plus the `31/34` Cluster F Stage 2 nodes in FE #42), plus the `74/75` Cluster G Stage 2 nodes in FE #43 landed by PR #103 (`355/456` on `main` `687afd23`), plus the remaining `13` Cluster C Stage 3 nodes (`45/45` Cluster C total) in FE #102 landed by PR #104 after coordinator-appointed crossed review (PASS WITH ISSUES, zero blocking findings; see FE #102); Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
 successful supporting lemma does not imply completion of its entire book node.
 
 ## Cluster E Stage 2 (Chapters 10–12; FE #88)
