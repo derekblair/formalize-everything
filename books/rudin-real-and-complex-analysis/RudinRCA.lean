@@ -13,6 +13,8 @@ import RudinRCA.Chapter12
 import RudinRCA.Chapter13
 import RudinRCA.Chapter14
 import RudinRCA.Chapter15
+import RudinRCA.Chapter16
+import RudinRCA.Chapter17
 import RudinRCA.AuditE
 
 /-!

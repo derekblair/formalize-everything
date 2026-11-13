@@ -30,7 +30,7 @@ import tempfile
 
 PIN = "d13f23b723b8a846827a245b89c10fc7d3f11612"
 TOOLCHAIN = "leanprover/lean4:v4.34.1"
-CHAPTERS = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)
+CHAPTERS = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17)
 MODULES = (
     *(f"RudinRCA/Chapter{chapter:02}" for chapter in CHAPTERS),
     "RudinRCA/AuditE",
