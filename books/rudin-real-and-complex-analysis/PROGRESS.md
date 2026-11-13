@@ -18,8 +18,8 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | 10 | Elementary Properties of Holomorphic Functions | 44 | 44 |
 | 11 | Harmonic Functions | 32 | 19 |
 | 12 | The Maximum Modulus Principle | 14 | 8 |
-| 13 | Approximation by Rational Functions | 12 | 0 |
-| 14 | Conformal Mapping | 22 | 0 |
+| 13 | Approximation by Rational Functions | 12 | 12 |
+| 14 | Conformal Mapping | 22 | 19 |
 | 15 | Zeros of Holomorphic Functions | 27 | 0 |
 | 16 | Analytic Continuation | 22 | 0 |
 | 17 | Hp-Spaces | 26 | 0 |
@@ -144,15 +144,23 @@ representation theorem 2.14 remains pending. Chapter 3
 contains four proved results: a counterexample and three facts about the
 explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
 remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
-Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; main-table `Done` total is 250/456 after landing the 71/90 Cluster E Stage 2 nodes in FE #88 (PR #91, crossed review PASS WITH ISSUES) on top of the 179/456 baseline on `main` including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES)).
+Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; main-table `Done` total is 281/456 after landing the 31/34 Cluster F Stage 2 nodes in FE #42 (PR #101, crossed review PASS WITH ISSUES) on top of the 250/456 total from the 71/90 Cluster E Stage 2 nodes in FE #88 (PR #91, crossed review PASS WITH ISSUES) and the 179/456 baseline on `main` including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES)).
 
-## Cluster F working-branch status
+## Cluster F Stage 2 (Chapters 13–14; FE #42)
 
-The independent inventory in [SCOPING-F.md](SCOPING-F.md) counts all 34 numbered nodes: 13.1–13.12 and 14.1–14.22, including definitions and exposition with substantive assertions. No chapter is complete. The `Done` column above retains its stated meaning of proved and reviewed on main.
+The independent inventory in [SCOPING-F.md](SCOPING-F.md) counts all **34** numbered nodes of Chapters 13–14 (`13.1`–`13.12` and `14.1`–`14.22`), including definitions, remarks, and exposition with substantive assertions; unnumbered corollaries (`|a₁| ≤ 1` under `14.13`) belong to their numbered parent and exercises are excluded. Per the printed third edition, Runge is `13.6`/`13.7`/`13.9`, `13.10` is Mittag-Leffler, `13.12` is harmonicity of `log |f|`, and Mergelyan (`20.5`) is outside Cluster F.
 
-The ticket’s headline numbering differs from the printed third edition: Runge is 13.6/13.9; 13.10 is Mittag-Leffler; 13.12 is harmonicity of log modulus. Mergelyan is 20.5 and is outside this cluster. The forward dependency 13.11(j) → 14.8 is explicit in the book.
+Stage 2 (`FE #42`, umbrella `#36`, branch `coordinator/rca-cluster-f-stage2-20261112`; main-table `Done` advances from `250/456` on `main` `35efa215` to `281/456` on this branch for the `31/34` nodes verified proved in full, coordinator-appointed crossed review passed — PASS WITH ISSUES, zero blocking findings; PR #101):
 
-The working Chapter13 module contains the sphere topology and exact stereographic map, inverse-chart singularity definitions, bounded removability and polynomial principal parts at infinity, entire nonpolynomial essential singularities, and the full 13.12 log-modulus harmonicity statement. The combined module and umbrella build passed with 48 allowed-axiom declaration audits on 2026-10-29. This is an incremental branch checkpoint: neither a complete chapter nor the clean-slate PR gate. Further assertions of 13.1 and the drafts for 13.2 onward remain under verification. Partial assertions are not counted as completed numbered nodes.
+| Chapter | Inventoried | Complete nodes proved (`Done`) | Pending | Coverage ledger |
+|---|---:|---:|---:|---|
+| 13 | 12 | 12 | 0 | [Chapter 13 coverage](CHAPTER13-COVERAGE.md) |
+| 14 | 22 | 19 | 3 | [Chapter 14 coverage](CHAPTER14-COVERAGE.md) |
+| **Cluster F** | **34** | **31** | **3** | [SCOPING-F.md](SCOPING-F.md) |
+
+- `RudinRCA/Chapter13.lean` (`6,559` lines, blob `1793405c5aa3f3e858255b88203f7689a63acf74`; `165` source declarations / `124` public source / `123` public value / `431` `AuditA` constants, `+331` over the `100` foundational constants on `main` `35efa215`) proves **12/12** Chapter 13 nodes (`13.1`–`13.12`) in full: Riemann-sphere topology and singularity trichotomy at `∞` (`13.1`), rational partial fractions off poles (`13.2`), compact exhaustion with spherical-complement component containment (`13.3`), multiplicity-preserving balanced-interval partition (`13.4`), grid-square simultaneous Cauchy cycle (`13.5`), compact/polynomial/open-set Runge (`13.6`, `13.7`, `13.9`) and quantitative `1/m` necessity (`13.8`), Mittag-Leffler allowing zero principal parts (`13.10`), the full 9-way equivalence of plane simple connectedness (`13.11`, resolving `13.11(j) → 13.11(a)` without circularity via `riemann_mapping_of_holomorphic_sqrt`), and local holomorphic logarithms + harmonicity of `log ‖f‖` (`13.12`).
+- `RudinRCA/Chapter14.lean` (`7,180` lines, blob `565f0871fc7af2d820c0463131e58abf38083282`; `118` source declarations / `112` public source / `111` public value / `295` `AuditA` constants) proves **19/22** Chapter 14 nodes (`14.1`–`14.17`, `14.21`–`14.22`) in full: oriented-angle preservation (`14.1`–`14.2`), linear fractional transformations and generalized circles (`14.3`, including a formal proof in `theorem14_3_stereographic_circle_iff` of the stereographic-circle characterization omitted in print), circular Schwarz reflection on an explicit symmetric neighborhood (`14.4`), normal families and Montel (`14.5`–`14.6`), conformal equivalence (`14.7`), the full Riemann mapping theorem (`14.8`) and extremal uniqueness (`14.9`), class `S`, Koebe functions, and odd square-root transforms (`14.10`–`14.12`), the area theorem (`14.13`, with proved summability), Bieberbach `|a₂| ≤ 2` + Koebe `1/4`-disc (`14.14`), omitted-value bound `|w₁ - w₂| ≤ 4` (`14.15`), simple boundary points and nonsimple slit/comb examples (`14.16`–`14.17`), and annulus conformal classification (`14.21`–`14.22`). The **3/22** Carathéodory boundary extension and Jordan-curve nodes (`14.18`–`14.20`) remain pending and are excluded from `Done`.
+- Clean-slate `lake build` exited `0` (`8,942` jobs, `0` errors); whole-book `AuditA` passed across `3,712` project declarations across `17` audited modules (`+626` over the `3,086` baseline on `main` `35efa215`, axiom union strictly `{propext, Classical.choice, Quot.sound}`, zero `sorry`).
 
 Cluster G counts were independently checked against the printed third edition; see [SCOPING-G.md](SCOPING-G.md). F. and M. Riesz is 17.13 in that edition, whereas issue #43 labels it 17.11. No complete chapter or merged Stage 2 coverage is claimed by this inventory update.
 
@@ -165,7 +173,7 @@ chapter numbers and discloses the discrepancy; see [SCOPING-H.md](SCOPING-H.md).
 No separate Stage 1 lane inventory was supplied. Counts here were independently
 enumerated from the printed third-edition scan. Exercises are excluded.
 
-Reviewed changes through PR #91 have landed on `main` (`250/456` total: `179/456` baseline on `main` from FE #86 / PR #89 and FE #87 / PR #90 plus the `71/90` Cluster E Stage 2 nodes in FE #88 landed by PR #91 after coordinator-appointed crossed review (PASS WITH ISSUES, zero blocking findings; see FE #88); Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
+Reviewed changes through PR #101 have landed on `main` (`281/456` total: `250/456` from FE #86 / PR #89, FE #87 / PR #90 and FE #88 / PR #91 plus the `31/34` Cluster F Stage 2 nodes in FE #42 landed by PR #101 after coordinator-appointed crossed review (PASS WITH ISSUES, zero blocking findings; see FE #42); Chapters 18–20 are at `Done: 0`, as only reviewed work landed on `main` is counted). A
 successful supporting lemma does not imply completion of its entire book node.
 
 ## Cluster E Stage 2 (Chapters 10–12; FE #88)
