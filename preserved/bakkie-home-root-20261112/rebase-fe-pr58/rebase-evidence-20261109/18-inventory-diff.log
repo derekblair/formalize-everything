@@ -1,0 +1,183 @@
+$ git diff a0538ea8..HEAD -- books/rudin-real-and-complex-analysis/inventory/
+diff --git a/books/rudin-real-and-complex-analysis/inventory/Chapter10.md b/books/rudin-real-and-complex-analysis/inventory/Chapter10.md
+index dc48188..54cc420 100644
+--- a/books/rudin-real-and-complex-analysis/inventory/Chapter10.md
++++ b/books/rudin-real-and-complex-analysis/inventory/Chapter10.md
+@@ -30,46 +30,6 @@ definition being available does not establish all the claims surrounding it.
+ None of these classifications is a claim that the book module already proves
+ the node; branch proof coverage is recorded in the progress report.
+ 
+-## Implementation accounting (2026-11-01)
+-
+-The branch proves **16 complete numbered nodes; 28 remain incomplete**.
+-This counts all assertions and unnumbered corollaries attached to a node,
+-not the number of Lean declarations. The upstream claims-check labels below
+-remain a record of what the pinned Mathlib supplies, including where the
+-local proofs have now supplied the missing translation.
+-
+-| Complete node | Local declarations / content |
+-|---|---|
+-| 10.1 | `closedDisc`, `BookConnected`, `bookComponent`, `bookComponents`; separated-set equivalence, open/closed decompositions, maximal components, disc cover, and `open_eq_sUnion_disjoint_regions`. Empty-set connectedness is retained; regions are nonempty. |
+-| 10.2 | `HolomorphicOn`, `hasDerivAt_iff_difference_quotient`, `hasFDerivAt_real_of_hasDerivAt`. |
+-| 10.3 | `holomorphicOn_add`, `_mul`, `_const`, `_neg`, `_comp`; derivative rules and `continuousOn_of_holomorphicOn`. |
+-| 10.4 | `holomorphicOn_pow`, `_polynomial`, `_inv`, `_div`, `_exp`, and `deriv_exp`. |
+-| 10.6 | `holomorphicOn_of_representableByPowerSeries`, `representableByPowerSeries_deriv`, `hasSum_deriv_powerSeries`; all-order expansion, factorial coefficient identity, and uniqueness. |
+-| 10.16 | `representableByPowerSeries_of_holomorphicOn` on every contained disc, and `holomorphicOn_deriv`. |
+-| 10.18 | `theorem10_18`, `existsUnique_zero_order`, `zeroSet_countable`, `zeroSet_inter_compact_finite`, `eqOn_of_accumulation`; whole-domain factorization, level sets, and the printed disconnected-domain example. |
+-| 10.19 | `HasIsolatedSingularity` and `HasRemovableSingularity`, permitting a changed value at the exceptional point. |
+-| 10.20 | `removable_of_bounded`. |
+-| 10.23 | `liouville`. |
+-| 10.24 | Attained circle extrema, `maximum_modulus`, `maximum_modulus_eq_iff`, `constant_of_local_maximum`, and `minimum_modulus` allowing boundary zeros. |
+-| 10.25 | `number_of_polynomial_zeros` and `nonconstant_polynomial_has_zero`, with multiplicities. |
+-| 10.26 | `cauchy_estimate` from an open-disc bound, and `cauchy_estimate_sharp`. |
+-| 10.27 | `ConvergesOnCompactSubsets`, its epsilon/index characterization, `powers_convergeOnCompactSubsets`, and `powers_not_uniform_on_unitDisc`. |
+-| 10.28 | `holomorphicOn_limit_and_deriv` and `convergesOnCompactSubsets_iteratedDeriv`. |
+-| 10.29 | `dividedDifference` and `node10_29_jointly_continuous`; the diagonal is handled by strict differentiability, giving joint continuity on the product domain. |
+-
+-Incomplete nodes, with no omissions: **10.5, 10.7–10.15, 10.17,
+-10.21–10.22, 10.30–10.44**. The definition in 10.5 is implemented, but
+-its root-test and uniform-convergence assertions are not counted as proved.
+-The fidelity hold on 10.37 remains unresolved. The algebraic counterexample
+-`node10_37_literal_conclusion_counterexample` handles the unconstrained-`z`
+-conclusion schema; neither the corrected theorem nor a complete geometric
+-counterexample is claimed. The chapter is partial.
+-
+-The recovered 10.27 additions and new 10.1, 10.18, and 10.29 proofs are
+-included in the integrated build and environment audit reported in the
+-clone-root `REPORT.md`. Sources were rechecked for the new nodes against
+-printed pp. 196–197, 208–210, and 214–215.
+-
+ ## Node-by-node check
+ 
+ | Node | Printed page | Content and fidelity obligations | Mathlib result / remaining bridge | Claim |
+@@ -142,10 +102,9 @@ Fidelity event **E-10.37**: printed p. 221 has a variable-name mismatch between
+ the displayed index assertion and the final side-membership hypothesis. The
+ scan was checked visually; this is not an OCR-only artifact. The intended
+ `z ∈ D₊` reading is an **explicit proposed correction**, not silently accepted
+-as the literal text. The implementation proves the algebraic counterexample
+-to its unconstrained-`z` conclusion (choose `z = w`); a path witness for the
+-full geometric hypotheses and the corrected-form proof remain absent.
+-The node stays queued. The closure bars on
++as the literal text. No counterexample or corrected-form proof is claimed
++by the inventory. The implementation must keep the node queued until that
++event is handled under the brief's fidelity rule. The closure bars on
+ `D₊` and `D₋` in the side-label assumptions are present in print and are not
+ errors.
+ 
+diff --git a/books/rudin-real-and-complex-analysis/inventory/Chapter11.md b/books/rudin-real-and-complex-analysis/inventory/Chapter11.md
+index 27d2003..ca0f361 100644
+--- a/books/rudin-real-and-complex-analysis/inventory/Chapter11.md
++++ b/books/rudin-real-and-complex-analysis/inventory/Chapter11.md
+@@ -2,8 +2,8 @@
+ 
+ Inventory date: 2026-10-27. All **32 numbered entries, 11.1–11.32**, are
+ accounted for. Numbered expository and definition-bearing entries count;
+-exercises do not. **Numbered nodes proved on this branch: 4 (11.1–11.4);
+-remaining: 28.** The
++exercises do not. **Numbered nodes proved on this branch: 1 (11.2);
++remaining: 31.** The
+ counterexample and corrected subclaim for 11.5 do not complete that node.
+ 
+ Numbering and page references were checked in the third-edition printed
+@@ -63,23 +63,9 @@ packaging. Source keys below refer to exact pinned files.
+ | 11.32 | 249 | H∞ boundary uniqueness | M | No matching radial-limit isometry and boundary-arc uniqueness theorem located. | 11.16, 11.23, 11.30 |
+ 
+ The table has 2 A, 13 V, and 17 M rows (F is additional to V).
+-Nodes 11.1–11.4 are proved in `Chapter11.lean`:
+-
+-- 11.1: actual directional partials, real differential decomposition,
+-  small-error expansion and converse, quotient identity, and the pointwise
+-  complex-differentiability criterion (`node11_1_*`).
+-- 11.2: `node11_2_holomorphic_iff`, `node11_2_deriv`, and
+-  `node11_2_real_imag`, including the pair of real partial-derivative equations.
+-- 11.3: `partialX`, `partialY`, `laplacian`, `HasPureSecondPartialsAt`, and
+-  `HarmonicOn`; `node11_3_components` under the node's standing pure-second-partial
+-  existence assumption; `node11_3_laplacian_wirtinger` under existence and equality
+-  of the mixed partials; and `node11_3_mixed_partials` for C² functions.
+-  The partial-based operators `wirtingerPartial`/`wirtingerBarPartial` are linked
+-  to the Fréchet-based operators by `wirtinger_eq_partial` under real differentiability.
+-- 11.4: `node11_4_holomorphic_harmonic`, whose conclusion uses the weak
+-  `HarmonicOn` definition, via the proved one-way `harmonicOn_of_mathlib` bridge.
+-
+-The other 28 rows remain uncompleted at the full-node bar. The file compiles with
++Node 11.2 is proved by `node11_2_holomorphic_iff` and `node11_2_deriv` in
++`Chapter11.lean`, using explicit Wirtinger definitions. The other 31 rows
++remain uncompleted at the full-node bar. The file compiles with
+ `lake env lean RudinRCA/Chapter11.lean` (exit 0); the cluster audit and
+ clean-slate build are tracked in the lane report.
+ 
+@@ -95,9 +81,7 @@ clean-slate build are tracked in the lane report.
+    Rudin assumes continuity and existence of the two pure second partials,
+    with their sum zero. Mathlib's `HarmonicAt` assumes `ContDiffAt ℝ 2`.
+    Proving results under the latter hypothesis alone does not establish
+-   the corresponding book node. Nodes 11.3–11.4 preserve the weak definition
+-   and prove the direction from Mathlib harmonicity to it; the reverse
+-   regularity implication needed later is still unproved and is not assumed.
++   the corresponding book node. No unproved equivalence may be introduced.
+ 3. **11.27: terminology bridge.** The book's global epsilon–delta condition
+    corresponds to Mathlib's `UniformEquicontinuous`. Its weaker pointwise
+    `Equicontinuous` notion is not a definitional replacement.
+diff --git a/books/rudin-real-and-complex-analysis/inventory/Chapter12.md b/books/rudin-real-and-complex-analysis/inventory/Chapter12.md
+index 11120ec..9afd645 100644
+--- a/books/rudin-real-and-complex-analysis/inventory/Chapter12.md
++++ b/books/rudin-real-and-complex-analysis/inventory/Chapter12.md
+@@ -37,7 +37,7 @@ All node statuses below concern source coverage, not a Lean proof count.
+ | 12.6 | 255 | Theorem: classification of disk automorphisms | M | No classification found in `UnitDisc/Basic.lean` or `Schwarz.lean`. Requires inversion, 12.4, and 12.5; upper-half-plane Möbius actions are not this classification. |
+ | 12.7 | 256 | Examples: unbounded-strip failure; sublinear entire-function rigidity | V | `Complex.norm_deriv_le_of_forall_mem_sphere_norm_le` in `Analysis/Complex/Liouville.lean` plus `Complex.exp` calculus. Both examples require new calculations and a limiting argument. |
+ | 12.8 | 257 | Theorem: three-lines inequality; logarithmic convexity corollary | V | `Complex.HadamardThreeLines.norm_le_interp_of_mem_verticalClosedStrip'` and `norm_le_interpStrip_of_mem_verticalClosedStrip` in `Analysis/Complex/Hadamard.lean`. Convert pointwise bounds into line suprema and normalize real powers. Handle zero boundary supremum and the zero-function case explicitly. |
+-| 12.9 | 258 | Theorem: strip growth condition implies boundary bound; sharpness at `α = 1` | V | `PhragmenLindelof.horizontal_strip` in `Analysis/Complex/PhragmenLindelof.lean`. Its arbitrary strip and big-O assumption specialize to the displayed strip and pointwise growth condition. The printed sharpness witness `exp (exp z)` requires direct exponential calculations: boundary modulus one on `Im z = ±π/2`, strict growth with `A = 2`, and modulus `e > 1` at zero. |
++| 12.9 | 258 | Theorem: strip growth condition implies boundary bound | V | `PhragmenLindelof.horizontal_strip` in `Analysis/Complex/PhragmenLindelof.lean`. Its arbitrary strip and big-O assumption specialize to the displayed strip and pointwise growth condition. |
+ | 12.10 | 259 | Lindelöf theorem: curve limit determines radial limit | M | `PhragmenLindelof.lean` contains strip/quadrant/half-plane growth estimates, not this boundary curve theorem. No radial-limit theorem found. |
+ | 12.11 | 260 | Setup: bounded orthonormal coefficients and endpoint estimates | V | `Orthonormal.sum_inner_products_le` and `Orthonormal.tsum_inner_products_le` in `Analysis/InnerProductSpace/Orthonormal.lean`; Bochner integral bounds provide the other endpoint. Need measure-function representatives and coefficient summability/integrability bridges. |
+ | 12.12 | 261 | Hausdorff–Young theorem for the preceding coefficient system | M | No Hausdorff–Young or Riesz–Thorin theorem found in `Analysis`, `MeasureTheory`, or file names. `Hadamard.lean` supplies the analytic interpolation ingredient, not the complete operator estimate. |
+@@ -58,22 +58,16 @@ which are not evidence for 12.14.
+ 
+ `RudinRCA/Chapter12.lean` states the complete Schwarz lemma as
+ `RudinRCA.Chapter12.theorem12_2`, the definition in 12.3 as `phi`,
+-and both parts of 12.9 as `theorem12_9` and `theorem12_9_sharpness`.
+-The latter proves that `exp (exp z)` is entire, has modulus one on both
+-boundary lines, satisfies the strict interior growth inequality with
+-`α = 1` and `A = 2`, and has modulus `Real.exp 1 > 1` at zero.
++and the strip theorem in 12.9 as `theorem12_9`.
+ The two `theorem12_1_boundary_*` declarations cover the continuous-boundary
+ portion of 12.1 only; **12.1 remains incomplete** because its recalled
+ `H∞` boundary-value assertion is absent. Thus **3 nodes are covered,
+-11 remain incomplete**. No other node is claimed proved. The sharpness
+-proof keeps 12.9 complete, so the counts remain 3/11 rather than dropping
+-to the pre-proof 2/12; 12.9 is not added to the stuck-node queue.
++11 remain incomplete**. No other node is claimed proved.
+ `lake env lean RudinRCA/Chapter12.lean` exited 0 with no warnings after
+-the sharpness proof; the integrated clean build and audit belong to the
+-lane report.
++the last proof change; the integrated clean build and audit belong to
++the lane report.
+ 
+-No printed statement has been silently changed. The p. 258 sharpness
+-remark is now represented explicitly rather than omitted from the `α < 1`
+-strip theorem. In particular, the excluded zero point in the Schwarz
+-equality alternative and both derivative and value equality alternatives
+-were checked against the scan.
++No printed statement has been silently changed. No counterexample or
++correction was required by this source pass. In particular, the excluded
++zero point in the Schwarz equality alternative and both derivative and
++value equality alternatives were checked against the scan.
+diff --git a/books/rudin-real-and-complex-analysis/inventory/README.md b/books/rudin-real-and-complex-analysis/inventory/README.md
+index fcc5ce4..a13ecd5 100644
+--- a/books/rudin-real-and-complex-analysis/inventory/README.md
++++ b/books/rudin-real-and-complex-analysis/inventory/README.md
+@@ -40,14 +40,3 @@ Specific dependencies are listed per node or by node groups in the tables.
+ Two source issues require explicit tracking: the variable mismatch in
+ 10.37 and the false radius-zero strict inequality in 11.5(4). See
+ `QUEUE.md`; neither is silently repaired or counted as a completed node.
+-
+-At the 12.9 sharpness-remedy checkpoint (2026-11-07), **23 of 90 complete
+-nodes are proved; 67 remain**: Chapter 10 has 16/44, Chapter 11 has 4/32,
+-and Chapter 12 has 3/14. The completed 12.9 node includes the printed
+-sharpness example, proved as `theorem12_9_sharpness`; the temporary
+-pre-proof accounting of 22/68 no longer applies. Each chapter's
+-implementation accounting identifies the exact complete nodes. The
+-inventory is complete; the formalization is partial and remains a draft.
+-`RudinRCA/AuditE.lean` checks all project declarations transitively,
+-including private/generated declarations; an axiom audit establishes proof
+-dependencies, not book coverage.
+[exit_status=0]

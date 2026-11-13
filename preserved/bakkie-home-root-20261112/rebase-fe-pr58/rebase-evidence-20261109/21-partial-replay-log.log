@@ -1,0 +1,6 @@
+$ git log --oneline --reverse origin/main..HEAD
+b1b2909 Rudin RCA E: inventory all 90 nodes and check pinned Mathlib claims
+f3f8c48 Rudin RCA E: green Chapter 10 analytic foundations checkpoint
+76c4426 Rudin RCA E: green Schwarz lemma and strip estimate checkpoint
+0f1ff40 Rudin RCA E: prove power-series calculus and maximum modulus cases
+[exit_status=0]

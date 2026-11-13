@@ -1,0 +1,3 @@
+$ git diff --name-only --diff-filter=U
+books/rudin-real-and-complex-analysis/RudinRCA.lean
+[exit_status=0]
