@@ -8,7 +8,7 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 |---|---|---|---|
 | 1 | Abstract Integration | 41 | 41 |
 | 2 | Positive Borel Measures | 25 | 14 |
-| 3 | Lp-Spaces | 17 | 0 |
+| 3 | Lp-Spaces | 17 | 17 |
 | 4 | Elementary Hilbert Space Theory | 26 | 26 |
 | 5 | Examples of Banach Space Techniques | 25 | 25 |
 | 6 | Complex Measures | 19 | 19 |
@@ -159,6 +159,17 @@ contains four proved results: a counterexample and three facts about the
 explicit repair of 3.7, but no original numbered item is counted complete. Of its 17
 remaining items, 3.7 is held for a fidelity ruling and 16 are deferred.
 Cluster A is independently reviewed and merged on `main` (55/83 items recorded in `Done`; main-table `Done` total is 390/456 after landing the remaining 3 Cluster F Stage 3 nodes `14.18`–`14.20` in FE #105 (PR #107, crossed review PASS WITH ISSUES, zero blocking findings) on top of the 387/456 total at `main` `82f2d447` after landing the remaining 19 Cluster E Stage 3 nodes in FE #88 (PR #106, crossed review PASS WITH ISSUES), the 368/456 total at `main` `3a6d3953` after landing the remaining 13 Cluster C Stage 3 nodes in FE #102 (PR #104, crossed review PASS WITH ISSUES), the 355/456 total at `main` `687afd23` from the 74/75 Cluster G Stage 2 nodes in FE #43 (PR #103, crossed review PASS), the 281/456 total at `main` `e30ccaad` from the 31/34 Cluster F Stage 2 nodes in FE #42 (PR #101, crossed review PASS WITH ISSUES), the 250/456 total from the 71/90 Cluster E Stage 2 nodes in FE #88 (PR #91, crossed review PASS WITH ISSUES), and the 179/456 baseline on `main` including 24/26 Chapter 7 nodes landed in FE #86 (PR #89) and 23/23 Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES)).
+
+## Cluster A Stage 2 — Chapter 3 (FE #37)
+
+Stage 2 for Chapter 3 (`FE #37`, umbrella `#36`, branch `coordinator/rca-clustera-stage2-ch03-20261113` authored from `main` `12cc36c80fdd9f24c9928ad6f6de751a84fcbb10` [`390/456`]; advances Chapter 3 from `0/17` on `main` to **17/17** complete nodes [`10/10` Chapter 3 theorem groups], Cluster A from `55/83` to **72/83** items [`42/49` result groups], and the main-table `Done` sum from `390/456` on `main` `12cc36c8` to **407/456** on this branch; the `11` remaining Chapter 2 items including `2.14` are out of scope for this lane and untouched):
+
+| Chapter | Inventoried | Complete nodes proved (`Done`) | Pending | Coverage ledger |
+|---|---:|---:|---:|---|
+| 3 | 17 | 17 | 0 | [Chapter 3 coverage](CHAPTER03-COVERAGE.md) |
+
+- `RudinRCA/Chapter03.lean` (`3,061` lines, blob `eb8b513564485c8c6d4b23efe1b4a01ddb642cee`; `169` total source declarations / `167` public source / `164` public value / `285` `AuditA` constants, `+280` over the `5` Stage 1 scaffold constants on `main` `12cc36c8`) proves **17/17** Chapter 3 nodes (`3.1`–`3.17`) in full: open-segment convexity, chord-slope/derivative characterizations, continuity on `(a, b)` + closed-interval counterexample (`3.1`–`3.2`), Jensen's inequality retaining open/unbounded segments `-∞ ≤ a < b ≤ ∞` and Section `1.31` infinite upper integrals plus `exp` and AM-GM corollaries (`3.3`), finite and extended conjugate exponents (`3.4`), `[0, ∞]` Hölder, Minkowski, and Schwarz inequalities (`3.5`), finite-exponent `L^p(μ)` with ordinary-vs-AE measurability bridges and indiscrete counterexample (`3.6`), Definition `3.7` preserving the `5`-declaration zero-measure counterexample scaffold alongside the explicitly labelled `ℝ≥0∞`-threshold `L^∞(μ)` repair and `μ ≠ 0` agreement with the literal real-threshold infimum (`3.7`), `L^p × L^q → L¹` Hölder and `L^p` Minkowski including `∞` endpoints under the explicit `3.7` repair plus `μ ≠ 0` printed `sInf` bridges (`3.8`–`3.9`), `ℂ`-vector-space and explicit `(L^p ⧸ {f =ᵐ 0}) ≃ₗ[ℂ] Lp ℂ p μ` metric quotient bridge (`3.10`), Riesz–Fischer completeness (`3.11`) and `μ`-a.e. convergent subsequences (`3.12`) for `1 ≤ p ≤ ∞`, finite-support simple-function density for `0 < p < ∞` (`3.13`), `C_c(X)` density in `L^p(μ)` (`1 ≤ p < ∞`) on locally compact Hausdorff `X` proved directly from `3.13` + `2.12` under explicit `Book214RegularityHypotheses` (`2.14(a–d)`) with completion transfer to `Chapter01.completedMeasure` (`3.14`), `C₀(X)` definition (`3.16`) and explicit Urysohn-cutoff uniform completion `UniformSpace.Completion (CcSupMetric X) ≃ᵢ C₀(X, ℂ)` (`3.17`), and Euclidean `C_c(ℝ^k)` completions (`Lp ℂ p volume` for `1 ≤ p < ∞`, `C₀(ℝ^k, ℂ)` for `p = ∞`, and non-density in `L^∞(ℝ^k)` for `k ≥ 1`, `3.15`).
+- Clean-slate `lake build` exited `0` (`8,944` jobs, `0` errors, `0` warnings in `RudinRCA/Chapter03.lean`); whole-book `AuditA` passed across `7,029` project declarations across `19` audited modules (`+280` over the `6,749` baseline on `main` `12cc36c8`, axiom union strictly `{propext, Classical.choice, Quot.sound}`, zero `sorry`).
 
 ## Cluster F Stage 3 (Chapters 13–14; FE #105)
 
