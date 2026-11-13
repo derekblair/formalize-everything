@@ -1,0 +1,206 @@
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:30:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.isUnit_iff_two_sided_inverse`:
+  [NormedAlgebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:39:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.inverse_unique`:
+  [NormedAlgebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:46:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.multiplication_continuous`:
+  [NormedAlgebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:49:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.multiplication_tendsto`:
+  [NormedAlgebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:59:27: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:61:33: error(lean.unknownIdentifier): Unknown identifier `isUnit_neg_iff`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:57:76: error: unsolved goals
+A : Type u_1
+inst✝¹ : NormedRing A
+inst✝ : NormedAlgebra ℂ A
+x : A
+z : ℂ
+⊢ ¬IsUnit (-(z • 1 - x)) ↔ ¬IsUnit (z • 1 - x)
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:71:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.neumann_series`:
+  [NormedAlgebra ℂ A]
+  [NormOneClass A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] [NormOneClass A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+Try this:
+  [apply] abel_nf
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:88:56: error: unsolved goals
+A : Type u_1
+inst✝³ : NormedRing A
+inst✝² : NormedAlgebra ℂ A
+inst✝¹ : CompleteSpace A
+inst✝ : NormOneClass A
+x : A
+hx : ‖x‖ < 1
+he : (1 + x)⁻¹ʳ = 1 + -x + x ^ 2 * (1 + x)⁻¹ʳ
+⊢ x ^ 2 * (1 + x)⁻¹ʳ = x ^ 2 * (1 + (-1 • x + x ^ 2 * (1 + x)⁻¹ʳ))
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:99:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.perturbation_isUnit`:
+  [NormedAlgebra ℂ A]
+  [NormOneClass A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] [NormOneClass A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:141:10: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:141:10: warning: Unused tactic linter: `ring` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:144:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.units_isOpen`:
+  [NormedAlgebra ℂ A]
+  [NormOneClass A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] [NormOneClass A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:148:38: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  ContinuousInv Aˣ
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:150:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.units_subspace_topology`:
+  [NormedAlgebra ℂ A]
+  [NormOneClass A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] [NormOneClass A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:154:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.inversion_hasFDerivAt`:
+  [NormOneClass A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormOneClass A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:166:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.ringInverse_neg`:
+  [CompleteSpace A]
+  [NormOneClass A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [CompleteSpace A] [NormOneClass A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:176:28: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:177:6: error(lean.unknownIdentifier): Unknown constant `spectrum.resolvent`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:176:54: error: unsolved goals
+A : Type u_1
+inst✝³ : NormedRing A
+inst✝² : NormedAlgebra ℂ A
+inst✝¹ : CompleteSpace A
+inst✝ : NormOneClass A
+x : A
+z : ℂ
+⊢ (x - z • 1)⁻¹ʳ = -sorry
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:181:8: warning: declaration uses `sorry`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:198:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.spectrum_nonempty_compact`:
+  [NormOneClass A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormOneClass A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:213:2: error: Type mismatch
+  algebraMap_isometry
+has type
+  ∀ (𝕜 : Type ?u.36) (𝕜' : Type ?u.35) [inst : NormedField 𝕜] [inst_1 : SeminormedRing 𝕜'] [inst_2 : NormedAlgebra 𝕜 𝕜']
+    [NormOneClass 𝕜'], Isometry ⇑(algebraMap 𝕜 𝕜')
+but is expected to have type
+  Isometry ⇑(algebraMap ℂ A)
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:226:26: error: expected token
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:226:23: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  LE Type
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:226:25: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  OfNat Type 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  Type
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:226:9: error: Missing cases:
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:223:53: error: unsolved goals
+A : Type u_1
+inst✝⁴ : NormedRing A
+inst✝³ : NormedAlgebra ℂ A
+inst✝² : CompleteSpace A
+inst✝¹ : NormOneClass A
+inst✝ : Nontrivial A
+x : A
+z : ℂ
+hz : z ∈ spectrum ℂ x
+he : ↑‖z‖₊ = spectralRadius ℂ x
+w : ℂ
+hw : w ∈ spectrum ℂ x
+hw' : sorry
+⊢ ‖w‖ ≤ ‖z‖
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:221:58: error: unsolved goals
+A : Type u_1
+inst✝⁴ : NormedRing A
+inst✝³ : NormedAlgebra ℂ A
+inst✝² : CompleteSpace A
+inst✝¹ : NormOneClass A
+inst✝ : Nontrivial A
+x : A
+z : ℂ
+hz : z ∈ spectrum ℂ x
+he : ↑‖z‖₊ = spectralRadius ℂ x
+hg : IsGreatest (norm '' spectrum ℂ x) ‖z‖
+⊢ bookSpectralRadius x = (spectralRadius ℂ x).toReal
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:238:33: error: expected token
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:238:7: error: Missing cases:
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:237:36: error: unsolved goals
+A : Type u_1
+inst✝⁴ : NormedRing A
+inst✝³ : NormedAlgebra ℂ A
+inst✝² : CompleteSpace A
+inst✝¹ : NormOneClass A
+inst✝ : Nontrivial A
+x : A
+hf : spectralRadius ℂ x ≠ sorry
+⊢ Tendsto (fun n => ‖x ^ n‖ ^ (1 / ↑n)) atTop (𝓝 (bookSpectralRadius x))
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Core.lean:246:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.ambient_spectrum_subset`:
+  [CompleteSpace A]
+  [NormOneClass A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [CompleteSpace A] [NormOneClass A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+'RudinRCA.Chapter18.isUnit_iff_two_sided_inverse' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.inverse_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.multiplication_continuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.multiplication_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.bookSpectrum_eq_spectrum' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.neumann_series' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.inverse_one_add_norm_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.neumann_series_remainder' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.perturbation_isUnit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.perturbation_remainder' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.units_isOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.inversionHomeomorph' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.units_subspace_topology' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.inversion_hasFDerivAt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.spectrum_compact_and_bound' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.ringInverse_neg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.book_resolvent_eq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.scalarized_resolvent' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.spectrum_nonempty_compact' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.gelfandMazur' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.gelfandMazur_isometry' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.bookSpectralRadius_eq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.spectral_radius_formula' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.ambient_spectrum_subset' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.ambient_spectralRadius_eq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

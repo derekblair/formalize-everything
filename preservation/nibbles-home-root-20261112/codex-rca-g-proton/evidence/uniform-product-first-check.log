@@ -1,0 +1,10 @@
+'RudinRCA.Chapter15.uniform_product_of_uniform_norm_series' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.uniform_productOn_of_uniform_norm_series' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.product_eq_zero_iff_of_uniform_norm_series' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.uniform_norm_series_reindex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.uniform_product_reindex_of_uniform_norm_series' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.product_reindex' depends on axioms: [propext, Classical.choice, Quot.sound]

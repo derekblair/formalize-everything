@@ -1,0 +1,6 @@
+{
+  "completion_barrier": false,
+  "status": "in progress; not validation evidence",
+  "diagnostics_file": "evidence/lean-lsp-20261029T183138Z-3834474.v0002.all-03.partial.diagnostics.json",
+  "line_map_snapshot": "evidence/lean-lsp-20261029T183138Z-3834474.v0002.all-03.line-map.json"
+}

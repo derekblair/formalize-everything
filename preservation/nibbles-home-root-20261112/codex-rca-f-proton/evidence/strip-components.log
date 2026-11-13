@@ -1,0 +1,8 @@
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/StripComponents.lean:23:45: error: `dsimp` made no progress
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/StripComponents.lean:40:45: error: `dsimp` made no progress
+'_private._stdin.0.RudinRCA.Chapter13.strip_component_avoids_half' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.strip_component_lower' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.strip_component_upper' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.horizontalStrip_components' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

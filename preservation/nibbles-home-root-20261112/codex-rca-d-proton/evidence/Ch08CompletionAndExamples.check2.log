@@ -1,0 +1,162 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:50:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.completedFactors_le_completedProduct`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:80:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:81:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:101:7: error: synthesized type class instance is not definitionally equal to expression inferred by typing rules, synthesized
+  mβ
+inferred
+  completedSigma ν
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:114:4: warning: declaration uses `sorry`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:212:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:226:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.completion_measurable_representative`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:231:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.zero_ae_sections`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:242:75: error: Application type mismatch: The argument
+  Eq.symm hx
+has type
+  0 = ν {x_1 | (fun y => f (x, y) = AEMeasurable.mk f ha (x, y)) x_1}ᶜ
+but is expected to have type
+  AEMeasurable.mk f ha ∘ Prod.mk ?m.90 =ᵐ[?m.103] ?m.102
+in the application
+  AEMeasurable.congr (Measurable.aemeasurable (Measurable.comp (AEMeasurable.measurable_mk ha) measurable_prodMk_left))
+    (Eq.symm hx)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:239:47: error: unsolved goals
+X : Type u_1
+Y : Type u_2
+Z : Type u_3
+inst✝⁶ : MeasurableSpace X
+inst✝⁵ : MeasurableSpace Y
+μ : Measure X
+ν : Measure Y
+inst✝⁴ : SigmaFinite μ
+inst✝³ : SigmaFinite ν
+inst✝² : MeasurableSpace Z
+inst✝¹ : MeasurableSpace.CountablyGenerated Z
+inst✝ : ν.IsComplete
+f : X × Y → Z
+hf : NullMeasurable f (μ.prod ν)
+ha : AEMeasurable f (μ.prod ν)
+x : X
+hx : ∀ᵐ (y : Y) ∂ν, f (x, y) = AEMeasurable.mk f ha (x, y)
+⊢ Measurable fun y => f (x, y)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:272:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter08.completed_integrable_of_iterated_norm`:
+  [SigmaFinite μ]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [SigmaFinite μ] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:327:8: warning: This simp argument is unused:
+  Measure.restrict_apply
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [measurableSet_singleton]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:327:32: warning: This simp argument is unused:
+  measurableSet_singleton
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Measure.restrict_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:332:32: warning: This simp argument is unused:
+  measurableSet_singleton
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [Measure.restrict_apply, hx]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:353:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:480:2: warning: Try this: 
+  haveI̵
+
+The goal is a proposition, so `have` is preferred over `haveI`.
+The difference between `have` and `haveI` is that `haveI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:499:14: error: typeclass instance problem is stuck
+  OuterMeasureClass ?m.257 ℝ
+
+Note: Lean will not try to resolve this typeclass instance problem because the first and third type arguments to `OuterMeasureClass` are metavariables. These arguments must be fully determined before Lean will try to resolve the typeclass.
+
+Hint: Adding type annotations and supplying implicit arguments to functions can give Lean more information for typeclass resolution. For example, if you have a variable `x` that you intend to be a `Nat`, but Lean reports it as having an unresolved type like `?m`, replacing `x` with `(x : Nat)` can get typeclass resolution un-stuck.
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:535:2: warning: Try `simp at hnull` instead of `simpa using hnull`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:643:4: warning: Unused tactic linter: `change volume (Set.Icc (0 : ℝ) 1) = 1` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:741:63: error: Type mismatch
+  x
+has type
+  CompletedSierpinskiInterval
+but is expected to have type
+  ℝ
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean:739:87: error: unsolved goals
+⊢ MeasurableSet {p | p.1 = p.2}
+Command exited with non-zero status 1
+	Command being timed: "lake env lean /home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08CompletionAndExamples.lean"
+	User time (seconds): 13.38
+	System time (seconds): 13.51
+	Percent of CPU this job got: 47%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:56.60
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1034372
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 90315
+	Minor (reclaiming a frame) page faults: 179313
+	Voluntary context switches: 124042
+	Involuntary context switches: 22370
+	Swaps: 0
+	File system inputs: 11306016
+	File system outputs: 16
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 1

@@ -1,0 +1,49 @@
+{
+  "combined": "/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18All.lean",
+  "sha256": "4eec0755da8eb697da75b15acc2499561ba8bab7bed1fa21fd625f35ce1b4b31",
+  "header_sha256": "3a6ad01f098283e9582de5a0b4239118c2d8264aab2f3e0b0c50ef55c3e1f90e",
+  "components": [
+    {
+      "file": "work/Chapter18Core.lean",
+      "sha256": "6af97eb1e9fc601f9704297f38995de9f6eb1d200dba316105504c2db3f20843",
+      "first_line": 37,
+      "last_line": 364
+    },
+    {
+      "file": "work/Chapter18Ideals.lean",
+      "sha256": "4f7e7cefc52320cc38c353e28f8ce6bf892e4be681edaebb09f2cc473f69b8d5",
+      "first_line": 368,
+      "last_line": 778
+    },
+    {
+      "file": "work/Chapter18Disc.lean",
+      "sha256": "b72a93358ac00194a496427e35a3547dc319562d8eed41cb0d532cede1ce194d",
+      "first_line": 782,
+      "last_line": 1344
+    },
+    {
+      "file": "work/Chapter18Fejer.lean",
+      "sha256": "8e66c4b4c095724d5f3ee77c30194d95134422e77793471ec0aa73354b20aa39",
+      "first_line": 1348,
+      "last_line": 1691
+    },
+    {
+      "file": "work/Chapter18Maximality.lean",
+      "sha256": "5f8c29b03a1f8e7d1d22663498f44e7fa6ac2b4466b08d52b4cffa3934c86e54",
+      "first_line": 1695,
+      "last_line": 1961
+    },
+    {
+      "file": "work/Chapter18BoundaryCharacterization.lean",
+      "sha256": "8d93aca22f5659a9790c5b064ca2ad1fda6d52b9088d7bca864a0d5bab06efd8",
+      "first_line": 1965,
+      "last_line": 2137
+    },
+    {
+      "file": "work/Chapter18Wiener.lean",
+      "sha256": "c8c449022065aa5792c44407e4e33a8e53a6317a21a4b61be0f7c9dddf2ded1e",
+      "first_line": 2141,
+      "last_line": 2498
+    }
+  ]
+}

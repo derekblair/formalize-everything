@@ -1,0 +1,105 @@
+[
+  {
+    "component": "work/Chapter18Core.lean",
+    "errors": 1,
+    "warnings": 16,
+    "diagnostics": 72,
+    "unexpected_axioms": {
+      "RudinRCA.Chapter18.scalarized_resolvent": [
+        "sorryAx"
+      ]
+    },
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0002.all-03.partial.Chapter18Core.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18Ideals.lean",
+    "errors": 0,
+    "warnings": 15,
+    "diagnostics": 86,
+    "unexpected_axioms": {},
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0002.all-03.partial.Chapter18Ideals.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18Disc.lean",
+    "errors": 1,
+    "warnings": 6,
+    "diagnostics": 66,
+    "unexpected_axioms": {
+      "RudinRCA.Chapter18.disc_polynomial_approx": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.disc_character_evaluation": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.disc_maximal_iff_evaluation_kernel": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.disc_bezout": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.disc_bezout_positive": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.discBoundary_eq_closure_adjoin": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.discAngleSubalgebra_eq_positive_closure": [
+        "sorryAx"
+      ]
+    },
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0002.all-03.partial.Chapter18Disc.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18Fejer.lean",
+    "errors": 0,
+    "warnings": 33,
+    "diagnostics": 63,
+    "unexpected_axioms": {},
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0002.all-03.partial.Chapter18Fejer.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18Maximality.lean",
+    "errors": 2,
+    "warnings": 10,
+    "diagnostics": 29,
+    "unexpected_axioms": {
+      "RudinRCA.Chapter18.theorem18_20_proper_subalgebra_negative_coeff": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.theorem18_20_dense_adjoin": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.theorem18_20_polynomial_approximation": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.theorem18_20": [
+        "sorryAx"
+      ]
+    },
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0002.all-03.partial.Chapter18Maximality.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18BoundaryCharacterization.lean",
+    "errors": 0,
+    "warnings": 0,
+    "diagnostics": 0,
+    "unexpected_axioms": {},
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0002.all-03.partial.Chapter18BoundaryCharacterization.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18Wiener.lean",
+    "errors": 0,
+    "warnings": 0,
+    "diagnostics": 0,
+    "unexpected_axioms": {},
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0002.all-03.partial.Chapter18Wiener.diagnostics.txt"
+  },
+  {
+    "component": "imports",
+    "errors": 0,
+    "warnings": 0,
+    "diagnostics": 0,
+    "unexpected_axioms": {},
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0002.all-03.partial.imports.diagnostics.txt"
+  }
+]

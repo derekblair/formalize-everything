@@ -1,0 +1,19 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:176:46: error(lean.unknownIdentifier): Unknown identifier `univ_sdiff`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:176:34: error: Type mismatch: After simplification, term
+  (IsSetSemiring.isSetRing_supClosure hR).sdiff_mem hu hs
+ has type
+  univ \ x✝ ∈ supClosure measurableRectangles
+but is expected to have type
+  x✝ᶜ ∈ supClosure measurableRectangles
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:208:45: error: Type mismatch
+  hs n
+has type
+  s n ∈ {E | MeasurableSet E}
+but is expected to have type
+  MeasurableSet (?m.39 n)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:210:45: error: Type mismatch
+  hs n
+has type
+  s n ∈ {E | MeasurableSet E}
+but is expected to have type
+  MeasurableSet (?m.51 n)

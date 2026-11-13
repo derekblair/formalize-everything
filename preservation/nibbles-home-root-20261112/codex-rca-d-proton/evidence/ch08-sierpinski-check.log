@@ -1,0 +1,46 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Sierpinski.lean:42:36: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Sierpinski.lean:49:6: error: Type mismatch: After simplification, term
+  MeasurableSet.compl (Countable.measurableSet (hsucc x))
+ has type
+  @MeasurableSet X inst✝⁴ {y | j x < j y}
+but is expected to have type
+  @MeasurableSet X inst✝⁴ {y | (x, y) ∈ sierpinskiSet j}
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Sierpinski.lean:52:6: error: Type mismatch: After simplification, term
+  h
+ has type
+  @Eq ℝ≥0∞ (μ {y | j x < j y}) 1
+but is expected to have type
+  @Eq ℝ≥0∞ (μ {y | (x, y) ∈ sierpinskiSet j}) 1
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Sierpinski.lean:93:52: error(lean.unknownIdentifier): Unknown constant `Ordinal.typeLT`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Sierpinski.lean:93:86: error: unsolved goals
+hCH : Cardinal.continuum = Cardinal.aleph 1
+w : SierpinskiOrder
+⊢ (Cardinal.aleph 1).ord = sorry
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Sierpinski.lean:94:60: warning: This simp argument is unused:
+  Ordinal.type_toType
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [SierpinskiOrder, Cardinal.mk_ord_toType]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Sierpinski.lean:106:18: error: unsolved goals
+X : Type u_1
+W : Type u_2
+inst✝⁴ : MeasurableSpace X
+inst✝³ : MeasurableSingletonClass X
+inst✝² : LinearOrder W
+μ : Measure X
+inst✝¹ : IsProbabilityMeasure μ
+inst✝ : NullSingletonClass μ
+⊢ volume {x | 0 ≤ x ∧ x ≤ 1} = 1
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Sierpinski.lean:109:30: warning: This simp argument is unused:
+  Real.volume_Icc
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [SierpinskiInterval]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Sierpinski.lean:134:10: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  NullSingletonClass sierpinskiIntervalMeasure
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.

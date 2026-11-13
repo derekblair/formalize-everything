@@ -1,0 +1,52 @@
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:104:47: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:141:87: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:122:90: warning: This simp argument is unused:
+  L
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:124:98: warning: This simp argument is unused:
+  H
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'RudinRCA.Chapter13.infinity_mem_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.coe_mem_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.infinityDisc_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.isOpen_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.finite_chart_open_embedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.riemannSphereHomeomorph' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.riemannSphere_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.mem_nhds_infinity_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.infinity_mem_closure_of_unbounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.isConnected_insert_infinity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.horizontalStrip_isOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.horizontalStrip_planar_complement_not_preconnected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.horizontalStrip_spherical_complement_connected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:194:35: warning: Unused tactic linter: `ring` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:194:35: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:238:51: warning: Unused tactic linter: `ring` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:238:51: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+'RudinRCA.Chapter13.norm_northPole' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.mem_north_orthogonal_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.complexPlaneEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.bookSphereHomeomorph' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.bookSphereHomeomorph_infty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.norm_complexPlaneEquiv_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.bookSphereHomeomorph_coe' depends on axioms: [propext, Classical.choice, Quot.sound]

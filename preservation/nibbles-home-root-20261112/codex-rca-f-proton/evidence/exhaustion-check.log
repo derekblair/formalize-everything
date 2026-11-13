@@ -1,0 +1,19 @@
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/Exhaustion.lean:28:13: warning: `Set.setOf_forall` has been deprecated: Use `Set.ofPred_forall` instead
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/Exhaustion.lean:72:58: error: Tactic `simp` failed with a nested error:
+maximum recursion depth has been reached
+use `set_option maxRecDepth <num>` to increase limit
+use `set_option diagnostics true` to get diagnostic information
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/Exhaustion.lean:142:6: warning: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/Exhaustion.lean:170:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+'RudinRCA.Chapter13.compact_exhaustion_with_spherical_complement_components' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
