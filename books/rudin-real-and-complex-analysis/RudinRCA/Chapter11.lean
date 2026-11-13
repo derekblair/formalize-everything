@@ -20,6 +20,10 @@ import Mathlib.MeasureTheory.Integral.IntervalIntegral.Periodic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
+import RudinRCA.Chapter04
+import RudinRCA.Chapter06
+import RudinRCA.Chapter08
+import RudinRCA.Chapter10
 
 /-!
 # Chapter 11: Harmonic Functions
@@ -3557,3 +3561,6443 @@ theorem theorem11_31 {Ω : Set ℂ} (hΩ : IsOpen Ω) :
 end Nodes11_27_to_11_29_and_11_31
 
 end RudinRCA.Chapter11
+
+noncomputable section
+
+open MeasureTheory Filter Set
+open scoped ENNReal NNReal Topology ComplexConjugate
+
+namespace RudinRCA.Chapter11
+
+/-! ### Stage 3 Block 1: Normalized Unit Circle, Literal 3.7 `L^∞` Bridge, and Nodes 11.16–11.17 -/
+
+section UnitCircleFoundations
+
+/-- The geometric unit circle `T = {z ∈ ℂ : ‖z‖ = 1}` (boundary of `U = Metric.ball 0 1`). -/
+abbrev UnitCircle : Type := Metric.sphere (0 : ℂ) 1
+
+/-- Homeomorphism between `Chapter04.FourierCircle = AddCircle (2π)` and `UnitCircle = sphere 0 1`
+given by `t ↦ exp(i t)`. -/
+def fourierToUnitCircle : RudinRCA.Chapter04.FourierCircle ≃ₜ UnitCircle :=
+  RudinRCA.Chapter04.fourierCircleHomeomorphism.trans
+    { toFun := fun u => ⟨(u : ℂ), u.2⟩
+      invFun := fun z => ⟨z.1, z.2⟩
+      left_inv := fun _ => rfl
+      right_inv := fun _ => rfl
+      continuous_toFun := continuous_subtype_val.subtype_mk _
+      continuous_invFun := continuous_subtype_val.subtype_mk _ }
+
+@[simp]
+theorem fourierToUnitCircle_coe_apply (t : ℝ) :
+    (fourierToUnitCircle (t : RudinRCA.Chapter04.FourierCircle) : ℂ) =
+      Complex.exp ((t : ℂ) * Complex.I) :=
+  RudinRCA.Chapter04.fourierCircleHomeomorphism_apply t
+
+@[simp]
+theorem norm_unitCircle (ζ : UnitCircle) : ‖(ζ : ℂ)‖ = 1 := by
+  simpa only [Metric.mem_sphere, dist_zero_right] using ζ.2
+
+theorem unitCircle_mul_conj (ζ : UnitCircle) : (ζ : ℂ) * conj (ζ : ℂ) = 1 := by
+  rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, norm_unitCircle, one_pow, Complex.ofReal_one]
+
+theorem measurableEmbedding_fourierToUnitCircle :
+    MeasurableEmbedding fourierToUnitCircle :=
+  fourierToUnitCircle.isClosedEmbedding.measurableEmbedding
+
+/-- Normalized Lebesgue/Haar probability measure `σ = m / (2π)` on `T = UnitCircle`
+(Rudin 11.19, p. 241: a rotation-invariant positive Borel measure on `T` with `σ(T) = 1`). -/
+def unitCircleMeasure : Measure UnitCircle :=
+  Measure.map fourierToUnitCircle RudinRCA.Chapter04.circleMeasure
+
+instance : IsProbabilityMeasure unitCircleMeasure :=
+  ⟨by rw [unitCircleMeasure,
+        Measure.map_apply fourierToUnitCircle.continuous.measurable MeasurableSet.univ,
+        Set.preimage_univ, measure_univ]⟩
+
+theorem unitCircleMeasure_univ : unitCircleMeasure Set.univ = 1 :=
+  measure_univ
+
+theorem unitCircleMeasure_real_univ : unitCircleMeasure.real Set.univ = 1 := by
+  simp [Measure.real]
+
+theorem unitCircleMeasure_univ_ne_zero : unitCircleMeasure Set.univ ≠ 0 := by
+  simp
+
+/-- Rotation homeomorphism `η ↦ ζ₀ · η` on `UnitCircle`. -/
+def unitCircleRotate (ζ₀ : UnitCircle) : UnitCircle ≃ₜ UnitCircle where
+  toFun η := ⟨(ζ₀ : ℂ) * (η : ℂ), by
+    rw [Metric.mem_sphere, dist_zero_right, norm_mul, norm_unitCircle, norm_unitCircle, mul_one]⟩
+  invFun η := ⟨conj (ζ₀ : ℂ) * (η : ℂ), by
+    rw [Metric.mem_sphere, dist_zero_right, norm_mul, RCLike.norm_conj,
+      norm_unitCircle, norm_unitCircle, mul_one]⟩
+  left_inv η := Subtype.ext <| by
+    dsimp
+    rw [← mul_assoc, mul_comm (conj (ζ₀ : ℂ)), unitCircle_mul_conj, one_mul]
+  right_inv η := Subtype.ext <| by
+    dsimp
+    rw [← mul_assoc, unitCircle_mul_conj, one_mul]
+  continuous_toFun := (continuous_const.mul continuous_subtype_val).subtype_mk _
+  continuous_invFun := (continuous_const.mul continuous_subtype_val).subtype_mk _
+
+@[simp]
+theorem unitCircleRotate_coe (ζ₀ η : UnitCircle) :
+    ((unitCircleRotate ζ₀ η : UnitCircle) : ℂ) = (ζ₀ : ℂ) * (η : ℂ) :=
+  rfl
+
+theorem fourierToUnitCircle_add (a b : RudinRCA.Chapter04.FourierCircle) :
+    fourierToUnitCircle (a + b) =
+      unitCircleRotate (fourierToUnitCircle a) (fourierToUnitCircle b) := by
+  obtain ⟨s, rfl⟩ := QuotientAddGroup.mk_surjective a
+  obtain ⟨t, rfl⟩ := QuotientAddGroup.mk_surjective b
+  apply Subtype.ext
+  rw [← QuotientAddGroup.mk_add, fourierToUnitCircle_coe_apply, unitCircleRotate_coe,
+    fourierToUnitCircle_coe_apply, fourierToUnitCircle_coe_apply, ← Complex.exp_add]
+  congr 1
+  push_cast
+  ring
+
+/-- Rotation invariance of `σ = unitCircleMeasure` on `T`: `σ(ζ₀ · E) = σ(E)` (Rudin 11.19, p. 241). -/
+theorem measurePreserving_unitCircleRotate (ζ₀ : UnitCircle) :
+    MeasurePreserving (unitCircleRotate ζ₀) unitCircleMeasure unitCircleMeasure := by
+  let a := fourierToUnitCircle.symm ζ₀
+  have hcomp : unitCircleRotate ζ₀ ∘ fourierToUnitCircle =
+      fourierToUnitCircle ∘ (fun b => a + b) := by
+    ext b
+    simp [a, fourierToUnitCircle_add]
+  refine ⟨(unitCircleRotate ζ₀).continuous.measurable, ?_⟩
+  unfold unitCircleMeasure
+  rw [Measure.map_map (unitCircleRotate ζ₀).continuous.measurable
+      fourierToUnitCircle.continuous.measurable,
+    hcomp,
+    ← Measure.map_map fourierToUnitCircle.continuous.measurable (measurable_const_add a),
+    (measurePreserving_add_left RudinRCA.Chapter04.circleMeasure a).map_eq]
+
+theorem lintegral_unitCircleMeasure_eq_circleMeasure (g : UnitCircle → ℝ≥0∞) :
+    (∫⁻ ζ, g ζ ∂unitCircleMeasure) =
+      ∫⁻ x, g (fourierToUnitCircle x) ∂RudinRCA.Chapter04.circleMeasure :=
+  measurableEmbedding_fourierToUnitCircle.lintegral_map g
+
+theorem integral_unitCircleMeasure_eq_circleMeasure {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] (g : UnitCircle → E) :
+    (∫ ζ, g ζ ∂unitCircleMeasure) =
+      ∫ x, g (fourierToUnitCircle x) ∂RudinRCA.Chapter04.circleMeasure :=
+  measurableEmbedding_fourierToUnitCircle.integral_map g
+
+theorem exp_mem_unitCircle (t : ℝ) :
+    Complex.exp ((t : ℂ) * Complex.I) ∈ Metric.sphere (0 : ℂ) 1 := by
+  rw [Metric.mem_sphere, dist_zero_right, Complex.norm_exp_ofReal_mul_I]
+
+/-- Angular interval-integral representation `(2π)⁻¹ ∫_{-π}^π g(e^{it}) dt` (and over `[0, 2π]`)
+for `unitCircleMeasure`. -/
+theorem integral_unitCircleMeasure_eq_interval {E : Type*}
+    [NormedAddCommGroup E] [NormedSpace ℝ E] (g : UnitCircle → E) :
+    (∫ ζ, g ζ ∂unitCircleMeasure) =
+      (2 * Real.pi)⁻¹ • ∫ t in (-Real.pi)..Real.pi,
+        g ⟨Complex.exp ((t : ℂ) * Complex.I), exp_mem_unitCircle t⟩ ∧
+    (∫ ζ, g ζ ∂unitCircleMeasure) =
+      (2 * Real.pi)⁻¹ • ∫ t in (0 : ℝ)..(2 * Real.pi),
+        g ⟨Complex.exp ((t : ℂ) * Complex.I), exp_mem_unitCircle t⟩ := by
+  have h1 : (∫ ζ, g ζ ∂unitCircleMeasure) =
+      (2 * Real.pi)⁻¹ • ∫ t in (-Real.pi)..Real.pi,
+        g ⟨Complex.exp ((t : ℂ) * Complex.I), exp_mem_unitCircle t⟩ := by
+    rw [integral_unitCircleMeasure_eq_circleMeasure, RudinRCA.Chapter04.circleIntegral_interval,
+      one_div]
+    rfl
+  have hper : Function.Periodic
+      (fun t : ℝ => g ⟨Complex.exp ((t : ℂ) * Complex.I), exp_mem_unitCircle t⟩)
+      (2 * Real.pi) := by
+    intro t
+    dsimp only
+    congr 1
+    apply Subtype.ext
+    dsimp only
+    have : ((t + 2 * Real.pi : ℝ) : ℂ) * Complex.I =
+        (t : ℂ) * Complex.I + 2 * (Real.pi : ℂ) * Complex.I := by push_cast; ring
+    rw [this, Complex.exp_add, Complex.exp_two_pi_mul_I, mul_one]
+  have hshift := hper.intervalIntegral_add_eq (-Real.pi) 0
+  rw [show -Real.pi + 2 * Real.pi = Real.pi by ring,
+    show (0 : ℝ) + 2 * Real.pi = 2 * Real.pi by ring] at hshift
+  exact ⟨h1, h1.trans (by rw [← hshift])⟩
+
+/-- Literal set of essential upper bounds from Rudin 3.7 (p. 65):
+`{α ∈ ℝ | μ {x | α < ‖g x‖} = 0}`. -/
+def rudinEssSupSet {X E : Type*} [MeasurableSpace X] [NormedAddCommGroup E]
+    (μ : Measure X) (g : X → E) : Set ℝ :=
+  {α : ℝ | μ {x : X | α < ‖g x‖} = 0}
+
+/-- Literal real-valued essential supremum `sInf (rudinEssSupSet μ g)` in the sense of Rudin 3.7.
+When `μ Set.univ ≠ 0`, `0` bounds `rudinEssSupSet μ g` from below (`bddBelow_rudinEssSupSet`)
+and `rudinEssSup μ g = (eLpNorm g ⊤ μ).toReal` (`rudinEssSup_eq_eLpNorm_top_toReal`), adjudicating
+the 3.7 `L^∞` fidelity hold without weakening any statement. -/
+def rudinEssSup {X E : Type*} [MeasurableSpace X] [NormedAddCommGroup E]
+    (μ : Measure X) (g : X → E) : ℝ :=
+  sInf (rudinEssSupSet μ g)
+
+theorem nonneg_of_mem_rudinEssSupSet {X E : Type*} [MeasurableSpace X] [NormedAddCommGroup E]
+    {μ : Measure X} (hμ : μ Set.univ ≠ 0) {g : X → E} {α : ℝ}
+    (hα : α ∈ rudinEssSupSet μ g) : 0 ≤ α := by
+  by_contra hlt
+  push Not at hlt
+  have huniv : {x : X | α < ‖g x‖} = Set.univ :=
+    Set.eq_univ_of_forall fun x => hlt.trans_le (norm_nonneg (g x))
+  exact hμ (huniv ▸ hα)
+
+theorem bddBelow_rudinEssSupSet {X E : Type*} [MeasurableSpace X] [NormedAddCommGroup E]
+    {μ : Measure X} (hμ : μ Set.univ ≠ 0) (g : X → E) :
+    BddBelow (rudinEssSupSet μ g) :=
+  ⟨0, fun _ hα => nonneg_of_mem_rudinEssSupSet hμ hα⟩
+
+theorem rudinEssSupSet_nonempty_iff_eLpNormEssSup {X E : Type*} [MeasurableSpace X]
+    [NormedAddCommGroup E] (μ : Measure X) (g : X → E) :
+    (rudinEssSupSet μ g).Nonempty ↔ eLpNormEssSup g μ < ⊤ := by
+  change (rudinEssSupSet μ g).Nonempty ↔ essSup (fun x => ‖g x‖ₑ) μ < ⊤
+  constructor
+  · rintro ⟨α, hα⟩
+    let M : ℝ := max α 0
+    have hle : essSup (fun x => ‖g x‖ₑ) μ ≤ ENNReal.ofReal M := by
+      refine essSup_le_of_ae_le (ENNReal.ofReal M) ?_
+      change ∀ᵐ x ∂μ, ‖g x‖ₑ ≤ ENNReal.ofReal M
+      rw [ae_iff]
+      refine measure_mono_null (fun x hx => ?_) hα
+      change ¬ ‖g x‖ₑ ≤ ENNReal.ofReal M at hx
+      push Not at hx
+      rw [← ofReal_norm] at hx
+      exact (le_max_left α 0).trans_lt
+        ((ENNReal.ofReal_lt_ofReal_iff_of_nonneg (le_max_right α 0)).mp hx)
+    exact lt_of_le_of_lt hle ENNReal.ofReal_lt_top
+  · intro hlt
+    refine ⟨(essSup (fun x => ‖g x‖ₑ) μ).toReal, ?_⟩
+    have hae : ∀ᵐ x ∂μ, ‖g x‖ₑ ≤ essSup (fun x => ‖g x‖ₑ) μ := ae_le_essSup
+    have hset : {x | (essSup (fun x => ‖g x‖ₑ) μ).toReal < ‖g x‖} =
+        {x | ¬ ‖g x‖ ≤ (essSup (fun x => ‖g x‖ₑ) μ).toReal} := by
+      ext x; simp
+    change μ {x | (essSup (fun x => ‖g x‖ₑ) μ).toReal < ‖g x‖} = 0
+    rw [hset, ← ae_iff]
+    filter_upwards [hae] with x hx
+    rw [← ofReal_norm] at hx
+    exact (ENNReal.ofReal_le_iff_le_toReal hlt.ne).mp hx
+
+theorem rudinEssSupSet_nonempty_iff {X E : Type*} [MeasurableSpace X] [NormedAddCommGroup E]
+    {μ : Measure X} {g : X → E} (hg : AEStronglyMeasurable g μ) :
+    (rudinEssSupSet μ g).Nonempty ↔ eLpNorm g ⊤ μ < ⊤ := by
+  rw [eLpNorm_exponent_top hg, rudinEssSupSet_nonempty_iff_eLpNormEssSup]
+
+theorem rudinEssSup_eq_eLpNormEssSup_toReal {X E : Type*} [MeasurableSpace X]
+    [NormedAddCommGroup E] {μ : Measure X} (hμ : μ Set.univ ≠ 0) {g : X → E}
+    (hg : eLpNormEssSup g μ < ⊤) :
+    rudinEssSup μ g = (eLpNormEssSup g μ).toReal := by
+  have hlt : essSup (fun x => ‖g x‖ₑ) μ < ⊤ := hg
+  let L : ℝ := (essSup (fun x => ‖g x‖ₑ) μ).toReal
+  have hL_mem : L ∈ rudinEssSupSet μ g := by
+    have hae : ∀ᵐ x ∂μ, ‖g x‖ₑ ≤ essSup (fun x => ‖g x‖ₑ) μ := ae_le_essSup
+    have hset : {x | L < ‖g x‖} = {x | ¬ ‖g x‖ ≤ L} := by ext x; simp
+    change μ {x | L < ‖g x‖} = 0
+    rw [hset, ← ae_iff]
+    filter_upwards [hae] with x hx
+    rw [← ofReal_norm] at hx
+    exact (ENNReal.ofReal_le_iff_le_toReal hlt.ne).mp hx
+  change rudinEssSup μ g = L
+  apply le_antisymm
+  · exact csInf_le (bddBelow_rudinEssSupSet hμ g) hL_mem
+  · refine le_csInf ⟨L, hL_mem⟩ fun α hα => ?_
+    have hα0 : 0 ≤ α := nonneg_of_mem_rudinEssSupSet hμ hα
+    have hle : essSup (fun x => ‖g x‖ₑ) μ ≤ ENNReal.ofReal α := by
+      refine essSup_le_of_ae_le (ENNReal.ofReal α) ?_
+      change ∀ᵐ x ∂μ, ‖g x‖ₑ ≤ ENNReal.ofReal α
+      rw [ae_iff]
+      refine measure_mono_null (fun x hx => ?_) hα
+      change ¬ ‖g x‖ₑ ≤ ENNReal.ofReal α at hx
+      push Not at hx
+      rw [← ofReal_norm] at hx
+      exact (ENNReal.ofReal_lt_ofReal_iff_of_nonneg hα0).mp hx
+    change (essSup (fun x => ‖g x‖ₑ) μ).toReal ≤ α
+    rw [← ENNReal.toReal_ofReal hα0]
+    exact ENNReal.toReal_mono ENNReal.ofReal_ne_top hle
+
+theorem rudinEssSup_eq_eLpNorm_top_toReal {X E : Type*} [MeasurableSpace X]
+    [NormedAddCommGroup E] {μ : Measure X} (hμ : μ Set.univ ≠ 0) {g : X → E}
+    (hg : MemLp g ⊤ μ) :
+    rudinEssSup μ g = (eLpNorm g ⊤ μ).toReal := by
+  have heq := eLpNorm_exponent_top hg.aestronglyMeasurable
+  have hlt : eLpNormEssSup g μ < ⊤ := by
+    have := hg.eLpNorm_lt_top
+    rwa [heq] at this
+  rw [heq, rudinEssSup_eq_eLpNormEssSup_toReal hμ hlt]
+
+theorem rudinEssSup_lp_top_eq_norm {X E : Type*} [MeasurableSpace X] [NormedAddCommGroup E]
+    {μ : Measure X} (hμ : μ Set.univ ≠ 0) (f : Lp E ⊤ μ) :
+    (rudinEssSupSet μ f).Nonempty ∧
+      BddBelow (rudinEssSupSet μ f) ∧
+      rudinEssSup μ f = ‖f‖ := by
+  have hmem : MemLp f ⊤ μ := Lp.memLp f
+  refine ⟨(rudinEssSupSet_nonempty_iff hmem.aestronglyMeasurable).mpr hmem.eLpNorm_lt_top,
+    bddBelow_rudinEssSupSet hμ f, ?_⟩
+  rw [rudinEssSup_eq_eLpNorm_top_toReal hμ hmem, Lp.norm_def]
+
+/-- Separability of `C(FourierCircle, ℂ)` via trigonometric polynomials with Gaussian-rational
+coefficients `ℚ + i ℚ` (Rudin's remark before 11.30, p. 247). -/
+instance separableSpace_continuousMap_fourierCircle :
+    TopologicalSpace.SeparableSpace C(RudinRCA.Chapter04.FourierCircle, ℂ) := by
+  let Idx := Σ N : ℕ, (Finset.Icc (-N : ℤ) N → ℚ × ℚ)
+  let P : Idx → C(RudinRCA.Chapter04.FourierCircle, ℂ) := fun ⟨N, q⟩ =>
+    ∑ n : Finset.Icc (-N : ℤ) N,
+      (((q n).1 : ℂ) + ((q n).2 : ℂ) * Complex.I) • RudinRCA.Chapter04.trigMonomial n.1
+  refine ⟨⟨Set.range P, Set.countable_range P, ?_⟩⟩
+  rw [Metric.dense_iff]
+  intro f ε hε
+  obtain ⟨c, hc⟩ := RudinRCA.Chapter04.uniform_trigonometric_approximation f (ε / 2) (half_pos hε)
+  let N : ℕ := c.support.sup Int.natAbs
+  have hsupp_sub : c.support ⊆ Finset.Icc (-N : ℤ) N := by
+    intro n hn
+    rw [Finset.mem_Icc]
+    have hle : Int.natAbs n ≤ N := Finset.le_sup (f := Int.natAbs) hn
+    omega
+  let M_card : ℝ := (Finset.Icc (-N : ℤ) N).card
+  let δ : ℝ := (ε / 2) / (M_card + 1)
+  have hδ : 0 < δ := div_pos (half_pos hε) (by positivity)
+  have hq_exists : ∀ z : ℂ, ∃ p : ℚ × ℚ, ‖z - ((p.1 : ℂ) + (p.2 : ℂ) * Complex.I)‖ ≤ δ := by
+    intro z
+    obtain ⟨q₁, hq₁⟩ := exists_rat_btwn (sub_lt_self z.re (half_pos hδ))
+    obtain ⟨q₂, hq₂⟩ := exists_rat_btwn (sub_lt_self z.im (half_pos hδ))
+    refine ⟨(q₁, q₂), ?_⟩
+    have hre : |z.re - (q₁ : ℝ)| ≤ δ / 2 := abs_sub_le_iff.mpr ⟨by linarith [hq₁.2], by linarith [hq₁.1]⟩
+    have him : |z.im - (q₂ : ℝ)| ≤ δ / 2 := abs_sub_le_iff.mpr ⟨by linarith [hq₂.2], by linarith [hq₂.1]⟩
+    have hsplit : z - ((q₁ : ℂ) + (q₂ : ℂ) * Complex.I) =
+        ((z.re - (q₁ : ℝ) : ℝ) : ℂ) + ((z.im - (q₂ : ℝ) : ℝ) : ℂ) * Complex.I := by
+      apply Complex.ext <;> simp
+    rw [hsplit]
+    calc ‖((z.re - (q₁ : ℝ) : ℝ) : ℂ) + ((z.im - (q₂ : ℝ) : ℝ) : ℂ) * Complex.I‖
+        ≤ ‖((z.re - (q₁ : ℝ) : ℝ) : ℂ)‖ + ‖((z.im - (q₂ : ℝ) : ℝ) : ℂ) * Complex.I‖ := norm_add_le _ _
+      _ = |z.re - (q₁ : ℝ)| + |z.im - (q₂ : ℝ)| := by
+          rw [Complex.norm_real, norm_mul, Complex.norm_real, Complex.norm_I, mul_one,
+            Real.norm_eq_abs, Real.norm_eq_abs]
+      _ ≤ δ / 2 + δ / 2 := add_le_add hre him
+      _ = δ := add_halves δ
+  choose qFn hqFn using fun n : Finset.Icc (-N : ℤ) N => hq_exists (c n.1)
+  refine ⟨P ⟨N, qFn⟩, ?_, ⟨⟨N, qFn⟩, rfl⟩⟩
+  have htrig_eq : RudinRCA.Chapter04.trigPolynomial c =
+      ∑ n : Finset.Icc (-N : ℤ) N, c n.1 • RudinRCA.Chapter04.trigMonomial n.1 := by
+    have hc_def : RudinRCA.Chapter04.trigPolynomial c =
+        ∑ n ∈ c.support, c n • RudinRCA.Chapter04.trigMonomial n := rfl
+    rw [hc_def, Finset.sum_subset hsupp_sub (fun n _ hnot => by simp [Finsupp.notMem_support_iff.mp hnot]),
+      ← Finset.sum_coe_sort]
+  have hdiff_le : ‖RudinRCA.Chapter04.trigPolynomial c - P ⟨N, qFn⟩‖ ≤ M_card * δ := by
+    rw [htrig_eq]
+    dsimp [P]
+    rw [← Finset.sum_sub_distrib]
+    calc ‖∑ x : Finset.Icc (-N : ℤ) N,
+            (c x.1 • RudinRCA.Chapter04.trigMonomial x.1 -
+              (((qFn x).1 : ℂ) + ((qFn x).2 : ℂ) * Complex.I) • RudinRCA.Chapter04.trigMonomial x.1)‖
+        ≤ ∑ x : Finset.Icc (-N : ℤ) N,
+            ‖c x.1 • RudinRCA.Chapter04.trigMonomial x.1 -
+              (((qFn x).1 : ℂ) + ((qFn x).2 : ℂ) * Complex.I) • RudinRCA.Chapter04.trigMonomial x.1‖ :=
+          norm_sum_le _ _
+      _ ≤ ∑ _x : Finset.Icc (-N : ℤ) N, δ := by
+          refine Finset.sum_le_sum fun x _ => ?_
+          rw [← sub_smul, norm_smul]
+          have hmon_le : ‖RudinRCA.Chapter04.trigMonomial x.1‖ ≤ 1 := by
+            rw [RudinRCA.Chapter04.circleContinuous_norm_formula]
+            refine ciSup_le fun t => (RudinRCA.Chapter04.fejerFourier_norm x.1 t).le
+          calc ‖c x.1 - (((qFn x).1 : ℂ) + ((qFn x).2 : ℂ) * Complex.I)‖ *
+                ‖RudinRCA.Chapter04.trigMonomial x.1‖
+              ≤ δ * 1 := mul_le_mul (hqFn x) hmon_le (norm_nonneg _) hδ.le
+            _ = δ := mul_one δ
+      _ = M_card * δ := by simp [M_card]
+  have hcard_δ : M_card * δ < ε / 2 := by
+    dsimp [δ]
+    rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
+    have hlt : M_card < M_card + 1 := by linarith
+    have hM_nn : 0 ≤ M_card := by positivity
+    nlinarith
+  rw [Metric.mem_ball, dist_eq_norm']
+  calc ‖f - P ⟨N, qFn⟩‖
+      = ‖(f - RudinRCA.Chapter04.trigPolynomial c) +
+          (RudinRCA.Chapter04.trigPolynomial c - P ⟨N, qFn⟩)‖ := by ring_nf
+    _ ≤ ‖f - RudinRCA.Chapter04.trigPolynomial c‖ +
+          ‖RudinRCA.Chapter04.trigPolynomial c - P ⟨N, qFn⟩‖ := norm_add_le _ _
+    _ < ε / 2 + ε / 2 := add_lt_add hc (hdiff_le.trans_lt hcard_δ)
+    _ = ε := add_halves ε
+
+/-- `C(T) = C(UnitCircle, ℂ)` is a separable Banach space (Rudin p. 247). -/
+instance separableSpace_continuousMap_unitCircle :
+    TopologicalSpace.SeparableSpace C(UnitCircle, ℂ) := by
+  let e : C(RudinRCA.Chapter04.FourierCircle, ℂ) → C(UnitCircle, ℂ) :=
+    fun f => f.comp ⟨fourierToUnitCircle.symm, fourierToUnitCircle.symm.continuous⟩
+  have he_surj : Function.Surjective e := by
+    intro g
+    refine ⟨g.comp ⟨fourierToUnitCircle, fourierToUnitCircle.continuous⟩, ?_⟩
+    ext ζ
+    simp [e]
+  have he_lip : LipschitzWith 1 e := by
+    refine LipschitzWith.of_dist_le_mul fun f₁ f₂ => ?_
+    rw [NNReal.coe_one, one_mul, dist_eq_norm, dist_eq_norm, ContinuousMap.norm_le _ (norm_nonneg _)]
+    intro ζ
+    exact ContinuousMap.norm_coe_le_norm (f₁ - f₂) (fourierToUnitCircle.symm ζ)
+  exact he_surj.denseRange.separableSpace he_lip.continuous
+
+/-- `L^p(T)` is separable for every `1 ≤ p < ∞` (Rudin p. 247). -/
+theorem separableSpace_lp_unitCircle (p : ℝ≥0∞) [Fact (1 ≤ p)] (hp : p ≠ ⊤) :
+    TopologicalSpace.SeparableSpace (Lp ℂ p unitCircleMeasure) :=
+  (ContinuousMap.toLp_denseRange ℂ unitCircleMeasure ℂ hp).separableSpace
+    (ContinuousMap.toLp p unitCircleMeasure ℂ).continuous
+
+/-- Isometric identification `C(UnitCircle, ℂ) ≃ₗᵢ[ℂ] C₀(UnitCircle, ℂ)` on compact `T = UnitCircle`,
+connecting Riesz representation (`Chapter06.theorem_6_19`) directly to `C(T)`. -/
+def continuousMapEquivC0UnitCircle :
+    C(UnitCircle, ℂ) ≃ₗᵢ[ℂ] ZeroAtInftyContinuousMap UnitCircle ℂ where
+  toFun f :=
+    { toFun := f
+      continuous_toFun := f.continuous
+      zero_at_infty' := by simp [Filter.cocompact_eq_bot] }
+  invFun g := ⟨g, g.continuous⟩
+  left_inv _ := rfl
+  right_inv _ := rfl
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+  norm_map' f := by
+    change ‖(BoundedContinuousFunction.mkOfCompact f)‖ = ‖f‖
+    exact BoundedContinuousFunction.norm_mkOfCompact f
+
+end UnitCircleFoundations
+
+/-! ### Nodes 11.16 and 11.17: `L^p` and Measure Poisson Integrals -/
+
+section Nodes11_16_and_11_17
+
+/-- Poisson integral `P[f](z) = ∫_T P(z, ζ) f(ζ) dσ(ζ)` of `f : UnitCircle → ℂ` on `U = ball 0 1`
+with respect to normalized circle measure `σ = unitCircleMeasure`. -/
+def unitPoissonIntegral (f : UnitCircle → ℂ) (z : ℂ) : ℂ :=
+  ∫ η : UnitCircle, (_root_.poissonKernel 0 z (η : ℂ)) • f η ∂unitCircleMeasure
+
+/-- Radial restriction `u_r(ζ) = u(r ζ)` on `UnitCircle` (`11.15(1)`, p. 239). -/
+def unitRadialRestriction {E : Type*} (u : ℂ → E) (r : ℝ) (ζ : UnitCircle) : E :=
+  u ((r : ℂ) * (ζ : ℂ))
+
+/-- Compatibility between `unitPoissonIntegral` on `UnitCircle` and `poissonIntegral` on `ℂ`. -/
+theorem unitPoissonIntegral_eq_poissonIntegral (g : ℂ → ℂ) (z : ℂ) :
+    unitPoissonIntegral (fun η : UnitCircle => g (η : ℂ)) z = poissonIntegral g z := by
+  unfold unitPoissonIntegral poissonIntegral
+  rw [(integral_unitCircleMeasure_eq_interval _).2, Real.circleAverage_def]
+  congr 1
+  refine intervalIntegral.integral_congr fun t _ => ?_
+  simp [circleMap]
+
+theorem poissonKernel_unitCircle_nonneg {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1)
+    (η : UnitCircle) :
+    0 ≤ _root_.poissonKernel 0 z (η : ℂ) := by
+  have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz
+  simp only [_root_.poissonKernel, sub_zero, norm_unitCircle, one_pow]
+  exact div_nonneg (by nlinarith [norm_nonneg z]) (sq_nonneg _)
+
+theorem continuous_poissonKernel_unitCircle {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    Continuous (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) := by
+  have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz
+  have heq : (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) =
+      fun η : UnitCircle => (1 - ‖z‖ ^ 2) / ‖(η : ℂ) - z‖ ^ 2 := by
+    ext η
+    simp [_root_.poissonKernel]
+  rw [heq]
+  refine continuous_const.div ((continuous_subtype_val.sub continuous_const).norm.pow 2) fun η => ?_
+  have htri := norm_sub_norm_le (η : ℂ) z
+  rw [norm_unitCircle] at htri
+  exact (sq_pos_of_pos (by linarith)).ne'
+
+theorem memLp_top_of_continuous_unitCircle {E : Type*} [NormedAddCommGroup E]
+    {g : UnitCircle → E} (hg : Continuous g) :
+    MemLp g ⊤ unitCircleMeasure := by
+  let bcf := BoundedContinuousFunction.mkOfCompact ⟨g, hg⟩
+  exact memLp_top_of_bound hg.aestronglyMeasurable ‖bcf‖
+    (ae_of_all _ fun η => BoundedContinuousFunction.norm_coe_le_norm bcf η)
+
+theorem continuous_poissonKernel_unitCircle_pair {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    Continuous (fun p : UnitCircle × UnitCircle =>
+      _root_.poissonKernel 0 ((r : ℂ) * (p.1 : ℂ)) (p.2 : ℂ)) := by
+  have heq : (fun p : UnitCircle × UnitCircle =>
+      _root_.poissonKernel 0 ((r : ℂ) * (p.1 : ℂ)) (p.2 : ℂ)) =
+      fun p : UnitCircle × UnitCircle =>
+      (1 - ‖(r : ℂ) * (p.1 : ℂ)‖ ^ 2) / ‖(p.2 : ℂ) - (r : ℂ) * (p.1 : ℂ)‖ ^ 2 := by
+    ext p
+    simp [_root_.poissonKernel]
+  rw [heq]
+  have h1 : Continuous (fun p : UnitCircle × UnitCircle => (r : ℂ) * (p.1 : ℂ)) :=
+    continuous_const.mul (continuous_subtype_val.comp continuous_fst)
+  have h2 : Continuous (fun p : UnitCircle × UnitCircle => (p.2 : ℂ)) :=
+    continuous_subtype_val.comp continuous_snd
+  refine (continuous_const.sub (h1.norm.pow 2)).div ((h2.sub h1).norm.pow 2) fun p => ?_
+  have hlt1 : ‖(r : ℂ) * (p.1 : ℂ)‖ < 1 := by
+    simpa [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr0] using hr1
+  have htri := norm_sub_norm_le (p.2 : ℂ) ((r : ℂ) * (p.1 : ℂ))
+  rw [norm_unitCircle] at htri
+  exact (sq_pos_of_pos (by linarith)).ne'
+
+/-- Symmetry `P(r ζ, η) = P(r η, ζ)` on `UnitCircle × UnitCircle`. -/
+theorem poissonKernel_unitCircle_radial_symm (r : ℝ) (ζ η : UnitCircle) :
+    _root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ) =
+      _root_.poissonKernel 0 ((r : ℂ) * (η : ℂ)) (ζ : ℂ) := by
+  let u : ℂ := ζ
+  let v : ℂ := η
+  have hid : (u * v) * conj (u - (r : ℂ) * v) = v - (r : ℂ) * u := by
+    rw [map_sub, map_mul, Complex.conj_ofReal]
+    calc (u * v) * (conj u - (r : ℂ) * conj v)
+        = (u * conj u) * v - (r : ℂ) * u * (v * conj v) := by ring
+      _ = v - (r : ℂ) * u := by
+          rw [unitCircle_mul_conj ζ, unitCircle_mul_conj η]
+          ring
+  have hnorm_eq : ‖v - (r : ℂ) * u‖ = ‖u - (r : ℂ) * v‖ := by
+    rw [← hid, norm_mul, norm_mul, RCLike.norm_conj]
+    simp [u, v]
+  simp only [_root_.poissonKernel, sub_zero, norm_unitCircle, one_pow, norm_mul, mul_one]
+  change (1 - ‖(r : ℂ)‖ ^ 2) / ‖v - (r : ℂ) * u‖ ^ 2 =
+    (1 - ‖(r : ℂ)‖ ^ 2) / ‖u - (r : ℂ) * v‖ ^ 2
+  rw [hnorm_eq]
+
+/-- Formula 11.5(3) on `UnitCircle`: `∫_T P(z, η) dσ(η) = 1` for every `z ∈ U = ball 0 1`. -/
+theorem integral_poissonKernel_unitCircle {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    (∫ η : UnitCircle, _root_.poissonKernel 0 z (η : ℂ) ∂unitCircleMeasure) = 1 := by
+  have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz
+  let θ : ℝ := Complex.arg z
+  have hz_polar : ((‖z‖ : ℝ) : ℂ) * Complex.exp ((θ : ℂ) * Complex.I) = z := by
+    by_cases hz0 : z = 0
+    · simp [hz0]
+    · exact Complex.norm_mul_exp_arg_mul_I z
+  rw [(integral_unitCircleMeasure_eq_interval _).1, smul_eq_mul]
+  have hcongr : (∫ t in (-Real.pi)..Real.pi,
+      _root_.poissonKernel 0 z (Complex.exp ((t : ℂ) * Complex.I))) =
+      ∫ t in (-Real.pi)..Real.pi, poissonKernel ‖z‖ (θ - t) := by
+    refine intervalIntegral.integral_congr fun t _ => ?_
+    rw [← hz_polar]
+    simpa [circleMap] using poissonKernel_eq_mathlib (norm_nonneg z) θ t
+  rw [hcongr]
+  have hper : Function.Periodic (fun t : ℝ => poissonKernel ‖z‖ (θ - t)) (2 * Real.pi) := by
+    intro t
+    dsimp only
+    rw [← node11_5_even ‖z‖ (θ - (t + 2 * Real.pi)), ← node11_5_even ‖z‖ (θ - t)]
+    have : -(θ - (t + 2 * Real.pi)) = -(θ - t) + 2 * Real.pi := by ring
+    rw [this, node11_5_periodic]
+  have hshift := hper.intervalIntegral_add_eq (θ - Real.pi) (-Real.pi)
+  rw [show θ - Real.pi + 2 * Real.pi = θ + Real.pi by ring,
+    show -Real.pi + 2 * Real.pi = Real.pi by ring] at hshift
+  rw [← hshift]
+  have hcomp := intervalIntegral.integral_comp_sub_left
+    (poissonKernel ‖z‖) θ (a := θ - Real.pi) (b := θ + Real.pi)
+  rw [show θ - (θ + Real.pi) = -Real.pi by ring,
+    show θ - (θ - Real.pi) = Real.pi by ring] at hcomp
+  rw [hcomp]
+  exact (node11_5_integral_eq_one (norm_nonneg z) hz_lt).1
+
+theorem lintegral_poissonKernel_unitCircle {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    (∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂unitCircleMeasure) = 1 := by
+  have hint : Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) unitCircleMeasure :=
+    (continuous_poissonKernel_unitCircle hz).integrable_of_hasCompactSupport
+      (HasCompactSupport.of_compactSpace _)
+  rw [← ofReal_integral_eq_lintegral_ofReal hint
+    (ae_of_all _ (poissonKernel_unitCircle_nonneg hz)),
+    integral_poissonKernel_unitCircle hz, ENNReal.ofReal_one]
+
+theorem radial_mem_ball_unitCircle {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (ζ : UnitCircle) :
+    (r : ℂ) * (ζ : ℂ) ∈ Metric.ball (0 : ℂ) 1 := by
+  rw [Metric.mem_ball, dist_zero_right, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg hr0, norm_unitCircle, mul_one]
+  exact hr1
+
+theorem integrable_real_smul_of_continuous {K : UnitCircle → ℝ} (hK : Continuous K)
+    {f : UnitCircle → ℂ} (hf : Integrable f unitCircleMeasure) :
+    Integrable (fun η : UnitCircle => K η • f η) unitCircleMeasure := by
+  let bcf := BoundedContinuousFunction.mkOfCompact ⟨K, hK⟩
+  have hmul : Integrable (fun η : UnitCircle => (K η : ℂ) * f η) unitCircleMeasure :=
+    hf.bdd_mul (Complex.continuous_ofReal.comp hK).aestronglyMeasurable
+      (ae_of_all _ fun η => by
+        rw [Complex.norm_real]
+        exact BoundedContinuousFunction.norm_coe_le_norm bcf η)
+  exact hmul.congr (ae_of_all _ fun η => by simp [Complex.real_smul])
+
+/-- Continuity of the radial slice `ζ ↦ P[f](r ζ)` on `UnitCircle` for any `f ∈ L¹(T)` (`0 ≤ r < 1`). -/
+theorem continuous_unitRadialRestriction_unitPoissonIntegral
+    {f : UnitCircle → ℂ} (hf : Integrable f unitCircleMeasure)
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    Continuous (unitRadialRestriction (unitPoissonIntegral f) r) := by
+  rw [Metric.continuous_iff]
+  intro ζ₀ ε hε
+  let C : ℝ := ∫ η, ‖f η‖ ∂unitCircleMeasure
+  have hC_nn : 0 ≤ C := integral_nonneg fun _ => norm_nonneg _
+  have huc : UniformContinuous
+      (fun p : UnitCircle × UnitCircle => _root_.poissonKernel 0 ((r : ℂ) * (p.1 : ℂ)) (p.2 : ℂ)) :=
+    CompactSpace.uniformContinuous_of_continuous (continuous_poissonKernel_unitCircle_pair hr0 hr1)
+  obtain ⟨δ, hδ_pos, hδ⟩ := Metric.uniformContinuous_iff.mp huc (ε / (C + 1))
+    (div_pos hε (by linarith))
+  refine ⟨δ, hδ_pos, fun ζ hζ => ?_⟩
+  rw [dist_eq_norm]
+  unfold unitRadialRestriction unitPoissonIntegral
+  have hint_z : ∀ ξ : UnitCircle,
+      Integrable (fun η : UnitCircle => _root_.poissonKernel 0 ((r : ℂ) * (ξ : ℂ)) (η : ℂ) • f η)
+        unitCircleMeasure :=
+    fun ξ => integrable_real_smul_of_continuous
+      (continuous_poissonKernel_unitCircle (radial_mem_ball_unitCircle hr0 hr1 ξ)) hf
+  rw [← integral_sub (hint_z ζ) (hint_z ζ₀)]
+  calc ‖∫ η : UnitCircle,
+          (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ) • f η -
+            _root_.poissonKernel 0 ((r : ℂ) * (ζ₀ : ℂ)) (η : ℂ) • f η) ∂unitCircleMeasure‖
+      ≤ ∫ η : UnitCircle,
+          ‖_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ) • f η -
+            _root_.poissonKernel 0 ((r : ℂ) * (ζ₀ : ℂ)) (η : ℂ) • f η‖ ∂unitCircleMeasure :=
+        norm_integral_le_integral_norm _
+    _ ≤ ∫ η : UnitCircle, (ε / (C + 1)) * ‖f η‖ ∂unitCircleMeasure := by
+        refine integral_mono_of_nonneg (ae_of_all _ fun _ => norm_nonneg _)
+          (hf.norm.const_mul _) (ae_of_all _ fun η => ?_)
+        dsimp only
+        rw [← sub_smul, norm_smul]
+        have hk : ‖_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ) -
+            _root_.poissonKernel 0 ((r : ℂ) * (ζ₀ : ℂ)) (η : ℂ)‖ ≤ ε / (C + 1) := by
+          have hp : dist (ζ, η) (ζ₀, η) < δ := by simpa [Prod.dist_eq] using hζ
+          exact (hδ hp).le
+        exact mul_le_mul_of_nonneg_right hk (norm_nonneg _)
+    _ = (ε / (C + 1)) * C := integral_const_mul _ _
+    _ < (ε / (C + 1)) * (C + 1) :=
+        mul_lt_mul_of_pos_left (by linarith) (div_pos hε (by linarith))
+    _ = ε := div_mul_cancel₀ ε (by linarith)
+
+/-- Pointwise bound `‖P[f](z)‖ₑ ≤ ∫⁻ η, P(z, η) ‖f(η)‖ₑ dσ(η)` for `z ∈ ball 0 1`. -/
+theorem enorm_unitPoissonIntegral_le {f : UnitCircle → ℂ} {z : ℂ}
+    (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    ‖unitPoissonIntegral f z‖ₑ ≤
+      ∫⁻ η : UnitCircle,
+        ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) * ‖f η‖ₑ ∂unitCircleMeasure := by
+  calc ‖unitPoissonIntegral f z‖ₑ
+      ≤ ∫⁻ η : UnitCircle, ‖_root_.poissonKernel 0 z (η : ℂ) • f η‖ₑ ∂unitCircleMeasure :=
+        enorm_integral_le_lintegral_enorm _
+    _ = ∫⁻ η : UnitCircle,
+          ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) * ‖f η‖ₑ ∂unitCircleMeasure := by
+        refine lintegral_congr fun η => ?_
+        rw [enorm_smul, Real.enorm_of_nonneg (poissonKernel_unitCircle_nonneg hz η)]
+
+/-- 11.16(1) (`eLpNorm` form): for `1 ≤ p ≤ ∞`, `f ∈ L^p(T)`, and `0 ≤ r < 1`,
+`‖u_r‖_p ≤ ‖f‖_p` where `u = P[f]`. -/
+theorem eLpNorm_unitRadialRestriction_unitPoissonIntegral_le
+    {p : ℝ≥0∞} (hp1 : 1 ≤ p) {f : UnitCircle → ℂ} (hf : MemLp f p unitCircleMeasure)
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    eLpNorm (unitRadialRestriction (unitPoissonIntegral f) r) p unitCircleMeasure ≤
+      eLpNorm f p unitCircleMeasure := by
+  let ur := unitRadialRestriction (unitPoissonIntegral f) r
+  have hur_meas : AEStronglyMeasurable ur unitCircleMeasure :=
+    (continuous_unitRadialRestriction_unitPoissonIntegral (hf.integrable hp1) hr0 hr1).aestronglyMeasurable
+  by_cases hp_top : p = ⊤
+  · subst hp_top
+    rw [eLpNorm_exponent_top hur_meas, eLpNorm_exponent_top hf.aestronglyMeasurable]
+    change essSup (fun x => ‖ur x‖ₑ) unitCircleMeasure ≤
+      essSup (fun x => ‖f x‖ₑ) unitCircleMeasure
+    refine essSup_le_of_ae_le _ ?_
+    refine ae_of_all _ fun ζ => ?_
+    dsimp only [ur, unitRadialRestriction]
+    have hz := radial_mem_ball_unitCircle hr0 hr1 ζ
+    have hae : ∀ᵐ η ∂unitCircleMeasure,
+        ‖f η‖ₑ ≤ essSup (fun x => ‖f x‖ₑ) unitCircleMeasure := ae_le_essSup
+    calc ‖unitPoissonIntegral f ((r : ℂ) * (ζ : ℂ))‖ₑ
+        ≤ ∫⁻ η : UnitCircle,
+            ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) * ‖f η‖ₑ
+              ∂unitCircleMeasure := enorm_unitPoissonIntegral_le hz
+      _ ≤ ∫⁻ η : UnitCircle,
+            ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) *
+              essSup (fun x => ‖f x‖ₑ) unitCircleMeasure ∂unitCircleMeasure := by
+          refine lintegral_mono_ae ?_
+          filter_upwards [hae] with η hη
+          gcongr
+      _ = (∫⁻ η : UnitCircle,
+            ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ))
+              ∂unitCircleMeasure) * essSup (fun x => ‖f x‖ₑ) unitCircleMeasure :=
+          lintegral_mul_const _
+            (continuous_poissonKernel_unitCircle hz).measurable.ennreal_ofReal
+      _ = essSup (fun x => ‖f x‖ₑ) unitCircleMeasure := by
+          rw [lintegral_poissonKernel_unitCircle hz, one_mul]
+  · have hp0 : p ≠ 0 := (zero_lt_one.trans_le hp1).ne'
+    let p' : ℝ := p.toReal
+    have hp'_ge1 : 1 ≤ p' := by
+      have := ENNReal.toReal_mono hp_top hp1
+      simpa [p'] using this
+    have hp'_pos : 0 < p' := zero_lt_one.trans_le hp'_ge1
+    -- Rudin 11.16(4): pointwise `‖u_r(ζ)‖ₑ ^ p' ≤ ∫⁻ η, P(r ζ, η) * ‖f η‖ₑ ^ p' dσ(η)`
+    have h11_16_4 : ∀ ζ : UnitCircle,
+        ‖ur ζ‖ₑ ^ p' ≤
+          ∫⁻ η : UnitCircle,
+            ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) *
+              ‖f η‖ₑ ^ p' ∂unitCircleMeasure := by
+      intro ζ
+      have hz := radial_mem_ball_unitCircle hr0 hr1 ζ
+      rcases hp'_ge1.eq_or_lt with hp'_eq1 | hp'_gt1
+      · rw [← hp'_eq1, ENNReal.rpow_one]
+        change ‖unitPoissonIntegral f ((r : ℂ) * (ζ : ℂ))‖ₑ ≤ _
+        simpa only [← hp'_eq1, ENNReal.rpow_one] using enorm_unitPoissonIntegral_le hz
+      · let q' : ℝ := p'.conjExponent
+        have hpq : p'.HolderConjugate q' := Real.HolderConjugate.conjExponent hp'_gt1
+        have hq'_gt1 : 1 < q' := hpq.symm.lt
+        have hq'_pos : 0 < q' := zero_lt_one.trans hq'_gt1
+        let K : UnitCircle → ℝ≥0∞ := fun η =>
+          ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ))
+        have hK_meas : Measurable K :=
+          (continuous_poissonKernel_unitCircle hz).measurable.ennreal_ofReal
+        have hf_aem : AEMeasurable (fun η => ‖f η‖ₑ) unitCircleMeasure :=
+          hf.aestronglyMeasurable.enorm
+        have hsplit : ∀ η : UnitCircle,
+            K η * ‖f η‖ₑ = (K η ^ p'⁻¹ * ‖f η‖ₑ) * (K η ^ q'⁻¹) := by
+          intro η
+          have hpow : K η ^ p'⁻¹ * K η ^ q'⁻¹ = K η := by
+            rw [← ENNReal.rpow_add_of_nonneg _ _ (by positivity) (by positivity),
+              hpq.inv_add_inv_eq_one, ENNReal.rpow_one]
+          calc K η * ‖f η‖ₑ = (K η ^ p'⁻¹ * K η ^ q'⁻¹) * ‖f η‖ₑ := by rw [hpow]
+            _ = (K η ^ p'⁻¹ * ‖f η‖ₑ) * (K η ^ q'⁻¹) := by ac_rfl
+        have hholder := ENNReal.lintegral_mul_le_Lp_mul_Lq unitCircleMeasure hpq
+          ((hK_meas.pow_const p'⁻¹).aemeasurable.mul hf_aem)
+          (hK_meas.pow_const q'⁻¹).aemeasurable
+        have hK_p : (fun η => (K η ^ p'⁻¹ * ‖f η‖ₑ) ^ p') =
+            fun η => K η * ‖f η‖ₑ ^ p' := by
+          ext η
+          rw [ENNReal.mul_rpow_of_nonneg _ _ hp'_pos.le, ← ENNReal.rpow_mul,
+            inv_mul_cancel₀ hp'_pos.ne', ENNReal.rpow_one]
+        have hK_q : (fun η => (K η ^ q'⁻¹) ^ q') = K := by
+          ext η
+          rw [← ENNReal.rpow_mul, inv_mul_cancel₀ hq'_pos.ne', ENNReal.rpow_one]
+        have hK_int1 : (∫⁻ η, K η ∂unitCircleMeasure) = 1 :=
+          lintegral_poissonKernel_unitCircle hz
+        have hbound1 : ‖ur ζ‖ₑ ≤
+            (∫⁻ η, K η * ‖f η‖ₑ ^ p' ∂unitCircleMeasure) ^ (1 / p') := by
+          calc ‖ur ζ‖ₑ ≤ ∫⁻ η, K η * ‖f η‖ₑ ∂unitCircleMeasure :=
+                enorm_unitPoissonIntegral_le hz
+            _ = ∫⁻ η, (K η ^ p'⁻¹ * ‖f η‖ₑ) * (K η ^ q'⁻¹) ∂unitCircleMeasure :=
+                lintegral_congr hsplit
+            _ ≤ (∫⁻ η, (K η ^ p'⁻¹ * ‖f η‖ₑ) ^ p' ∂unitCircleMeasure) ^ (1 / p') *
+                  (∫⁻ η, (K η ^ q'⁻¹) ^ q' ∂unitCircleMeasure) ^ (1 / q') := hholder
+            _ = (∫⁻ η, K η * ‖f η‖ₑ ^ p' ∂unitCircleMeasure) ^ (1 / p') := by
+                rw [hK_p, hK_q, hK_int1, ENNReal.one_rpow, mul_one]
+        calc ‖ur ζ‖ₑ ^ p'
+            ≤ ((∫⁻ η, K η * ‖f η‖ₑ ^ p' ∂unitCircleMeasure) ^ (1 / p')) ^ p' :=
+              ENNReal.rpow_le_rpow hbound1 hp'_pos.le
+          _ = ∫⁻ η, K η * ‖f η‖ₑ ^ p' ∂unitCircleMeasure := by
+              rw [← ENNReal.rpow_mul, one_div_mul_cancel hp'_pos.ne', ENNReal.rpow_one]
+    -- Integrate 11.16(4) over `T` and swap via Tonelli + kernel symmetry
+    have hprod_aem : AEMeasurable
+        (Function.uncurry fun ζ η : UnitCircle =>
+          ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) * ‖f η‖ₑ ^ p')
+        (unitCircleMeasure.prod unitCircleMeasure) := by
+      have hK_meas : Measurable (fun q : UnitCircle × UnitCircle =>
+          ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (q.1 : ℂ)) (q.2 : ℂ))) :=
+        (continuous_poissonKernel_unitCircle_pair hr0 hr1).measurable.ennreal_ofReal
+      have hf_aem : AEMeasurable (fun q : UnitCircle × UnitCircle => ‖f q.2‖ₑ ^ p')
+          (unitCircleMeasure.prod unitCircleMeasure) :=
+        (hf.aestronglyMeasurable.enorm.pow_const p').comp_quasiMeasurePreserving
+          Measure.quasiMeasurePreserving_snd
+      exact hK_meas.aemeasurable.mul hf_aem
+    have hlint_le :
+        (∫⁻ ζ, ‖ur ζ‖ₑ ^ p' ∂unitCircleMeasure) ≤
+          ∫⁻ η, ‖f η‖ₑ ^ p' ∂unitCircleMeasure := by
+      calc (∫⁻ ζ, ‖ur ζ‖ₑ ^ p' ∂unitCircleMeasure)
+          ≤ ∫⁻ ζ, ∫⁻ η,
+              ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) *
+                ‖f η‖ₑ ^ p' ∂unitCircleMeasure ∂unitCircleMeasure :=
+            lintegral_mono h11_16_4
+        _ = ∫⁻ η, ∫⁻ ζ,
+              ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) *
+                ‖f η‖ₑ ^ p' ∂unitCircleMeasure ∂unitCircleMeasure :=
+            lintegral_lintegral_swap hprod_aem
+        _ = ∫⁻ η, ‖f η‖ₑ ^ p' ∂unitCircleMeasure := by
+            refine lintegral_congr fun η => ?_
+            have hsymm : (fun ζ : UnitCircle =>
+                ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) *
+                  ‖f η‖ₑ ^ p') =
+                fun ζ : UnitCircle =>
+                  ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (η : ℂ)) (ζ : ℂ)) *
+                    ‖f η‖ₑ ^ p' := by
+              ext ζ
+              rw [poissonKernel_unitCircle_radial_symm r ζ η]
+            rw [hsymm, lintegral_mul_const _
+              (continuous_poissonKernel_unitCircle (radial_mem_ball_unitCircle hr0 hr1 η)).measurable.ennreal_ofReal,
+              lintegral_poissonKernel_unitCircle (radial_mem_ball_unitCircle hr0 hr1 η), one_mul]
+    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp0 hp_top hur_meas,
+      eLpNorm_eq_lintegral_rpow_enorm_toReal hp0 hp_top hf.aestronglyMeasurable]
+    exact ENNReal.rpow_le_rpow hlint_le (by positivity)
+
+theorem memLp_unitRadialRestriction_unitPoissonIntegral
+    {p : ℝ≥0∞} (hp1 : 1 ≤ p) {f : UnitCircle → ℂ} (hf : MemLp f p unitCircleMeasure)
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    MemLp (unitRadialRestriction (unitPoissonIntegral f) r) p unitCircleMeasure :=
+  lt_of_le_of_lt (eLpNorm_unitRadialRestriction_unitPoissonIntegral_le hp1 hf hr0 hr1)
+    hf.eLpNorm_lt_top
+
+/-- Theorem 3.14 on `T = UnitCircle`: continuous functions are dense in `L^p(T)` for `1 ≤ p < ∞`. -/
+theorem exists_continuous_eLpNorm_sub_le {p : ℝ≥0∞} [Fact (1 ≤ p)] (hp_top : p ≠ ⊤)
+    {f : UnitCircle → ℂ} (hf : MemLp f p unitCircleMeasure) {δ : ℝ} (hδ_pos : 0 < δ) :
+    ∃ g : C(UnitCircle, ℂ),
+      eLpNorm (f - (g : UnitCircle → ℂ)) p unitCircleMeasure ≤ ENNReal.ofReal δ := by
+  obtain ⟨g, hg_dist⟩ := Metric.denseRange_iff.mp
+    (ContinuousMap.toLp_denseRange ℂ unitCircleMeasure ℂ hp_top) (hf.toLp f) δ hδ_pos
+  refine ⟨g, ?_⟩
+  let F : Lp ℂ p unitCircleMeasure := hf.toLp f
+  let G : Lp ℂ p unitCircleMeasure := ContinuousMap.toLp p unitCircleMeasure ℂ g
+  have hnorm : ‖F - G‖ < δ := by
+    rw [← dist_eq_norm]
+    simpa only [F, G, dist_comm] using hg_dist
+  have hcoe : ((F - G : Lp ℂ p unitCircleMeasure) : UnitCircle → ℂ) =ᵐ[unitCircleMeasure]
+      (f - (g : UnitCircle → ℂ)) := by
+    filter_upwards [Lp.coeFn_sub F G, hf.coeFn_toLp,
+      ContinuousMap.coeFn_toLp (p := p) (𝕜 := ℂ) unitCircleMeasure g] with ζ hsub hfζ hgζ
+    dsimp only [F, G] at hsub
+    rw [hsub, Pi.sub_apply, Pi.sub_apply, hfζ, hgζ]
+  rw [← eLpNorm_congr_ae hcoe]
+  have hlt_top := Lp.eLpNorm_lt_top (F - G)
+  rw [Lp.norm_def] at hnorm
+  exact (ENNReal.le_ofReal_iff_toReal_le hlt_top.ne hδ_pos.le).mpr hnorm.le
+
+/-- Extend `g : C(UnitCircle, ℂ)` by `0` outside `Metric.sphere (0 : ℂ) 1`. -/
+private def extendZeroOutsideUnitCircle (g : C(UnitCircle, ℂ)) (z : ℂ) : ℂ :=
+  open Classical in
+  if hz : z ∈ Metric.sphere (0 : ℂ) 1 then g ⟨z, hz⟩ else 0
+
+private theorem extendZeroOutsideUnitCircle_apply (g : C(UnitCircle, ℂ)) (ζ : UnitCircle) :
+    extendZeroOutsideUnitCircle g (ζ : ℂ) = g ζ := by
+  unfold extendZeroOutsideUnitCircle
+  simp
+
+private theorem continuousOn_extendZeroOutsideUnitCircle (g : C(UnitCircle, ℂ)) :
+    ContinuousOn (extendZeroOutsideUnitCircle g) (Metric.sphere (0 : ℂ) 1) := by
+  rw [continuousOn_iff_continuous_domRestrict]
+  exact g.continuous.congr fun ζ => (extendZeroOutsideUnitCircle_apply g ζ).symm
+
+private theorem eLpNorm_sub_comm_le {α E : Type*} [MeasurableSpace α] [NormedAddCommGroup E]
+    {μ : Measure α} {p : ℝ≥0∞} {δ : ℝ} (c d : α → E)
+    (h3 : eLpNorm (d - c) p μ ≤ ENNReal.ofReal δ) :
+    eLpNorm (c - d) p μ ≤ ENNReal.ofReal δ := by
+  simpa only [neg_sub] using (eLpNorm_neg (d - c) p μ).le.trans h3
+
+private theorem ofReal_add_three {δ : ℝ} (hδ : 0 ≤ δ) :
+    (ENNReal.ofReal δ + ENNReal.ofReal δ) + ENNReal.ofReal δ = ENNReal.ofReal (3 * δ) := by
+  rw [← ENNReal.ofReal_add hδ hδ, ← ENNReal.ofReal_add (add_nonneg hδ hδ) hδ]
+  exact congrArg ENNReal.ofReal (by ring)
+
+private theorem eLpNorm_add_three_le_of_le
+    {α E : Type*} [MeasurableSpace α] [NormedAddCommGroup E] {μ : Measure α}
+    {p : ℝ≥0∞} (hp1 : 1 ≤ p) {δ : ℝ} (hδ_pos : 0 < δ)
+    (a b c d : α → E)
+    (h1 : eLpNorm (a - b) p μ ≤ ENNReal.ofReal δ)
+    (h2 : eLpNorm (b - c) p μ ≤ ENNReal.ofReal δ)
+    (h3 : eLpNorm (d - c) p μ ≤ ENNReal.ofReal δ) :
+    eLpNorm (a - d) p μ ≤ ENNReal.ofReal (3 * δ) := by
+  have h3' := eLpNorm_sub_comm_le c d h3
+  have hac : eLpNorm (a - c) p μ ≤ ENNReal.ofReal δ + ENNReal.ofReal δ := by
+    have heq : a - c = (a - b) + (b - c) := by ext x; simp
+    rw [heq]
+    exact (eLpNorm_add_le hp1).trans (add_le_add h1 h2)
+  have had : eLpNorm (a - d) p μ ≤ (ENNReal.ofReal δ + ENNReal.ofReal δ) + ENNReal.ofReal δ := by
+    have heq : a - d = (a - c) + (c - d) := by ext x; simp
+    rw [heq]
+    exact (eLpNorm_add_le hp1).trans (add_le_add hac h3')
+  rwa [ofReal_add_three hδ_pos.le] at had
+
+private theorem eLpNorm_unitRadialRestriction_sub_first
+    {p : ℝ≥0∞} (hp1 : 1 ≤ p)
+    {f : UnitCircle → ℂ} (hf : MemLp f p unitCircleMeasure)
+    (g : C(UnitCircle, ℂ)) {δ : ℝ}
+    (hfg_lp : eLpNorm (f - (g : UnitCircle → ℂ)) p unitCircleMeasure ≤ ENNReal.ofReal δ)
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    eLpNorm
+      (unitRadialRestriction (unitPoissonIntegral f) r -
+        unitRadialRestriction (unitPoissonIntegral g) r)
+      p unitCircleMeasure ≤ ENNReal.ofReal δ := by
+  have hf_int : Integrable f unitCircleMeasure := hf.integrable hp1
+  have hg_int : Integrable (g : UnitCircle → ℂ) unitCircleMeasure :=
+    g.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  have huv_eq : ∀ ζ : UnitCircle,
+      (unitRadialRestriction (unitPoissonIntegral f) r -
+        unitRadialRestriction (unitPoissonIntegral g) r) ζ =
+      unitRadialRestriction (unitPoissonIntegral (f - (g : UnitCircle → ℂ))) r ζ := by
+    intro ζ
+    simp only [Pi.sub_apply]
+    unfold unitRadialRestriction unitPoissonIntegral
+    have hz := radial_mem_ball_unitCircle hr0 hr1 ζ
+    have hK_cont := continuous_poissonKernel_unitCircle hz
+    rw [← integral_sub (integrable_real_smul_of_continuous hK_cont hf_int)
+      (integrable_real_smul_of_continuous hK_cont hg_int)]
+    exact integral_congr_ae (ae_of_all _ fun η => (smul_sub _ _ _).symm)
+  have hf_sub_g_mem : MemLp (f - (g : UnitCircle → ℂ)) p unitCircleMeasure :=
+    hf.sub ((memLp_top_of_continuous_unitCircle g.continuous).mono_exponent le_top)
+  rw [eLpNorm_congr_ae (ae_of_all _ huv_eq)]
+  exact (eLpNorm_unitRadialRestriction_unitPoissonIntegral_le hp1 hf_sub_g_mem hr0 hr1).trans hfg_lp
+
+private theorem eLpNorm_unitRadialRestriction_sub_second
+    {p : ℝ≥0∞} (hp1 : 1 ≤ p) (hp_top : p ≠ ⊤)
+    (g : C(UnitCircle, ℂ)) {δ : ℝ}
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
+    (hrunif : ∀ x ∈ Metric.sphere (0 : ℂ) 1,
+      dist (extendZeroOutsideUnitCircle g x)
+        (_root_.RudinRCA.Chapter11.poissonIntegral (extendZeroOutsideUnitCircle g) ((r : ℂ) * x)) < δ) :
+    eLpNorm (unitRadialRestriction (unitPoissonIntegral g) r - (g : UnitCircle → ℂ))
+      p unitCircleMeasure ≤ ENNReal.ofReal δ := by
+  have hp0 : p ≠ 0 := (zero_lt_one.trans_le hp1).ne'
+  have hg_int : Integrable (g : UnitCircle → ℂ) unitCircleMeasure :=
+    g.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  have hm2 : AEStronglyMeasurable
+      (unitRadialRestriction (unitPoissonIntegral g) r - (g : UnitCircle → ℂ)) unitCircleMeasure :=
+    (continuous_unitRadialRestriction_unitPoissonIntegral hg_int hr0 hr1).aestronglyMeasurable.sub
+      g.continuous.aestronglyMeasurable
+  have hvg_bound : ∀ ζ : UnitCircle,
+      ‖(unitRadialRestriction (unitPoissonIntegral g) r - (g : UnitCircle → ℂ)) ζ‖ ≤ δ := by
+    intro ζ
+    simp only [Pi.sub_apply]
+    have hvr_eq : unitRadialRestriction (unitPoissonIntegral g) r ζ =
+        _root_.RudinRCA.Chapter11.poissonIntegral (extendZeroOutsideUnitCircle g)
+          ((r : ℂ) * (ζ : ℂ)) := by
+      unfold unitRadialRestriction
+      have hcongr : (g : UnitCircle → ℂ) =
+          (fun η : UnitCircle => extendZeroOutsideUnitCircle g (η : ℂ)) :=
+        funext fun η => (extendZeroOutsideUnitCircle_apply g η).symm
+      rw [hcongr, unitPoissonIntegral_eq_poissonIntegral]
+    rw [hvr_eq, ← extendZeroOutsideUnitCircle_apply g ζ, ← dist_eq_norm']
+    exact (hrunif (ζ : ℂ) ζ.2).le
+  have hp'_pos : 0 < p.toReal := ENNReal.toReal_pos hp0 hp_top
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp0 hp_top hm2]
+  calc (∫⁻ ζ, ‖(unitRadialRestriction (unitPoissonIntegral g) r - (g : UnitCircle → ℂ)) ζ‖ₑ ^ p.toReal
+          ∂unitCircleMeasure) ^ (1 / p.toReal)
+      ≤ (∫⁻ _ζ, (ENNReal.ofReal δ) ^ p.toReal ∂unitCircleMeasure) ^ (1 / p.toReal) := by
+        refine ENNReal.rpow_le_rpow (lintegral_mono fun ζ => ?_) (by positivity)
+        refine ENNReal.rpow_le_rpow ?_ hp'_pos.le
+        rw [← ofReal_norm]
+        exact ENNReal.ofReal_le_ofReal (hvg_bound ζ)
+    _ = ENNReal.ofReal δ := by
+      rw [lintegral_const, unitCircleMeasure_univ, mul_one,
+          ← ENNReal.rpow_mul, mul_one_div_cancel hp'_pos.ne', ENNReal.rpow_one]
+
+private theorem eLpNorm_unitRadialRestriction_sub_le_three_mul
+    {p : ℝ≥0∞} (hp1 : 1 ≤ p) (hp_top : p ≠ ⊤)
+    {f : UnitCircle → ℂ} (hf : MemLp f p unitCircleMeasure)
+    (g : C(UnitCircle, ℂ)) {δ : ℝ} (hδ_pos : 0 < δ)
+    (hfg_lp : eLpNorm (f - (g : UnitCircle → ℂ)) p unitCircleMeasure ≤ ENNReal.ofReal δ)
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
+    (hrunif : ∀ x ∈ Metric.sphere (0 : ℂ) 1,
+      dist (extendZeroOutsideUnitCircle g x)
+        (_root_.RudinRCA.Chapter11.poissonIntegral (extendZeroOutsideUnitCircle g) ((r : ℂ) * x)) < δ) :
+    eLpNorm (unitRadialRestriction (unitPoissonIntegral f) r - f)
+        p unitCircleMeasure ≤ ENNReal.ofReal (3 * δ) :=
+  eLpNorm_add_three_le_of_le hp1 hδ_pos
+    (unitRadialRestriction (unitPoissonIntegral f) r)
+    (unitRadialRestriction (unitPoissonIntegral g) r)
+    (g : UnitCircle → ℂ) f
+    (eLpNorm_unitRadialRestriction_sub_first hp1 hf g hfg_lp hr0 hr1)
+    (eLpNorm_unitRadialRestriction_sub_second hp1 hp_top g hr0 hr1 hrunif)
+    hfg_lp
+
+/-- 11.16(2) (`eLpNorm` form): for `1 ≤ p < ∞` and `f ∈ L^p(T)`,
+`lim_{r → 1⁻} ‖u_r - f‖_p = 0` where `u = P[f]`. -/
+theorem tendsto_eLpNorm_unitRadialRestriction_unitPoissonIntegral_sub
+    {p : ℝ≥0∞} [Fact (1 ≤ p)] (hp_top : p ≠ ⊤)
+    {f : UnitCircle → ℂ} (hf : MemLp f p unitCircleMeasure) :
+    Tendsto (fun r : ℝ =>
+      eLpNorm (fun ζ => unitRadialRestriction (unitPoissonIntegral f) r ζ - f ζ)
+        p unitCircleMeasure)
+      (𝓝[<] 1) (𝓝 0) := by
+  have hp1 : 1 ≤ p := Fact.out
+  rw [ENNReal.tendsto_nhds_zero]
+  intro ε hε
+  obtain ⟨δ, hδ_pos, hδ_lt⟩ : ∃ δ : ℝ, 0 < δ ∧ ENNReal.ofReal (3 * δ) ≤ ε := by
+    by_cases htop : ε = ⊤
+    · exact ⟨1, zero_lt_one, by simp [htop]⟩
+    · have hpos : 0 < ε.toReal := ENNReal.toReal_pos hε.ne' htop
+      refine ⟨ε.toReal / 4, by positivity, ?_⟩
+      conv_rhs => rw [← ENNReal.ofReal_toReal htop]
+      exact ENNReal.ofReal_le_ofReal (by linarith)
+  obtain ⟨g, hfg_lp⟩ := exists_continuous_eLpNorm_sub_le hp_top hf hδ_pos
+  have hunif := Metric.tendstoUniformlyOn_iff.mp
+    (tendstoUniformlyOn_poissonIntegral_radial (continuousOn_extendZeroOutsideUnitCircle g))
+    δ hδ_pos
+  filter_upwards [nhdsWithin_le_nhds (Ioi_mem_nhds (zero_lt_one : (0 : ℝ) < 1)),
+    self_mem_nhdsWithin, hunif] with r hr0_lt hr1 hrunif
+  have hcongr : (fun ζ => unitRadialRestriction (unitPoissonIntegral f) r ζ - f ζ) =
+      (unitRadialRestriction (unitPoissonIntegral f) r - f) := rfl
+  rw [eLpNorm_congr_ae (ae_of_all _ fun _ => rfl)]
+  exact (eLpNorm_unitRadialRestriction_sub_le_three_mul hp1 hp_top hf g hδ_pos hfg_lp
+    hr0_lt.le hr1 hrunif).trans hδ_lt
+
+/-- Radial Poisson operator `f ↦ (u_r ∈ Lp ℂ p unitCircleMeasure)` on `Lp ℂ p unitCircleMeasure`. -/
+def lpRadialPoisson (p : ℝ≥0∞) [Fact (1 ≤ p)] (f : Lp ℂ p unitCircleMeasure)
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) : Lp ℂ p unitCircleMeasure :=
+  (memLp_unitRadialRestriction_unitPoissonIntegral (Fact.out : 1 ≤ p) (Lp.memLp f) hr0 hr1).toLp
+    (unitRadialRestriction (unitPoissonIntegral f) r)
+
+/-- 11.16 (Theorem, Rudin pp. 239–240):
+1. For `1 ≤ p ≤ ∞`, `f ∈ L^p(T)`, and `u = P[f]`, `‖u_r‖_p ≤ ‖f‖_p` for every `0 ≤ r < 1`
+   (including the literal 3.7 essential supremum `rudinEssSup` at `p = ∞`).
+2. For `1 ≤ p < ∞`, `lim_{r → 1⁻} ‖u_r - f‖_p = 0`. -/
+theorem theorem11_16 (p : ℝ≥0∞) [Fact (1 ≤ p)] (f : Lp ℂ p unitCircleMeasure) :
+    (∀ {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1),
+      ‖lpRadialPoisson p f hr0 hr1‖ ≤ ‖f‖ ∧
+      eLpNorm (unitRadialRestriction (unitPoissonIntegral f) r) p unitCircleMeasure ≤
+        eLpNorm f p unitCircleMeasure) ∧
+    (p = ⊤ → ∀ {r : ℝ}, 0 ≤ r → r < 1 →
+      rudinEssSup unitCircleMeasure (unitRadialRestriction (unitPoissonIntegral f) r) ≤
+        rudinEssSup unitCircleMeasure f) ∧
+    (p ≠ ⊤ →
+      Tendsto (fun r : ℝ =>
+        eLpNorm (fun ζ => unitRadialRestriction (unitPoissonIntegral f) r ζ - f ζ)
+          p unitCircleMeasure)
+        (𝓝[<] 1) (𝓝 0)) := by
+  have hp1 : 1 ≤ p := Fact.out
+  refine ⟨fun {r} hr0 hr1 => ?_, fun hp_top {r} hr0 hr1 => ?_,
+    fun hp_top => tendsto_eLpNorm_unitRadialRestriction_unitPoissonIntegral_sub hp_top (Lp.memLp f)⟩
+  · have he := eLpNorm_unitRadialRestriction_unitPoissonIntegral_le hp1 (Lp.memLp f) hr0 hr1
+    refine ⟨?_, he⟩
+    rw [Lp.norm_def, Lp.norm_def]
+    unfold lpRadialPoisson
+    have hcoe := (memLp_unitRadialRestriction_unitPoissonIntegral hp1 (Lp.memLp f) hr0 hr1).coeFn_toLp
+    rw [eLpNorm_congr_ae hcoe]
+    exact ENNReal.toReal_mono (Lp.eLpNorm_ne_top f) he
+  · subst hp_top
+    have hf_mem : MemLp f ⊤ unitCircleMeasure := Lp.memLp f
+    have hur_mem : MemLp (unitRadialRestriction (unitPoissonIntegral f) r) ⊤ unitCircleMeasure :=
+      memLp_unitRadialRestriction_unitPoissonIntegral le_top hf_mem hr0 hr1
+    have he := eLpNorm_unitRadialRestriction_unitPoissonIntegral_le le_top hf_mem hr0 hr1
+    rw [rudinEssSup_eq_eLpNorm_top_toReal unitCircleMeasure_univ_ne_zero hur_mem,
+      rudinEssSup_eq_eLpNorm_top_toReal unitCircleMeasure_univ_ne_zero hf_mem]
+    exact ENNReal.toReal_mono hf_mem.eLpNorm_lt_top.ne he
+
+/-- Also record the direct `Lp`-norm convergence `lim_{r → 1⁻} ‖u_r - f‖_{Lp} = 0` (`11.16(2)`). -/
+theorem theorem11_16_lp_norm_tendsto (p : ℝ≥0∞) [Fact (1 ≤ p)] (hp_top : p ≠ ⊤)
+    (f : Lp ℂ p unitCircleMeasure) :
+    Tendsto (fun r : ℝ =>
+      if hr : 0 ≤ r ∧ r < 1 then ‖lpRadialPoisson p f hr.1 hr.2 - f‖ else 0)
+      (𝓝[<] 1) (𝓝 0) := by
+  have he := tendsto_eLpNorm_unitRadialRestriction_unitPoissonIntegral_sub hp_top (Lp.memLp f)
+  have htoReal : Tendsto (fun r : ℝ =>
+      (eLpNorm (fun ζ => unitRadialRestriction (unitPoissonIntegral f) r ζ - f ζ)
+        p unitCircleMeasure).toReal)
+      (𝓝[<] 1) (𝓝 0) := by
+    have hc := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp he
+    simpa only [Function.comp_def, ENNReal.toReal_zero] using hc
+  refine htoReal.congr' ?_
+  filter_upwards [nhdsWithin_le_nhds (Ioi_mem_nhds (zero_lt_one : (0 : ℝ) < 1)),
+    self_mem_nhdsWithin] with r hr0_lt hr1
+  have hr : 0 ≤ r ∧ r < 1 := ⟨hr0_lt.le, hr1⟩
+  simp only [hr, Lp.norm_def]
+  congr 1
+  apply eLpNorm_congr_ae
+  have hmem := memLp_unitRadialRestriction_unitPoissonIntegral (Fact.out : 1 ≤ p) (Lp.memLp f) hr.1 hr.2
+  filter_upwards [Lp.coeFn_sub (lpRadialPoisson p f hr.1 hr.2) f, hmem.coeFn_toLp] with ζ hsub hcoe
+  rw [hsub, Pi.sub_apply]
+  unfold lpRadialPoisson
+  rw [hcoe]
+
+/-- 11.17(1) (Definition, Rudin p. 240): Poisson integral `u(z) = P[dμ](z) = ∫_T P(z, ζ) dμ(ζ)`
+of a complex Borel measure `μ` on `T = UnitCircle`. -/
+def poissonMeasureIntegral (μ : ComplexMeasure UnitCircle) (z : ℂ) : ℂ :=
+  RudinRCA.Chapter10.complexMeasureIntegral μ
+    (fun η : UnitCircle => (_root_.poissonKernel 0 z (η : ℂ) : ℂ))
+
+/-- Compatibility `P[f dσ](z) = P[f](z)` between `poissonMeasureIntegral` and `unitPoissonIntegral`
+for `f ∈ L¹(T)` (`z ∈ ball 0 1`). -/
+theorem poissonMeasureIntegral_withDensityᵥ {f : UnitCircle → ℂ}
+    (hf : Integrable f unitCircleMeasure) {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    poissonMeasureIntegral (unitCircleMeasure.withDensityᵥ f) z = unitPoissonIntegral f z := by
+  obtain ⟨f₀, hf₀_smeas, hf₀_ae⟩ := hf.aestronglyMeasurable
+  have hf₀_meas : Measurable f₀ := hf₀_smeas.measurable
+  have hf₀_int : Integrable f₀ unitCircleMeasure := hf.congr hf₀_ae
+  have hμ_eq : unitCircleMeasure.withDensityᵥ f = unitCircleMeasure.withDensityᵥ f₀ := by
+    ext E hE
+    rw [withDensityᵥ_apply hf hE, withDensityᵥ_apply hf₀_int hE]
+    exact setIntegral_congr_ae hE (hf₀_ae.mono fun x hx _ => hx)
+  have hP_eq : unitPoissonIntegral f z = unitPoissonIntegral f₀ z :=
+    integral_congr_ae (hf₀_ae.mono fun η hη => by dsimp; rw [hη])
+  rw [hμ_eq, hP_eq]
+  let μ := unitCircleMeasure.withDensityᵥ f₀
+  have hK_cont := continuous_poissonKernel_unitCircle hz
+  have hK_int_var : Integrable (fun η : UnitCircle => (_root_.poissonKernel 0 z (η : ℂ) : ℂ))
+      μ.variation :=
+    (Complex.continuous_ofReal.comp hK_cont).integrable_of_hasCompactSupport
+      (HasCompactSupport.of_compactSpace _)
+  unfold poissonMeasureIntegral RudinRCA.Chapter10.complexMeasureIntegral unitPoissonIntegral
+  let g : UnitCircle → ℂ := fun η => (_root_.poissonKernel 0 z (η : ℂ) : ℂ)
+  have hgen : ∀ k : UnitCircle → ℂ, Integrable k μ.variation →
+      (∫ᵛ η, k η ∂[ContinuousLinearMap.mul ℝ ℂ; μ]) =
+        ∫ η, k η * f₀ η ∂unitCircleMeasure := by
+    intro k hk_var
+    have hvar_eq : μ.variation = unitCircleMeasure.withDensity (fun η => ‖f₀ η‖ₑ) :=
+      RudinRCA.Chapter06.theorem_6_13 unitCircleMeasure hf₀_int
+    have hfn_meas : Measurable (fun η => ‖f₀ η‖ₑ) := hf₀_meas.enorm
+    have hnull_transfer : ∀ {S : Set UnitCircle}, μ.variation S = 0 →
+        ∀ᵐ η ∂unitCircleMeasure, f₀ η ≠ 0 → η ∉ S := by
+      intro S hS
+      let N := toMeasurable μ.variation S
+      have hN_meas : MeasurableSet N := measurableSet_toMeasurable _ _
+      have hN_zero : (∫⁻ η in N, ‖f₀ η‖ₑ ∂unitCircleMeasure) = 0 := by
+        rw [← withDensity_apply _ hN_meas, ← hvar_eq, measure_toMeasurable]
+        exact hS
+      have hN_ae : ∀ᵐ η ∂unitCircleMeasure.restrict N, ‖f₀ η‖ₑ = 0 :=
+        (lintegral_eq_zero_iff hfn_meas).mp hN_zero
+      filter_upwards [(ae_restrict_iff' hN_meas).mp hN_ae] with η hη hf_ne hmem
+      exact hf_ne (by simpa using hη (subset_toMeasurable _ _ hmem))
+    have hmul_int : ∀ q : UnitCircle → ℂ, Integrable q μ.variation →
+        Integrable (fun η => q η * f₀ η) unitCircleMeasure := by
+      intro q hq_var
+      have hq := hq_var
+      rw [hvar_eq, integrable_withDensity_iff_integrable_smul' hfn_meas
+        (ae_of_all _ fun _ => ENNReal.coe_lt_top)] at hq
+      have hae_norm : ∀ η, ‖q η * f₀ η‖ = ‖(‖f₀ η‖ₑ).toReal • q η‖ := fun η => by
+        rw [norm_mul, norm_smul, Real.norm_eq_abs, toReal_enorm, abs_norm, mul_comm]
+      refine ⟨?_, ?_⟩
+      · obtain ⟨q₀, hq₀_smeas, hq₀_ae⟩ := hq_var.1
+        refine (hq₀_smeas.aestronglyMeasurable.mul hf₀_int.aestronglyMeasurable).congr ?_
+        filter_upwards [hnull_transfer hq₀_ae] with η hη
+        by_cases hf0 : f₀ η = 0
+        · simp [hf0]
+        · have hqq : q η = q₀ η := by
+            by_contra hne
+            exact hη hf0 hne
+          change q₀ η * f₀ η = q η * f₀ η
+          rw [hqq]
+      · rw [hasFiniteIntegral_iff_norm]
+        have hhq := hq.2
+        rw [hasFiniteIntegral_iff_norm] at hhq
+        convert hhq using 1
+        refine lintegral_congr fun η => ?_
+        rw [hae_norm η]
+    have hcont_rhs : Continuous (fun q : Lp ℂ 1 μ.variation => ∫ η, q η * f₀ η ∂unitCircleMeasure) := by
+      let L_lin : Lp ℂ 1 μ.variation →ₗ[ℂ] ℂ :=
+        { toFun := fun q : Lp ℂ 1 μ.variation => ∫ η, q η * f₀ η ∂unitCircleMeasure
+          map_add' := fun q₁ q₂ => by
+            have hcongr : (fun η => (q₁ + q₂ : Lp ℂ 1 μ.variation) η * f₀ η) =ᵐ[unitCircleMeasure]
+                fun η => q₁ η * f₀ η + q₂ η * f₀ η := by
+              filter_upwards [hnull_transfer (Lp.coeFn_add q₁ q₂)] with η hη
+              by_cases hf0 : f₀ η = 0
+              · simp [hf0]
+              · have heq : (q₁ + q₂ : Lp ℂ 1 μ.variation) η = q₁ η + q₂ η := by
+                  by_contra hne
+                  exact hη hf0 hne
+                rw [heq, add_mul]
+            rw [integral_congr_ae hcongr,
+              integral_add (hmul_int _ (memLp_one_iff_integrable.mp (Lp.memLp q₁)))
+                (hmul_int _ (memLp_one_iff_integrable.mp (Lp.memLp q₂)))]
+          map_smul' := fun c q => by
+            have hcongr : (fun η => (c • q : Lp ℂ 1 μ.variation) η * f₀ η) =ᵐ[unitCircleMeasure]
+                fun η => c * (q η * f₀ η) := by
+              filter_upwards [hnull_transfer (Lp.coeFn_smul c q)] with η hη
+              by_cases hf0 : f₀ η = 0
+              · simp [hf0]
+              · have heq : (c • q : Lp ℂ 1 μ.variation) η = c * q η := by
+                  by_contra hne
+                  exact hη hf0 hne
+                rw [heq, mul_assoc]
+            simp only [RingHom.id_apply, smul_eq_mul]
+            rw [integral_congr_ae hcongr, integral_const_mul] }
+      refine ContinuousLinearMap.continuous (L_lin.mkContinuous 1 fun q => ?_)
+      rw [one_mul]
+      let qf : UnitCircle → ℂ := q
+      have hqf_int : Integrable qf μ.variation :=
+        memLp_one_iff_integrable.mp (Lp.memLp q)
+      have hvar_nn : μ.variation = unitCircleMeasure.withDensity (fun η => (‖f₀ η‖₊ : ℝ≥0∞)) :=
+        hvar_eq
+      have hvar_int : (∫ η, ‖qf η * f₀ η‖ ∂unitCircleMeasure) = ∫ η, ‖qf η‖ ∂μ.variation := by
+        rw [hvar_nn, integral_withDensity_eq_integral_smul hf₀_meas.nnnorm]
+        refine integral_congr_ae (ae_of_all _ fun η => ?_)
+        simp [NNReal.smul_def, mul_comm]
+      calc ‖∫ η, qf η * f₀ η ∂unitCircleMeasure‖
+          ≤ ∫ η, ‖qf η * f₀ η‖ ∂unitCircleMeasure := norm_integral_le_integral_norm _
+        _ = ∫ η, ‖qf η‖ ∂μ.variation := hvar_int
+        _ = ‖q‖ := by
+            rw [Lp.norm_def, eLpNorm_one_eq_lintegral_enorm hqf_int.aestronglyMeasurable,
+              integral_norm_eq_lintegral_enorm hqf_int.aestronglyMeasurable]
+    refine Integrable.induction
+      (P := fun q => (∫ᵛ η, q η ∂[ContinuousLinearMap.mul ℝ ℂ; μ]) =
+        ∫ η, q η * f₀ η ∂unitCircleMeasure)
+      ?_ ?_ ?_ ?_ hk_var
+    · intro c E hE _
+      rw [VectorMeasure.integral_indicator_const c hE]
+      change c * μ E = _
+      rw [show μ E = ∫ η in E, f₀ η ∂unitCircleMeasure from withDensityᵥ_apply hf₀_int hE]
+      have hind : (fun η => E.indicator (fun _ => c) η * f₀ η) =
+          E.indicator (fun η => c * f₀ η) := by
+        ext η; by_cases hη : η ∈ E <;> simp [hη]
+      rw [hind, integral_indicator hE, integral_const_mul]
+    · intro q₁ q₂ _ hq₁ hq₂ he₁ he₂
+      rw [VectorMeasure.integral_add hq₁ hq₂, he₁, he₂]
+      simp only [Pi.add_apply, add_mul]
+      exact (integral_add (hmul_int q₁ hq₁) (hmul_int q₂ hq₂)).symm
+    · exact isClosed_eq VectorMeasure.continuous_integral hcont_rhs
+    · intro q₁ q₂ hq12 _ he₁
+      rw [← VectorMeasure.integral_congr_ae hq12, he₁]
+      refine integral_congr_ae ?_
+      filter_upwards [hnull_transfer hq12] with η hη
+      by_cases hf0 : f₀ η = 0
+      · simp [hf0]
+      · have heq : q₁ η = q₂ η := by
+          by_contra hne
+          exact hη hf0 hne
+        rw [heq]
+  rw [hgen g hK_int_var]
+  refine integral_congr_ae (ae_of_all _ fun η => ?_)
+  simp [g, Complex.real_smul]
+
+/-- Rational decomposition of the Poisson kernel on `T` (`z ∈ ball 0 1`, `w ∈ T`):
+`(P(z, w) : ℂ) = 1 + z * (w - z)⁻¹ + conj z * (conj w - conj z)⁻¹`. -/
+theorem poissonKernel_unitCircle_eq_cauchy_sum {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1)
+    (η : UnitCircle) :
+    ((_root_.poissonKernel 0 z (η : ℂ) : ℝ) : ℂ) =
+      1 + z * ((η : ℂ) - z)⁻¹ + conj z * (conj (η : ℂ) - conj z)⁻¹ := by
+  have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz
+  let w : ℂ := η
+  have hw_norm : ‖w‖ = 1 := norm_unitCircle η
+  have hwz_ne : w - z ≠ 0 := by
+    intro h0
+    have heq : w = z := sub_eq_zero.mp h0
+    rw [← heq, hw_norm] at hz_lt
+    exact lt_irrefl 1 hz_lt
+  have hcwz_ne : conj w - conj z ≠ 0 := by
+    rw [← map_sub]
+    intro h0
+    exact hwz_ne ((RingHom.injective (starRingEnd ℂ)) (by simpa using h0))
+  have hden : (w - z) * (conj w - conj z) = ((‖w - z‖ ^ 2 : ℝ) : ℂ) := by
+    rw [← map_sub, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+  have hnum : (w - z) * (conj w - conj z) + z * (conj w - conj z) + conj z * (w - z) =
+      ((1 - ‖z‖ ^ 2 : ℝ) : ℂ) := by
+    calc (w - z) * (conj w - conj z) + z * (conj w - conj z) + conj z * (w - z)
+        = w * conj w - z * conj z := by ring
+      _ = 1 - ((‖z‖ ^ 2 : ℝ) : ℂ) := by
+          rw [unitCircle_mul_conj η, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+      _ = ((1 - ‖z‖ ^ 2 : ℝ) : ℂ) := by push_cast; ring
+  have hrhs : 1 + z * (w - z)⁻¹ + conj z * (conj w - conj z)⁻¹ =
+      ((w - z) * (conj w - conj z) + z * (conj w - conj z) + conj z * (w - z)) /
+        ((w - z) * (conj w - conj z)) := by
+    field_simp [hwz_ne, hcwz_ne]
+  rw [hrhs, hnum, hden]
+  dsimp [_root_.poissonKernel, w]
+  simp only [sub_zero, norm_unitCircle, one_pow]
+  push_cast
+  rfl
+
+private theorem differentiableOn_ball_of_powerSeries {g : ℂ → ℂ} {c : ℕ → ℂ} {C : ℝ}
+    (hsum : ∀ z ∈ Metric.ball (0 : ℂ) 1, HasSum (fun n : ℕ => c n * z ^ n) (g z))
+    (hbound : ∀ n : ℕ, ‖c n‖ ≤ C) :
+    DifferentiableOn ℂ g (Metric.ball (0 : ℂ) 1) := by
+  have hC0 : 0 ≤ C := (norm_nonneg (c 0)).trans (hbound 0)
+  intro z₀ hz₀
+  have hz₀_lt : ‖z₀‖ < 1 := by simpa [Metric.mem_ball] using hz₀
+  let r : ℝ := (‖z₀‖ + 1) / 2
+  have hr_pos : 0 < r := by dsimp [r]; linarith [norm_nonneg z₀]
+  have hr_lt1 : r < 1 := by dsimp [r]; linarith
+  have hz₀_in : z₀ ∈ Metric.ball (0 : ℂ) r := by
+    rw [Metric.mem_ball, dist_zero_right]
+    dsimp [r]; linarith
+  have hgeom : Summable (fun n : ℕ => C * r ^ n) :=
+    (summable_geometric_of_lt_one hr_pos.le hr_lt1).mul_left C
+  have hterm_le : ∀ n : ℕ, ∀ z ∈ Metric.ball (0 : ℂ) r, ‖c n * z ^ n‖ ≤ C * r ^ n := by
+    intro n z hz
+    have hzr : ‖z‖ ≤ r := (by simpa [Metric.mem_ball] using hz : ‖z‖ < r).le
+    rw [norm_mul, norm_pow]
+    exact mul_le_mul (hbound n) (pow_le_pow_left₀ (norm_nonneg z) hzr n) (pow_nonneg (norm_nonneg z) n) hC0
+  have hunif_tsum : TendstoUniformlyOn (fun N z => ∑ n ∈ Finset.range N, c n * z ^ n)
+      (fun z => ∑' n : ℕ, c n * z ^ n) atTop (Metric.ball (0 : ℂ) r) :=
+    tendstoUniformlyOn_tsum_nat hgeom hterm_le
+  have hunif : TendstoUniformlyOn (fun N z => ∑ n ∈ Finset.range N, c n * z ^ n)
+      g atTop (Metric.ball (0 : ℂ) r) := by
+    refine hunif_tsum.congr_right fun z hz => ?_
+    have hz1 : z ∈ Metric.ball (0 : ℂ) 1 := Metric.ball_subset_ball hr_lt1.le hz
+    exact (hsum z hz1).tsum_eq
+  have hpoly_diff : ∀ N : ℕ, DifferentiableOn ℂ (fun z : ℂ => ∑ n ∈ Finset.range N, c n * z ^ n)
+      (Metric.ball (0 : ℂ) r) := by
+    intro N
+    exact fun z _ => (DifferentiableAt.fun_sum fun n _ =>
+      (differentiableAt_const (c n)).mul (differentiableAt_id.pow n)).differentiableWithinAt
+  have hg_diff_r : DifferentiableOn ℂ g (Metric.ball (0 : ℂ) r) :=
+    hunif.tendstoLocallyUniformlyOn.differentiableOn (Eventually.of_forall hpoly_diff)
+      Metric.isOpen_ball
+  exact (hg_diff_r.differentiableAt (Metric.isOpen_ball.mem_nhds hz₀_in)).differentiableWithinAt
+
+private theorem differentiableAt_conj_comp_conj {G : ℂ → ℂ} {z : ℂ}
+    (hd : DifferentiableAt ℂ G (conj z)) :
+    DifferentiableAt ℂ (fun w => conj (G (conj w))) z := by
+  refine HasDerivAt.differentiableAt (f' := conj (deriv G (conj z))) ?_
+  rw [RudinRCA.Chapter10.hasDerivAt_iff_difference_quotient]
+  have hd_lim := (RudinRCA.Chapter10.hasDerivAt_iff_difference_quotient.mp hd.hasDerivAt)
+  have hconj_nhds : Tendsto (conj : ℂ → ℂ) (𝓝[≠] z) (𝓝[≠] (conj z)) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨(Complex.continuous_conj.tendsto z).mono_left nhdsWithin_le_nhds, ?_⟩
+    filter_upwards [self_mem_nhdsWithin] with w hw h0
+    exact hw ((RingHom.injective (starRingEnd ℂ)) h0)
+  have hcomp := (Complex.continuous_conj.tendsto (deriv G (conj z))).comp (hd_lim.comp hconj_nhds)
+  refine hcomp.congr' (Eventually.of_forall fun w => ?_)
+  dsimp only [Function.comp_apply]
+  rw [map_div₀, map_sub, map_sub, starRingEnd_self_apply, starRingEnd_self_apply]
+
+theorem isFiniteMeasure_complexMeasure_variation {X : Type*} [MeasurableSpace X]
+    (μ : ComplexMeasure X) : IsFiniteMeasure μ.variation where
+  measure_univ_lt_top := by
+    have hle : μ.variation ≤ μ.re.totalVariation + μ.im.totalVariation := by
+      apply VectorMeasure.variation_le_of_forall_enorm_le
+      intro E _
+      have h12 : ‖μ E‖ ≤ μ.re.totalVariation.real E + μ.im.totalVariation.real E := by
+        calc ‖μ E‖ ≤ |(μ E).re| + |(μ E).im| := Complex.norm_le_abs_re_add_abs_im _
+          _ ≤ μ.re.totalVariation.real E + μ.im.totalVariation.real E := by
+            have h₁ := μ.re.norm_le_totalVariation E
+            have h₂ := μ.im.norm_le_totalVariation E
+            change ‖(μ E).re‖ ≤ _ at h₁
+            change ‖(μ E).im‖ ≤ _ at h₂
+            rw [Real.norm_eq_abs] at h₁ h₂
+            exact add_le_add h₁ h₂
+      calc ‖μ E‖ₑ = ENNReal.ofReal ‖μ E‖ := (ofReal_norm _).symm
+        _ ≤ ENNReal.ofReal (μ.re.totalVariation.real E + μ.im.totalVariation.real E) :=
+          ENNReal.ofReal_le_ofReal h12
+        _ = (μ.re.totalVariation + μ.im.totalVariation) E := by
+          rw [ENNReal.ofReal_add measureReal_nonneg measureReal_nonneg]
+          simp only [measureReal_def, ENNReal.ofReal_toReal (measure_ne_top _ _), Measure.add_apply]
+    exact lt_of_le_of_lt (hle Set.univ) (measure_lt_top _ _)
+
+/-- 11.17 (Harmonicity of `P[dμ]`): for every complex Borel measure `μ` on `T`, `poissonMeasureIntegral μ`
+is harmonic on `U = ball 0 1` in both Rudin's 11.3 sense and Mathlib's `HarmonicOnNhd` sense. -/
+theorem harmonicOn_poissonMeasureIntegral (μ : ComplexMeasure UnitCircle) :
+    HarmonicOn (poissonMeasureIntegral μ) (Metric.ball (0 : ℂ) 1) ∧
+    InnerProductSpace.HarmonicOnNhd (poissonMeasureIntegral μ) (Metric.ball (0 : ℂ) 1) := by
+  have : IsFiniteMeasure μ.variation := isFiniteMeasure_complexMeasure_variation μ
+  -- Use Theorem 10.7 on `φ₁(η) = η.1` and `φ₂(η) = conj η.1`
+  let φ₁ : UnitCircle → ℂ := fun η => (η : ℂ)
+  let φ₂ : UnitCircle → ℂ := fun η => conj (η : ℂ)
+  have hdisj₁ : Disjoint (Metric.ball (0 : ℂ) 1) (Set.range φ₁) := by
+    rw [Set.disjoint_left]
+    rintro z hz ⟨η, rfl⟩
+    rw [Metric.mem_ball, dist_zero_right] at hz
+    have hlt : ‖(η : ℂ)‖ < 1 := hz
+    rw [norm_unitCircle] at hlt
+    exact lt_irrefl 1 hlt
+  have hdisj₂ : Disjoint (Metric.ball (0 : ℂ) 1) (Set.range φ₂) := by
+    rw [Set.disjoint_left]
+    rintro z hz ⟨η, rfl⟩
+    rw [Metric.mem_ball, dist_zero_right] at hz
+    have hlt : ‖conj (η : ℂ)‖ < 1 := hz
+    rw [RCLike.norm_conj, norm_unitCircle] at hlt
+    exact lt_irrefl 1 hlt
+  have hC₁ := (RudinRCA.Chapter10.theorem10_7 (φ := φ₁) μ continuous_subtype_val.measurable
+    Metric.isOpen_ball hdisj₁).2 0 1 zero_lt_one Subset.rfl
+  have hC₂ := (RudinRCA.Chapter10.theorem10_7 (φ := φ₂) μ
+    (Complex.continuous_conj.comp continuous_subtype_val).measurable
+    Metric.isOpen_ball hdisj₂).2 0 1 zero_lt_one Subset.rfl
+  have hdiff₁ : DifferentiableOn ℂ (RudinRCA.Chapter10.cauchyTransform μ φ₁)
+      (Metric.ball (0 : ℂ) 1) :=
+    differentiableOn_ball_of_powerSeries
+      (fun z hz => by simpa using hC₁.1 z hz)
+      (fun n => by simpa using hC₁.2 n)
+  have hdiff₂ : DifferentiableOn ℂ (RudinRCA.Chapter10.cauchyTransform μ φ₂)
+      (Metric.ball (0 : ℂ) 1) :=
+    differentiableOn_ball_of_powerSeries
+      (fun z hz => by simpa using hC₂.1 z hz)
+      (fun n => by simpa using hC₂.2 n)
+  let F₁ : ℂ → ℂ := fun z => μ Set.univ + z * RudinRCA.Chapter10.cauchyTransform μ φ₁ z
+  let G₂ : ℂ → ℂ := fun w => w * RudinRCA.Chapter10.cauchyTransform μ φ₂ w
+  let H₂ : ℂ → ℂ := fun z => conj (G₂ (conj z))
+  have hF₁_holo : DifferentiableOn ℂ F₁ (Metric.ball (0 : ℂ) 1) :=
+    (differentiableOn_const _).add (differentiableOn_id.mul hdiff₁)
+  have hG₂_holo : DifferentiableOn ℂ G₂ (Metric.ball (0 : ℂ) 1) :=
+    differentiableOn_id.mul hdiff₂
+  have hH₂_holo : DifferentiableOn ℂ H₂ (Metric.ball (0 : ℂ) 1) := by
+    intro z hz
+    have hcz : conj z ∈ Metric.ball (0 : ℂ) 1 := by simpa [Metric.mem_ball] using hz
+    exact (differentiableAt_conj_comp_conj
+      (hG₂_holo.differentiableAt (Metric.isOpen_ball.mem_nhds hcz))).differentiableWithinAt
+  have hF₁_harm : InnerProductSpace.HarmonicOnNhd F₁ (Metric.ball (0 : ℂ) 1) :=
+    fun z hz => (hF₁_holo.analyticAt (Metric.isOpen_ball.mem_nhds hz)).harmonicAt
+  have hH₂_harm : InnerProductSpace.HarmonicOnNhd H₂ (Metric.ball (0 : ℂ) 1) :=
+    fun z hz => (hH₂_holo.analyticAt (Metric.isOpen_ball.mem_nhds hz)).harmonicAt
+  let S : ℂ → ℂ := fun z => F₁ z + Complex.conjCLE.toContinuousLinearMap (H₂ z)
+  have hS_harm : InnerProductSpace.HarmonicOnNhd S (Metric.ball (0 : ℂ) 1) :=
+    fun z hz => (hF₁_harm z hz).add ((hH₂_harm z hz).comp_CLM Complex.conjCLE.toContinuousLinearMap)
+  -- Show `poissonMeasureIntegral μ z = S z` for all `z ∈ ball 0 1`
+  obtain ⟨h, hm, hn, hi, hr⟩ := RudinRCA.Chapter06.theorem_6_12 μ
+  have heq : ∀ z ∈ Metric.ball (0 : ℂ) 1, poissonMeasureIntegral μ z = S z := by
+    intro z hz
+    have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz
+    have hInt_polar : ∀ g : UnitCircle → ℂ, Continuous g →
+        RudinRCA.Chapter10.complexMeasureIntegral μ g = ∫ η, g η * h η ∂μ.variation := by
+      intro g hg
+      exact RudinRCA.Chapter06.vectorIntegral_eq_polar μ h hm hn hi hr
+        (hg.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))
+    have hq₁_cont : Continuous (fun η : UnitCircle => ((η : ℂ) - z)⁻¹) := by
+      refine (continuous_subtype_val.sub continuous_const).inv₀ fun η h0 => ?_
+      have : ‖(η : ℂ)‖ = ‖z‖ := congrArg norm (sub_eq_zero.mp h0)
+      rw [norm_unitCircle] at this
+      exact hz_lt.ne' this
+    have hq₂_cont : Continuous (fun η : UnitCircle => (conj (η : ℂ) - conj z)⁻¹) := by
+      refine ((Complex.continuous_conj.comp continuous_subtype_val).sub continuous_const).inv₀
+        fun η h0 => ?_
+      have : ‖conj (η : ℂ)‖ = ‖conj z‖ := congrArg norm (sub_eq_zero.mp h0)
+      rw [RCLike.norm_conj, RCLike.norm_conj, norm_unitCircle] at this
+      exact hz_lt.ne' this
+    have hP_cont : Continuous (fun η : UnitCircle => (_root_.poissonKernel 0 z (η : ℂ) : ℂ)) :=
+      Complex.continuous_ofReal.comp (continuous_poissonKernel_unitCircle hz)
+    unfold poissonMeasureIntegral
+    rw [hInt_polar _ hP_cont]
+    have hInt1 : μ Set.univ = ∫ η : UnitCircle, (1 : ℂ) * h η ∂μ.variation := by
+      calc μ Set.univ = (μ.variation.withDensityᵥ h) Set.univ := by rw [hr]
+        _ = ∫ η in Set.univ, h η ∂μ.variation := withDensityᵥ_apply hi MeasurableSet.univ
+        _ = ∫ η : UnitCircle, (1 : ℂ) * h η ∂μ.variation := by simp
+    have hIntC1 : RudinRCA.Chapter10.cauchyTransform μ φ₁ z =
+        ∫ η : UnitCircle, ((η : ℂ) - z)⁻¹ * h η ∂μ.variation :=
+      hInt_polar _ hq₁_cont
+    have hIntC2 : RudinRCA.Chapter10.cauchyTransform μ φ₂ (conj z) =
+        ∫ η : UnitCircle, (conj (η : ℂ) - conj z)⁻¹ * h η ∂μ.variation :=
+      hInt_polar _ hq₂_cont
+    have hS_z : S z =
+        μ Set.univ + z * RudinRCA.Chapter10.cauchyTransform μ φ₁ z +
+          conj z * RudinRCA.Chapter10.cauchyTransform μ φ₂ (conj z) := by
+      dsimp [S, F₁, H₂, G₂]
+      simp [add_assoc]
+    let i1 : UnitCircle → ℂ := fun η => (1 : ℂ) * h η
+    let i2 : UnitCircle → ℂ := fun η => z * (((η : ℂ) - z)⁻¹ * h η)
+    let i3 : UnitCircle → ℂ := fun η => conj z * ((conj (η : ℂ) - conj z)⁻¹ * h η)
+    have hi1 : Integrable i1 μ.variation := by simpa [i1] using hi
+    have hi2 : Integrable i2 μ.variation :=
+      ((hq₁_cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)).mul_bdd
+        hm.aestronglyMeasurable (ae_of_all _ fun x => (hn x).le)).const_mul z
+    have hi3 : Integrable i3 μ.variation :=
+      ((hq₂_cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)).mul_bdd
+        hm.aestronglyMeasurable (ae_of_all _ fun x => (hn x).le)).const_mul (conj z)
+    have hS_int : S z = (∫ η, i1 η ∂μ.variation) + (∫ η, i2 η ∂μ.variation) +
+        (∫ η, i3 η ∂μ.variation) := by
+      rw [hS_z, hInt1, hIntC1, hIntC2, ← integral_const_mul, ← integral_const_mul]
+    calc (∫ η : UnitCircle, (_root_.poissonKernel 0 z (η : ℂ) : ℂ) * h η ∂μ.variation)
+        = ∫ η : UnitCircle, ((i1 η + i2 η) + i3 η) ∂μ.variation := by
+          refine integral_congr_ae (ae_of_all _ fun η => ?_)
+          dsimp [i1, i2, i3]
+          rw [poissonKernel_unitCircle_eq_cauchy_sum hz η]
+          ring
+      _ = (∫ η : UnitCircle, (i1 η + i2 η) ∂μ.variation) + ∫ η : UnitCircle, i3 η ∂μ.variation :=
+          integral_add (hi1.add hi2) hi3
+      _ = (∫ η : UnitCircle, i1 η ∂μ.variation) + (∫ η : UnitCircle, i2 η ∂μ.variation) +
+            ∫ η : UnitCircle, i3 η ∂μ.variation := by
+          rw [integral_add hi1 hi2]
+      _ = S z := hS_int.symm
+  have hmath : InnerProductSpace.HarmonicOnNhd (poissonMeasureIntegral μ) (Metric.ball (0 : ℂ) 1) := by
+    intro z hz
+    have hev : S =ᶠ[𝓝 z] poissonMeasureIntegral μ :=
+      Filter.eventuallyEq_iff_exists_mem.mpr
+        ⟨Metric.ball 0 1, Metric.isOpen_ball.mem_nhds hz, fun w hw => (heq w hw).symm⟩
+    exact (InnerProductSpace.harmonicAt_congr_nhds hev).mp (hS_harm z hz)
+  exact ⟨harmonicOn_of_mathlib hmath, hmath⟩
+
+/-- 11.17 (Complete package, Rudin p. 240): for every complex Borel measure `μ` on `T = UnitCircle`,
+`u = P[dμ] = poissonMeasureIntegral μ` is harmonic in `U = ball 0 1`, and for every `0 ≤ r < 1`:
+`‖u_r‖₁ = (1 / 2π) ∫_{-π}^π |u(r e^{iθ})| dθ ≤ ‖μ‖ = |μ|(T)`. -/
+theorem theorem11_17 (μ : ComplexMeasure UnitCircle) :
+    HarmonicOn (poissonMeasureIntegral μ) (Metric.ball (0 : ℂ) 1) ∧
+    InnerProductSpace.HarmonicOnNhd (poissonMeasureIntegral μ) (Metric.ball (0 : ℂ) 1) ∧
+    ∀ {r : ℝ}, 0 ≤ r → r < 1 →
+      (∫ ζ : UnitCircle, ‖unitRadialRestriction (poissonMeasureIntegral μ) r ζ‖ ∂unitCircleMeasure) =
+        (2 * Real.pi)⁻¹ * ∫ θ in (-Real.pi)..Real.pi,
+          ‖poissonMeasureIntegral μ ((r : ℂ) * Complex.exp ((θ : ℂ) * Complex.I))‖ ∧
+      (∫ ζ : UnitCircle, ‖unitRadialRestriction (poissonMeasureIntegral μ) r ζ‖ ∂unitCircleMeasure) ≤
+        μ.variation.real Set.univ ∧
+      eLpNorm (unitRadialRestriction (poissonMeasureIntegral μ) r) 1 unitCircleMeasure ≤
+        μ.variation Set.univ := by
+  obtain ⟨hharm_weak, hharm_math⟩ := harmonicOn_poissonMeasureIntegral μ
+  obtain ⟨h, hm, hn, hi, hr_pol⟩ := RudinRCA.Chapter06.theorem_6_12 μ
+  have : IsFiniteMeasure μ.variation := isFiniteMeasure_complexMeasure_variation μ
+  refine ⟨hharm_weak, hharm_math, fun {r} hr0 hr1 => ?_⟩
+  let ur := unitRadialRestriction (poissonMeasureIntegral μ) r
+  have hur_cont : Continuous ur :=
+    (hharm_weak.continuousOn.comp_continuous
+      (continuous_const.mul continuous_subtype_val)
+      (fun ζ => radial_mem_ball_unitCircle hr0 hr1 ζ))
+  have hang : (∫ ζ : UnitCircle, ‖ur ζ‖ ∂unitCircleMeasure) =
+      (2 * Real.pi)⁻¹ * ∫ θ in (-Real.pi)..Real.pi,
+        ‖poissonMeasureIntegral μ ((r : ℂ) * Complex.exp ((θ : ℂ) * Complex.I))‖ := by
+    simpa [ur, unitRadialRestriction, smul_eq_mul] using
+      (integral_unitCircleMeasure_eq_interval (fun ζ : UnitCircle => ‖ur ζ‖)).1
+  have hpt : ∀ ζ : UnitCircle,
+      ‖ur ζ‖ₑ ≤ ∫⁻ η : UnitCircle,
+        ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) ∂μ.variation := by
+    intro ζ
+    have hz := radial_mem_ball_unitCircle hr0 hr1 ζ
+    have hP_cont : Continuous (fun η : UnitCircle => (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ) : ℂ)) :=
+      Complex.continuous_ofReal.comp (continuous_poissonKernel_unitCircle hz)
+    have hpol := RudinRCA.Chapter06.vectorIntegral_eq_polar μ h hm hn hi hr_pol
+      (hP_cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))
+    unfold ur unitRadialRestriction poissonMeasureIntegral RudinRCA.Chapter10.complexMeasureIntegral
+    rw [hpol]
+    calc ‖∫ η : UnitCircle, (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ) : ℂ) * h η ∂μ.variation‖ₑ
+        ≤ ∫⁻ η : UnitCircle, ‖(_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ) : ℂ) * h η‖ₑ ∂μ.variation :=
+          enorm_integral_le_lintegral_enorm _
+      _ = ∫⁻ η : UnitCircle,
+            ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) ∂μ.variation := by
+          refine lintegral_congr fun η => ?_
+          rw [enorm_mul, ← ofReal_norm (h η), hn η, ENNReal.ofReal_one, mul_one,
+            ← ofReal_norm, Complex.norm_real, Real.norm_eq_abs,
+            abs_of_nonneg (poissonKernel_unitCircle_nonneg hz η)]
+  have hprod_meas : AEMeasurable
+      (Function.uncurry fun ζ η : UnitCircle =>
+        ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)))
+      (unitCircleMeasure.prod μ.variation) :=
+    (continuous_poissonKernel_unitCircle_pair hr0 hr1).measurable.ennreal_ofReal.aemeasurable
+  have heLp : eLpNorm ur 1 unitCircleMeasure ≤ μ.variation Set.univ := by
+    rw [eLpNorm_one_eq_lintegral_enorm hur_cont.aestronglyMeasurable]
+    calc (∫⁻ ζ : UnitCircle, ‖ur ζ‖ₑ ∂unitCircleMeasure)
+        ≤ ∫⁻ ζ : UnitCircle, ∫⁻ η : UnitCircle,
+            ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ))
+              ∂μ.variation ∂unitCircleMeasure := lintegral_mono hpt
+      _ = ∫⁻ η : UnitCircle, ∫⁻ ζ : UnitCircle,
+            ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ))
+              ∂unitCircleMeasure ∂μ.variation := lintegral_lintegral_swap hprod_meas
+      _ = ∫⁻ _η : UnitCircle, (1 : ℝ≥0∞) ∂μ.variation := by
+          refine lintegral_congr fun η => ?_
+          have hsymm : (fun ζ : UnitCircle =>
+              ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ))) =
+              fun ζ : UnitCircle =>
+                ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (η : ℂ)) (ζ : ℂ)) := by
+            ext ζ
+            rw [poissonKernel_unitCircle_radial_symm r ζ η]
+          rw [hsymm, lintegral_poissonKernel_unitCircle (radial_mem_ball_unitCircle hr0 hr1 η)]
+      _ = μ.variation Set.univ := by simp
+  have hreal_le : (∫ ζ : UnitCircle, ‖ur ζ‖ ∂unitCircleMeasure) ≤ μ.variation.real Set.univ := by
+    have hur_int : Integrable (fun ζ : UnitCircle => ‖ur ζ‖) unitCircleMeasure :=
+      hur_cont.norm.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+    have hofReal : ENNReal.ofReal (∫ ζ : UnitCircle, ‖ur ζ‖ ∂unitCircleMeasure) =
+        eLpNorm ur 1 unitCircleMeasure := by
+      rw [ofReal_integral_eq_lintegral_ofReal hur_int (ae_of_all _ fun _ => norm_nonneg _),
+        eLpNorm_one_eq_lintegral_enorm hur_cont.aestronglyMeasurable]
+      refine lintegral_congr fun ζ => ?_
+      exact ofReal_norm (ur ζ)
+    rw [measureReal_def, ← ENNReal.toReal_ofReal (integral_nonneg fun _ => norm_nonneg _), hofReal]
+    exact ENNReal.toReal_mono (measure_ne_top _ _) heLp
+  exact ⟨hang, hreal_le, heLp⟩
+
+end Nodes11_16_and_11_17
+
+
+/-! ### Stage 3 Block 2: Approach Regions, Maximal Functions, Differentiation on `T`, and Nodes 11.18–11.20 -/
+
+section Node11_18
+
+/-- Base point `1 ∈ T = UnitCircle`. -/
+def unitCircleOne : UnitCircle :=
+  ⟨(1 : ℂ), by simp⟩
+
+@[simp]
+theorem coe_unitCircleOne : ((unitCircleOne : UnitCircle) : ℂ) = 1 :=
+  rfl
+
+/-- 11.18 (Definition, Rudin p. 240): nontangential approach region `Ω_α` with vertex `1`
+(`0 < α < 1`), defined as the intersection with `U = Metric.ball 0 1` of the convex hull of
+`D(0; α) ∪ {1}`. -/
+def approachRegionBase (α : ℝ) : Set ℂ :=
+  convexHull ℝ (Metric.ball (0 : ℂ) α ∪ {(1 : ℂ)}) ∩ Metric.ball (0 : ℂ) 1
+
+/-- 11.18 (Definition, Rudin p. 241): rotated nontangential approach region `e^{it} Ω_α`
+with vertex `ζ ∈ T = UnitCircle`. -/
+def approachRegion (α : ℝ) (ζ : UnitCircle) : Set ℂ :=
+  convexHull ℝ (Metric.ball (0 : ℂ) α ∪ {(ζ : ℂ)}) ∩ Metric.ball (0 : ℂ) 1
+
+@[simp]
+theorem approachRegion_one (α : ℝ) :
+    approachRegion α unitCircleOne = approachRegionBase α :=
+  rfl
+
+theorem approachRegion_subset_ball (α : ℝ) (ζ : UnitCircle) :
+    approachRegion α ζ ⊆ Metric.ball (0 : ℂ) 1 :=
+  Set.inter_subset_right
+
+theorem approachRegionBase_subset_ball (α : ℝ) :
+    approachRegionBase α ⊆ Metric.ball (0 : ℂ) 1 :=
+  Set.inter_subset_right
+
+theorem convex_approachRegion (α : ℝ) (ζ : UnitCircle) :
+    Convex ℝ (approachRegion α ζ) :=
+  (convex_convexHull ℝ _).inter (convex_ball 0 1)
+
+theorem convex_approachRegionBase (α : ℝ) :
+    Convex ℝ (approachRegionBase α) :=
+  convex_approachRegion α unitCircleOne
+
+/-- Explicit union-of-balls representation of `approachRegion α ζ` (`0 < α < 1`):
+`e^{it} Ω_α = ⋃_{0 ≤ t < 1} D(t ζ; (1 - t) α)`. -/
+theorem approachRegion_eq_iUnion_ball {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    (ζ : UnitCircle) :
+    approachRegion α ζ =
+      ⋃ t ∈ Set.Ico (0 : ℝ) 1, Metric.ball ((t : ℂ) * (ζ : ℂ)) ((1 - t) * α) := by
+  let w : ℂ := ζ
+  have hw_norm : ‖w‖ = 1 := norm_unitCircle ζ
+  let S : Set ℂ := Metric.ball (0 : ℂ) α ∪ {w}
+  let B_union : Set ℂ := ⋃ t ∈ Set.Ico (0 : ℝ) 1, Metric.ball ((t : ℂ) * w) ((1 - t) * α)
+  let C : Set ℂ := {w} ∪ B_union
+  have hB_sub_ball : B_union ⊆ Metric.ball (0 : ℂ) 1 := by
+    intro z hz
+    obtain ⟨t, ⟨ht0, ht1⟩, hzt⟩ := Set.mem_iUnion₂.mp hz
+    rw [Metric.mem_ball, dist_eq_norm] at hzt
+    rw [Metric.mem_ball, dist_zero_right]
+    calc ‖z‖ = ‖(z - (t : ℂ) * w) + (t : ℂ) * w‖ := by ring_nf
+      _ ≤ ‖z - (t : ℂ) * w‖ + ‖(t : ℂ) * w‖ := norm_add_le _ _
+      _ < (1 - t) * α + t := by
+          rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ht0, hw_norm, mul_one]
+          linarith
+      _ < (1 - t) * 1 + t := by nlinarith
+      _ = 1 := by ring
+  have hB_sub_hull : B_union ⊆ convexHull ℝ S := by
+    intro z hz
+    obtain ⟨t, ⟨ht0, ht1⟩, hzt⟩ := Set.mem_iUnion₂.mp hz
+    have h1mt : 0 < 1 - t := sub_pos.mpr ht1
+    let u : ℂ := ((1 - t)⁻¹ : ℝ) • (z - (t : ℂ) * w)
+    have hu_ball : u ∈ Metric.ball (0 : ℂ) α := by
+      rw [Metric.mem_ball, dist_zero_right]
+      dsimp only [u]
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr h1mt), inv_mul_lt_iff₀ h1mt]
+      simpa only [Metric.mem_ball, dist_eq_norm] using hzt
+    have hu_hull : u ∈ convexHull ℝ S := subset_convexHull ℝ S (Or.inl hu_ball)
+    have hw_hull : w ∈ convexHull ℝ S := subset_convexHull ℝ S (Or.inr rfl)
+    have hcomb : (1 - t) • u + t • w = z := by
+      dsimp only [u]
+      rw [smul_smul, mul_inv_cancel₀ h1mt.ne', one_smul, Complex.real_smul, sub_add_cancel]
+    exact hcomb ▸ (convex_convexHull ℝ S) hu_hull hw_hull h1mt.le ht0 (sub_add_cancel 1 t)
+  have hC_param : ∀ z ∈ C, ∃ t ∈ Set.Icc (0 : ℝ) 1, ∃ u ∈ Metric.ball (0 : ℂ) α,
+      z = (1 - t) • u + t • w := by
+    intro z hz
+    rcases hz with rfl | hzB
+    · exact ⟨1, ⟨zero_le_one, le_rfl⟩, 0, Metric.mem_ball_self hα0, by simp⟩
+    · obtain ⟨t, ⟨ht0, ht1⟩, hzt⟩ := Set.mem_iUnion₂.mp hzB
+      have h1mt : 0 < 1 - t := sub_pos.mpr ht1
+      let u : ℂ := ((1 - t)⁻¹ : ℝ) • (z - (t : ℂ) * w)
+      have hu_ball : u ∈ Metric.ball (0 : ℂ) α := by
+        rw [Metric.mem_ball, dist_zero_right]
+        dsimp only [u]
+        rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr h1mt), inv_mul_lt_iff₀ h1mt]
+        simpa only [Metric.mem_ball, dist_eq_norm] using hzt
+      refine ⟨t, ⟨ht0, ht1.le⟩, u, hu_ball, ?_⟩
+      dsimp only [u]
+      rw [smul_smul, mul_inv_cancel₀ h1mt.ne', one_smul, Complex.real_smul, sub_add_cancel]
+  have hC_conv : Convex ℝ C := by
+    intro z₁ hz₁ z₂ hz₂ a b ha hb hab
+    obtain ⟨t₁, ⟨ht₁0, ht₁1⟩, u₁, hu₁, rfl⟩ := hC_param z₁ hz₁
+    obtain ⟨t₂, ⟨ht₂0, ht₂1⟩, u₂, hu₂, rfl⟩ := hC_param z₂ hz₂
+    let t : ℝ := a * t₁ + b * t₂
+    have ht0 : 0 ≤ t := by positivity
+    have ht1 : t ≤ 1 := by nlinarith
+    rcases ht1.eq_or_lt with ht_eq | ht_lt
+    · left
+      have h1mt_sum : a * (1 - t₁) + b * (1 - t₂) = 0 := by dsimp only [t] at ht_eq; linarith
+      have ha0 : a * (1 - t₁) = 0 := by
+        nlinarith [mul_nonneg ha (sub_nonneg.mpr ht₁1), mul_nonneg hb (sub_nonneg.mpr ht₂1)]
+      have hb0 : b * (1 - t₂) = 0 := by linarith
+      have hcomb : a • ((1 - t₁) • u₁ + t₁ • w) + b • ((1 - t₂) • u₂ + t₂ • w) =
+          (a * (1 - t₁)) • u₁ + (b * (1 - t₂)) • u₂ + t • w := by
+        simp only [Complex.real_smul, t]
+        push_cast
+        ring
+      rw [hcomb, ha0, hb0, ht_eq, zero_smul, zero_smul, zero_add, zero_add, one_smul]
+      rfl
+    · right
+      refine Set.mem_iUnion₂.mpr ⟨t, ⟨ht0, ht_lt⟩, ?_⟩
+      have h1mt : 0 < 1 - t := sub_pos.mpr ht_lt
+      let c₁ : ℝ := a * (1 - t₁) / (1 - t)
+      let c₂ : ℝ := b * (1 - t₂) / (1 - t)
+      have hc₁ : 0 ≤ c₁ := div_nonneg (mul_nonneg ha (sub_nonneg.mpr ht₁1)) h1mt.le
+      have hc₂ : 0 ≤ c₂ := div_nonneg (mul_nonneg hb (sub_nonneg.mpr ht₂1)) h1mt.le
+      have hc12 : c₁ + c₂ = 1 := by
+        dsimp only [c₁, c₂]
+        rw [← add_div, div_eq_one_iff_eq h1mt.ne']
+        dsimp only [t]
+        linarith
+      have hu_mem : c₁ • u₁ + c₂ • u₂ ∈ Metric.ball (0 : ℂ) α :=
+        (convex_ball (0 : ℂ) α) hu₁ hu₂ hc₁ hc₂ hc12
+      have hlin : a • ((1 - t₁) • u₁ + t₁ • w) + b • ((1 - t₂) • u₂ + t₂ • w) - (t : ℂ) * w =
+          (1 - t) • (c₁ • u₁ + c₂ • u₂) := by
+        have hc1_mul : (1 - t) * c₁ = a * (1 - t₁) := mul_div_cancel₀ _ h1mt.ne'
+        have hc2_mul : (1 - t) * c₂ = b * (1 - t₂) := mul_div_cancel₀ _ h1mt.ne'
+        conv_rhs => rw [smul_add, smul_smul, smul_smul, hc1_mul, hc2_mul]
+        simp only [Complex.real_smul, t]
+        push_cast
+        ring
+      rw [Metric.mem_ball, dist_eq_norm, hlin, norm_smul, Real.norm_eq_abs, abs_of_pos h1mt]
+      have hu_norm : ‖c₁ • u₁ + c₂ • u₂‖ < α := by simpa [Metric.mem_ball] using hu_mem
+      exact mul_lt_mul_of_pos_left hu_norm h1mt
+  have hS_sub_C : S ⊆ C := by
+    rintro z (hz | rfl)
+    · right
+      refine Set.mem_iUnion₂.mpr ⟨0, ⟨le_rfl, zero_lt_one⟩, ?_⟩
+      simpa using hz
+    · exact Or.inl rfl
+  have hhull_sub_C : convexHull ℝ S ⊆ C := convexHull_min hS_sub_C hC_conv
+  ext z
+  constructor
+  · rintro ⟨hz_hull, hz_ball⟩
+    rcases hhull_sub_C hz_hull with rfl | hzB
+    · exfalso
+      have : ‖w‖ < 1 := by simpa [Metric.mem_ball] using hz_ball
+      linarith
+    · exact hzB
+  · intro hzB
+    exact ⟨hB_sub_hull hzB, hB_sub_ball hzB⟩
+
+theorem isOpen_approachRegion {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) (ζ : UnitCircle) :
+    IsOpen (approachRegion α ζ) := by
+  rw [approachRegion_eq_iUnion_ball hα0 hα1 ζ]
+  exact isOpen_biUnion fun _ _ => Metric.isOpen_ball
+
+theorem isOpen_approachRegionBase {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) :
+    IsOpen (approachRegionBase α) :=
+  isOpen_approachRegion hα0 hα1 unitCircleOne
+
+theorem ball_subset_approachRegion {α : ℝ} (hα1 : α ≤ 1) (ζ : UnitCircle) :
+    Metric.ball (0 : ℂ) α ⊆ approachRegion α ζ := fun _z hz =>
+  ⟨subset_convexHull ℝ _ (Or.inl hz), Metric.ball_subset_ball hα1 hz⟩
+
+theorem radial_mem_approachRegion {α r : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    (hr0 : 0 ≤ r) (hr1 : r < 1) (ζ : UnitCircle) :
+    (r : ℂ) * (ζ : ℂ) ∈ approachRegion α ζ := by
+  rw [approachRegion_eq_iUnion_ball hα0 hα1 ζ]
+  exact Set.mem_iUnion₂.mpr ⟨r, ⟨hr0, hr1⟩, Metric.mem_ball_self (mul_pos (sub_pos.mpr hr1) hα0)⟩
+
+/-- Rotation formula `e^{it} Ω_α = ((ζ : ℂ) * ·) '' Ω_α`. -/
+theorem approachRegion_eq_image_mul {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) (ζ : UnitCircle) :
+    approachRegion α ζ = (fun z : ℂ => (ζ : ℂ) * z) '' approachRegionBase α := by
+  rw [approachRegion_eq_iUnion_ball hα0 hα1 ζ,
+    ← approachRegion_one, approachRegion_eq_iUnion_ball hα0 hα1 unitCircleOne]
+  ext z
+  constructor
+  · intro hz
+    obtain ⟨t, ht, hzt⟩ := Set.mem_iUnion₂.mp hz
+    refine ⟨conj (ζ : ℂ) * z, Set.mem_iUnion₂.mpr ⟨t, ht, ?_⟩, ?_⟩
+    · rw [Metric.mem_ball, dist_eq_norm, coe_unitCircleOne, mul_one]
+      have heq : conj (ζ : ℂ) * z - (t : ℂ) = conj (ζ : ℂ) * (z - (t : ℂ) * (ζ : ℂ)) := by
+        calc conj (ζ : ℂ) * z - (t : ℂ)
+            = conj (ζ : ℂ) * z - (t : ℂ) * ((ζ : ℂ) * conj (ζ : ℂ)) := by
+                rw [unitCircle_mul_conj ζ, mul_one]
+          _ = conj (ζ : ℂ) * (z - (t : ℂ) * (ζ : ℂ)) := by ring
+      rw [heq, norm_mul, RCLike.norm_conj, norm_unitCircle, one_mul]
+      simpa only [Metric.mem_ball, dist_eq_norm] using hzt
+    · calc (ζ : ℂ) * (conj (ζ : ℂ) * z) = ((ζ : ℂ) * conj (ζ : ℂ)) * z := by ring
+        _ = z := by rw [unitCircle_mul_conj ζ, one_mul]
+  · rintro ⟨w, hw, rfl⟩
+    obtain ⟨t, ht, hwt⟩ := Set.mem_iUnion₂.mp hw
+    refine Set.mem_iUnion₂.mpr ⟨t, ht, ?_⟩
+    rw [Metric.mem_ball, dist_eq_norm]
+    have heq : (ζ : ℂ) * w - (t : ℂ) * (ζ : ℂ) = (ζ : ℂ) * (w - (t : ℂ) * 1) := by ring
+    rw [heq, norm_mul, norm_unitCircle, one_mul]
+    simpa only [Metric.mem_ball, dist_eq_norm, coe_unitCircleOne] using hwt
+
+/-- Rudin 11.18 literal union-of-segments description: `Ω_α` is the union of `D(0; α)` and the
+(open / punctured-at-`1`) line segments from `1` to points of `D(0; α)`. -/
+theorem approachRegionBase_eq_ball_union_segments {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) :
+    approachRegionBase α =
+      Metric.ball (0 : ℂ) α ∪ ⋃ w ∈ Metric.ball (0 : ℂ) α, openSegment ℝ (1 : ℂ) w ∧
+    approachRegionBase α =
+      (Metric.ball (0 : ℂ) α ∪ ⋃ w ∈ Metric.ball (0 : ℂ) α, segment ℝ (1 : ℂ) w) \ {(1 : ℂ)} := by
+  have h1 : approachRegionBase α =
+      Metric.ball (0 : ℂ) α ∪ ⋃ w ∈ Metric.ball (0 : ℂ) α, openSegment ℝ (1 : ℂ) w := by
+    rw [← approachRegion_one, approachRegion_eq_iUnion_ball hα0 hα1 unitCircleOne]
+    ext z
+    constructor
+    · intro hz
+      obtain ⟨t, ⟨ht0, ht1⟩, hzt⟩ := Set.mem_iUnion₂.mp hz
+      rcases ht0.eq_or_lt with rfl | ht_pos
+      · left
+        simpa using hzt
+      · right
+        have h1mt : 0 < 1 - t := sub_pos.mpr ht1
+        let w : ℂ := ((1 - t)⁻¹ : ℝ) • (z - (t : ℂ))
+        have hw : w ∈ Metric.ball (0 : ℂ) α := by
+          rw [Metric.mem_ball, dist_zero_right]
+          dsimp only [w]
+          rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr h1mt), inv_mul_lt_iff₀ h1mt]
+          simpa only [Metric.mem_ball, dist_eq_norm, coe_unitCircleOne, mul_one] using hzt
+        refine Set.mem_iUnion₂.mpr ⟨w, hw, t, 1 - t, ht_pos, h1mt, add_sub_cancel _ _, ?_⟩
+        dsimp only [w]
+        rw [smul_smul, mul_inv_cancel₀ h1mt.ne', one_smul, Complex.real_smul]
+        ring
+    · rintro (hz | hz)
+      · refine Set.mem_iUnion₂.mpr ⟨0, ⟨le_rfl, zero_lt_one⟩, ?_⟩
+        simpa using hz
+      · obtain ⟨w, hw, a, b, ha, hb, hab, rfl⟩ := Set.mem_iUnion₂.mp hz
+        refine Set.mem_iUnion₂.mpr ⟨a, ⟨ha.le, by linarith⟩, ?_⟩
+        have hb_eq : b = 1 - a := by linarith
+        rw [Metric.mem_ball, dist_eq_norm, coe_unitCircleOne, mul_one, hb_eq]
+        have heq : a • (1 : ℂ) + (1 - a) • w - (a : ℂ) = (1 - a) • w := by
+          simp only [Complex.real_smul]
+          ring
+        rw [heq, norm_smul, Real.norm_eq_abs, abs_of_pos (by linarith)]
+        have hw_lt : ‖w‖ < α := by simpa [Metric.mem_ball] using hw
+        exact mul_lt_mul_of_pos_left hw_lt (by linarith)
+  refine ⟨h1, ?_⟩
+  rw [h1]
+  ext z
+  constructor
+  · intro hz
+    have hz_ne : z ≠ (1 : ℂ) := by
+      intro rfl
+      have hball : (1 : ℂ) ∈ Metric.ball (0 : ℂ) 1 := approachRegionBase_subset_ball α (h1 ▸ hz)
+      simp [Metric.mem_ball] at hball
+    refine ⟨?_, hz_ne⟩
+    rcases hz with hz_b | hz_seg
+    · exact Or.inl hz_b
+    · right
+      obtain ⟨w, hw, hz_open⟩ := Set.mem_iUnion₂.mp hz_seg
+      exact Set.mem_iUnion₂.mpr ⟨w, hw, openSegment_subset_segment ℝ _ _ hz_open⟩
+  · rintro ⟨hz_or, hz_ne⟩
+    rcases hz_or with hz_b | hz_seg
+    · exact Or.inl hz_b
+    · obtain ⟨w, hw, a, b, ha, hb, hab, rfl⟩ := Set.mem_iUnion₂.mp hz_seg
+      rcases ha.eq_or_lt with rfl | ha_pos
+      · have hb1 : b = 1 := by linarith
+        subst hb1
+        simpa using Or.inl hw
+      · rcases hb.eq_or_lt with rfl | hb_pos
+        · have ha1 : a = 1 := by linarith
+          subst ha1
+          exact (hz_ne (by simp)).elim
+        · exact Or.inr (Set.mem_iUnion₂.mpr ⟨w, hw, a, b, ha_pos, hb_pos, hab, rfl⟩)
+
+/-- The vertex `ζ` lies in the topological boundary (`frontier`) of `approachRegion α ζ`. -/
+theorem vertex_mem_frontier_approachRegion {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    (ζ : UnitCircle) :
+    (ζ : ℂ) ∈ frontier (approachRegion α ζ) := by
+  rw [(isOpen_approachRegion hα0 hα1 ζ).frontier_eq]
+  refine ⟨Metric.mem_closure_iff.mpr fun ε hε => ?_, fun hmem => ?_⟩
+  · let r : ℝ := max 0 (1 - ε / 2)
+    have hr0 : 0 ≤ r := le_max_left _ _
+    have hr1 : r < 1 := max_lt zero_lt_one (by linarith)
+    refine ⟨(r : ℂ) * (ζ : ℂ), radial_mem_approachRegion hα0 hα1 hr0 hr1 ζ, ?_⟩
+    rw [dist_eq_norm]
+    have heq : (ζ : ℂ) - (r : ℂ) * (ζ : ℂ) = ((1 - r : ℝ) : ℂ) * (ζ : ℂ) := by
+      push_cast; ring
+    rw [heq, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (sub_pos.mpr hr1),
+      norm_unitCircle, mul_one]
+    have hle : 1 - ε / 2 ≤ r := le_max_right _ _
+    linarith
+  · have hlt : ‖(ζ : ℂ)‖ < 1 := by
+      simpa [Metric.mem_ball] using approachRegion_subset_ball α ζ hmem
+    rw [norm_unitCircle] at hlt
+    exact lt_irrefl 1 hlt
+
+/-- Minimality characterization (Rudin 11.18, p. 240): `Ω_α` is the smallest convex open set in `ℂ`
+that contains `D(0; α)` and has `1` in its boundary (`frontier`). -/
+theorem approachRegionBase_minimal {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    {V : Set ℂ} (hV_conv : Convex ℝ V) (_hV_open : IsOpen V)
+    (hball : Metric.ball (0 : ℂ) α ⊆ V) (hfront : (1 : ℂ) ∈ frontier V) :
+    approachRegionBase α ⊆ V := by
+  have h1_clos : (1 : ℂ) ∈ closure V := hfront.1
+  rw [← approachRegion_one, approachRegion_eq_iUnion_ball hα0 hα1 unitCircleOne]
+  intro z hz
+  obtain ⟨t, ⟨ht0, ht1⟩, hzt⟩ := Set.mem_iUnion₂.mp hz
+  rcases ht0.eq_or_lt with rfl | ht_pos
+  · exact hball (by simpa using hzt)
+  · have h1mt : 0 < 1 - t := sub_pos.mpr ht1
+    let u : ℂ := ((1 - t)⁻¹ : ℝ) • (z - (t : ℂ))
+    have hu_norm : ‖u‖ < α := by
+      dsimp only [u]
+      rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr h1mt), inv_mul_lt_iff₀ h1mt]
+      simpa only [Metric.mem_ball, dist_eq_norm, coe_unitCircleOne, mul_one] using hzt
+    have hru : 0 < α - ‖u‖ := sub_pos.mpr hu_norm
+    obtain ⟨v, hvV, hv_dist⟩ := Metric.mem_closure_iff.mp h1_clos
+      (((1 - t) / t) * (α - ‖u‖)) (by positivity)
+    let u' : ℂ := u + (t / (1 - t)) • ((1 : ℂ) - v)
+    have hu'_ball : u' ∈ Metric.ball (0 : ℂ) α := by
+      rw [Metric.mem_ball, dist_zero_right]
+      have hdiff : ‖(t / (1 - t)) • ((1 : ℂ) - v)‖ < α - ‖u‖ := by
+        rw [norm_smul, Real.norm_eq_abs, abs_of_pos (by positivity), ← dist_eq_norm]
+        calc (t / (1 - t)) * dist 1 v
+            < (t / (1 - t)) * (((1 - t) / t) * (α - ‖u‖)) :=
+              mul_lt_mul_of_pos_left hv_dist (by positivity)
+          _ = α - ‖u‖ := by field_simp
+      calc ‖u'‖ ≤ ‖u‖ + ‖(t / (1 - t)) • ((1 : ℂ) - v)‖ := norm_add_le _ _
+        _ < ‖u‖ + (α - ‖u‖) := by linarith
+        _ = α := add_sub_cancel _ _
+    have hcomb : (1 - t) • u' + t • v = z := by
+      dsimp only [u', u]
+      have hmul1 : (1 - t) * (1 - t)⁻¹ = 1 := mul_inv_cancel₀ h1mt.ne'
+      have hmul2 : (1 - t) * (t / (1 - t)) = t := mul_div_cancel₀ t h1mt.ne'
+      rw [smul_add, smul_smul, hmul1, one_smul, smul_smul, hmul2]
+      simp only [Complex.real_smul]
+      ring
+    exact hcomb ▸ hV_conv (hball hu'_ball) hvV h1mt.le ht_pos.le (sub_add_cancel 1 t)
+
+/-- Opening-angle cone property at `1` (`α = sin θ`, Rudin 11.18, p. 240):
+every `z ∈ Ω_α` lies strictly inside the bisected sector `0 < Re(1 - z)` and
+`|Im(1 - z)| < α ‖1 - z‖`. -/
+theorem approachRegionBase_angle_cone {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    {z : ℂ} (hz : z ∈ approachRegionBase α) :
+    0 < (1 - z).re ∧ |(1 - z).im| < α * ‖1 - z‖ := by
+  have hz_lt1 : ‖z‖ < 1 := by simpa [Metric.mem_ball] using approachRegionBase_subset_ball α hz
+  have hre : 0 < (1 - z).re := by
+    have := Complex.re_le_norm z
+    simp only [Complex.sub_re, Complex.one_re]
+    linarith
+  refine ⟨hre, ?_⟩
+  rw [← approachRegion_one, approachRegion_eq_iUnion_ball hα0 hα1 unitCircleOne] at hz
+  obtain ⟨t, ⟨ht0, ht1⟩, hzt⟩ := Set.mem_iUnion₂.mp hz
+  have h1mt : 0 < 1 - t := sub_pos.mpr ht1
+  let u : ℂ := ((1 - t)⁻¹ : ℝ) • (z - (t : ℂ))
+  have hu_norm : ‖u‖ < α := by
+    dsimp only [u]
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr h1mt), inv_mul_lt_iff₀ h1mt]
+    simpa only [Metric.mem_ball, dist_eq_norm, coe_unitCircleOne, mul_one] using hzt
+  have hz_eq : 1 - z = (1 - t) • (1 - u) := by
+    dsimp only [u]
+    simp only [Complex.real_smul]
+    push_cast
+    have hne : (1 - t : ℂ) ≠ 0 := by exact_mod_cast h1mt.ne'
+    field_simp [hne]
+    ring
+  let v : ℂ := 1 - u
+  have hv_ne : v ≠ 0 := by
+    intro hv0
+    have : u = 1 := by dsimp only [v] at hv0; exact (sub_eq_zero.mp hv0).symm
+    rw [this, norm_one] at hu_norm
+    linarith
+  have hv_pos : 0 < ‖v‖ := norm_pos_iff.mpr hv_ne
+  -- Exact identity `v.im^2 + (v.re - ‖v‖^2)^2 = ‖v‖^2 * ‖u‖^2`
+  have hid : v.im ^ 2 + (v.re - (v.re ^ 2 + v.im ^ 2)) ^ 2 =
+      (v.re ^ 2 + v.im ^ 2) * ((1 - v.re) ^ 2 + v.im ^ 2) := by ring
+  have hnorm_v_sq : ‖v‖ ^ 2 = v.re ^ 2 + v.im ^ 2 := by
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]; ring
+  have hnorm_u_sq : ‖u‖ ^ 2 = (1 - v.re) ^ 2 + v.im ^ 2 := by
+    have hu_v : u = 1 - v := by dsimp only [v]; ring
+    rw [← Complex.normSq_eq_norm_sq, hu_v, Complex.normSq_apply]
+    simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im]
+    ring
+  have him_sq_lt : v.im ^ 2 < (α * ‖v‖) ^ 2 := by
+    calc v.im ^ 2 ≤ v.im ^ 2 + (v.re - (v.re ^ 2 + v.im ^ 2)) ^ 2 :=
+          le_add_of_nonneg_right (sq_nonneg _)
+      _ = ‖v‖ ^ 2 * ‖u‖ ^ 2 := by rw [hid, ← hnorm_v_sq, ← hnorm_u_sq]
+      _ < ‖v‖ ^ 2 * α ^ 2 := by
+          refine mul_lt_mul_of_pos_left ?_ (sq_pos_of_pos hv_pos)
+          nlinarith [norm_nonneg u]
+      _ = (α * ‖v‖) ^ 2 := by ring
+  have him_lt : |v.im| < α * ‖v‖ := by
+    have habs : |v.im| < |α * ‖v‖| := sq_lt_sq.mp him_sq_lt
+    rwa [abs_of_pos (mul_pos hα0 hv_pos)] at habs
+  rw [hz_eq, Complex.real_smul, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+    zero_mul, add_zero, abs_mul, abs_of_pos h1mt, norm_mul, Complex.norm_real,
+    Real.norm_eq_abs, abs_of_pos h1mt]
+  nlinarith
+
+/-- Monotonicity: `Ω_α` expands when `α` increases. -/
+theorem approachRegion_mono {α₁ α₂ : ℝ} (h12 : α₁ ≤ α₂) (ζ : UnitCircle) :
+    approachRegion α₁ ζ ⊆ approachRegion α₂ ζ := fun _z hz =>
+  ⟨convexHull_mono (Set.union_subset_union_left _ (Metric.ball_subset_ball h12)) hz.1, hz.2⟩
+
+/-- Union: `⋃_{0 < α < 1} e^{it} Ω_α = U = Metric.ball 0 1`. -/
+theorem iUnion_approachRegion (ζ : UnitCircle) :
+    (⋃ α ∈ Set.Ioo (0 : ℝ) 1, approachRegion α ζ) = Metric.ball (0 : ℂ) 1 := by
+  ext z
+  constructor
+  · intro hz
+    obtain ⟨α, _, hzα⟩ := Set.mem_iUnion₂.mp hz
+    exact approachRegion_subset_ball α ζ hzα
+  · intro hz
+    have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz
+    let α : ℝ := (‖z‖ + 1) / 2
+    have hα_mem : α ∈ Set.Ioo (0 : ℝ) 1 := ⟨by positivity, by dsimp only [α]; linarith⟩
+    refine Set.mem_iUnion₂.mpr ⟨α, hα_mem, ball_subset_approachRegion hα_mem.2.le ζ ?_⟩
+    rw [Metric.mem_ball, dist_zero_right]
+    dsimp only [α]
+    linarith
+
+/-- Intersection: `⋂_{0 < α < 1} Ω_α = [0, 1)` (Rudin 11.18, p. 241). -/
+theorem iInter_approachRegionBase :
+    (⋂ α ∈ Set.Ioo (0 : ℝ) 1, approachRegionBase α) =
+      (fun r : ℝ => (r : ℂ)) '' Set.Ico 0 1 := by
+  ext z
+  constructor
+  · intro hz
+    have hz_half : z ∈ approachRegionBase (1 / 2) :=
+      Set.mem_iInter₂.mp hz (1 / 2) ⟨by norm_num, by norm_num⟩
+    have hz_lt1 : ‖z‖ < 1 := by
+      simpa [Metric.mem_ball] using approachRegionBase_subset_ball (1 / 2) hz_half
+    have him0 : z.im = 0 := by
+      by_contra hne
+      have habs_pos : 0 < |z.im| := abs_pos.mpr hne
+      let α : ℝ := min (1 / 2) (|z.im| / (2 * (‖1 - z‖ + 1)))
+      have hα0 : 0 < α := lt_min (by norm_num) (by positivity)
+      have hα1 : α < 1 := (min_le_left _ _).trans_lt (by norm_num)
+      have hcone := (approachRegionBase_angle_cone hα0 hα1
+        (Set.mem_iInter₂.mp hz α ⟨hα0, hα1⟩)).2
+      simp only [Complex.sub_im, Complex.one_im, zero_sub, abs_neg] at hcone
+      have hle : α ≤ |z.im| / (2 * (‖1 - z‖ + 1)) := min_le_right _ _
+      have hmul : α * ‖1 - z‖ < |z.im| := by
+        calc α * ‖1 - z‖
+            ≤ (|z.im| / (2 * (‖1 - z‖ + 1))) * ‖1 - z‖ :=
+              mul_le_mul_of_nonneg_right hle (norm_nonneg _)
+          _ < (|z.im| / (2 * (‖1 - z‖ + 1))) * (2 * (‖1 - z‖ + 1)) := by
+              refine mul_lt_mul_of_pos_left ?_ (by positivity)
+              linarith [norm_nonneg (1 - z)]
+          _ = |z.im| := div_mul_cancel₀ _ (by positivity)
+      linarith
+    have hre_nn : 0 ≤ z.re := by
+      by_contra hneg
+      push Not at hneg
+      let α : ℝ := min (1 / 2) (-z.re / 2)
+      have hα0 : 0 < α := lt_min (by norm_num) (by linarith)
+      have hα1 : α < 1 := (min_le_left _ _).trans_lt (by norm_num)
+      have hzα := Set.mem_iInter₂.mp hz α ⟨hα0, hα1⟩
+      rw [← approachRegion_one, approachRegion_eq_iUnion_ball hα0 hα1 unitCircleOne] at hzα
+      obtain ⟨t, ⟨ht0, ht1⟩, hzt⟩ := Set.mem_iUnion₂.mp hzα
+      rw [Metric.mem_ball, dist_eq_norm, coe_unitCircleOne, mul_one] at hzt
+      have hre_diff : |(z - (t : ℂ)).re| ≤ ‖z - (t : ℂ)‖ := Complex.abs_re_le_norm _
+      simp only [Complex.sub_re, Complex.ofReal_re] at hre_diff
+      have h1 : t - z.re ≤ |z.re - t| := by
+        rw [abs_sub_comm]
+        exact le_abs_self _
+      have h2 : (1 - t) * α ≤ α := by nlinarith
+      have h3 : α ≤ -z.re / 2 := min_le_right _ _
+      linarith
+    have hre_lt1 : z.re < 1 := (Complex.re_le_norm z).trans_lt hz_lt1
+    refine ⟨z.re, ⟨hre_nn, hre_lt1⟩, ?_⟩
+    apply Complex.ext
+    · simp
+    · simp [him0]
+  · rintro ⟨r, ⟨hr0, hr1⟩, rfl⟩
+    refine Set.mem_iInter₂.mpr fun α ⟨hα0, hα1⟩ => ?_
+    simpa using radial_mem_approachRegion hα0 hα1 hr0 hr1 unitCircleOne
+
+/-- Chord-to-radial ratio bound on `e^{it} Ω_α` (`0 < α < 1`):
+`‖z - ζ‖ ≤ ((1 + α) / (1 - α)) * (1 - ‖z‖)`. -/
+theorem norm_sub_vertex_le_of_mem_approachRegion {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    {ζ : UnitCircle} {z : ℂ} (hz : z ∈ approachRegion α ζ) :
+    ‖z - (ζ : ℂ)‖ ≤ ((1 + α) / (1 - α)) * (1 - ‖z‖) := by
+  rw [approachRegion_eq_iUnion_ball hα0 hα1 ζ] at hz
+  obtain ⟨t, ⟨ht0, ht1⟩, hzt⟩ := Set.mem_iUnion₂.mp hz
+  rw [Metric.mem_ball, dist_eq_norm] at hzt
+  let w : ℂ := ζ
+  have hw_norm : ‖w‖ = 1 := norm_unitCircle ζ
+  have h1mα : 0 < 1 - α := sub_pos.mpr hα1
+  have htw_sub : ‖(t : ℂ) * w - w‖ = 1 - t := by
+    have heq : (t : ℂ) * w - w = ((t - 1 : ℝ) : ℂ) * w := by push_cast; ring
+    rw [heq, norm_mul, Complex.norm_real, Real.norm_eq_abs, hw_norm, mul_one,
+      abs_of_neg (sub_neg.mpr ht1)]
+    ring
+  have hz_sub_w : ‖z - w‖ < (1 + α) * (1 - t) := by
+    calc ‖z - w‖ = ‖(z - (t : ℂ) * w) + ((t : ℂ) * w - w)‖ := by ring_nf
+      _ ≤ ‖z - (t : ℂ) * w‖ + ‖(t : ℂ) * w - w‖ := norm_add_le _ _
+      _ < (1 - t) * α + (1 - t) := by rw [htw_sub]; linarith
+      _ = (1 + α) * (1 - t) := by ring
+  have hz_norm : ‖z‖ < t + (1 - t) * α := by
+    calc ‖z‖ = ‖(z - (t : ℂ) * w) + (t : ℂ) * w‖ := by ring_nf
+      _ ≤ ‖z - (t : ℂ) * w‖ + ‖(t : ℂ) * w‖ := norm_add_le _ _
+      _ < (1 - t) * α + t := by
+          rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ht0, hw_norm, mul_one]
+          linarith
+      _ = t + (1 - t) * α := by ring
+  have h1mz : (1 - α) * (1 - t) < 1 - ‖z‖ := by linarith
+  have h1mt_le : 1 - t ≤ (1 - ‖z‖) / (1 - α) := (le_div_iff₀ h1mα).mpr (by linarith)
+  calc ‖z - w‖ ≤ (1 + α) * (1 - t) := hz_sub_w.le
+    _ ≤ (1 + α) * ((1 - ‖z‖) / (1 - α)) := mul_le_mul_of_nonneg_left h1mt_le (by linarith)
+    _ = ((1 + α) / (1 - α)) * (1 - ‖z‖) := by ring
+
+/-- 11.18 (Approach Regions, Rudin pp. 240–241): complete summary of properties of `Ω_α`
+and `e^{it} Ω_α`. -/
+theorem theorem11_18 {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) :
+    (approachRegionBase α =
+      Metric.ball (0 : ℂ) α ∪ ⋃ w ∈ Metric.ball (0 : ℂ) α, openSegment ℝ (1 : ℂ) w) ∧
+    (Convex ℝ (approachRegionBase α) ∧ IsOpen (approachRegionBase α) ∧
+      Metric.ball (0 : ℂ) α ⊆ approachRegionBase α ∧
+      (1 : ℂ) ∈ frontier (approachRegionBase α) ∧
+      ∀ V : Set ℂ, Convex ℝ V → IsOpen V → Metric.ball (0 : ℂ) α ⊆ V →
+        (1 : ℂ) ∈ frontier V → approachRegionBase α ⊆ V) ∧
+    (∀ z ∈ approachRegionBase α, 0 < (1 - z).re ∧ |(1 - z).im| < α * ‖1 - z‖) ∧
+    (∀ {β : ℝ}, α ≤ β → ∀ ζ : UnitCircle, approachRegion α ζ ⊆ approachRegion β ζ) ∧
+    (∀ ζ : UnitCircle,
+      approachRegion α ζ = (fun z : ℂ => (ζ : ℂ) * z) '' approachRegionBase α ∧
+      (⋃ γ ∈ Set.Ioo (0 : ℝ) 1, approachRegion γ ζ) = Metric.ball (0 : ℂ) 1) ∧
+    ((⋂ γ ∈ Set.Ioo (0 : ℝ) 1, approachRegionBase γ) = (fun r : ℝ => (r : ℂ)) '' Set.Ico 0 1) :=
+  ⟨(approachRegionBase_eq_ball_union_segments hα0 hα1).1,
+   ⟨convex_approachRegionBase α, isOpen_approachRegionBase hα0 hα1,
+    ball_subset_approachRegion hα1.le unitCircleOne,
+    vertex_mem_frontier_approachRegion hα0 hα1 unitCircleOne,
+    fun _V hVc hVo hb hf => approachRegionBase_minimal hα0 hα1 hVc hVo hb hf⟩,
+   fun _z hz => approachRegionBase_angle_cone hα0 hα1 hz,
+   fun hαβ ζ => approachRegion_mono hαβ ζ,
+   fun ζ => ⟨approachRegion_eq_image_mul hα0 hα1 ζ, iUnion_approachRegion ζ⟩,
+   iInter_approachRegionBase⟩
+
+end Node11_18
+
+section Node11_19
+
+/-- 11.19(1) (Definition, Rudin p. 241): nontangential maximal function
+`(N_α u)(ζ) = sup { ‖u(z)‖ₑ : z ∈ ζ Ω_α } : [0, ∞]`. -/
+def nontangentialMaximal (α : ℝ) (u : ℂ → ℂ) (ζ : UnitCircle) : ℝ≥0∞ :=
+  ⨆ z ∈ approachRegion α ζ, ‖u z‖ₑ
+
+/-- 11.19(2) (Definition, Rudin p. 241): radial maximal function
+`(M_rad u)(ζ) = sup { ‖u(r ζ)‖ₑ : 0 ≤ r < 1 } : [0, ∞]`. -/
+def radialMaximal (u : ℂ → ℂ) (ζ : UnitCircle) : ℝ≥0∞ :=
+  ⨆ r ∈ Set.Ico (0 : ℝ) 1, ‖u ((r : ℂ) * (ζ : ℂ))‖ₑ
+
+theorem isOpen_setOf_mem_approachRegion {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) (z : ℂ) :
+    IsOpen {ζ : UnitCircle | z ∈ approachRegion α ζ} := by
+  have heq : {ζ : UnitCircle | z ∈ approachRegion α ζ} =
+      ⋃ t ∈ Set.Ico (0 : ℝ) 1,
+        {ζ : UnitCircle | dist z ((t : ℂ) * (ζ : ℂ)) < (1 - t) * α} := by
+    ext ζ
+    simp [approachRegion_eq_iUnion_ball hα0 hα1 ζ, Metric.mem_ball]
+  rw [heq]
+  exact isOpen_biUnion fun t _ =>
+    isOpen_lt (continuous_const.dist (continuous_const.mul continuous_subtype_val)) continuous_const
+
+theorem lowerSemicontinuous_nontangentialMaximal {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    (u : ℂ → ℂ) :
+    LowerSemicontinuous (nontangentialMaximal α u) := by
+  rw [lowerSemicontinuous_iff_isOpen_preimage]
+  intro y
+  have heq : nontangentialMaximal α u ⁻¹' Set.Ioi y =
+      ⋃ z : ℂ, ⋃ (_ : y < ‖u z‖ₑ), {ζ : UnitCircle | z ∈ approachRegion α ζ} := by
+    ext ζ
+    simp only [Set.mem_preimage, Set.mem_Ioi, nontangentialMaximal, lt_iSup_iff,
+      Set.mem_iUnion, Set.mem_ofPred_eq]
+    tauto
+  rw [heq]
+  exact isOpen_iUnion fun z => isOpen_iUnion fun _ => isOpen_setOf_mem_approachRegion hα0 hα1 z
+
+theorem isClosed_nontangentialMaximal_le {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    (u : ℂ → ℂ) (c : ℝ≥0∞) :
+    IsClosed {ζ : UnitCircle | nontangentialMaximal α u ζ ≤ c} :=
+  lowerSemicontinuous_iff_isClosed_preimage.mp
+    (lowerSemicontinuous_nontangentialMaximal hα0 hα1 u) c
+
+theorem measurable_nontangentialMaximal {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) (u : ℂ → ℂ) :
+    Measurable (nontangentialMaximal α u) :=
+  (lowerSemicontinuous_nontangentialMaximal hα0 hα1 u).measurable
+
+theorem lowerSemicontinuous_radialMaximal {u : ℂ → ℂ}
+    (hu : ContinuousOn u (Metric.ball (0 : ℂ) 1)) :
+    LowerSemicontinuous (radialMaximal u) := by
+  unfold radialMaximal
+  refine lowerSemicontinuous_biSup fun r hr => ?_
+  have hcont : Continuous (fun ζ : UnitCircle => u ((r : ℂ) * (ζ : ℂ))) :=
+    hu.comp_continuous (continuous_const.mul continuous_subtype_val)
+      (fun ζ => radial_mem_ball_unitCircle hr.1 hr.2 ζ)
+  exact hcont.enorm.lowerSemicontinuous
+
+theorem isClosed_radialMaximal_le {u : ℂ → ℂ}
+    (hu : ContinuousOn u (Metric.ball (0 : ℂ) 1)) (c : ℝ≥0∞) :
+    IsClosed {ζ : UnitCircle | radialMaximal u ζ ≤ c} :=
+  lowerSemicontinuous_iff_isClosed_preimage.mp (lowerSemicontinuous_radialMaximal hu) c
+
+theorem measurable_radialMaximal {u : ℂ → ℂ}
+    (hu : ContinuousOn u (Metric.ball (0 : ℂ) 1)) :
+    Measurable (radialMaximal u) :=
+  (lowerSemicontinuous_radialMaximal hu).measurable
+
+theorem radialMaximal_le_nontangentialMaximal {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    (u : ℂ → ℂ) (ζ : UnitCircle) :
+    radialMaximal u ζ ≤ nontangentialMaximal α u ζ := by
+  unfold radialMaximal nontangentialMaximal
+  refine iSup₂_le fun r hr => ?_
+  exact le_iSup₂_of_le ((r : ℂ) * (ζ : ℂ)) (radial_mem_approachRegion hα0 hα1 hr.1 hr.2 ζ) le_rfl
+
+theorem nontangentialMaximal_mono {α₁ α₂ : ℝ} (h12 : α₁ ≤ α₂)
+    (u : ℂ → ℂ) (ζ : UnitCircle) :
+    nontangentialMaximal α₁ u ζ ≤ nontangentialMaximal α₂ u ζ := by
+  unfold nontangentialMaximal
+  exact iSup_le_iSup_of_subset (approachRegion_mono h12 ζ)
+
+/-- Open arc on `T = UnitCircle` centered at `ζ` of angular half-width `δ`
+(equal to `∅` for `δ ≤ 0`, a proper open arc for `0 < δ ≤ π`, and all of `T = Set.univ`
+for `δ > π`, matching Rudin 11.19, p. 241). -/
+def openCircleArc (ζ : UnitCircle) (δ : ℝ) : Set UnitCircle :=
+  {η : UnitCircle | ∃ s : ℝ, |s| < δ ∧ (η : ℂ) = (ζ : ℂ) * Complex.exp ((s : ℂ) * Complex.I)}
+
+theorem mem_openCircleArc_self (ζ : UnitCircle) {δ : ℝ} (hδ : 0 < δ) :
+    ζ ∈ openCircleArc ζ δ :=
+  ⟨0, by simpa using hδ, by simp⟩
+
+theorem openCircleArc_eq_empty (ζ : UnitCircle) {δ : ℝ} (hδ : δ ≤ 0) :
+    openCircleArc ζ δ = ∅ := by
+  ext η
+  simp only [openCircleArc, Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false, not_exists,
+    not_and]
+  intro s hs _
+  linarith [abs_nonneg s]
+
+theorem openCircleArc_eq_univ (ζ : UnitCircle) {δ : ℝ} (hδ : Real.pi < δ) :
+    openCircleArc ζ δ = Set.univ := by
+  ext η
+  simp only [openCircleArc, Set.mem_ofPred_eq, Set.mem_univ, iff_true]
+  let w : ℂ := (η : ℂ) * conj (ζ : ℂ)
+  have hw_norm : ‖w‖ = 1 := by
+    dsimp only [w]
+    rw [norm_mul, RCLike.norm_conj, norm_unitCircle, norm_unitCircle, mul_one]
+  refine ⟨Complex.arg w, ?_, ?_⟩
+  · have h1 := Complex.neg_pi_lt_arg w
+    have h2 := Complex.arg_le_pi w
+    rw [abs_lt]
+    exact ⟨by linarith, by linarith⟩
+  · have hexp : Complex.exp ((Complex.arg w : ℂ) * Complex.I) = w := by
+      have h := Complex.norm_mul_exp_arg_mul_I w
+      rwa [hw_norm, Complex.ofReal_one, one_mul] at h
+    rw [hexp]
+    dsimp only [w]
+    calc (η : ℂ) = (η : ℂ) * ((ζ : ℂ) * conj (ζ : ℂ)) := by rw [unitCircle_mul_conj ζ, mul_one]
+      _ = (ζ : ℂ) * ((η : ℂ) * conj (ζ : ℂ)) := by ring
+
+theorem openCircleArc_mono (ζ : UnitCircle) {δ₁ δ₂ : ℝ} (h12 : δ₁ ≤ δ₂) :
+    openCircleArc ζ δ₁ ⊆ openCircleArc ζ δ₂ := by
+  rintro η ⟨s, hs, hη⟩
+  exact ⟨s, hs.trans_le h12, hη⟩
+
+theorem openCircleArc_rotate (ζ₀ ζ : UnitCircle) (δ : ℝ) :
+    openCircleArc (unitCircleRotate ζ₀ ζ) δ = unitCircleRotate ζ₀ '' openCircleArc ζ δ := by
+  ext η
+  constructor
+  · rintro ⟨s, hs, hη⟩
+    refine ⟨(unitCircleRotate ζ₀).symm η, ⟨s, hs, ?_⟩, (unitCircleRotate ζ₀).apply_symm_apply η⟩
+    change conj (ζ₀ : ℂ) * (η : ℂ) = (ζ : ℂ) * Complex.exp ((s : ℂ) * Complex.I)
+    change (η : ℂ) = ((ζ₀ : ℂ) * (ζ : ℂ)) * Complex.exp ((s : ℂ) * Complex.I) at hη
+    rw [hη]
+    calc conj (ζ₀ : ℂ) * ((ζ₀ : ℂ) * (ζ : ℂ) * Complex.exp ((s : ℂ) * Complex.I))
+        = ((ζ₀ : ℂ) * conj (ζ₀ : ℂ)) * (ζ : ℂ) * Complex.exp ((s : ℂ) * Complex.I) := by ring
+      _ = (ζ : ℂ) * Complex.exp ((s : ℂ) * Complex.I) := by
+          rw [unitCircle_mul_conj ζ₀, one_mul]
+  · rintro ⟨ξ, ⟨s, hs, hξ⟩, rfl⟩
+    refine ⟨s, hs, ?_⟩
+    change (ζ₀ : ℂ) * (ξ : ℂ) = ((ζ₀ : ℂ) * (ζ : ℂ)) * Complex.exp ((s : ℂ) * Complex.I)
+    rw [hξ, mul_assoc]
+
+/-- Exact chordal-ball description of `openCircleArc ζ δ` for `0 < δ ≤ π`. -/
+theorem mem_openCircleArc_iff_chordal {ζ η : UnitCircle} {δ : ℝ}
+    (hδ0 : 0 < δ) (hδpi : δ ≤ Real.pi) :
+    η ∈ openCircleArc ζ δ ↔ ‖(η : ℂ) - (ζ : ℂ)‖ ^ 2 < 2 * (1 - Real.cos δ) := by
+  have hexp_sq : ∀ s : ℝ, ‖Complex.exp ((s : ℂ) * Complex.I) - 1‖ ^ 2 = 2 * (1 - Real.cos s) := by
+    intro s
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+    simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im,
+      Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im, sub_zero]
+    have hcs := Real.sin_sq_add_cos_sq s
+    nlinarith
+  constructor
+  · rintro ⟨s, hs, hη⟩
+    have hnorm : ‖(η : ℂ) - (ζ : ℂ)‖ ^ 2 = 2 * (1 - Real.cos s) := by
+      have hfac : (η : ℂ) - (ζ : ℂ) = (ζ : ℂ) * (Complex.exp ((s : ℂ) * Complex.I) - 1) := by
+        rw [hη]; ring
+      rw [hfac, norm_mul, norm_unitCircle, one_mul, hexp_sq s]
+    rw [hnorm, ← Real.cos_abs s]
+    have hcos_lt : Real.cos δ < Real.cos |s| :=
+      Real.strictAntiOn_cos ⟨abs_nonneg s, hs.le.trans hδpi⟩ ⟨hδ0.le, hδpi⟩ hs
+    linarith
+  · intro hlt
+    let w : ℂ := (η : ℂ) * conj (ζ : ℂ)
+    have hw_norm : ‖w‖ = 1 := by
+      dsimp only [w]
+      rw [norm_mul, RCLike.norm_conj, norm_unitCircle, norm_unitCircle, mul_one]
+    let s : ℝ := Complex.arg w
+    have hexp_w : Complex.exp ((s : ℂ) * Complex.I) = w := by
+      have h := Complex.norm_mul_exp_arg_mul_I w
+      rwa [hw_norm, Complex.ofReal_one, one_mul] at h
+    have hη_eq : (η : ℂ) = (ζ : ℂ) * Complex.exp ((s : ℂ) * Complex.I) := by
+      rw [hexp_w]
+      dsimp only [w]
+      calc (η : ℂ) = (η : ℂ) * ((ζ : ℂ) * conj (ζ : ℂ)) := by rw [unitCircle_mul_conj ζ, mul_one]
+        _ = (ζ : ℂ) * ((η : ℂ) * conj (ζ : ℂ)) := by ring
+    have hnorm : ‖(η : ℂ) - (ζ : ℂ)‖ ^ 2 = 2 * (1 - Real.cos |s|) := by
+      have hfac : (η : ℂ) - (ζ : ℂ) = (ζ : ℂ) * (Complex.exp ((s : ℂ) * Complex.I) - 1) := by
+        rw [hη_eq]; ring
+      rw [hfac, norm_mul, norm_unitCircle, one_mul, hexp_sq s, Real.cos_abs]
+    rw [hnorm] at hlt
+    have hcos_lt : Real.cos δ < Real.cos |s| := by linarith
+    have hs_le_pi : |s| ≤ Real.pi := by
+      dsimp only [s]
+      rw [abs_le]
+      exact ⟨(Complex.neg_pi_lt_arg w).le, Complex.arg_le_pi w⟩
+    have hs_lt : |s| < δ := by
+      by_contra hge
+      push Not at hge
+      have hle := Real.strictAntiOn_cos.antitoneOn ⟨hδ0.le, hδpi⟩ ⟨abs_nonneg s, hs_le_pi⟩ hge
+      linarith
+    exact ⟨s, hs_lt, hη_eq⟩
+
+theorem isOpen_openCircleArc (ζ : UnitCircle) (δ : ℝ) :
+    IsOpen (openCircleArc ζ δ) := by
+  rcases le_or_gt δ 0 with hδ0 | hδ0
+  · rw [openCircleArc_eq_empty ζ hδ0]
+    exact isOpen_empty
+  · rcases le_or_gt δ Real.pi with hδpi | hδpi
+    · have heq : openCircleArc ζ δ =
+          {η : UnitCircle | ‖(η : ℂ) - (ζ : ℂ)‖ ^ 2 < 2 * (1 - Real.cos δ)} := by
+        ext η
+        exact mem_openCircleArc_iff_chordal hδ0 hδpi
+      rw [heq]
+      exact isOpen_lt (((continuous_subtype_val.sub continuous_const).norm).pow 2) continuous_const
+    · rw [openCircleArc_eq_univ ζ hδpi]
+      exact isOpen_univ
+
+/-- Chordal distance is bounded by angular half-width: `openCircleArc ζ δ ⊆ Metric.ball ζ δ`. -/
+theorem dist_lt_of_mem_openCircleArc {ζ η : UnitCircle} {δ : ℝ}
+    (hη : η ∈ openCircleArc ζ δ) :
+    dist η ζ < δ := by
+  obtain ⟨s, hs, hη_eq⟩ := hη
+  rw [Subtype.dist_eq, dist_eq_norm]
+  have hfac : (η : ℂ) - (ζ : ℂ) = (ζ : ℂ) * (Complex.exp ((s : ℂ) * Complex.I) - 1) := by
+    rw [hη_eq]; ring
+  rw [hfac, norm_mul, norm_unitCircle, one_mul]
+  have hsq : ‖Complex.exp ((s : ℂ) * Complex.I) - 1‖ ^ 2 ≤ |s| ^ 2 := by
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+    simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im,
+      Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im, sub_zero]
+    have h1 : 1 - Real.cos s = 2 * Real.sin (s / 2) ^ 2 := by
+      have h2 := Real.cos_two_mul (s / 2)
+      have h3 := Real.sin_sq_add_cos_sq (s / 2)
+      rw [show 2 * (s / 2) = s by ring] at h2
+      linarith
+    have hcs := Real.sin_sq_add_cos_sq s
+    have hsin : Real.sin (s / 2) ^ 2 ≤ (s / 2) ^ 2 := by
+      have habs : |Real.sin (s / 2)| ≤ |s / 2| := Real.abs_sin_le_abs
+      nlinarith [sq_abs (Real.sin (s / 2)), sq_abs (s / 2), abs_nonneg (Real.sin (s / 2))]
+    nlinarith [sq_abs s]
+  have hle : ‖Complex.exp ((s : ℂ) * Complex.I) - 1‖ ≤ |s| := by
+    nlinarith [norm_nonneg (Complex.exp ((s : ℂ) * Complex.I) - 1), abs_nonneg s]
+  exact hle.trans_lt hs
+
+/-- Vitali 3-arc inclusion: if `openCircleArc ζ₁ δ₁` meets `openCircleArc ζ₂ δ₂` and `δ₁ ≤ δ₂`,
+then `openCircleArc ζ₁ δ₁ ⊆ openCircleArc ζ₂ (3 * δ₂)`. -/
+theorem openCircleArc_subset_three_mul {ζ₁ ζ₂ : UnitCircle} {δ₁ δ₂ : ℝ}
+    (h12 : δ₁ ≤ δ₂) (hne : (openCircleArc ζ₁ δ₁ ∩ openCircleArc ζ₂ δ₂).Nonempty) :
+    openCircleArc ζ₁ δ₁ ⊆ openCircleArc ζ₂ (3 * δ₂) := by
+  obtain ⟨ξ, ⟨s₁, hs₁, hξ₁⟩, ⟨s₂, hs₂, hξ₂⟩⟩ := hne
+  rintro η ⟨s, hs, hη⟩
+  refine ⟨s - s₁ + s₂, ?_, ?_⟩
+  · have htri1 := abs_sub s s₁
+    have htri2 := abs_add_le (s - s₁) s₂
+    linarith
+  · have hζ₁ : (ζ₁ : ℂ) = (ζ₂ : ℂ) * Complex.exp (((s₂ - s₁ : ℝ) : ℂ) * Complex.I) := by
+      have heq : (ζ₁ : ℂ) * Complex.exp ((s₁ : ℂ) * Complex.I) =
+          (ζ₂ : ℂ) * Complex.exp ((s₂ : ℂ) * Complex.I) := hξ₁.symm.trans hξ₂
+      calc (ζ₁ : ℂ)
+          = (ζ₁ : ℂ) * Complex.exp ((s₁ : ℂ) * Complex.I) *
+              Complex.exp ((-s₁ : ℂ) * Complex.I) := by
+                rw [mul_assoc, ← Complex.exp_add]
+                simp
+        _ = (ζ₂ : ℂ) * Complex.exp ((s₂ : ℂ) * Complex.I) *
+              Complex.exp ((-s₁ : ℂ) * Complex.I) := by rw [heq]
+        _ = (ζ₂ : ℂ) * Complex.exp (((s₂ - s₁ : ℝ) : ℂ) * Complex.I) := by
+              rw [mul_assoc, ← Complex.exp_add]
+              push_cast
+              ring_nf
+    rw [hη, hζ₁, mul_assoc, ← Complex.exp_add]
+    push_cast
+    ring_nf
+
+/-- Normalized Lebesgue/Haar measure of an open circle arc (`δ > 0`):
+`σ(openCircleArc ζ δ) = min (δ / π) 1`. -/
+theorem unitCircleMeasure_openCircleArc (ζ : UnitCircle) {δ : ℝ} (hδ : 0 < δ) :
+    unitCircleMeasure (openCircleArc ζ δ) = ENNReal.ofReal (min (δ / Real.pi) 1) := by
+  -- Reduce to `ζ = 1` via rotation invariance of `unitCircleMeasure`
+  have hrot : unitCircleMeasure (openCircleArc ζ δ) =
+      unitCircleMeasure (openCircleArc unitCircleOne δ) := by
+    have hζ : ζ = unitCircleRotate ζ unitCircleOne := by
+      ext; simp [unitCircleRotate]
+    conv_lhs => rw [hζ, openCircleArc_rotate]
+    have hmap := (measurePreserving_unitCircleRotate ζ).map_eq
+    conv_lhs => rw [← hmap]
+    rw [Measure.map_apply (unitCircleRotate ζ).continuous.measurable
+      ((unitCircleRotate ζ).isOpenMap _ (isOpen_openCircleArc _ _)).measurableSet]
+    congr 1
+    exact (unitCircleRotate ζ).injective.preimage_image _
+  rw [hrot]
+  rcases lt_or_ge Real.pi δ with hgt_pi | hle_pi
+  · rw [openCircleArc_eq_univ unitCircleOne hgt_pi, unitCircleMeasure_univ]
+    have hge1 : 1 ≤ δ / Real.pi := (one_le_div Real.pi_pos).mpr hgt_pi.le
+    rw [min_eq_right hge1, ENNReal.ofReal_one]
+  · have hle1 : δ / Real.pi ≤ 1 := (div_le_one Real.pi_pos).mpr hle_pi
+    rw [min_eq_left hle1]
+    let A : Set UnitCircle := openCircleArc unitCircleOne δ
+    have hA_meas : MeasurableSet A := (isOpen_openCircleArc unitCircleOne δ).measurableSet
+    have hreal : unitCircleMeasure.real A = δ / Real.pi := by
+      have h1 : (∫ η : UnitCircle, A.indicator (fun _ => (1 : ℝ)) η ∂unitCircleMeasure) =
+          unitCircleMeasure.real A := by
+        rw [integral_indicator hA_meas, setIntegral_const, smul_eq_mul, mul_one]
+      rw [← h1, (integral_unitCircleMeasure_eq_interval _).1, smul_eq_mul]
+      have hae_congr : ∀ t ∈ Set.Ioo (-Real.pi) Real.pi,
+          A.indicator (fun _ => (1 : ℝ)) (fourierToUnitCircle (t : RudinRCA.Chapter04.FourierCircle)) =
+            (Set.Ioo (-δ) δ).indicator (fun _ => (1 : ℝ)) t := by
+        intro t ht
+        have ht_le_pi : |t| ≤ Real.pi := abs_le.mpr ⟨ht.1.le, ht.2.le⟩
+        have hmem_iff : fourierToUnitCircle (t : RudinRCA.Chapter04.FourierCircle) ∈ A ↔
+            t ∈ Set.Ioo (-δ) δ := by
+          rw [show A = openCircleArc unitCircleOne δ from rfl,
+            mem_openCircleArc_iff_chordal hδ hle_pi, fourierToUnitCircle_coe_apply,
+            coe_unitCircleOne]
+          have hexp_sq : ‖Complex.exp ((t : ℂ) * Complex.I) - 1‖ ^ 2 = 2 * (1 - Real.cos |t|) := by
+            rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Real.cos_abs]
+            simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im,
+              Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im, sub_zero]
+            have hcs := Real.sin_sq_add_cos_sq t
+            nlinarith
+          rw [hexp_sq, Set.mem_Ioo, ← abs_lt]
+          constructor
+          · intro hlt
+            by_contra hge
+            push Not at hge
+            have hle := Real.strictAntiOn_cos.antitoneOn ⟨hδ.le, hle_pi⟩ ⟨abs_nonneg t, ht_le_pi⟩ hge
+            linarith
+          · intro hlt
+            have hgt := Real.strictAntiOn_cos ⟨abs_nonneg t, ht_le_pi⟩ ⟨hδ.le, hle_pi⟩ hlt
+            linarith
+        by_cases ht_mem : t ∈ Set.Ioo (-δ) δ
+        · rw [Set.indicator_of_mem (hmem_iff.mpr ht_mem), Set.indicator_of_mem ht_mem]
+        · rw [Set.indicator_of_notMem (mt hmem_iff.mp ht_mem), Set.indicator_of_notMem ht_mem]
+      have hint_eq : (∫ t in (-Real.pi)..Real.pi,
+          A.indicator (fun _ => (1 : ℝ)) (fourierToUnitCircle (t : RudinRCA.Chapter04.FourierCircle))) =
+          ∫ t in (-Real.pi)..Real.pi, (Set.Ioo (-δ) δ).indicator (fun _ => (1 : ℝ)) t := by
+        rw [intervalIntegral.integral_of_le (by linarith [Real.pi_pos]),
+          intervalIntegral.integral_of_le (by linarith [Real.pi_pos]),
+          integral_Ioc_eq_integral_Ioo, integral_Ioc_eq_integral_Ioo]
+        exact setIntegral_congr_fun measurableSet_Ioo hae_congr
+      have hint_val : (∫ t in (-Real.pi)..Real.pi,
+          (Set.Ioo (-δ) δ).indicator (fun _ => (1 : ℝ)) t) = 2 * δ := by
+        rw [intervalIntegral.integral_of_le (by linarith [Real.pi_pos]),
+          integral_Ioc_eq_integral_Ioo, setIntegral_indicator measurableSet_Ioo]
+        have hinter : Set.Ioo (-Real.pi) Real.pi ∩ Set.Ioo (-δ) δ = Set.Ioo (-δ) δ :=
+          Set.inter_eq_self_of_subset_right (Set.Ioo_subset_Ioo (by linarith) hle_pi)
+        rw [hinter, setIntegral_const, Measure.real, Real.volume_Ioo, smul_eq_mul, mul_one,
+          ENNReal.toReal_ofReal (by linarith)]
+        ring
+      have hfourier : ∀ t : ℝ,
+          A.indicator (fun _ => (1 : ℝ))
+            ⟨Complex.exp ((t : ℂ) * Complex.I), by simp [Complex.norm_exp_ofReal_mul_I]⟩ =
+          A.indicator (fun _ => (1 : ℝ))
+            (fourierToUnitCircle (t : RudinRCA.Chapter04.FourierCircle)) := by
+        intro t
+        have hpt : (⟨Complex.exp ((t : ℂ) * Complex.I), by simp [Complex.norm_exp_ofReal_mul_I]⟩ :
+            UnitCircle) = fourierToUnitCircle (t : RudinRCA.Chapter04.FourierCircle) := by
+          ext
+          exact (fourierToUnitCircle_coe_apply t).symm
+        rw [hpt]
+      simp_rw [hfourier]
+      rw [hint_eq, hint_val]
+      have hpi_ne : Real.pi ≠ 0 := Real.pi_pos.ne'
+      field_simp
+    rw [← ENNReal.ofReal_toReal (measure_ne_top unitCircleMeasure A), ← measureReal_def, hreal]
+
+theorem unitCircleMeasure_openCircleArc_pos (ζ : UnitCircle) {δ : ℝ} (hδ : 0 < δ) :
+    0 < unitCircleMeasure (openCircleArc ζ δ) := by
+  rw [unitCircleMeasure_openCircleArc ζ hδ]
+  exact ENNReal.ofReal_pos.mpr (lt_min (div_pos hδ Real.pi_pos) zero_lt_one)
+
+theorem unitCircleMeasure_openCircleArc_ne_zero (ζ : UnitCircle) {δ : ℝ} (hδ : 0 < δ) :
+    unitCircleMeasure (openCircleArc ζ δ) ≠ 0 :=
+  (unitCircleMeasure_openCircleArc_pos ζ hδ).ne'
+
+theorem unitCircleMeasure_openCircleArc_three_mul_le (ζ : UnitCircle) {δ : ℝ} (hδ : 0 < δ) :
+    unitCircleMeasure (openCircleArc ζ (3 * δ)) ≤ 3 * unitCircleMeasure (openCircleArc ζ δ) := by
+  rw [unitCircleMeasure_openCircleArc ζ (by positivity), unitCircleMeasure_openCircleArc ζ hδ]
+  have h3 : (3 : ℝ≥0∞) = ENNReal.ofReal 3 := by norm_num
+  rw [h3, ← ENNReal.ofReal_mul (by norm_num)]
+  refine ENNReal.ofReal_le_ofReal ?_
+  rcases le_total (δ / Real.pi) 1 with hle | hge
+  · rw [min_eq_left hle]
+    exact (min_le_left _ _).trans (le_of_eq (by ring))
+  · have hge3 : 1 ≤ 3 * δ / Real.pi := by rw [mul_div_assoc]; linarith
+    rw [min_eq_right hge, min_eq_right hge3]
+    norm_num
+
+/-- 11.19(3) (Definition, Rudin p. 241): Hardy–Littlewood maximal function `M ν` of a positive
+Borel measure `ν` on `T = UnitCircle`, taking the supremum over all open arcs `I ⊂ T` centered
+at `ζ`, including `T` itself (`δ > π`). -/
+def circleMeasureMaximal (ν : Measure UnitCircle) (ζ : UnitCircle) : ℝ≥0∞ :=
+  ⨆ δ ∈ Set.Ioi (0 : ℝ), ν (openCircleArc ζ δ) / unitCircleMeasure (openCircleArc ζ δ)
+
+/-- 11.19(3) for a complex Borel measure `μ` on `T`: `(M μ)(ζ) = (M |μ|)(ζ)`. -/
+def complexCircleMeasureMaximal (μ : ComplexMeasure UnitCircle) (ζ : UnitCircle) : ℝ≥0∞ :=
+  circleMeasureMaximal μ.variation ζ
+
+/-- Equivalence of `circleMeasureMaximal` with the literal supremum over the family of all proper
+open arcs centered at `ζ` together with `Set.univ = T`. -/
+theorem circleMeasureMaximal_eq_sSup_arcs (ν : Measure UnitCircle) (ζ : UnitCircle) :
+    circleMeasureMaximal ν ζ =
+      ⨆ I ∈ {I : Set UnitCircle | (∃ δ ∈ Set.Ioc 0 Real.pi, I = openCircleArc ζ δ) ∨ I = Set.univ},
+        ν I / unitCircleMeasure I := by
+  apply le_antisymm
+  · refine iSup₂_le fun δ hδ => ?_
+    rcases le_or_gt δ Real.pi with hle | hgt
+    · exact le_iSup₂_of_le (openCircleArc ζ δ) (Or.inl ⟨δ, ⟨hδ, hle⟩, rfl⟩) le_rfl
+    · rw [openCircleArc_eq_univ ζ hgt]
+      exact le_iSup₂_of_le Set.univ (Or.inr rfl) le_rfl
+  · refine iSup₂_le fun I hI => ?_
+    rcases hI with ⟨δ, ⟨hδ0, _⟩, rfl⟩ | rfl
+    · exact le_iSup₂_of_le δ hδ0 le_rfl
+    · have huniv : openCircleArc ζ (2 * Real.pi) = Set.univ :=
+        openCircleArc_eq_univ ζ (by linarith [Real.pi_pos])
+      rw [← huniv]
+      exact le_iSup₂_of_le (2 * Real.pi) (Set.mem_Ioi.mpr (by positivity)) le_rfl
+
+/-- Lower semicontinuity of `ζ ↦ ν(openCircleArc ζ δ)` for every `δ > 0`. -/
+theorem lowerSemicontinuous_measure_openCircleArc (ν : Measure UnitCircle) {δ : ℝ} (hδ : 0 < δ) :
+    LowerSemicontinuous (fun ζ : UnitCircle => ν (openCircleArc ζ δ)) := by
+  rw [lowerSemicontinuous_iff_isOpen_preimage]
+  intro y
+  rw [isOpen_iff_mem_nhds]
+  intro ζ₀ hζ₀
+  simp only [Set.mem_preimage, Set.mem_Ioi] at hζ₀
+  let seq : ℕ → Set UnitCircle := fun n => openCircleArc ζ₀ (δ - δ / ((n : ℝ) + 2))
+  have hmono : Monotone seq := fun m n hmn => openCircleArc_mono ζ₀ <| by
+    have hm2 : 0 < (m : ℝ) + 2 := by positivity
+    have hle : δ / ((n : ℝ) + 2) ≤ δ / ((m : ℝ) + 2) :=
+      div_le_div_of_nonneg_left hδ.le hm2 (by exact_mod_cast Nat.add_le_add_right hmn 2)
+    linarith
+  have hunion : (⋃ n : ℕ, seq n) = openCircleArc ζ₀ δ := by
+    ext η
+    constructor
+    · intro hη
+      obtain ⟨n, hn⟩ := Set.mem_iUnion.mp hη
+      have hsub : δ - δ / ((n : ℝ) + 2) ≤ δ := by
+        have hpos : 0 < δ / ((n : ℝ) + 2) := by positivity
+        linarith
+      exact openCircleArc_mono ζ₀ hsub hn
+    · rintro ⟨s, hs, hη⟩
+      have hgap : 0 < δ - |s| := sub_pos.mpr hs
+      obtain ⟨n, hn⟩ := exists_nat_gt (δ / (δ - |s|))
+      refine Set.mem_iUnion.mpr ⟨n, s, ?_, hη⟩
+      have hn2 : δ / (δ - |s|) < (n : ℝ) + 2 := by linarith
+      have hmul : δ < ((n : ℝ) + 2) * (δ - |s|) := (div_lt_iff₀ hgap).mp hn2
+      have hdiv : δ / ((n : ℝ) + 2) < δ - |s| :=
+        (div_lt_iff₀ (by positivity)).mpr (by linarith)
+      linarith
+  rw [← hunion, hmono.measure_iUnion, lt_iSup_iff] at hζ₀
+  obtain ⟨n, hn⟩ := hζ₀
+  let ε : ℝ := δ / ((n : ℝ) + 2)
+  have hε_pos : 0 < ε := by positivity
+  refine Filter.mem_of_superset
+    ((isOpen_openCircleArc ζ₀ ε).mem_nhds (mem_openCircleArc_self ζ₀ hε_pos)) ?_
+  intro ζ hζ
+  simp only [Set.mem_preimage, Set.mem_Ioi]
+  refine hn.trans_le (measure_mono ?_)
+  obtain ⟨t, ht, hζ_eq⟩ := hζ
+  rintro η ⟨s, hs, hη_eq⟩
+  refine ⟨s - t, ?_, ?_⟩
+  · have htri := abs_sub s t
+    dsimp only [ε] at ht
+    linarith
+  · have hζ₀_eq : (ζ₀ : ℂ) = (ζ : ℂ) * Complex.exp (((-t : ℝ) : ℂ) * Complex.I) := by
+      rw [hζ_eq, mul_assoc, ← Complex.exp_add]
+      simp
+    rw [hη_eq, hζ₀_eq, mul_assoc, ← Complex.exp_add]
+    push_cast
+    ring_nf
+
+theorem lowerSemicontinuous_circleMeasureMaximal (ν : Measure UnitCircle) :
+    LowerSemicontinuous (circleMeasureMaximal ν) := by
+  unfold circleMeasureMaximal
+  refine lowerSemicontinuous_biSup fun δ hδ => ?_
+  let m : ℝ≥0∞ := ENNReal.ofReal (min (δ / Real.pi) 1)
+  have hm0 : m ≠ 0 := by
+    dsimp only [m]
+    rw [← unitCircleMeasure_openCircleArc unitCircleOne hδ]
+    exact unitCircleMeasure_openCircleArc_ne_zero unitCircleOne hδ
+  have hm_top : m ≠ ⊤ := ENNReal.ofReal_ne_top
+  rw [lowerSemicontinuous_iff_isOpen_preimage]
+  intro y
+  have heq : (fun ζ : UnitCircle => ν (openCircleArc ζ δ) / unitCircleMeasure (openCircleArc ζ δ)) ⁻¹'
+        Set.Ioi y =
+      (fun ζ : UnitCircle => ν (openCircleArc ζ δ)) ⁻¹' Set.Ioi (y * m) := by
+    ext ζ
+    simp only [Set.mem_preimage, Set.mem_Ioi, unitCircleMeasure_openCircleArc ζ hδ]
+    exact ENNReal.lt_div_iff_mul_lt (Or.inl hm0) (Or.inl hm_top)
+  rw [heq]
+  exact lowerSemicontinuous_iff_isOpen_preimage.mp
+    (lowerSemicontinuous_measure_openCircleArc ν hδ) (y * m)
+
+theorem measurable_circleMeasureMaximal (ν : Measure UnitCircle) :
+    Measurable (circleMeasureMaximal ν) :=
+  (lowerSemicontinuous_circleMeasureMaximal ν).measurable
+
+theorem measurable_complexCircleMeasureMaximal (μ : ComplexMeasure UnitCircle) :
+    Measurable (complexCircleMeasureMaximal μ) :=
+  measurable_circleMeasureMaximal μ.variation
+
+/-- Finite Vitali 3-arc covering lemma on `UnitCircle`. -/
+theorem exists_disjoint_subfamily_openCircleArc (F : Finset UnitCircle) (δ : UnitCircle → ℝ)
+    (hδ : ∀ ζ ∈ F, 0 < δ ζ) :
+    ∃ G ⊆ F,
+      (G : Set UnitCircle).PairwiseDisjoint (fun ζ => openCircleArc ζ (δ ζ)) ∧
+      (⋃ ζ ∈ F, openCircleArc ζ (δ ζ)) ⊆ ⋃ ζ ∈ G, openCircleArc ζ (3 * δ ζ) := by
+  classical
+  induction F using Finset.strongInduction with
+  | H F ih =>
+    rcases F.eq_empty_or_nonempty with rfl | hne
+    · exact ⟨∅, Finset.Subset.refl _, by simp, by simp⟩
+    · obtain ⟨ζ₀, hζ₀F, hmax⟩ := F.exists_max_image δ hne
+      let F' : Finset UnitCircle :=
+        F.filter fun ζ => Disjoint (openCircleArc ζ (δ ζ)) (openCircleArc ζ₀ (δ ζ₀))
+      have hζ₀_notMem : ζ₀ ∉ F' := by
+        simp only [F', Finset.mem_filter, not_and]
+        intro _ hdisj
+        have hmem := mem_openCircleArc_self ζ₀ (hδ ζ₀ hζ₀F)
+        exact Set.disjoint_left.mp hdisj hmem hmem
+      have hF'_ssub : F' ⊂ F :=
+        Finset.ssubset_iff_subset_ne.mpr
+          ⟨Finset.filter_subset _ F, fun heq => hζ₀_notMem (heq ▸ hζ₀F)⟩
+      obtain ⟨G', hG'F', hG'_disj, hG'_cov⟩ :=
+        ih F' hF'_ssub (fun ζ hζ => hδ ζ (Finset.filter_subset _ F hζ))
+      refine ⟨insert ζ₀ G', Finset.insert_subset_iff.mpr ⟨hζ₀F, hG'F'.trans (Finset.filter_subset _ F)⟩,
+        ?_, ?_⟩
+      · rw [Finset.coe_insert]
+        refine hG'_disj.insert fun ζ hζG' _ => ?_
+        exact (Finset.mem_filter.mp (hG'F' hζG')).2.symm
+      · intro η hη
+        obtain ⟨ζ, hζF, hηζ⟩ := Set.mem_iUnion₂.mp hη
+        by_cases hdisj : Disjoint (openCircleArc ζ (δ ζ)) (openCircleArc ζ₀ (δ ζ₀))
+        · have hζF' : ζ ∈ F' := Finset.mem_filter.mpr ⟨hζF, hdisj⟩
+          have hcov := hG'_cov (Set.mem_iUnion₂.mpr ⟨ζ, hζF', hηζ⟩)
+          obtain ⟨ξ, hξG', hηξ⟩ := Set.mem_iUnion₂.mp hcov
+          exact Set.mem_iUnion₂.mpr ⟨ξ, Finset.mem_insert_of_mem hξG', hηξ⟩
+        · rw [Set.not_disjoint_iff_nonempty_inter] at hdisj
+          have hsub := openCircleArc_subset_three_mul (hmax ζ hζF) hdisj hηζ
+          exact Set.mem_iUnion₂.mpr ⟨ζ₀, Finset.mem_insert_self ζ₀ G', hsub⟩
+
+/-- Weak-type `(1, 1)` maximal inequality on `T = UnitCircle` (`11.19(6)` for positive finite
+Borel measures): `σ{M ν > λ} ≤ (3 / λ) ν(T)` for all `0 < λ < ∞`. -/
+theorem weak_type_circleMeasureMaximal (ν : Measure UnitCircle) [IsFiniteMeasure ν]
+    {lam : ℝ} (hlam : 0 < lam) :
+    unitCircleMeasure {ζ : UnitCircle | ENNReal.ofReal lam < circleMeasureMaximal ν ζ} ≤
+      ENNReal.ofReal (3 / lam) * ν Set.univ := by
+  classical
+  let E : Set UnitCircle := {ζ : UnitCircle | ENNReal.ofReal lam < circleMeasureMaximal ν ζ}
+  have hE_open : IsOpen E :=
+    lowerSemicontinuous_iff_isOpen_preimage.mp (lowerSemicontinuous_circleMeasureMaximal ν)
+      (ENNReal.ofReal lam)
+  -- Bound `unitCircleMeasure K` for any compact `K ⊆ E`, then use `InnerRegular`
+  have hK_bound : ∀ K : Set UnitCircle, K ⊆ E → IsCompact K →
+      unitCircleMeasure K ≤ ENNReal.ofReal (3 / lam) * ν Set.univ := by
+    intro K hKE hK_comp
+    have hex : ∀ ζ : UnitCircle, ζ ∈ K →
+        ∃ δ : ℝ, 0 < δ ∧
+          ENNReal.ofReal lam * unitCircleMeasure (openCircleArc ζ δ) <
+            ν (openCircleArc ζ δ) := by
+      intro ζ hζK
+      have hlt : ENNReal.ofReal lam < circleMeasureMaximal ν ζ := hKE hζK
+      unfold circleMeasureMaximal at hlt
+      rw [lt_iSup_iff] at hlt
+      obtain ⟨δ, hlt⟩ := hlt
+      rw [lt_iSup_iff] at hlt
+      obtain ⟨hδ, hlt⟩ := hlt
+      refine ⟨δ, hδ, ?_⟩
+      exact (ENNReal.lt_div_iff_mul_lt
+        (Or.inl (unitCircleMeasure_openCircleArc_ne_zero ζ hδ))
+        (Or.inl (measure_ne_top _ _))).mp hlt
+    let δ : UnitCircle → ℝ := fun ζ => if h : ζ ∈ K then (hex ζ h).choose else 1
+    have hδ_pos : ∀ ζ ∈ K, 0 < δ ζ := fun ζ hζ => by
+      simp only [δ, hζ, ↓reduceDIte]; exact (hex ζ hζ).choose_spec.1
+    have hδ_ineq : ∀ ζ ∈ K,
+        ENNReal.ofReal lam * unitCircleMeasure (openCircleArc ζ (δ ζ)) ≤
+          ν (openCircleArc ζ (δ ζ)) := fun ζ hζ => by
+      simp only [δ, hζ, ↓reduceDIte]; exact (hex ζ hζ).choose_spec.2.le
+    obtain ⟨F, hFK_cov⟩ := hK_comp.elim_finite_subcover
+      (fun ζ : K => openCircleArc ζ.1 (δ ζ.1))
+      (fun ζ => isOpen_openCircleArc ζ.1 (δ ζ.1))
+      (fun ζ hζ => Set.mem_iUnion.mpr ⟨⟨ζ, hζ⟩, mem_openCircleArc_self ζ (hδ_pos ζ hζ)⟩)
+    let F₀ : Finset UnitCircle := F.image Subtype.val
+    have hF₀_sub : (F₀ : Set UnitCircle) ⊆ K := by
+      intro ζ hζ
+      obtain ⟨x, _, rfl⟩ := Finset.mem_image.mp hζ
+      exact x.2
+    have hK_sub_F₀ : K ⊆ ⋃ ζ ∈ F₀, openCircleArc ζ (δ ζ) := by
+      intro η hη
+      have hmem := hFK_cov hη
+      obtain ⟨x, hx⟩ := Set.mem_iUnion.mp hmem
+      obtain ⟨hxF, hηx⟩ := Set.mem_iUnion.mp hx
+      exact Set.mem_iUnion₂.mpr ⟨x.1, Finset.mem_image_of_mem Subtype.val hxF, hηx⟩
+    obtain ⟨G, hGF₀, hG_disj, hG_cov⟩ :=
+      exists_disjoint_subfamily_openCircleArc F₀ δ (fun ζ hζ => hδ_pos ζ (hF₀_sub hζ))
+    have hK_sub_G : K ⊆ ⋃ ζ ∈ G, openCircleArc ζ (3 * δ ζ) := hK_sub_F₀.trans hG_cov
+    have hGK : ∀ ζ ∈ G, ζ ∈ K := fun ζ hζ => hF₀_sub (hGF₀ hζ)
+    have hlam_ne0 : ENNReal.ofReal lam ≠ 0 := (ENNReal.ofReal_pos.mpr hlam).ne'
+    have hlam_top : ENNReal.ofReal lam ≠ ⊤ := ENNReal.ofReal_ne_top
+    have hmul_le : ENNReal.ofReal lam * unitCircleMeasure K ≤ 3 * ν Set.univ := by
+      calc ENNReal.ofReal lam * unitCircleMeasure K
+          ≤ ENNReal.ofReal lam * unitCircleMeasure (⋃ ζ ∈ G, openCircleArc ζ (3 * δ ζ)) :=
+            mul_le_mul_of_nonneg_left (measure_mono hK_sub_G) zero_le
+        _ ≤ ENNReal.ofReal lam * ∑ ζ ∈ G, unitCircleMeasure (openCircleArc ζ (3 * δ ζ)) :=
+            mul_le_mul_of_nonneg_left (measure_biUnion_finset_le G _) zero_le
+        _ ≤ ENNReal.ofReal lam * ∑ ζ ∈ G, 3 * unitCircleMeasure (openCircleArc ζ (δ ζ)) := by
+            refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun ζ hζ => ?_) zero_le
+            exact unitCircleMeasure_openCircleArc_three_mul_le ζ (hδ_pos ζ (hGK ζ hζ))
+        _ = 3 * ∑ ζ ∈ G, ENNReal.ofReal lam * unitCircleMeasure (openCircleArc ζ (δ ζ)) := by
+            rw [Finset.mul_sum, Finset.mul_sum]
+            refine Finset.sum_congr rfl fun ζ _ => by ac_rfl
+        _ ≤ 3 * ∑ ζ ∈ G, ν (openCircleArc ζ (δ ζ)) :=
+            mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun ζ hζ => hδ_ineq ζ (hGK ζ hζ)) zero_le
+        _ = 3 * ν (⋃ ζ ∈ G, openCircleArc ζ (δ ζ)) := by
+            rw [measure_biUnion_finset hG_disj fun ζ _ => (isOpen_openCircleArc ζ (δ ζ)).measurableSet]
+        _ ≤ 3 * ν Set.univ :=
+            mul_le_mul_of_nonneg_left (measure_mono (Set.subset_univ _)) zero_le
+    have hdiv : unitCircleMeasure K ≤ (3 * ν Set.univ) / ENNReal.ofReal lam :=
+      (ENNReal.le_div_iff_mul_le (Or.inl hlam_ne0) (Or.inl hlam_top)).mpr
+        (by simpa only [mul_comm] using hmul_le)
+    have h3_div : (3 * ν Set.univ) / ENNReal.ofReal lam =
+        ENNReal.ofReal (3 / lam) * ν Set.univ := by
+      have h3 : (3 : ℝ≥0∞) = ENNReal.ofReal 3 := by norm_num
+      rw [div_eq_mul_inv, mul_right_comm, ← div_eq_mul_inv, h3,
+        ← ENNReal.ofReal_div_of_pos hlam]
+    rwa [h3_div] at hdiv
+  rw [hE_open.measurableSet.measure_eq_iSup_isCompact_of_ne_top (measure_ne_top _ _)]
+  exact iSup₂_le fun K hKE => iSup_le fun hK => hK_bound K hKE hK
+
+/-- 11.19(6) for complex Borel measures `μ` on `T`:
+`σ{M μ > λ} ≤ (3 / λ) ‖μ‖` for every `0 < λ < ∞`. -/
+theorem weak_type_complexCircleMeasureMaximal (μ : ComplexMeasure UnitCircle)
+    {lam : ℝ} (hlam : 0 < lam) :
+    unitCircleMeasure {ζ : UnitCircle | ENNReal.ofReal lam < complexCircleMeasureMaximal μ ζ} ≤
+      ENNReal.ofReal ((3 / lam) * μ.variation.real Set.univ) ∧
+    unitCircleMeasure.real {ζ : UnitCircle | ENNReal.ofReal lam < complexCircleMeasureMaximal μ ζ} ≤
+      (3 / lam) * μ.variation.real Set.univ := by
+  have : IsFiniteMeasure μ.variation := isFiniteMeasure_complexMeasure_variation μ
+  have h1 := weak_type_circleMeasureMaximal μ.variation hlam
+  have hvar_eq : μ.variation Set.univ = ENNReal.ofReal (μ.variation.real Set.univ) := by
+    rw [measureReal_def, ENNReal.ofReal_toReal (measure_ne_top _ _)]
+  rw [hvar_eq, ← ENNReal.ofReal_mul (by positivity)] at h1
+  refine ⟨h1, ?_⟩
+  rw [measureReal_def]
+  exact (ENNReal.toReal_le_of_le_ofReal (by positivity) h1)
+
+/-- 11.19(4) (Definition, Rudin p. 241): symmetric arc derivative `(Dμ)(ζ) = L` of a complex
+Borel measure `μ` on `T = UnitCircle`. -/
+def HasCircleSymmetricDerivAt (μ : ComplexMeasure UnitCircle) (ζ : UnitCircle) (L : ℂ) : Prop :=
+  Tendsto (fun δ : ℝ => μ (openCircleArc ζ δ) / (unitCircleMeasure.real (openCircleArc ζ δ) : ℂ))
+    (𝓝[>] 0) (𝓝 L)
+
+/-- 11.19(4) for a positive Borel measure `ν` on `T = UnitCircle` (valued in `ℝ≥0∞ = [0, ∞]`,
+avoiding `.toReal` truncation on infinite measures). -/
+def HasPositiveCircleSymmetricDerivAt (ν : Measure UnitCircle) (ζ : UnitCircle)
+    (L : ℝ≥0∞) : Prop :=
+  Tendsto (fun δ : ℝ => ν (openCircleArc ζ δ) / unitCircleMeasure (openCircleArc ζ δ))
+    (𝓝[>] 0) (𝓝 L)
+
+/-- 11.19(5) (Definition, Rudin p. 241): `ζ ∈ T` is a Lebesgue point of `f ∈ L¹(T)` if
+`lim_{δ → 0⁺} (1 / σ(I_δ)) ∫_{I_δ} ‖f - f(ζ)‖ dσ = 0`. -/
+def IsCircleLebesguePoint (f : UnitCircle → ℂ) (ζ : UnitCircle) : Prop :=
+  Tendsto (fun δ : ℝ =>
+    (unitCircleMeasure.real (openCircleArc ζ δ))⁻¹ *
+      ∫ η in openCircleArc ζ δ, ‖f η - f ζ‖ ∂unitCircleMeasure)
+    (𝓝[>] 0) (𝓝 0)
+
+/-- At any Lebesgue point `ζ` of `f ∈ L¹(T)`, the absolutely continuous complex measure `f dσ`
+has symmetric derivative `(D(f dσ))(ζ) = f(ζ)`. -/
+theorem hasCircleSymmetricDerivAt_withDensityᵥ_of_isCircleLebesguePoint
+    {f : UnitCircle → ℂ} (hf : Integrable f unitCircleMeasure) {ζ : UnitCircle}
+    (hleb : IsCircleLebesguePoint f ζ) :
+    HasCircleSymmetricDerivAt (unitCircleMeasure.withDensityᵥ f) ζ (f ζ) := by
+  unfold HasCircleSymmetricDerivAt
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  filter_upwards [self_mem_nhdsWithin, Metric.tendsto_nhds.mp hleb ε hε] with δ hδ hleb_δ
+  have hδ_pos : 0 < δ := hδ
+  have hA_meas : MeasurableSet (openCircleArc ζ δ) := (isOpen_openCircleArc ζ δ).measurableSet
+  have hσ_pos : 0 < unitCircleMeasure.real (openCircleArc ζ δ) := by
+    rw [measureReal_def]
+    exact ENNReal.toReal_pos (unitCircleMeasure_openCircleArc_ne_zero ζ hδ_pos) (measure_ne_top _ _)
+  have happly : (unitCircleMeasure.withDensityᵥ f) (openCircleArc ζ δ) =
+      ∫ η in openCircleArc ζ δ, f η ∂unitCircleMeasure :=
+    withDensityᵥ_apply hf hA_meas
+  have hconst_int : (∫ _η in openCircleArc ζ δ, f ζ ∂unitCircleMeasure) =
+      (unitCircleMeasure.real (openCircleArc ζ δ) : ℂ) * f ζ := by
+    rw [setIntegral_const, Complex.real_smul]
+  have hdiff : (unitCircleMeasure.withDensityᵥ f) (openCircleArc ζ δ) /
+        (unitCircleMeasure.real (openCircleArc ζ δ) : ℂ) - f ζ =
+      ((unitCircleMeasure.real (openCircleArc ζ δ))⁻¹ : ℂ) *
+        ∫ η in openCircleArc ζ δ, (f η - f ζ) ∂unitCircleMeasure := by
+    have hne : (unitCircleMeasure.real (openCircleArc ζ δ) : ℂ) ≠ 0 :=
+      Complex.ofReal_ne_zero.mpr hσ_pos.ne'
+    rw [happly, integral_sub hf.integrableOn (integrableOn_const (measure_ne_top _ _)),
+      hconst_int]
+    field_simp [hne]
+  rw [dist_eq_norm, hdiff, norm_mul, norm_inv, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos hσ_pos]
+  have hle : (unitCircleMeasure.real (openCircleArc ζ δ))⁻¹ *
+        ‖∫ η in openCircleArc ζ δ, (f η - f ζ) ∂unitCircleMeasure‖ ≤
+      (unitCircleMeasure.real (openCircleArc ζ δ))⁻¹ *
+        ∫ η in openCircleArc ζ δ, ‖f η - f ζ‖ ∂unitCircleMeasure :=
+    mul_le_mul_of_nonneg_left (norm_integral_le_integral_norm _) (inv_nonneg.mpr hσ_pos.le)
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg
+    (mul_nonneg (inv_nonneg.mpr hσ_pos.le) (integral_nonneg fun _ => norm_nonneg _))] at hleb_δ
+  exact hle.trans_lt hleb_δ
+
+/-- Every continuous function on `T` has every point of `T` as a Lebesgue point. -/
+theorem isCircleLebesguePoint_of_continuous (g : C(UnitCircle, ℂ)) (ζ : UnitCircle) :
+    IsCircleLebesguePoint g ζ := by
+  unfold IsCircleLebesguePoint
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  obtain ⟨δ₀, hδ₀_pos, hδ₀⟩ := Metric.continuous_iff.mp g.continuous ζ (ε / 2) (half_pos hε)
+  filter_upwards [Ioo_mem_nhdsGT hδ₀_pos] with δ ⟨hδ_pos, hδ_lt⟩
+  have hσ_pos : 0 < unitCircleMeasure.real (openCircleArc ζ δ) := by
+    rw [measureReal_def]
+    exact ENNReal.toReal_pos (unitCircleMeasure_openCircleArc_ne_zero ζ hδ_pos) (measure_ne_top _ _)
+  have hint : IntegrableOn (fun η : UnitCircle => ‖g η - g ζ‖) (openCircleArc ζ δ) unitCircleMeasure :=
+    ((g.continuous.sub continuous_const).norm.integrable_of_hasCompactSupport
+      (HasCompactSupport.of_compactSpace _)).integrableOn
+  have hbound : (∫ η in openCircleArc ζ δ, ‖g η - g ζ‖ ∂unitCircleMeasure) ≤
+      (ε / 2) * unitCircleMeasure.real (openCircleArc ζ δ) := by
+    calc (∫ η in openCircleArc ζ δ, ‖g η - g ζ‖ ∂unitCircleMeasure)
+        ≤ ∫ _η in openCircleArc ζ δ, (ε / 2) ∂unitCircleMeasure := by
+          refine setIntegral_mono_on hint (integrableOn_const (measure_ne_top _ _))
+            (isOpen_openCircleArc ζ δ).measurableSet fun η hη => ?_
+          rw [← dist_eq_norm]
+          exact (hδ₀ η ((dist_lt_of_mem_openCircleArc hη).trans hδ_lt)).le
+      _ = (ε / 2) * unitCircleMeasure.real (openCircleArc ζ δ) := by
+          rw [setIntegral_const, smul_eq_mul, mul_comm]
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg
+    (mul_nonneg (inv_nonneg.mpr hσ_pos.le) (integral_nonneg fun _ => norm_nonneg _))]
+  calc (unitCircleMeasure.real (openCircleArc ζ δ))⁻¹ *
+          ∫ η in openCircleArc ζ δ, ‖g η - g ζ‖ ∂unitCircleMeasure
+      ≤ (unitCircleMeasure.real (openCircleArc ζ δ))⁻¹ *
+          ((ε / 2) * unitCircleMeasure.real (openCircleArc ζ δ)) :=
+        mul_le_mul_of_nonneg_left hbound (inv_nonneg.mpr hσ_pos.le)
+    _ = ε / 2 := by field_simp [hσ_pos.ne']
+    _ < ε := half_lt_self hε
+
+/-- 11.19 (Theorem 7.7 on `T`, Rudin p. 241): almost every point of `T` (`[σ]`) is a Lebesgue
+point of `f ∈ L¹(T)`. -/
+theorem ae_isCircleLebesguePoint {f : UnitCircle → ℂ} (hf : Integrable f unitCircleMeasure) :
+    ∀ᵐ ζ ∂unitCircleMeasure, IsCircleLebesguePoint f ζ := by
+  have hf_mem : MemLp f 1 unitCircleMeasure := memLp_one_iff_integrable.mpr hf
+  let avg (h : UnitCircle → ℂ) (ζ : UnitCircle) (δ : ℝ) : ℝ :=
+    (unitCircleMeasure.real (openCircleArc ζ δ))⁻¹ *
+      ∫ η in openCircleArc ζ δ, ‖h η - h ζ‖ ∂unitCircleMeasure
+  let osc (h : UnitCircle → ℂ) (ζ : UnitCircle) : ℝ≥0∞ :=
+    Filter.limsup (fun δ : ℝ => ENNReal.ofReal (avg h ζ δ)) (𝓝[>] 0)
+  -- Show `osc f ζ = 0` `σ`-a.e., then deduce `IsCircleLebesguePoint f ζ`
+  have hosc_zero_imp : ∀ ζ : UnitCircle, osc f ζ = 0 → IsCircleLebesguePoint f ζ := by
+    intro ζ h0
+    have hlim : Tendsto (fun δ : ℝ => ENNReal.ofReal (avg f ζ δ)) (𝓝[>] 0) (𝓝 0) :=
+      tendsto_of_le_liminf_of_limsup_le zero_le (h0 ▸ le_rfl)
+    have htoReal : Tendsto (fun δ : ℝ => (ENNReal.ofReal (avg f ζ δ)).toReal) (𝓝[>] 0) (𝓝 0) := by
+      simpa only [Function.comp_def, ENNReal.toReal_zero] using
+        (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hlim
+    refine htoReal.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with δ hδ
+    have hδ_pos : 0 < δ := hδ
+    have hnn : 0 ≤ avg f ζ δ := mul_nonneg
+      (inv_nonneg.mpr measureReal_nonneg) (integral_nonneg fun _ => norm_nonneg _)
+    exact ENNReal.toReal_ofReal hnn
+  -- Pointwise oscillation bound `osc f ζ ≤ M(|f - g| dσ)(ζ) + ‖f ζ - g ζ‖ₑ` for any `g ∈ C(T)`
+  have hosc_le : ∀ (g : C(UnitCircle, ℂ)) (ζ : UnitCircle),
+      osc f ζ ≤ circleMeasureMaximal
+        (unitCircleMeasure.withDensity fun η => ‖f η - g η‖ₑ) ζ + ‖f ζ - g ζ‖ₑ := by
+    intro g ζ
+    let hfg : UnitCircle → ℂ := f - (g : UnitCircle → ℂ)
+    have hhfg_int : Integrable hfg unitCircleMeasure :=
+      hf.sub (g.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))
+    let ν_fg : Measure UnitCircle := unitCircleMeasure.withDensity fun η => ‖hfg η‖ₑ
+    have hg_leb := (ENNReal.tendsto_ofReal (isCircleLebesguePoint_of_continuous g ζ))
+    rw [ENNReal.ofReal_zero] at hg_leb
+    have hev : ∀ᶠ δ : ℝ in 𝓝[>] 0,
+        ENNReal.ofReal (avg f ζ δ) ≤
+          circleMeasureMaximal ν_fg ζ + ENNReal.ofReal (avg g ζ δ) + ‖hfg ζ‖ₑ := by
+      filter_upwards [self_mem_nhdsWithin] with δ hδ
+      have hδ_pos : 0 < δ := hδ
+      let I := openCircleArc ζ δ
+      have hI_meas : MeasurableSet I := (isOpen_openCircleArc ζ δ).measurableSet
+      have hσ_pos : 0 < unitCircleMeasure.real I := by
+        rw [measureReal_def]
+        exact ENNReal.toReal_pos (unitCircleMeasure_openCircleArc_ne_zero ζ hδ_pos) (measure_ne_top _ _)
+      have htri_int : (∫ η in I, ‖f η - f ζ‖ ∂unitCircleMeasure) ≤
+          (∫ η in I, ‖hfg η‖ ∂unitCircleMeasure) +
+            (∫ η in I, ‖g η - g ζ‖ ∂unitCircleMeasure) +
+            unitCircleMeasure.real I * ‖hfg ζ‖ := by
+        have hint1 : IntegrableOn (fun η => ‖hfg η‖) I unitCircleMeasure := hhfg_int.norm.integrableOn
+        have hint2 : IntegrableOn (fun η => ‖g η - g ζ‖) I unitCircleMeasure :=
+          ((g.continuous.sub continuous_const).norm.integrable_of_hasCompactSupport
+            (HasCompactSupport.of_compactSpace _)).integrableOn
+        have hint3 : IntegrableOn (fun _ => ‖hfg ζ‖) I unitCircleMeasure :=
+          integrableOn_const (measure_ne_top _ _)
+        have hsum1 := integral_add (f := fun η => ‖hfg η‖ + ‖g η - g ζ‖)
+          (g := fun _ => ‖hfg ζ‖) (hint1.add hint2) hint3
+        have hsum2 := integral_add hint1 hint2
+        rw [hsum2, setIntegral_const, smul_eq_mul] at hsum1
+        rw [← hsum1]
+        refine setIntegral_mono_on ((hf.sub (integrable_const _)).norm.integrableOn)
+          ((hint1.add hint2).add hint3) hI_meas fun η _ => ?_
+        dsimp only [Pi.add_apply, hfg, Pi.sub_apply]
+        have heq : f η - f ζ = (f η - g η) + (g η - g ζ) - (f ζ - g ζ) := by ring
+        rw [heq]
+        linarith [norm_sub_le ((f η - g η) + (g η - g ζ)) (f ζ - g ζ),
+          norm_add_le (f η - g η) (g η - g ζ)]
+      have havg_le : avg f ζ δ ≤
+          (unitCircleMeasure.real I)⁻¹ * (∫ η in I, ‖hfg η‖ ∂unitCircleMeasure) +
+            avg g ζ δ + ‖hfg ζ‖ := by
+        dsimp only [avg]
+        have hmul := mul_le_mul_of_nonneg_left htri_int (inv_nonneg.mpr hσ_pos.le)
+        have hne : unitCircleMeasure.real I ≠ 0 := hσ_pos.ne'
+        calc (unitCircleMeasure.real I)⁻¹ * ∫ η in I, ‖f η - f ζ‖ ∂unitCircleMeasure
+            ≤ (unitCircleMeasure.real I)⁻¹ *
+                ((∫ η in I, ‖hfg η‖ ∂unitCircleMeasure) +
+                  (∫ η in I, ‖g η - g ζ‖ ∂unitCircleMeasure) +
+                  unitCircleMeasure.real I * ‖hfg ζ‖) := hmul
+          _ = (unitCircleMeasure.real I)⁻¹ * (∫ η in I, ‖hfg η‖ ∂unitCircleMeasure) +
+                (unitCircleMeasure.real I)⁻¹ * (∫ η in I, ‖g η - g ζ‖ ∂unitCircleMeasure) +
+                ‖hfg ζ‖ := by field_simp [hne]
+      have h1_nn : 0 ≤ (unitCircleMeasure.real I)⁻¹ * (∫ η in I, ‖hfg η‖ ∂unitCircleMeasure) :=
+        mul_nonneg (inv_nonneg.mpr hσ_pos.le) (integral_nonneg fun _ => norm_nonneg _)
+      have h2_nn : 0 ≤ avg g ζ δ :=
+        mul_nonneg (inv_nonneg.mpr hσ_pos.le) (integral_nonneg fun _ => norm_nonneg _)
+      have h1_le_M : ENNReal.ofReal
+            ((unitCircleMeasure.real I)⁻¹ * (∫ η in I, ‖hfg η‖ ∂unitCircleMeasure)) ≤
+          circleMeasureMaximal ν_fg ζ := by
+        rw [ENNReal.ofReal_mul (inv_nonneg.mpr hσ_pos.le),
+          ENNReal.ofReal_inv_of_pos hσ_pos,
+          ofReal_integral_eq_lintegral_ofReal hhfg_int.norm.integrableOn
+            (ae_of_all _ fun _ => norm_nonneg _)]
+        have hνI : (∫⁻ η in I, ENNReal.ofReal ‖hfg η‖ ∂unitCircleMeasure) = ν_fg I := by
+          dsimp only [ν_fg]
+          rw [withDensity_apply _ hI_meas]
+          refine lintegral_congr fun η => ofReal_norm (hfg η)
+        have hσI : ENNReal.ofReal (unitCircleMeasure.real I) = unitCircleMeasure I := by
+          rw [measureReal_def, ENNReal.ofReal_toReal (measure_ne_top _ _)]
+        rw [hνI, hσI, mul_comm, ← div_eq_mul_inv]
+        exact le_iSup₂_of_le δ hδ_pos le_rfl
+      calc ENNReal.ofReal (avg f ζ δ)
+          ≤ ENNReal.ofReal
+              ((unitCircleMeasure.real I)⁻¹ * (∫ η in I, ‖hfg η‖ ∂unitCircleMeasure) +
+                avg g ζ δ + ‖hfg ζ‖) := ENNReal.ofReal_le_ofReal havg_le
+        _ = ENNReal.ofReal ((unitCircleMeasure.real I)⁻¹ * (∫ η in I, ‖hfg η‖ ∂unitCircleMeasure)) +
+              ENNReal.ofReal (avg g ζ δ) + ‖hfg ζ‖ₑ := by
+            rw [ENNReal.ofReal_add (add_nonneg h1_nn h2_nn) (norm_nonneg _),
+              ENNReal.ofReal_add h1_nn h2_nn, ofReal_norm]
+        _ ≤ circleMeasureMaximal ν_fg ζ + ENNReal.ofReal (avg g ζ δ) + ‖hfg ζ‖ₑ := by
+            gcongr
+    have hlim_rhs : Tendsto
+        (fun δ : ℝ => circleMeasureMaximal ν_fg ζ + ENNReal.ofReal (avg g ζ δ) + ‖hfg ζ‖ₑ)
+        (𝓝[>] 0) (𝓝 (circleMeasureMaximal ν_fg ζ + 0 + ‖hfg ζ‖ₑ)) :=
+      (tendsto_const_nhds.add hg_leb).add tendsto_const_nhds
+    have hls_rhs : Filter.limsup
+        (fun δ : ℝ => circleMeasureMaximal ν_fg ζ + ENNReal.ofReal (avg g ζ δ) + ‖hfg ζ‖ₑ)
+        (𝓝[>] 0) = circleMeasureMaximal ν_fg ζ + ‖hfg ζ‖ₑ := by
+      simpa only [add_zero] using hlim_rhs.limsup_eq
+    change osc f ζ ≤ circleMeasureMaximal ν_fg ζ + ‖hfg ζ‖ₑ
+    rw [← hls_rhs]
+    exact Filter.limsup_le_limsup hev
+  -- For each `m : ℕ`, `unitCircleMeasure {ζ | osc f ζ > 1 / (m + 1)} = 0`
+  have hmeas_level_zero : ∀ m : ℕ,
+      unitCircleMeasure {ζ : UnitCircle | ENNReal.ofReal (1 / ((m : ℝ) + 1)) < osc f ζ} = 0 := by
+    intro m
+    let ε : ℝ := 1 / ((m : ℝ) + 1)
+    have hε_pos : 0 < ε := by positivity
+    apply le_antisymm _ zero_le
+    refine le_of_forall_pos_le_add fun η hη => ?_
+    rw [zero_add]
+    by_cases hη_top : η = ⊤
+    · simp [hη_top]
+    have hη_r_pos : 0 < η.toReal := ENNReal.toReal_pos hη.ne' hη_top
+    let δ_g : ℝ := (ε / 16) * η.toReal
+    have hδ_g_pos : 0 < δ_g := by positivity
+    obtain ⟨g, hfg_lp⟩ := @exists_continuous_eLpNorm_sub_le 1 ⟨le_rfl⟩ ENNReal.one_ne_top
+      f hf_mem δ_g hδ_g_pos
+    let hfg : UnitCircle → ℂ := f - (g : UnitCircle → ℂ)
+    have hhfg_int : Integrable hfg unitCircleMeasure :=
+      hf.sub (g.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))
+    rw [eLpNorm_one_eq_lintegral_enorm hhfg_int.aestronglyMeasurable] at hfg_lp
+    let ν_fg : Measure UnitCircle := unitCircleMeasure.withDensity fun x => ‖hfg x‖ₑ
+    have hν_univ : ν_fg Set.univ ≤ ENNReal.ofReal δ_g := by
+      dsimp only [ν_fg]
+      rwa [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+    have : IsFiniteMeasure ν_fg :=
+      ⟨lt_of_le_of_lt hν_univ ENNReal.ofReal_lt_top⟩
+    let A₁ : Set UnitCircle := {ζ | ENNReal.ofReal (ε / 2) < circleMeasureMaximal ν_fg ζ}
+    let A₂ : Set UnitCircle := {ζ | ENNReal.ofReal (ε / 2) ≤ ‖hfg ζ‖ₑ}
+    have hsub : {ζ | ENNReal.ofReal ε < osc f ζ} ⊆ A₁ ∪ A₂ := by
+      intro ζ hζ
+      simp only [Set.mem_ofPred_eq] at hζ
+      have hle := hosc_le g ζ
+      by_contra hnot
+      simp only [Set.mem_union, A₁, A₂, Set.mem_ofPred_eq, not_or, not_lt, not_le] at hnot
+      have hsum_le : circleMeasureMaximal ν_fg ζ + ‖hfg ζ‖ₑ ≤ ENNReal.ofReal ε := by
+        calc circleMeasureMaximal ν_fg ζ + ‖hfg ζ‖ₑ
+            ≤ ENNReal.ofReal (ε / 2) + ENNReal.ofReal (ε / 2) :=
+              add_le_add hnot.1 hnot.2.le
+          _ = ENNReal.ofReal ε := by
+              rw [← ENNReal.ofReal_add (by positivity) (by positivity), add_halves]
+      exact not_lt_of_ge (hle.trans hsum_le) hζ
+    have hA₁_le : unitCircleMeasure A₁ ≤ ENNReal.ofReal ((6 / ε) * δ_g) := by
+      calc unitCircleMeasure A₁
+          ≤ ENNReal.ofReal (3 / (ε / 2)) * ν_fg Set.univ :=
+            weak_type_circleMeasureMaximal ν_fg (half_pos hε_pos)
+        _ ≤ ENNReal.ofReal (6 / ε) * ENNReal.ofReal δ_g := by
+            rw [show (3 : ℝ) / (ε / 2) = 6 / ε by ring]
+            exact mul_le_mul_of_nonneg_left hν_univ zero_le
+        _ = ENNReal.ofReal ((6 / ε) * δ_g) :=
+            (ENNReal.ofReal_mul (by positivity)).symm
+    have hA₂_le : unitCircleMeasure A₂ ≤ ENNReal.ofReal ((2 / ε) * δ_g) := by
+      have hmarkov := mul_meas_ge_le_lintegral₀ hhfg_int.aestronglyMeasurable.enorm
+        (ENNReal.ofReal (ε / 2))
+      have hlt_ne0 : ENNReal.ofReal (ε / 2) ≠ 0 := (ENNReal.ofReal_pos.mpr (half_pos hε_pos)).ne'
+      have hdiv : unitCircleMeasure A₂ ≤
+          (∫⁻ x, ‖hfg x‖ₑ ∂unitCircleMeasure) / ENNReal.ofReal (ε / 2) :=
+        (ENNReal.le_div_iff_mul_le (Or.inl hlt_ne0) (Or.inl ENNReal.ofReal_ne_top)).mpr
+          (by simpa only [mul_comm] using hmarkov)
+      calc unitCircleMeasure A₂
+          ≤ ENNReal.ofReal δ_g / ENNReal.ofReal (ε / 2) :=
+            hdiv.trans (ENNReal.div_le_div_right hfg_lp _)
+        _ = ENNReal.ofReal ((2 / ε) * δ_g) := by
+            rw [div_eq_mul_inv, ← ENNReal.ofReal_inv_of_pos (half_pos hε_pos),
+              ← ENNReal.ofReal_mul hδ_g_pos.le]
+            congr 1
+            ring
+    calc unitCircleMeasure {ζ | ENNReal.ofReal ε < osc f ζ}
+        ≤ unitCircleMeasure (A₁ ∪ A₂) := measure_mono hsub
+      _ ≤ unitCircleMeasure A₁ + unitCircleMeasure A₂ := measure_union_le _ _
+      _ ≤ ENNReal.ofReal ((6 / ε) * δ_g) + ENNReal.ofReal ((2 / ε) * δ_g) :=
+          add_le_add hA₁_le hA₂_le
+      _ = ENNReal.ofReal (η.toReal / 2) := by
+          rw [← ENNReal.ofReal_add (by positivity) (by positivity)]
+          congr 1
+          dsimp only [δ_g]
+          field_simp [hε_pos.ne']
+          ring
+      _ ≤ ENNReal.ofReal η.toReal := ENNReal.ofReal_le_ofReal (by linarith)
+      _ = η := ENNReal.ofReal_toReal hη_top
+  have hnull : unitCircleMeasure {ζ : UnitCircle | osc f ζ ≠ 0} = 0 := by
+    have hsub : {ζ : UnitCircle | osc f ζ ≠ 0} ⊆
+        ⋃ m : ℕ, {ζ : UnitCircle | ENNReal.ofReal (1 / ((m : ℝ) + 1)) < osc f ζ} := by
+      intro ζ hζ
+      simp only [Set.mem_ofPred_eq] at hζ
+      by_cases htop : osc f ζ = ⊤
+      · exact Set.mem_iUnion.mpr ⟨0, by simp [htop]⟩
+      · have hr_pos : 0 < (osc f ζ).toReal := ENNReal.toReal_pos hζ htop
+        obtain ⟨m, hm⟩ := exists_nat_gt (1 / (osc f ζ).toReal)
+        refine Set.mem_iUnion.mpr ⟨m, ?_⟩
+        simp only [Set.mem_ofPred_eq]
+        rw [← ENNReal.ofReal_toReal htop]
+        refine (ENNReal.ofReal_lt_ofReal_iff hr_pos).mpr ?_
+        have hm1 : 1 / (osc f ζ).toReal < (m : ℝ) + 1 := by linarith
+        exact (div_lt_iff₀ (by positivity)).mpr <| by
+          have := (div_lt_iff₀ hr_pos).mp hm1
+          linarith
+    exact measure_mono_null hsub (measure_iUnion_null hmeas_level_zero)
+  have hae : ∀ᵐ ζ ∂unitCircleMeasure, osc f ζ = 0 := by
+    rw [ae_iff]
+    exact hnull
+  filter_upwards [hae] with ζ hζ using hosc_zero_imp ζ hζ
+
+/-- 11.19 (Theorem 7.14 singular part on `T`, positive-measure form): if a positive finite Borel
+measure `ν` on `T` satisfies `ν ⟂ₘ σ`, then `Dν = 0` a.e. `[σ]`. -/
+theorem ae_hasPositiveCircleSymmetricDerivAt_zero_of_mutuallySingular
+    (ν : Measure UnitCircle) [IsFiniteMeasure ν]
+    (hsing : ν.MutuallySingular unitCircleMeasure) :
+    ∀ᵐ ζ ∂unitCircleMeasure, HasPositiveCircleSymmetricDerivAt ν ζ 0 := by
+  let S : Set UnitCircle := hsing.nullSetᶜ
+  have hS_meas : MeasurableSet S := hsing.measurableSet_nullSet.compl
+  have hν_Sc : ν Sᶜ = 0 := by
+    dsimp only [S]
+    rw [compl_compl]
+    exact hsing.measure_nullSet
+  have hσ_S : unitCircleMeasure S = 0 := hsing.measure_compl_nullSet
+  let osc (ζ : UnitCircle) : ℝ≥0∞ :=
+    Filter.limsup (fun δ : ℝ => ν (openCircleArc ζ δ) / unitCircleMeasure (openCircleArc ζ δ))
+      (𝓝[>] 0)
+  have hmeas_level_zero : ∀ m : ℕ,
+      unitCircleMeasure {ζ : UnitCircle | ENNReal.ofReal (1 / ((m : ℝ) + 1)) < osc ζ} = 0 := by
+    intro m
+    let ε : ℝ := 1 / ((m : ℝ) + 1)
+    have hε_pos : 0 < ε := by positivity
+    apply le_antisymm _ zero_le
+    refine le_of_forall_pos_le_add fun η hη => ?_
+    rw [zero_add]
+    let δ_ν : ℝ≥0∞ := ENNReal.ofReal (ε / 3) * η
+    have hδ_ν_ne0 : δ_ν ≠ 0 :=
+      mul_ne_zero (ENNReal.ofReal_pos.mpr (by positivity)).ne' hη.ne'
+    obtain ⟨K, hKS, hK_comp, hν_diff⟩ :=
+      hS_meas.exists_isCompact_sdiff_lt (measure_ne_top ν S) hδ_ν_ne0
+    let ν' : Measure UnitCircle := ν.restrict Kᶜ
+    have hν'_univ : ν' Set.univ ≤ δ_ν := by
+      dsimp only [ν']
+      rw [Measure.restrict_apply_univ]
+      have hKc_sub : Kᶜ ⊆ (S \ K) ∪ Sᶜ := fun x hx => by
+        by_cases hxS : x ∈ S
+        · exact Or.inl ⟨hxS, hx⟩
+        · exact Or.inr hxS
+      calc ν Kᶜ ≤ ν ((S \ K) ∪ Sᶜ) := measure_mono hKc_sub
+        _ ≤ ν (S \ K) + ν Sᶜ := measure_union_le _ _
+        _ = ν (S \ K) := by rw [hν_Sc, add_zero]
+        _ ≤ δ_ν := hν_diff.le
+    have hosc_le_on_Sc : ∀ ζ ∈ Sᶜ, osc ζ ≤ circleMeasureMaximal ν' ζ := by
+      intro ζ hζSc
+      have hζKc : ζ ∈ Kᶜ := fun hζK => hζSc (hKS hζK)
+      have hKc_open : IsOpen Kᶜ := hK_comp.isClosed.isOpen_compl
+      obtain ⟨r₀, hr₀_pos, hr₀_sub⟩ := Metric.isOpen_iff.mp hKc_open ζ hζKc
+      have hev : ∀ᶠ δ : ℝ in 𝓝[>] 0,
+          ν (openCircleArc ζ δ) / unitCircleMeasure (openCircleArc ζ δ) ≤
+            circleMeasureMaximal ν' ζ := by
+        filter_upwards [Ioo_mem_nhdsGT hr₀_pos] with δ ⟨hδ_pos, hδ_lt⟩
+        have harc_sub : openCircleArc ζ δ ⊆ Kᶜ := fun ξ hξ =>
+          hr₀_sub ((dist_lt_of_mem_openCircleArc hξ).trans hδ_lt)
+        have hν_eq : ν (openCircleArc ζ δ) = ν' (openCircleArc ζ δ) := by
+          dsimp only [ν']
+          rw [Measure.restrict_apply (isOpen_openCircleArc ζ δ).measurableSet,
+            Set.inter_eq_self_of_subset_left harc_sub]
+        rw [hν_eq]
+        exact le_iSup₂_of_le δ hδ_pos le_rfl
+      exact Filter.limsup_le_of_le ⟨0, fun _ _ => zero_le⟩ hev
+    have hsub : {ζ | ENNReal.ofReal ε < osc ζ} ⊆
+        S ∪ {ζ | ENNReal.ofReal ε < circleMeasureMaximal ν' ζ} := by
+      intro ζ hζ
+      by_cases hζS : ζ ∈ S
+      · exact Or.inl hζS
+      · exact Or.inr (hζ.trans_le (hosc_le_on_Sc ζ hζS))
+    calc unitCircleMeasure {ζ | ENNReal.ofReal ε < osc ζ}
+        ≤ unitCircleMeasure (S ∪ {ζ | ENNReal.ofReal ε < circleMeasureMaximal ν' ζ}) :=
+          measure_mono hsub
+      _ ≤ unitCircleMeasure S +
+            unitCircleMeasure {ζ | ENNReal.ofReal ε < circleMeasureMaximal ν' ζ} :=
+          measure_union_le _ _
+      _ ≤ ENNReal.ofReal (3 / ε) * ν' Set.univ := by
+          rw [hσ_S, zero_add]
+          exact weak_type_circleMeasureMaximal ν' hε_pos
+      _ ≤ ENNReal.ofReal (3 / ε) * δ_ν :=
+          mul_le_mul_of_nonneg_left hν'_univ zero_le
+      _ = η := by
+          dsimp only [δ_ν]
+          rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity),
+            show (3 / ε) * (ε / 3) = 1 by field_simp [hε_pos.ne'], ENNReal.ofReal_one, one_mul]
+  have hnull : unitCircleMeasure {ζ : UnitCircle | osc ζ ≠ 0} = 0 := by
+    have hsub : {ζ : UnitCircle | osc ζ ≠ 0} ⊆
+        ⋃ m : ℕ, {ζ : UnitCircle | ENNReal.ofReal (1 / ((m : ℝ) + 1)) < osc ζ} := by
+      intro ζ hζ
+      simp only [Set.mem_ofPred_eq] at hζ
+      by_cases htop : osc ζ = ⊤
+      · exact Set.mem_iUnion.mpr ⟨0, by simp [htop]⟩
+      · have hr_pos : 0 < (osc ζ).toReal := ENNReal.toReal_pos hζ htop
+        obtain ⟨m, hm⟩ := exists_nat_gt (1 / (osc ζ).toReal)
+        refine Set.mem_iUnion.mpr ⟨m, ?_⟩
+        simp only [Set.mem_ofPred_eq]
+        rw [← ENNReal.ofReal_toReal htop]
+        refine (ENNReal.ofReal_lt_ofReal_iff hr_pos).mpr ?_
+        have hm1 : 1 / (osc ζ).toReal < (m : ℝ) + 1 := by linarith
+        exact (div_lt_iff₀ (by positivity)).mpr <| by
+          have := (div_lt_iff₀ hr_pos).mp hm1
+          linarith
+    exact measure_mono_null hsub (measure_iUnion_null hmeas_level_zero)
+  have hae : ∀ᵐ ζ ∂unitCircleMeasure, osc ζ = 0 := by
+    rw [ae_iff]
+    exact hnull
+  filter_upwards [hae] with ζ hζ
+  exact tendsto_of_le_liminf_of_limsup_le zero_le (hζ ▸ le_rfl)
+
+/-- Equivalence between `μ_s ⟂ᵥ σ.toENNRealVectorMeasure` and `μ_s.variation ⟂ₘ σ`. -/
+theorem mutuallySingular_complexMeasure_iff_variation (μ_s : ComplexMeasure UnitCircle) :
+    μ_s ⟂ᵥ unitCircleMeasure.toENNRealVectorMeasure ↔
+      μ_s.variation.MutuallySingular unitCircleMeasure := by
+  constructor
+  · rintro ⟨S, hS, hμs, hσ⟩
+    refine ⟨S, hS, ?_, ?_⟩
+    · rw [RudinRCA.Chapter06.variation_eq_iSup_countablePartitions μ_s hS]
+      refine ENNReal.iSup_eq_zero.mpr fun P => ENNReal.tsum_eq_zero.mpr fun i => ?_
+      have hsub : P.part i ⊆ S := fun x hx => by
+        have hxU : x ∈ ⋃ j, P.part j := Set.mem_iUnion.mpr ⟨i, hx⟩
+        rwa [P.covers] at hxU
+      simp [hμs (P.part i) hsub]
+    · have h0 := hσ Sᶜ (Set.Subset.refl _)
+      rwa [Measure.toENNRealVectorMeasure_apply_measurable hS.compl] at h0
+  · intro hsing
+    refine ⟨hsing.nullSet, hsing.measurableSet_nullSet, ?_, ?_⟩
+    · intro E hE
+      have hvar0 : μ_s.variation E = 0 :=
+        measure_mono_null hE hsing.measure_nullSet
+      have hle := μ_s.enorm_measure_le_variation E
+      rw [hvar0, nonpos_iff_eq_zero, enorm_eq_zero] at hle
+      exact hle
+    · intro E hE
+      by_cases hEm : MeasurableSet E
+      · rw [Measure.toENNRealVectorMeasure_apply_measurable hEm]
+        exact measure_mono_null hE hsing.measure_compl_nullSet
+      · exact VectorMeasure.not_measurable _ hEm
+
+/-- 11.19 (`Dμ_s = 0` a.e. `[σ]` for singular complex Borel measures on `T`). -/
+theorem ae_hasCircleSymmetricDerivAt_zero_of_mutuallySingular
+    (μ_s : ComplexMeasure UnitCircle)
+    (hsing : μ_s ⟂ᵥ unitCircleMeasure.toENNRealVectorMeasure) :
+    ∀ᵐ ζ ∂unitCircleMeasure, HasCircleSymmetricDerivAt μ_s ζ 0 := by
+  have : IsFiniteMeasure μ_s.variation := isFiniteMeasure_complexMeasure_variation μ_s
+  have hsing_var := (mutuallySingular_complexMeasure_iff_variation μ_s).mp hsing
+  filter_upwards [ae_hasPositiveCircleSymmetricDerivAt_zero_of_mutuallySingular μ_s.variation hsing_var]
+    with ζ hζ
+  unfold HasCircleSymmetricDerivAt
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hev := (ENNReal.tendsto_nhds_zero.mp hζ) (ENNReal.ofReal (ε / 2))
+    (ENNReal.ofReal_pos.mpr (half_pos hε))
+  filter_upwards [self_mem_nhdsWithin, hev] with δ hδ hle
+  have hδ_pos : 0 < δ := hδ
+  let I := openCircleArc ζ δ
+  have hσ_pos : 0 < unitCircleMeasure.real I := by
+    rw [measureReal_def]
+    exact ENNReal.toReal_pos (unitCircleMeasure_openCircleArc_ne_zero ζ hδ_pos) (measure_ne_top _ _)
+  have hnorm_le : ‖μ_s I / (unitCircleMeasure.real I : ℂ)‖ₑ ≤ ENNReal.ofReal (ε / 2) := by
+    rw [← ofReal_norm, norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hσ_pos,
+      ENNReal.ofReal_div_of_pos hσ_pos, ofReal_norm]
+    have hσ_eq : ENNReal.ofReal (unitCircleMeasure.real I) = unitCircleMeasure I := by
+      rw [measureReal_def, ENNReal.ofReal_toReal (measure_ne_top _ _)]
+    rw [hσ_eq]
+    exact (ENNReal.div_le_div_right (μ_s.enorm_measure_le_variation I) _).trans hle
+  rw [dist_zero_right, ← toReal_enorm]
+  have hle_real : ‖μ_s I / (unitCircleMeasure.real I : ℂ)‖ₑ.toReal ≤ ε / 2 :=
+    ENNReal.toReal_le_of_le_ofReal (half_pos hε).le hnorm_le
+  exact hle_real.trans_lt (half_lt_self hε)
+
+/-- 11.19 (Summary Theorem, Rudin p. 241):
+1. Semicontinuity, closed `{≤ λ}` level sets, measurability, and monotonicity of `N_α u` and
+   `M_rad u` (`0 < α < 1`, `u` continuous on `U`).
+2. If `dμ = f dσ + dμ_s` is the Lebesgue decomposition of a complex Borel measure `μ` on `T`
+   (`f ∈ L¹(T)`, `μ_s ⟂ σ`), then:
+   - `σ{M μ > λ} ≤ (3 / λ) ‖μ‖` for every `0 < λ < ∞` (`11.19(6)`),
+   - `σ`-a.e. point of `T` is a Lebesgue point of `f`,
+   - `Dμ_s = 0` and `Dμ = f` `σ`-a.e. -/
+theorem theorem11_19 {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) :
+    (∀ {u : ℂ → ℂ}, ContinuousOn u (Metric.ball (0 : ℂ) 1) →
+      (∀ {lam : ℝ}, 0 < lam →
+        IsClosed {ζ : UnitCircle | nontangentialMaximal α u ζ ≤ ENNReal.ofReal lam} ∧
+        IsClosed {ζ : UnitCircle | radialMaximal u ζ ≤ ENNReal.ofReal lam}) ∧
+      LowerSemicontinuous (nontangentialMaximal α u) ∧
+      LowerSemicontinuous (radialMaximal u) ∧
+      Measurable (nontangentialMaximal α u) ∧
+      Measurable (radialMaximal u) ∧
+      (∀ ζ : UnitCircle, radialMaximal u ζ ≤ nontangentialMaximal α u ζ)) ∧
+    (∀ {β : ℝ} (u : ℂ → ℂ), α ≤ β → ∀ ζ : UnitCircle,
+      nontangentialMaximal α u ζ ≤ nontangentialMaximal β u ζ) ∧
+    (∀ (μ μ_s : ComplexMeasure UnitCircle) (f : UnitCircle → ℂ),
+      Integrable f unitCircleMeasure →
+      μ_s ⟂ᵥ unitCircleMeasure.toENNRealVectorMeasure →
+      μ = unitCircleMeasure.withDensityᵥ f + μ_s →
+      (∀ {lam : ℝ}, 0 < lam →
+        unitCircleMeasure.real {ζ : UnitCircle |
+            ENNReal.ofReal lam < complexCircleMeasureMaximal μ ζ} ≤
+          (3 / lam) * μ.variation.real Set.univ) ∧
+      (∀ᵐ ζ ∂unitCircleMeasure, IsCircleLebesguePoint f ζ) ∧
+      (∀ᵐ ζ ∂unitCircleMeasure, HasCircleSymmetricDerivAt μ_s ζ 0) ∧
+      (∀ᵐ ζ ∂unitCircleMeasure, HasCircleSymmetricDerivAt μ ζ (f ζ))) := by
+  refine ⟨fun {u} hu => ⟨fun {lam} _ =>
+      ⟨isClosed_nontangentialMaximal_le hα0 hα1 u _, isClosed_radialMaximal_le hu _⟩,
+      lowerSemicontinuous_nontangentialMaximal hα0 hα1 u,
+      lowerSemicontinuous_radialMaximal hu,
+      measurable_nontangentialMaximal hα0 hα1 u,
+      measurable_radialMaximal hu,
+      radialMaximal_le_nontangentialMaximal hα0 hα1 u⟩,
+    fun u hαβ ζ => nontangentialMaximal_mono hαβ u ζ,
+    fun μ μ_s f hf hsing hdecomp => ?_⟩
+  refine ⟨fun {lam} hlam => (weak_type_complexCircleMeasureMaximal μ hlam).2,
+    ae_isCircleLebesguePoint hf,
+    ae_hasCircleSymmetricDerivAt_zero_of_mutuallySingular μ_s hsing, ?_⟩
+  filter_upwards [ae_isCircleLebesguePoint hf,
+    ae_hasCircleSymmetricDerivAt_zero_of_mutuallySingular μ_s hsing] with ζ hleb hzero
+  have hac := hasCircleSymmetricDerivAt_withDensityᵥ_of_isCircleLebesguePoint hf hleb
+  unfold HasCircleSymmetricDerivAt at hac hzero ⊢
+  have hsum := hac.add hzero
+  rw [add_zero] at hsum
+  refine hsum.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with δ _
+  rw [hdecomp, add_apply, add_div]
+
+end Node11_19
+
+section Node11_20
+
+/-- Explicit nontangential constant `c_α = ((1 - α) / (3 - α)) ^ 2 > 0` for `0 < α < 1`
+(Rudin 11.20, p. 242: `c_α = (1 + γ_α)⁻²` with `γ_α = 2 / (1 - α)`). -/
+def nontangentialConstant (α : ℝ) : ℝ :=
+  ((1 - α) / (3 - α)) ^ 2
+
+theorem nontangentialConstant_pos {α : ℝ} (hα1 : α < 1) :
+    0 < nontangentialConstant α := by
+  unfold nontangentialConstant
+  have h1 : 0 < 1 - α := sub_pos.mpr hα1
+  have h3 : 0 < 3 - α := by linarith
+  positivity
+
+/-- Poisson integral `u(z) = ∫_T P(z, η) dμ(η)` of a positive Borel measure `μ` on `T`. -/
+def positivePoissonIntegral (μ : Measure UnitCircle) (z : ℂ) : ℝ :=
+  ∫ η : UnitCircle, _root_.poissonKernel 0 z (η : ℂ) ∂μ
+
+/-- Compatibility between `positivePoissonIntegral μ` and `poissonMeasureIntegral (μ.withDensityᵥ 1)`
+for a positive finite Borel measure `μ` on `T`. -/
+theorem poissonMeasureIntegral_withDensityᵥ_one (μ : Measure UnitCircle) [IsFiniteMeasure μ]
+    {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    poissonMeasureIntegral (μ.withDensityᵥ fun _ : UnitCircle => (1 : ℂ)) z =
+      (positivePoissonIntegral μ z : ℂ) := by
+  unfold poissonMeasureIntegral RudinRCA.Chapter10.complexMeasureIntegral positivePoissonIntegral
+  let ν : ComplexMeasure UnitCircle := μ.withDensityᵥ fun _ : UnitCircle => (1 : ℂ)
+  obtain ⟨h, hm, hn, hi, hr_pol⟩ := RudinRCA.Chapter06.theorem_6_12 ν
+  have : IsFiniteMeasure ν.variation := isFiniteMeasure_complexMeasure_variation ν
+  have hK_cont : Continuous (fun η : UnitCircle => (_root_.poissonKernel 0 z (η : ℂ) : ℂ)) :=
+    Complex.continuous_ofReal.comp (continuous_poissonKernel_unitCircle hz)
+  have hpol := RudinRCA.Chapter06.vectorIntegral_eq_polar ν h hm hn hi hr_pol
+    (hK_cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))
+  rw [hpol]
+  -- Identify `ν.variation` with `μ` via `RudinRCA.Chapter06.theorem_6_13`
+  have hvar : ν.variation = μ := by
+    dsimp only [ν]
+    rw [RudinRCA.Chapter06.theorem_6_13 μ (integrable_const (1 : ℂ))]
+    simp
+  rw [hvar] at hi hr_pol ⊢
+  have huniv_eq : (∫ x, h x ∂μ) = ∫ _x, (1 : ℂ) ∂μ := by
+    rw [← setIntegral_univ, ← withDensityᵥ_apply hi MeasurableSet.univ, hr_pol,
+      withDensityᵥ_apply (integrable_const (1 : ℂ)) MeasurableSet.univ, setIntegral_univ]
+  have hi_re : Integrable (fun x => (h x).re) μ := Complex.reCLM.integrable_comp hi
+  have hre_zero : (∫ x, (1 - (h x).re) ∂μ) = 0 := by
+    have hre := congrArg Complex.re huniv_eq
+    rw [← RCLike.re_eq_complex_re, ← integral_re hi,
+      ← integral_re (integrable_const (1 : ℂ))] at hre
+    simp only [RCLike.re_eq_complex_re, Complex.one_re] at hre
+    rw [integral_sub (integrable_const (1 : ℝ)) hi_re, hre, sub_self]
+  have hre_nn : ∀ x : UnitCircle, 0 ≤ 1 - (h x).re := fun x => by
+    linarith [Complex.re_le_norm (h x), hn x]
+  have hre_ae : (fun x : UnitCircle => 1 - (h x).re) =ᵐ[μ] 0 :=
+    (integral_eq_zero_iff_of_nonneg hre_nn ((integrable_const (1 : ℝ)).sub hi_re)).mp hre_zero
+  have hh1 : h =ᵐ[μ] fun _ : UnitCircle => (1 : ℂ) := by
+    filter_upwards [hre_ae] with x hx
+    have hx_re : (h x).re = 1 := by dsimp at hx; linarith
+    have hsq : (h x).re ^ 2 + (h x).im ^ 2 = 1 := by
+      have hn1 : ‖h x‖ ^ 2 = 1 := by rw [hn x, one_pow]
+      rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply] at hn1
+      linarith
+    have hx_im : (h x).im = 0 := by nlinarith
+    exact Complex.ext hx_re hx_im
+  have hcongr : (fun η : UnitCircle => (_root_.poissonKernel 0 z (η : ℂ) : ℂ) * h η) =ᵐ[μ]
+      fun η : UnitCircle => (_root_.poissonKernel 0 z (η : ℂ) : ℂ) :=
+    hh1.mono fun η hη => by dsimp at hη ⊢; rw [hη, mul_one]
+  rw [integral_congr_ae hcongr]
+  exact integral_ofReal
+
+/-- Kernel inequality `11.20(2)`–`11.20(3)` (Rudin p. 242):
+for `z ∈ approachRegion α ζ` (`0 < α < 1`) and `η ∈ T`,
+`c_α P(z, η) ≤ P(‖z‖ ζ, η)`. -/
+theorem poissonKernel_nontangential_le_radial {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    {ζ : UnitCircle} {z : ℂ} (hz : z ∈ approachRegion α ζ) (η : UnitCircle) :
+    nontangentialConstant α * _root_.poissonKernel 0 z (η : ℂ) ≤
+      _root_.poissonKernel 0 ((‖z‖ : ℂ) * (ζ : ℂ)) (η : ℂ) := by
+  let r : ℝ := ‖z‖
+  have hr0 : 0 ≤ r := norm_nonneg z
+  have hr1 : r < 1 := by simpa [r, Metric.mem_ball] using approachRegion_subset_ball α ζ hz
+  have h1mα : 0 < 1 - α := sub_pos.mpr hα1
+  have h3mα : 0 < 3 - α := by linarith
+  have hchord := norm_sub_vertex_le_of_mem_approachRegion hα0 hα1 hz
+  have hrad_sub : ‖(ζ : ℂ) - (r : ℂ) * (ζ : ℂ)‖ = 1 - r := by
+    have heq : (ζ : ℂ) - (r : ℂ) * (ζ : ℂ) = ((1 - r : ℝ) : ℂ) * (ζ : ℂ) := by
+      push_cast; ring
+    rw [heq, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (sub_pos.mpr hr1),
+      norm_unitCircle, mul_one]
+  have h1mr_le : 1 - r ≤ ‖(η : ℂ) - z‖ := by
+    have htri := norm_sub_norm_le (η : ℂ) z
+    rwa [norm_unitCircle] at htri
+  have h1mr_pos : 0 < 1 - r := sub_pos.mpr hr1
+  have hden_z_pos : 0 < ‖(η : ℂ) - z‖ := lt_of_lt_of_le h1mr_pos h1mr_le
+  have hden_r_pos : 0 < ‖(η : ℂ) - (r : ℂ) * (ζ : ℂ)‖ := by
+    have htri := norm_sub_norm_le (η : ℂ) ((r : ℂ) * (ζ : ℂ))
+    rw [norm_unitCircle, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr0,
+      norm_unitCircle, mul_one] at htri
+    linarith
+  have hdist_le : ‖(η : ℂ) - (r : ℂ) * (ζ : ℂ)‖ ≤ ((3 - α) / (1 - α)) * ‖(η : ℂ) - z‖ := by
+    calc ‖(η : ℂ) - (r : ℂ) * (ζ : ℂ)‖
+        = ‖((η : ℂ) - z) + (z - (ζ : ℂ)) + ((ζ : ℂ) - (r : ℂ) * (ζ : ℂ))‖ := by ring_nf
+      _ ≤ ‖((η : ℂ) - z) + (z - (ζ : ℂ))‖ + ‖(ζ : ℂ) - (r : ℂ) * (ζ : ℂ)‖ := norm_add_le _ _
+      _ ≤ ‖(η : ℂ) - z‖ + ‖z - (ζ : ℂ)‖ + (1 - r) := by
+          rw [hrad_sub]
+          linarith [norm_add_le ((η : ℂ) - z) (z - (ζ : ℂ))]
+      _ ≤ ‖(η : ℂ) - z‖ + ((1 + α) / (1 - α)) * (1 - r) + (1 - r) := by
+          linarith [hchord]
+      _ = ‖(η : ℂ) - z‖ + (2 / (1 - α)) * (1 - r) := by
+          field_simp [h1mα.ne']
+          ring
+      _ ≤ ‖(η : ℂ) - z‖ + (2 / (1 - α)) * ‖(η : ℂ) - z‖ := by
+          linarith [mul_le_mul_of_nonneg_left h1mr_le (by positivity : (0 : ℝ) ≤ 2 / (1 - α))]
+      _ = ((3 - α) / (1 - α)) * ‖(η : ℂ) - z‖ := by
+          field_simp [h1mα.ne']
+          ring
+  have hsq_le : nontangentialConstant α * ‖(η : ℂ) - (r : ℂ) * (ζ : ℂ)‖ ^ 2 ≤
+      ‖(η : ℂ) - z‖ ^ 2 := by
+    unfold nontangentialConstant
+    have hsq : ‖(η : ℂ) - (r : ℂ) * (ζ : ℂ)‖ ^ 2 ≤
+        (((3 - α) / (1 - α)) * ‖(η : ℂ) - z‖) ^ 2 :=
+      pow_le_pow_left₀ hden_r_pos.le hdist_le 2
+    calc ((1 - α) / (3 - α)) ^ 2 * ‖(η : ℂ) - (r : ℂ) * (ζ : ℂ)‖ ^ 2
+        ≤ ((1 - α) / (3 - α)) ^ 2 * (((3 - α) / (1 - α)) * ‖(η : ℂ) - z‖) ^ 2 :=
+          mul_le_mul_of_nonneg_left hsq (sq_nonneg _)
+      _ = ‖(η : ℂ) - z‖ ^ 2 := by
+          field_simp [h1mα.ne', h3mα.ne']
+  have hr_norm : ‖(r : ℂ) * (ζ : ℂ)‖ = r := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr0, norm_unitCircle, mul_one]
+  simp only [_root_.poissonKernel, sub_zero, norm_unitCircle, one_pow]
+  rw [hr_norm]
+  change nontangentialConstant α * ((1 - r ^ 2) / ‖(η : ℂ) - z‖ ^ 2) ≤
+    (1 - r ^ 2) / ‖(η : ℂ) - (r : ℂ) * (ζ : ℂ)‖ ^ 2
+  rw [← mul_div_assoc, div_le_div_iff₀ (sq_pos_of_pos hden_z_pos) (sq_pos_of_pos hden_r_pos)]
+  have h1mr2_nn : 0 ≤ 1 - r ^ 2 := by nlinarith
+  calc (nontangentialConstant α * (1 - r ^ 2)) * ‖(η : ℂ) - (r : ℂ) * (ζ : ℂ)‖ ^ 2
+      = (1 - r ^ 2) * (nontangentialConstant α * ‖(η : ℂ) - (r : ℂ) * (ζ : ℂ)‖ ^ 2) := by ring
+    _ ≤ (1 - r ^ 2) * ‖(η : ℂ) - z‖ ^ 2 := mul_le_mul_of_nonneg_left hsq_le h1mr2_nn
+
+/-- Negative derivative `- P_r'(u)` of the radial Poisson kernel (`0 ≤ r < 1`). -/
+private def poissonKernelNegDeriv (r u : ℝ) : ℝ :=
+  (1 - r ^ 2) * (2 * r * Real.sin u) / (1 - 2 * r * Real.cos u + r ^ 2) ^ 2
+
+private theorem hasDerivAt_poissonKernel_real {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (u : ℝ) :
+    HasDerivAt (poissonKernel r) (-poissonKernelNegDeriv r u) u := by
+  have hden_pos : 0 < 1 - 2 * r * Real.cos u + r ^ 2 := by
+    have hterm : 0 ≤ 2 * r * (1 - Real.cos u) :=
+      mul_nonneg (by positivity) (sub_nonneg.mpr (Real.cos_le_one u))
+    have hid : 1 - 2 * r * Real.cos u + r ^ 2 = (1 - r) ^ 2 + 2 * r * (1 - Real.cos u) := by ring
+    linarith [sq_pos_of_pos (sub_pos.mpr hr1)]
+  have hden_deriv : HasDerivAt (fun x : ℝ => 1 - 2 * r * Real.cos x + r ^ 2)
+      (2 * r * Real.sin u) u := by
+    have hcos := (Real.hasDerivAt_cos u).const_mul (2 * r)
+    have hsub := (hasDerivAt_const u (1 : ℝ)).sub hcos
+    have hadd := hsub.add (hasDerivAt_const u (r ^ 2))
+    convert hadd using 1
+    ring
+  have hquot := (hasDerivAt_const u (1 - r ^ 2)).div hden_deriv hden_pos.ne'
+  refine hquot.congr_deriv ?_
+  unfold poissonKernelNegDeriv
+  ring
+
+private theorem poissonKernelNegDeriv_nonneg {r u : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
+    (hu0 : 0 ≤ u) (hupi : u ≤ Real.pi) :
+    0 ≤ poissonKernelNegDeriv r u := by
+  unfold poissonKernelNegDeriv
+  have h1mr2 : 0 ≤ 1 - r ^ 2 := by nlinarith
+  have hsin : 0 ≤ Real.sin u := Real.sin_nonneg_of_nonneg_of_le_pi hu0 hupi
+  exact div_nonneg (mul_nonneg h1mr2 (by positivity)) (sq_nonneg _)
+
+private theorem continuous_poissonKernelNegDeriv {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    Continuous (poissonKernelNegDeriv r) := by
+  unfold poissonKernelNegDeriv
+  refine Continuous.div (by fun_prop) (by fun_prop) fun u => ?_
+  have hden_pos : 0 < 1 - 2 * r * Real.cos u + r ^ 2 := by
+    have hterm : 0 ≤ 2 * r * (1 - Real.cos u) :=
+      mul_nonneg (by positivity) (sub_nonneg.mpr (Real.cos_le_one u))
+    have hid : 1 - 2 * r * Real.cos u + r ^ 2 = (1 - r) ^ 2 + 2 * r * (1 - Real.cos u) := by ring
+    linarith [sq_pos_of_pos (sub_pos.mpr hr1)]
+  exact (sq_pos_of_pos hden_pos).ne'
+
+private theorem poissonKernel_eq_pi_add_integral {r s : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    poissonKernel r s =
+      poissonKernel r Real.pi + ∫ u in s..Real.pi, poissonKernelNegDeriv r u := by
+  have hcont : Continuous (fun u : ℝ => -poissonKernelNegDeriv r u) :=
+    (continuous_poissonKernelNegDeriv hr0 hr1).neg
+  have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt
+    (fun u _ => hasDerivAt_poissonKernel_real hr0 hr1 u) (hcont.intervalIntegrable s Real.pi)
+  rw [intervalIntegral.integral_neg] at hftc
+  linarith
+
+/-- Exact Tonelli layer-cake identity on `T = UnitCircle` for any positive finite Borel measure `ν`
+(`0 ≤ r < 1`):
+`∫⁻ η, P(r ζ, η) dν(η) = P_r(π) ν(T) + ∫⁻_{u ∈ (0, π)} (-P_r'(u)) ν(openCircleArc ζ u) du`. -/
+private theorem lintegral_poissonKernel_eq_layerCake (ν : Measure UnitCircle) [IsFiniteMeasure ν]
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (ζ : UnitCircle) :
+    (∫⁻ η : UnitCircle,
+        ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) ∂ν) =
+      ENNReal.ofReal (poissonKernel r Real.pi) * ν Set.univ +
+        ∫⁻ u in Set.Ioo (0 : ℝ) Real.pi,
+          ENNReal.ofReal (poissonKernelNegDeriv r u) * ν (openCircleArc ζ u) := by
+  let μ₀ : Measure ℝ := MeasureTheory.volume.restrict (Set.Ioo (0 : ℝ) Real.pi)
+  let S_pair : Set (UnitCircle × ℝ) :=
+    {p : UnitCircle × ℝ | ‖(p.1 : ℂ) - (ζ : ℂ)‖ ^ 2 < 2 * (1 - Real.cos p.2)}
+  have hS_open : IsOpen S_pair := isOpen_lt
+    ((((continuous_subtype_val.comp continuous_fst).sub continuous_const).norm).pow 2)
+    (continuous_const.mul (continuous_const.sub (Real.continuous_cos.comp continuous_snd)))
+  let K_ind : UnitCircle × ℝ → ℝ≥0∞ :=
+    S_pair.indicator fun p => ENNReal.ofReal (poissonKernelNegDeriv r p.2)
+  have hK_meas : Measurable K_ind :=
+    (((continuous_poissonKernelNegDeriv hr0 hr1).comp continuous_snd).measurable.ennreal_ofReal).indicator
+      hS_open.measurableSet
+  -- Pointwise layer-cake representation at every `η ∈ UnitCircle`
+  have hpt : ∀ η : UnitCircle,
+      ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) =
+        ENNReal.ofReal (poissonKernel r Real.pi) + ∫⁻ u, K_ind (η, u) ∂μ₀ := by
+    intro η
+    let w : ℂ := (η : ℂ) * conj (ζ : ℂ)
+    have hw_norm : ‖w‖ = 1 := by
+      dsimp only [w]
+      rw [norm_mul, RCLike.norm_conj, norm_unitCircle, norm_unitCircle, mul_one]
+    let θ : ℝ := |Complex.arg w|
+    have hθ0 : 0 ≤ θ := abs_nonneg _
+    have hθpi : θ ≤ Real.pi :=
+      abs_le.mpr ⟨(Complex.neg_pi_lt_arg w).le, Complex.arg_le_pi w⟩
+    have hexp_w : Complex.exp ((Complex.arg w : ℂ) * Complex.I) = w := by
+      have h := Complex.norm_mul_exp_arg_mul_I w
+      rwa [hw_norm, Complex.ofReal_one, one_mul] at h
+    have hPK_eq : _root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ) = poissonKernel r θ := by
+      have hsub_eq : ‖(η : ℂ) - (r : ℂ) * (ζ : ℂ)‖ ^ 2 = 1 - 2 * r * Real.cos θ + r ^ 2 := by
+        have hfac : (η : ℂ) - (r : ℂ) * (ζ : ℂ) = (w - (r : ℂ)) * (ζ : ℂ) := by
+          dsimp only [w]
+          calc (η : ℂ) - (r : ℂ) * (ζ : ℂ)
+              = (η : ℂ) * ((ζ : ℂ) * conj (ζ : ℂ)) - (r : ℂ) * (ζ : ℂ) := by
+                  rw [unitCircle_mul_conj ζ, mul_one]
+            _ = ((η : ℂ) * conj (ζ : ℂ) - (r : ℂ)) * (ζ : ℂ) := by ring
+        rw [hfac, norm_mul, norm_unitCircle, mul_one, ← hexp_w, ← Complex.normSq_eq_norm_sq,
+          Complex.normSq_apply]
+        simp only [Complex.sub_re, Complex.ofReal_re, Complex.sub_im, Complex.ofReal_im,
+          Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im, sub_zero,
+          θ, Real.cos_abs]
+        have hcs := Real.sin_sq_add_cos_sq (Complex.arg w)
+        nlinarith
+      have hr_norm : ‖(r : ℂ) * (ζ : ℂ)‖ = r := by
+        rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr0, norm_unitCircle, mul_one]
+      simp only [_root_.poissonKernel, poissonKernel, sub_zero, norm_unitCircle, one_pow]
+      rw [hr_norm, hsub_eq]
+    have hchord_η : ‖(η : ℂ) - (ζ : ℂ)‖ ^ 2 = 2 * (1 - Real.cos θ) := by
+      have hfac : (η : ℂ) - (ζ : ℂ) = (w - 1) * (ζ : ℂ) := by
+        dsimp only [w]
+        calc (η : ℂ) - (ζ : ℂ)
+            = (η : ℂ) * ((ζ : ℂ) * conj (ζ : ℂ)) - (ζ : ℂ) := by
+                rw [unitCircle_mul_conj ζ, mul_one]
+          _ = ((η : ℂ) * conj (ζ : ℂ) - 1) * (ζ : ℂ) := by ring
+      rw [hfac, norm_mul, norm_unitCircle, mul_one, ← hexp_w, ← Complex.normSq_eq_norm_sq,
+        Complex.normSq_apply]
+      simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im,
+        Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im, sub_zero,
+        θ, Real.cos_abs]
+      have hcs := Real.sin_sq_add_cos_sq (Complex.arg w)
+      nlinarith
+    have hlint_u : (∫⁻ u, K_ind (η, u) ∂μ₀) =
+        ENNReal.ofReal (∫ u in θ..Real.pi, poissonKernelNegDeriv r u) := by
+      have hind_eq : (fun u : ℝ => K_ind (η, u)) =ᵐ[μ₀]
+          (Set.Ioo θ Real.pi).indicator
+            (fun u => ENNReal.ofReal (poissonKernelNegDeriv r u)) := by
+        filter_upwards [ae_restrict_mem measurableSet_Ioo] with u hu
+        have hmem_iff : (η, u) ∈ S_pair ↔ u ∈ Set.Ioo θ Real.pi := by
+          dsimp only [S_pair]
+          rw [Set.mem_ofPred_eq, hchord_η, Set.mem_Ioo]
+          refine ⟨fun hlt => ⟨?_, hu.2⟩, fun ⟨hgt, _⟩ => ?_⟩
+          · by_contra hle
+            push Not at hle
+            have hanti := Real.strictAntiOn_cos.antitoneOn ⟨hu.1.le, hu.2.le⟩ ⟨hθ0, hθpi⟩ hle
+            linarith
+          · have hgt_cos := Real.strictAntiOn_cos ⟨hθ0, hθpi⟩ ⟨hu.1.le, hu.2.le⟩ hgt
+            linarith
+        by_cases hmem : u ∈ Set.Ioo θ Real.pi
+        · simp only [K_ind, Set.indicator_of_mem (hmem_iff.mpr hmem), Set.indicator_of_mem hmem]
+        · simp only [K_ind, Set.indicator_of_notMem (mt hmem_iff.mp hmem),
+            Set.indicator_of_notMem hmem]
+      rw [lintegral_congr_ae hind_eq]
+      dsimp only [μ₀]
+      rw [lintegral_indicator measurableSet_Ioo, Measure.restrict_restrict measurableSet_Ioo]
+      have hinter : Set.Ioo θ Real.pi ∩ Set.Ioo (0 : ℝ) Real.pi = Set.Ioo θ Real.pi :=
+        Set.inter_eq_self_of_subset_left (Set.Ioo_subset_Ioo_left hθ0)
+      rw [hinter]
+      have hint_q : IntegrableOn (poissonKernelNegDeriv r) (Set.Ioo θ Real.pi) MeasureTheory.volume :=
+        (continuous_poissonKernelNegDeriv hr0 hr1).integrableOn_Icc.mono_set Set.Ioo_subset_Icc_self
+      have hnn_q : 0 ≤ᵐ[MeasureTheory.volume.restrict (Set.Ioo θ Real.pi)]
+          poissonKernelNegDeriv r :=
+        ae_restrict_of_forall_mem measurableSet_Ioo fun u hu =>
+          poissonKernelNegDeriv_nonneg hr0 hr1 (hθ0.trans hu.1.le) hu.2.le
+      rw [← ofReal_integral_eq_lintegral_ofReal hint_q hnn_q,
+        ← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le hθpi]
+    have hPpi_nn : 0 ≤ poissonKernel r Real.pi := (node11_5_pos hr0 hr1 Real.pi).le
+    have hint_nn : 0 ≤ ∫ u in θ..Real.pi, poissonKernelNegDeriv r u :=
+      intervalIntegral.integral_nonneg hθpi fun u hu =>
+        poissonKernelNegDeriv_nonneg hr0 hr1 (hθ0.trans hu.1) hu.2
+    rw [hPK_eq, poissonKernel_eq_pi_add_integral hr0 hr1, ENNReal.ofReal_add hPpi_nn hint_nn,
+      hlint_u]
+  -- Integrate `hpt` over `ν` and swap via Tonelli
+  calc (∫⁻ η : UnitCircle,
+          ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) ∂ν)
+      = ∫⁻ η : UnitCircle,
+          (ENNReal.ofReal (poissonKernel r Real.pi) + ∫⁻ u, K_ind (η, u) ∂μ₀) ∂ν :=
+        lintegral_congr hpt
+    _ = ENNReal.ofReal (poissonKernel r Real.pi) * ν Set.univ +
+          ∫⁻ η : UnitCircle, ∫⁻ u, K_ind (η, u) ∂μ₀ ∂ν := by
+        rw [lintegral_add_left measurable_const, lintegral_const]
+    _ = ENNReal.ofReal (poissonKernel r Real.pi) * ν Set.univ +
+          ∫⁻ u, ∫⁻ η : UnitCircle, K_ind (η, u) ∂ν ∂μ₀ := by
+        rw [lintegral_lintegral_swap (f := fun η u => K_ind (η, u)) hK_meas.aemeasurable]
+    _ = ENNReal.ofReal (poissonKernel r Real.pi) * ν Set.univ +
+          ∫⁻ u in Set.Ioo (0 : ℝ) Real.pi,
+            ENNReal.ofReal (poissonKernelNegDeriv r u) * ν (openCircleArc ζ u) := by
+        congr 1
+        refine lintegral_congr_ae ?_
+        filter_upwards [ae_restrict_mem measurableSet_Ioo] with u hu
+        have hind_u : (fun η : UnitCircle => K_ind (η, u)) =
+            (openCircleArc ζ u).indicator
+              (fun _ => ENNReal.ofReal (poissonKernelNegDeriv r u)) := by
+          ext η
+          have hiff : (η, u) ∈ S_pair ↔ η ∈ openCircleArc ζ u :=
+            (mem_openCircleArc_iff_chordal hu.1 hu.2.le).symm
+          by_cases hη : η ∈ openCircleArc ζ u
+          · simp only [K_ind, Set.indicator_of_mem (hiff.mpr hη), Set.indicator_of_mem hη]
+          · simp only [K_ind, Set.indicator_of_notMem (mt hiff.mp hη), Set.indicator_of_notMem hη]
+        rw [hind_u, lintegral_indicator (isOpen_openCircleArc ζ u).measurableSet, lintegral_const,
+          Measure.restrict_apply_univ]
+
+/-- Radial-by-maximal domination `11.20(4)` (Rudin pp. 242–243):
+for every positive Borel measure `μ` on `T`, `0 ≤ r < 1`, and `ζ ∈ T`,
+`∫⁻ η, P(r ζ, η) dμ(η) ≤ (M μ)(ζ)`. -/
+theorem lintegral_poissonKernel_le_circleMeasureMaximal (μ : Measure UnitCircle)
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (ζ : UnitCircle) :
+    (∫⁻ η : UnitCircle,
+        ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) ∂μ) ≤
+      circleMeasureMaximal μ ζ := by
+  let M : ℝ≥0∞ := circleMeasureMaximal μ ζ
+  by_cases hM_top : M = ⊤
+  · simp [M, hM_top]
+  · have harc_bound : ∀ {δ : ℝ}, 0 < δ →
+        μ (openCircleArc ζ δ) ≤ M * unitCircleMeasure (openCircleArc ζ δ) := by
+      intro δ hδ
+      have hdiv_le : μ (openCircleArc ζ δ) / unitCircleMeasure (openCircleArc ζ δ) ≤ M :=
+        le_iSup₂_of_le δ hδ le_rfl
+      have heq : (μ (openCircleArc ζ δ) / unitCircleMeasure (openCircleArc ζ δ)) *
+          unitCircleMeasure (openCircleArc ζ δ) = μ (openCircleArc ζ δ) :=
+        ENNReal.div_mul_cancel (unitCircleMeasure_openCircleArc_ne_zero ζ hδ) (measure_ne_top _ _)
+      rw [← heq]
+      exact mul_le_mul_of_nonneg_right hdiv_le zero_le
+    have huniv_bound : μ Set.univ ≤ M * unitCircleMeasure Set.univ := by
+      have huniv : openCircleArc ζ (2 * Real.pi) = Set.univ :=
+        openCircleArc_eq_univ ζ (by linarith [Real.pi_pos])
+      rw [← huniv]
+      exact harc_bound (by linarith [Real.pi_pos])
+    have : IsFiniteMeasure μ := ⟨lt_of_le_of_lt
+      (by simpa [unitCircleMeasure_univ] using huniv_bound) (lt_top_iff_ne_top.mpr hM_top)⟩
+    rw [lintegral_poissonKernel_eq_layerCake μ hr0 hr1 ζ]
+    calc ENNReal.ofReal (poissonKernel r Real.pi) * μ Set.univ +
+            ∫⁻ u in Set.Ioo (0 : ℝ) Real.pi,
+              ENNReal.ofReal (poissonKernelNegDeriv r u) * μ (openCircleArc ζ u)
+        ≤ ENNReal.ofReal (poissonKernel r Real.pi) * (M * unitCircleMeasure Set.univ) +
+            ∫⁻ u in Set.Ioo (0 : ℝ) Real.pi,
+              M * (ENNReal.ofReal (poissonKernelNegDeriv r u) *
+                unitCircleMeasure (openCircleArc ζ u)) := by
+          refine add_le_add (mul_le_mul_of_nonneg_left huniv_bound zero_le) ?_
+          refine lintegral_mono_ae ?_
+          filter_upwards [ae_restrict_mem measurableSet_Ioo] with u hu
+          calc ENNReal.ofReal (poissonKernelNegDeriv r u) * μ (openCircleArc ζ u)
+              ≤ ENNReal.ofReal (poissonKernelNegDeriv r u) *
+                  (M * unitCircleMeasure (openCircleArc ζ u)) :=
+                mul_le_mul_of_nonneg_left (harc_bound hu.1) zero_le
+            _ = M * (ENNReal.ofReal (poissonKernelNegDeriv r u) *
+                  unitCircleMeasure (openCircleArc ζ u)) := by ac_rfl
+      _ = M * (ENNReal.ofReal (poissonKernel r Real.pi) * unitCircleMeasure Set.univ +
+            ∫⁻ u in Set.Ioo (0 : ℝ) Real.pi,
+              ENNReal.ofReal (poissonKernelNegDeriv r u) * unitCircleMeasure (openCircleArc ζ u)) := by
+          rw [lintegral_const_mul' M _ hM_top, mul_add]
+          congr 1
+          ac_rfl
+      _ = M := by
+          rw [← lintegral_poissonKernel_eq_layerCake unitCircleMeasure hr0 hr1 ζ,
+            lintegral_poissonKernel_unitCircle (radial_mem_ball_unitCircle hr0 hr1 ζ), mul_one]
+
+/-- 11.20 (Theorem, Rudin pp. 242–243):
+Assume `0 < α < 1`. Then there is a constant `c_α > 0` (`nontangentialConstant α`) such that
+for every positive finite Borel measure `μ` on `T = UnitCircle`, `u = P[dμ]`, and every `ζ ∈ T`,
+`c_α (N_α u)(ζ) ≤ (M_rad u)(ζ) ≤ (M μ)(ζ)`. -/
+theorem theorem11_20_explicit {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    (μ : Measure UnitCircle) [IsFiniteMeasure μ] (ζ : UnitCircle) :
+    let u : ℂ → ℂ := poissonMeasureIntegral (μ.withDensityᵥ fun _ : UnitCircle => (1 : ℂ))
+    ENNReal.ofReal (nontangentialConstant α) * nontangentialMaximal α u ζ ≤ radialMaximal u ζ ∧
+    radialMaximal u ζ ≤ circleMeasureMaximal μ ζ := by
+  intro u
+  have hc_pos : 0 < nontangentialConstant α := nontangentialConstant_pos hα1
+  have hu_enorm : ∀ {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1),
+      ‖u z‖ₑ = ∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ := by
+    intro z hz
+    dsimp only [u]
+    rw [poissonMeasureIntegral_withDensityᵥ_one μ hz, ← ofReal_norm, Complex.norm_real,
+      Real.norm_eq_abs]
+    have hnn : 0 ≤ positivePoissonIntegral μ z :=
+      integral_nonneg (poissonKernel_unitCircle_nonneg hz)
+    rw [abs_of_nonneg hnn]
+    unfold positivePoissonIntegral
+    have hint : Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) μ :=
+      (continuous_poissonKernel_unitCircle hz).integrable_of_hasCompactSupport
+        (HasCompactSupport.of_compactSpace _)
+    exact ofReal_integral_eq_lintegral_ofReal hint
+      (ae_of_all _ (poissonKernel_unitCircle_nonneg hz))
+  refine ⟨?_, ?_⟩
+  · unfold nontangentialMaximal
+    rw [ENNReal.mul_iSup]
+    refine iSup_le fun z => ?_
+    rw [ENNReal.mul_iSup]
+    refine iSup_le fun hz => ?_
+    have hz_ball : z ∈ Metric.ball (0 : ℂ) 1 := approachRegion_subset_ball α ζ hz
+    let r : ℝ := ‖z‖
+    have hr0 : 0 ≤ r := norm_nonneg z
+    have hr1 : r < 1 := by simpa [r, Metric.mem_ball] using hz_ball
+    rw [hu_enorm hz_ball, ← lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    have hle : (∫⁻ η : UnitCircle,
+          ENNReal.ofReal (nontangentialConstant α) *
+            ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ) ≤
+        ∫⁻ η : UnitCircle,
+          ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ)) ∂μ := by
+      refine lintegral_mono fun η => ?_
+      rw [← ENNReal.ofReal_mul hc_pos.le]
+      exact ENNReal.ofReal_le_ofReal (poissonKernel_nontangential_le_radial hα0 hα1 hz η)
+    refine hle.trans ?_
+    rw [← hu_enorm (radial_mem_ball_unitCircle hr0 hr1 ζ)]
+    exact le_iSup₂_of_le r ⟨hr0, hr1⟩ le_rfl
+  · unfold radialMaximal
+    refine iSup₂_le fun r hr => ?_
+    rw [hu_enorm (radial_mem_ball_unitCircle hr.1 hr.2 ζ)]
+    exact lintegral_poissonKernel_le_circleMeasureMaximal μ hr.1 hr.2 ζ
+
+/-- 11.20 (Existential form matching Rudin's printed statement verbatim, p. 242). -/
+theorem theorem11_20 {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) :
+    ∃ c_α : ℝ, 0 < c_α ∧
+      ∀ (μ : Measure UnitCircle) [IsFiniteMeasure μ] (ζ : UnitCircle),
+        let u : ℂ → ℂ := poissonMeasureIntegral (μ.withDensityᵥ fun _ : UnitCircle => (1 : ℂ))
+        ENNReal.ofReal c_α * nontangentialMaximal α u ζ ≤ radialMaximal u ζ ∧
+        radialMaximal u ζ ≤ circleMeasureMaximal μ ζ :=
+  ⟨nontangentialConstant α, nontangentialConstant_pos hα1,
+    fun μ _ ζ => theorem11_20_explicit hα0 hα1 μ ζ⟩
+
+end Node11_20
+
+/-! ### Stage 3 Block 3: Nontangential Limits, Fatou Theorems, and Maximal Inequalities (Nodes 11.21–11.25) -/
+
+section Node11_21
+
+/-- For `α ≤ 0`, `approachRegion α ζ = ∅` because `Metric.ball 0 α = ∅` and `ζ ∉ Metric.ball 0 1`. -/
+theorem approachRegion_eq_empty_of_nonpos {α : ℝ} (hα : α ≤ 0) (ζ : UnitCircle) :
+    approachRegion α ζ = ∅ := by
+  unfold approachRegion
+  rw [Metric.ball_eq_empty.mpr hα, Set.empty_union, convexHull_singleton]
+  ext z
+  simp only [Set.mem_inter_iff, Set.mem_singleton_iff, Metric.mem_ball, dist_zero_right,
+    Set.mem_empty_iff_false, iff_false, not_and]
+  rintro rfl
+  rw [norm_unitCircle]
+  exact lt_irrefl 1
+
+/-- 11.21 (Definition, Rudin p. 243): a function `F` has nontangential limit `L` at `ζ ∈ T` if,
+for each `α < 1`, `lim_{j → ∞} F(z_j) = L` for every sequence `{z_j}` in `ζ Ω_α` converging to `ζ`. -/
+def HasNontangentialLimit {E : Type*} [TopologicalSpace E]
+    (F : ℂ → E) (ζ : UnitCircle) (L : E) : Prop :=
+  ∀ α < (1 : ℝ), ∀ z : ℕ → ℂ,
+    (∀ j : ℕ, z j ∈ approachRegion α ζ) →
+    Tendsto z atTop (𝓝 (ζ : ℂ)) →
+    Tendsto (fun j : ℕ => F (z j)) atTop (𝓝 L)
+
+/-- Equivalence with restricting `α ∈ (0, 1)` (since `approachRegion α ζ = ∅` for `α ≤ 0`). -/
+theorem hasNontangentialLimit_iff_Ioo {E : Type*} [TopologicalSpace E]
+    (F : ℂ → E) (ζ : UnitCircle) (L : E) :
+    HasNontangentialLimit F ζ L ↔
+      ∀ α ∈ Set.Ioo (0 : ℝ) 1, ∀ z : ℕ → ℂ,
+        (∀ j : ℕ, z j ∈ approachRegion α ζ) →
+        Tendsto z atTop (𝓝 (ζ : ℂ)) →
+        Tendsto (fun j : ℕ => F (z j)) atTop (𝓝 L) := by
+  refine ⟨fun h α hα => h α hα.2, fun h α hα1 z hz hlim => ?_⟩
+  rcases le_or_gt α 0 with hα0 | hα0
+  · exfalso
+    have h0 := hz 0
+    rw [approachRegion_eq_empty_of_nonpos hα0 ζ] at h0
+    exact h0
+  · exact h α ⟨hα0, hα1⟩ z hz hlim
+
+/-- Filter characterization of `HasNontangentialLimit`: for each `0 < α < 1`, `F` tends to `L`
+along the punctured/restricted neighborhood filter `𝓝[approachRegion α ζ] (ζ : ℂ)`. -/
+theorem hasNontangentialLimit_iff_nhdsWithin {E : Type*} [TopologicalSpace E]
+    (F : ℂ → E) (ζ : UnitCircle) (L : E) :
+    HasNontangentialLimit F ζ L ↔
+      ∀ α ∈ Set.Ioo (0 : ℝ) 1, Tendsto F (𝓝[approachRegion α ζ] (ζ : ℂ)) (𝓝 L) := by
+  rw [hasNontangentialLimit_iff_Ioo]
+  refine forall₂_congr fun α _ => ?_
+  rw [Filter.tendsto_iff_seq_tendsto]
+  constructor
+  · intro h z hz_lim
+    rw [tendsto_nhdsWithin_iff] at hz_lim
+    obtain ⟨hz_nhds, hz_ev⟩ := hz_lim
+    obtain ⟨N, hN⟩ := Filter.eventually_atTop.mp hz_ev
+    let z' : ℕ → ℂ := fun j => z (j + N)
+    have hz'_mem : ∀ j : ℕ, z' j ∈ approachRegion α ζ := fun j => hN (j + N) (Nat.le_add_left N j)
+    have hz'_lim : Tendsto z' atTop (𝓝 (ζ : ℂ)) :=
+      hz_nhds.comp (tendsto_add_atTop_nat N)
+    have hF' : Tendsto (fun j : ℕ => F (z (j + N))) atTop (𝓝 L) := h z' hz'_mem hz'_lim
+    exact (tendsto_add_atTop_iff_nat N).mp hF'
+  · intro h z hz_mem hz_nhds
+    exact h z (tendsto_nhdsWithin_iff.mpr ⟨hz_nhds, Filter.Eventually.of_forall hz_mem⟩)
+
+/-- Congruence of `HasNontangentialLimit` for functions agreeing on `U = Metric.ball 0 1`. -/
+theorem HasNontangentialLimit.congr_ball {E : Type*} [TopologicalSpace E]
+    {F G : ℂ → E} {ζ : UnitCircle} {L : E}
+    (hF : HasNontangentialLimit F ζ L)
+    (heq : ∀ z ∈ Metric.ball (0 : ℂ) 1, F z = G z) :
+    HasNontangentialLimit G ζ L := by
+  intro α hα1 z hz hlim
+  refine (hF α hα1 z hz hlim).congr fun j => ?_
+  exact heq (z j) (approachRegion_subset_ball α ζ (hz j))
+
+/-- Nontangential limit implies radial limit as `r → 1⁻`. -/
+theorem HasNontangentialLimit.tendsto_radial {E : Type*} [TopologicalSpace E]
+    {F : ℂ → E} {ζ : UnitCircle} {L : E}
+    (hF : HasNontangentialLimit F ζ L) :
+    Tendsto (fun r : ℝ => F ((r : ℂ) * (ζ : ℂ))) (𝓝[<] 1) (𝓝 L) := by
+  have hnhds := (hasNontangentialLimit_iff_nhdsWithin F ζ L).mp hF
+    (1 / 2) ⟨by norm_num, by norm_num⟩
+  have hmap : Tendsto (fun r : ℝ => (r : ℂ) * (ζ : ℂ)) (𝓝[<] 1)
+      (𝓝[approachRegion (1 / 2) ζ] (ζ : ℂ)) := by
+    rw [tendsto_nhdsWithin_iff]
+    refine ⟨?_, ?_⟩
+    · have hcont : Continuous (fun r : ℝ => (r : ℂ) * (ζ : ℂ)) :=
+        Complex.continuous_ofReal.mul continuous_const
+      simpa using hcont.tendsto 1 |>.mono_left nhdsWithin_le_nhds
+    · filter_upwards [Ioo_mem_nhdsLT zero_lt_one] with r ⟨hr0, hr1⟩
+      exact radial_mem_approachRegion (by norm_num) (by norm_num) hr0.le hr1 ζ
+  exact hnhds.comp hmap
+
+/-- 11.21 (Summary Theorem): equivalence of sequential `α < 1`, sequential `0 < α < 1`, and
+filter `𝓝[approachRegion α ζ] ζ` formulations of nontangential limits, together with implication
+to the radial limit `lim_{r → 1⁻} F(r ζ) = L`. -/
+theorem theorem11_21 {E : Type*} [TopologicalSpace E] (F : ℂ → E) (ζ : UnitCircle) (L : E) :
+    (HasNontangentialLimit F ζ L ↔
+      ∀ α ∈ Set.Ioo (0 : ℝ) 1, Tendsto F (𝓝[approachRegion α ζ] (ζ : ℂ)) (𝓝 L)) ∧
+    (HasNontangentialLimit F ζ L →
+      Tendsto (fun r : ℝ => F ((r : ℂ) * (ζ : ℂ))) (𝓝[<] 1) (𝓝 L)) :=
+  ⟨hasNontangentialLimit_iff_nhdsWithin F ζ L, HasNontangentialLimit.tendsto_radial⟩
+
+end Node11_21
+
+section Node11_22
+
+/-- Lower bound `_root_.poissonKernel 0 z η ≥ (1 - ‖z‖) / (1 + ‖z‖) > 0` on `T = UnitCircle`
+for every `z ∈ Metric.ball 0 1`. -/
+theorem poissonKernel_unitCircle_ge {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) (η : UnitCircle) :
+    (1 - ‖z‖) / (1 + ‖z‖) ≤ _root_.poissonKernel 0 z (η : ℂ) := by
+  have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz
+  have hz_nn : 0 ≤ ‖z‖ := norm_nonneg z
+  have h1pz_pos : 0 < 1 + ‖z‖ := by linarith
+  have h1mz_pos : 0 < 1 - ‖z‖ := sub_pos.mpr hz_lt
+  have hsub_pos : 0 < ‖(η : ℂ) - z‖ := by
+    have htri := norm_sub_norm_le (η : ℂ) z
+    rw [norm_unitCircle] at htri
+    linarith
+  have hsub_le : ‖(η : ℂ) - z‖ ≤ 1 + ‖z‖ := by
+    calc ‖(η : ℂ) - z‖ ≤ ‖(η : ℂ)‖ + ‖z‖ := norm_sub_le _ _
+      _ = 1 + ‖z‖ := by rw [norm_unitCircle]
+  simp only [_root_.poissonKernel, sub_zero, norm_unitCircle, one_pow]
+  rw [div_le_div_iff₀ h1pz_pos (sq_pos_of_pos hsub_pos)]
+  have hsq : ‖(η : ℂ) - z‖ ^ 2 ≤ (1 + ‖z‖) ^ 2 :=
+    pow_le_pow_left₀ hsub_pos.le hsub_le 2
+  calc (1 - ‖z‖) * ‖(η : ℂ) - z‖ ^ 2
+      ≤ (1 - ‖z‖) * (1 + ‖z‖) ^ 2 := mul_le_mul_of_nonneg_left hsq h1mz_pos.le
+    _ = (1 - ‖z‖ ^ 2) * (1 + ‖z‖) := by ring
+
+/-- Upper bound `_root_.poissonKernel 0 z η ≤ (1 - ‖z‖ ^ 2) / δ ^ 2` whenever `‖η - z‖ ≥ δ > 0`. -/
+theorem poissonKernel_unitCircle_le_of_dist_ge {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1)
+    {η : UnitCircle} {δ : ℝ} (hδ : 0 < δ) (hge : δ ≤ ‖(η : ℂ) - z‖) :
+    _root_.poissonKernel 0 z (η : ℂ) ≤ (1 - ‖z‖ ^ 2) / δ ^ 2 := by
+  have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz
+  have h1mz2 : 0 ≤ 1 - ‖z‖ ^ 2 := by nlinarith [norm_nonneg z]
+  simp only [_root_.poissonKernel, sub_zero, norm_unitCircle, one_pow]
+  exact div_le_div_of_nonneg_left h1mz2 (sq_pos_of_pos hδ) (pow_le_pow_left₀ hδ.le hge 2)
+
+/-- Any positive Borel measure `μ` on `T` with `μ(T) = ∞` has infinite Lebesgue Poisson integral
+`∫⁻ η, P(z, η) dμ(η) = ⊤` (and non-integrable kernel) at every `z ∈ U = Metric.ball 0 1`. -/
+theorem lintegral_poissonKernel_eq_top_of_measure_univ_eq_top
+    (μ : Measure UnitCircle) (hμ : μ Set.univ = ⊤)
+    {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    (∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ) = ⊤ ∧
+    ¬ Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) μ := by
+  have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz
+  let c : ℝ := (1 - ‖z‖) / (1 + ‖z‖)
+  have hc_pos : 0 < c := div_pos (sub_pos.mpr hz_lt) (by linarith [norm_nonneg z])
+  have hc_ne0 : ENNReal.ofReal c ≠ 0 := (ENNReal.ofReal_pos.mpr hc_pos).ne'
+  have htop : (∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ) = ⊤ := by
+    apply eq_top_iff.mpr
+    calc (⊤ : ℝ≥0∞)
+        = ENNReal.ofReal c * μ Set.univ := by rw [hμ, ENNReal.mul_top hc_ne0]
+      _ = ∫⁻ _η : UnitCircle, ENNReal.ofReal c ∂μ := (lintegral_const _).symm
+      _ ≤ ∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ :=
+          lintegral_mono fun η => ENNReal.ofReal_le_ofReal (poissonKernel_unitCircle_ge hz η)
+  refine ⟨htop, fun hint => ?_⟩
+  have hlt := hint.hasFiniteIntegral
+  unfold HasFiniteIntegral at hlt
+  have heq : (∫⁻ η : UnitCircle, ‖_root_.poissonKernel 0 z (η : ℂ)‖ₑ ∂μ) =
+      ∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ := by
+    refine lintegral_congr fun η => ?_
+    rw [Real.enorm_of_nonneg (poissonKernel_unitCircle_nonneg hz η)]
+  rw [heq, htop] at hlt
+  exact lt_irrefl ⊤ hlt
+
+/-- Fidelity disclosure counterexample for literal 11.22 without finiteness of `μ` (`E-11.22`):
+Rudin's statement of 11.22 writes "positive Borel measure on `T`" without printing "finite"
+(whereas `11.17` defines `P[dμ]` only for complex — hence finite — Borel measures, `11.20` assumes
+"positive finite Borel measure", and Exercise 4 on p. 249 specifies "every finite Borel measure").
+If `μ` is allowed to be an infinite positive Borel measure on `T`, e.g. counting measure restricted
+to the complement of `openCircleArc 1 (π / 4)`, then `(Dμ)(1) = 0` (`μ(I_δ) = 0` for `0 < δ < π/4`),
+yet `∫⁻_T P(z, η) dμ(η) = ∞` at every `z ∈ U`, so the `[0, ∞]`-valued Poisson integral does not
+have nontangential limit `0` at `1`. -/
+theorem node11_22_infinite_measure_counterexample :
+    ∃ μ : Measure UnitCircle,
+      HasPositiveCircleSymmetricDerivAt μ unitCircleOne 0 ∧
+      μ Set.univ = ⊤ ∧
+      (∀ z ∈ Metric.ball (0 : ℂ) 1,
+        (∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ) = ⊤) ∧
+      ¬ HasNontangentialLimit
+          (fun z : ℂ => ∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ)
+          unitCircleOne 0 := by
+  let J : Set UnitCircle := (openCircleArc unitCircleOne (Real.pi / 4))ᶜ
+  let μ : Measure UnitCircle := Measure.count.restrict J
+  have hJ_meas : MeasurableSet J := (isOpen_openCircleArc unitCircleOne (Real.pi / 4)).measurableSet.compl
+  -- Show `J` is infinite by exhibiting an injective family `n ↦ exp(i (π / 2 + 1 / (n + 4)))` in `J`
+  have hJ_inf : J.Infinite := by
+    let θ : ℕ → ℝ := fun n => Real.pi / 2 + 1 / ((n : ℝ) + 4)
+    let φ : ℕ → UnitCircle := fun n =>
+      ⟨Complex.exp ((θ n : ℂ) * Complex.I), by simp [Complex.norm_exp_ofReal_mul_I]⟩
+    have hθ_bounds : ∀ n : ℕ, Real.pi / 2 < θ n ∧ θ n < Real.pi := fun n => by
+      dsimp only [θ]
+      have hpos : 0 < 1 / ((n : ℝ) + 4) := by positivity
+      have hle : 1 / ((n : ℝ) + 4) ≤ 1 / 4 :=
+        one_div_le_one_div_of_le (by norm_num) (by linarith [Nat.cast_nonneg (α := ℝ) n])
+      exact ⟨by linarith, by linarith [Real.two_le_pi]⟩
+    have hφ_mem : ∀ n : ℕ, φ n ∈ J := fun n hmem => by
+      have hpi4 : 0 < Real.pi / 4 := by positivity
+      have hpi4_le : Real.pi / 4 ≤ Real.pi := by linarith [Real.pi_pos]
+      rw [mem_openCircleArc_iff_chordal hpi4 hpi4_le] at hmem
+      have hnorm : ‖((φ n : UnitCircle) : ℂ) - (unitCircleOne : ℂ)‖ ^ 2 =
+          2 * (1 - Real.cos (θ n)) := by
+        dsimp only [φ]
+        rw [coe_unitCircleOne, ← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+        simp only [Complex.sub_re, Complex.one_re, Complex.sub_im, Complex.one_im,
+          Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im, sub_zero]
+        have hcs := Real.sin_sq_add_cos_sq (θ n)
+        nlinarith
+      rw [hnorm] at hmem
+      have hhb := hθ_bounds n
+      have hcos_lt : Real.cos (θ n) < Real.cos (Real.pi / 4) :=
+        Real.strictAntiOn_cos ⟨by positivity, hpi4_le⟩ ⟨by linarith, hhb.2.le⟩
+          (by linarith)
+      linarith
+    have hφ_inj : Function.Injective φ := fun m n hmn => by
+      have hexp : Complex.exp ((θ m : ℂ) * Complex.I) = Complex.exp ((θ n : ℂ) * Complex.I) :=
+        congrArg Subtype.val hmn
+      have hcos : Real.cos (θ m) = Real.cos (θ n) := by
+        simpa [Complex.exp_ofReal_mul_I_re] using congrArg Complex.re hexp
+      have hθ_eq : θ m = θ n :=
+        Real.strictAntiOn_cos.injOn
+          ⟨by linarith [(hθ_bounds m).1, Real.pi_pos], (hθ_bounds m).2.le⟩
+          ⟨by linarith [(hθ_bounds n).1, Real.pi_pos], (hθ_bounds n).2.le⟩ hcos
+      dsimp only [θ] at hθ_eq
+      have hinv : (1 : ℝ) / ((m : ℝ) + 4) = 1 / ((n : ℝ) + 4) := by linarith
+      have hm4 : (0 : ℝ) < (m : ℝ) + 4 := by positivity
+      have hn4 : (0 : ℝ) < (n : ℝ) + 4 := by positivity
+      have hden : (m : ℝ) + 4 = (n : ℝ) + 4 := by
+        have hmul := congrArg (fun x => x * ((m : ℝ) + 4) * ((n : ℝ) + 4)) hinv
+        field_simp [hm4.ne', hn4.ne'] at hmul
+        linarith
+      have hcast : (m : ℝ) = (n : ℝ) := by linarith
+      exact Nat.cast_injective hcast
+    exact Set.infinite_of_injective_forall_mem hφ_inj hφ_mem
+  have hμ_univ : μ Set.univ = ⊤ := by
+    dsimp only [μ]
+    rw [Measure.restrict_apply_univ, Measure.count_apply_infinite hJ_inf]
+  have hderiv0 : HasPositiveCircleSymmetricDerivAt μ unitCircleOne 0 := by
+    unfold HasPositiveCircleSymmetricDerivAt
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT (by positivity : (0 : ℝ) < Real.pi / 4)] with δ ⟨hδ_pos, hδ_lt⟩
+    have hsub : openCircleArc unitCircleOne δ ⊆ openCircleArc unitCircleOne (Real.pi / 4) :=
+      openCircleArc_mono unitCircleOne hδ_lt.le
+    have hμ0 : μ (openCircleArc unitCircleOne δ) = 0 := by
+      dsimp only [μ]
+      rw [Measure.restrict_apply (isOpen_openCircleArc _ _).measurableSet]
+      have hinter : openCircleArc unitCircleOne δ ∩ J = ∅ := by
+        ext η
+        simp only [Set.mem_inter_iff, Set.mem_empty_iff_false, iff_false, not_and]
+        intro h1 h2
+        exact h2 (hsub h1)
+      rw [hinter, measure_empty]
+    simp [hμ0]
+  have htop_all : ∀ z ∈ Metric.ball (0 : ℂ) 1,
+      (∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ) = ⊤ :=
+    fun z hz => (lintegral_poissonKernel_eq_top_of_measure_univ_eq_top μ hμ_univ hz).1
+  refine ⟨μ, hderiv0, hμ_univ, htop_all, fun hlim => ?_⟩
+  have hrad := hlim.tendsto_radial
+  have hrad_top : Tendsto
+      (fun r : ℝ => ∫⁻ η : UnitCircle,
+        ENNReal.ofReal (_root_.poissonKernel 0 ((r : ℂ) * (unitCircleOne : ℂ)) (η : ℂ)) ∂μ)
+      (𝓝[<] 1) (𝓝 (⊤ : ℝ≥0∞)) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [Ioo_mem_nhdsLT zero_lt_one] with r ⟨hr0, hr1⟩
+    exact (htop_all _ (radial_mem_ball_unitCircle hr0.le hr1 unitCircleOne)).symm
+  have h0_eq_top : (0 : ℝ≥0∞) = ⊤ :=
+    tendsto_nhds_unique_of_frequently_eq hrad hrad_top
+      (Filter.Eventually.frequently (Filter.Eventually.of_forall fun _ => rfl))
+  exact ENNReal.zero_ne_top h0_eq_top
+
+/-- 11.22 (Theorem, Rudin pp. 243–244, under the implicit finite-measure hypothesis disclosed in
+`node11_22_infinite_measure_counterexample`):
+If `μ` is a positive finite Borel measure on `T = UnitCircle` and `(Dμ)(ζ) = 0`, then its
+Poisson integral `u = P[dμ]` has nontangential limit `0` at `ζ`. -/
+theorem theorem11_22 (μ : Measure UnitCircle) [IsFiniteMeasure μ] {ζ : UnitCircle}
+    (hderiv : HasPositiveCircleSymmetricDerivAt μ ζ 0) :
+    HasNontangentialLimit (positivePoissonIntegral μ) ζ 0 ∧
+    HasNontangentialLimit (poissonMeasureIntegral (μ.withDensityᵥ fun _ : UnitCircle => (1 : ℂ))) ζ 0 ∧
+    HasNontangentialLimit
+      (fun z : ℂ => ∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ) ζ 0 := by
+  have hreal : HasNontangentialLimit (positivePoissonIntegral μ) ζ 0 := by
+    rw [hasNontangentialLimit_iff_nhdsWithin]
+    intro α ⟨hα0, hα1⟩
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    let c_α : ℝ := nontangentialConstant α
+    have hc_pos : 0 < c_α := nontangentialConstant_pos hα1
+    let ε' : ℝ := c_α * (ε / 3)
+    have hε'_pos : 0 < ε' := by positivity
+    -- Extract `δ₀ ∈ (0, π / 2)` such that `μ(I_δ) / σ(I_δ) ≤ ε'` for all `0 < δ ≤ δ₀`
+    have hev_deriv := (ENNReal.tendsto_nhds_zero.mp hderiv) (ENNReal.ofReal ε')
+      (ENNReal.ofReal_pos.mpr hε'_pos)
+    obtain ⟨t₀, ht₀_pos, ht₀_sub⟩ := Metric.mem_nhdsWithin_iff.mp
+      (Filter.inter_mem hev_deriv (Ioo_mem_nhdsGT (by positivity : (0 : ℝ) < Real.pi / 2)))
+    let δ₀ : ℝ := min (t₀ / 2) (Real.pi / 4)
+    have hδ₀_pos : 0 < δ₀ := lt_min (half_pos ht₀_pos) (by positivity)
+    have hδ₀_le_pi : δ₀ ≤ Real.pi := (min_le_right _ _).trans (by linarith [Real.pi_pos])
+    have hδ₀_lt_pi2 : δ₀ < Real.pi / 2 := (min_le_right _ _).trans_lt (by linarith [Real.pi_pos])
+    have hsmall : ∀ {δ : ℝ}, 0 < δ → δ ≤ δ₀ →
+        μ (openCircleArc ζ δ) ≤ ENNReal.ofReal ε' * unitCircleMeasure (openCircleArc ζ δ) := by
+      intro δ hδ_pos hδ_le
+      have hδ_t₀ : δ < t₀ := hδ_le.trans_lt ((min_le_left _ _).trans_lt (half_lt_self ht₀_pos))
+      have hmem : δ ∈ Metric.ball (0 : ℝ) t₀ ∩ Set.Ioi 0 := by
+        refine ⟨?_, hδ_pos⟩
+        rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_pos hδ_pos]
+        exact hδ_t₀
+      have hdiv_le : μ (openCircleArc ζ δ) / unitCircleMeasure (openCircleArc ζ δ) ≤
+          ENNReal.ofReal ε' := (ht₀_sub hmem).1
+      exact (ENNReal.div_le_iff_le_mul
+        (Or.inl (unitCircleMeasure_openCircleArc_ne_zero ζ hδ_pos))
+        (Or.inl (measure_ne_top _ _))).mp hdiv_le
+    -- Decompose `μ = μ₀ + μ₁` along `I₀ = openCircleArc ζ δ₀`
+    let I₀ : Set UnitCircle := openCircleArc ζ δ₀
+    have hI₀_meas : MeasurableSet I₀ := (isOpen_openCircleArc ζ δ₀).measurableSet
+    let μ₀ : Measure UnitCircle := μ.restrict I₀
+    let μ₁ : Measure UnitCircle := μ.restrict I₀ᶜ
+    have hM_μ₀ : circleMeasureMaximal μ₀ ζ ≤ ENNReal.ofReal ε' := by
+      unfold circleMeasureMaximal
+      refine iSup₂_le fun δ hδ => ?_
+      have hδ_pos : 0 < δ := hδ
+      refine (ENNReal.div_le_iff_le_mul
+        (Or.inl (unitCircleMeasure_openCircleArc_ne_zero ζ hδ_pos))
+        (Or.inl (measure_ne_top _ _))).mpr ?_
+      rcases le_or_gt δ δ₀ with hle | hgt
+      · calc μ₀ (openCircleArc ζ δ)
+            ≤ μ (openCircleArc ζ δ) := Measure.restrict_le_self _
+          _ ≤ ENNReal.ofReal ε' * unitCircleMeasure (openCircleArc ζ δ) := hsmall hδ_pos hle
+      · have hsub_I₀ : I₀ ⊆ openCircleArc ζ δ := openCircleArc_mono ζ hgt.le
+        have hμ₀_eq : μ₀ (openCircleArc ζ δ) = μ I₀ := by
+          dsimp only [μ₀]
+          rw [Measure.restrict_apply (isOpen_openCircleArc ζ δ).measurableSet,
+            Set.inter_eq_self_of_subset_right hsub_I₀]
+        rw [hμ₀_eq]
+        calc μ I₀ ≤ ENNReal.ofReal ε' * unitCircleMeasure I₀ := hsmall hδ₀_pos le_rfl
+          _ ≤ ENNReal.ofReal ε' * unitCircleMeasure (openCircleArc ζ δ) :=
+              mul_le_mul_of_nonneg_left (measure_mono hsub_I₀) zero_le
+    -- Bound `positivePoissonIntegral μ₀ z ≤ ε / 3` on all of `approachRegion α ζ` via 11.20
+    have hu₀_bound : ∀ {z : ℂ}, z ∈ approachRegion α ζ →
+        positivePoissonIntegral μ₀ z ≤ ε / 3 := by
+      intro z hz
+      have hz_ball : z ∈ Metric.ball (0 : ℂ) 1 := approachRegion_subset_ball α ζ hz
+      have h20 := theorem11_20_explicit hα0 hα1 μ₀ ζ
+      let u₀_c := poissonMeasureIntegral (μ₀.withDensityᵥ fun _ : UnitCircle => (1 : ℂ))
+      have hN_ge : ENNReal.ofReal (positivePoissonIntegral μ₀ z) ≤
+          nontangentialMaximal α u₀_c ζ := by
+        have hnn : 0 ≤ positivePoissonIntegral μ₀ z :=
+          integral_nonneg (poissonKernel_unitCircle_nonneg hz_ball)
+        have heq : ENNReal.ofReal (positivePoissonIntegral μ₀ z) = ‖u₀_c z‖ₑ := by
+          dsimp only [u₀_c]
+          rw [poissonMeasureIntegral_withDensityᵥ_one μ₀ hz_ball, ← ofReal_norm,
+            Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hnn]
+        rw [heq]
+        exact le_iSup₂_of_le z hz le_rfl
+      have hprod : ENNReal.ofReal (c_α * positivePoissonIntegral μ₀ z) ≤
+          ENNReal.ofReal (c_α * (ε / 3)) := by
+        rw [ENNReal.ofReal_mul hc_pos.le]
+        exact (mul_le_mul_of_nonneg_left hN_ge zero_le).trans (h20.1.trans (h20.2.trans hM_μ₀))
+      have hreal_le := (ENNReal.ofReal_le_ofReal_iff (by positivity : 0 ≤ c_α * (ε / 3))).mp hprod
+      exact le_of_mul_le_mul_left hreal_le hc_pos
+    -- Uniform kernel decay on `I₀ᶜ` near `ζ`
+    have hcos_lt1 : Real.cos δ₀ < 1 := by
+      rw [← Real.cos_zero]
+      exact Real.strictAntiOn_cos ⟨le_rfl, Real.pi_pos.le⟩ ⟨hδ₀_pos.le, hδ₀_le_pi⟩ hδ₀_pos
+    let ρ : ℝ := Real.sqrt (2 * (1 - Real.cos δ₀))
+    have hρ_pos : 0 < ρ := Real.sqrt_pos.mpr (by linarith)
+    have hρ_sq : ρ ^ 2 = 2 * (1 - Real.cos δ₀) := Real.sq_sqrt (by linarith)
+    let M₁ : ℝ := μ₁.real Set.univ + 1
+    have hM₁_pos : 0 < M₁ := by positivity
+    let r_z : ℝ := min (ρ / 2) ((ε / 3) * (ρ / 2) ^ 2 / (2 * M₁))
+    have hr_z_pos : 0 < r_z := lt_min (half_pos hρ_pos) (by positivity)
+    refine Metric.mem_nhdsWithin_iff.mpr ⟨r_z, hr_z_pos, ?_⟩
+    rintro z ⟨hz_ball_ζ, hz_app⟩
+    have hz_U : z ∈ Metric.ball (0 : ℂ) 1 := approachRegion_subset_ball α ζ hz_app
+    have hz_lt1 : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz_U
+    have hz_dist : ‖z - (ζ : ℂ)‖ < r_z := by simpa [Metric.mem_ball, dist_eq_norm] using hz_ball_ζ
+    have hz_dist_ρ : ‖z - (ζ : ℂ)‖ < ρ / 2 := hz_dist.trans_le (min_le_left _ _)
+    -- Bound `positivePoissonIntegral μ₁ z ≤ ε / 3`
+    have hu₁_bound : positivePoissonIntegral μ₁ z ≤ ε / 3 := by
+      have hK_le : ∀ η ∈ I₀ᶜ, _root_.poissonKernel 0 z (η : ℂ) ≤
+          2 * ‖z - (ζ : ℂ)‖ / (ρ / 2) ^ 2 := by
+        intro η hη_compl
+        have hnot_I₀ : η ∉ I₀ := hη_compl
+        rw [show I₀ = openCircleArc ζ δ₀ from rfl, mem_openCircleArc_iff_chordal hδ₀_pos hδ₀_le_pi,
+          ← hρ_sq, not_lt] at hnot_I₀
+        have hη_ge_ρ : ρ ≤ ‖(η : ℂ) - (ζ : ℂ)‖ := by
+          nlinarith [norm_nonneg ((η : ℂ) - (ζ : ℂ)), hρ_pos]
+        have hηz_ge : ρ / 2 ≤ ‖(η : ℂ) - z‖ := by
+          have htri : ‖(η : ℂ) - (ζ : ℂ)‖ ≤ ‖(η : ℂ) - z‖ + ‖z - (ζ : ℂ)‖ := by
+            calc ‖(η : ℂ) - (ζ : ℂ)‖ = ‖((η : ℂ) - z) + (z - (ζ : ℂ))‖ := by ring_nf
+              _ ≤ ‖(η : ℂ) - z‖ + ‖z - (ζ : ℂ)‖ := norm_add_le _ _
+          linarith
+        have h1mz2_le : 1 - ‖z‖ ^ 2 ≤ 2 * ‖z - (ζ : ℂ)‖ := by
+          have h1mz : 1 - ‖z‖ ≤ ‖z - (ζ : ℂ)‖ := by
+            have htri := norm_sub_norm_le (ζ : ℂ) z
+            rw [norm_unitCircle, norm_sub_rev] at htri
+            exact htri
+          calc 1 - ‖z‖ ^ 2 = (1 + ‖z‖) * (1 - ‖z‖) := by ring
+            _ ≤ 2 * ‖z - (ζ : ℂ)‖ := by nlinarith [norm_nonneg z]
+        exact (poissonKernel_unitCircle_le_of_dist_ge hz_U (half_pos hρ_pos) hηz_ge).trans
+          (div_le_div_of_nonneg_right h1mz2_le (sq_nonneg _))
+      have hint_K : Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) μ₁ :=
+        (continuous_poissonKernel_unitCircle hz_U).integrable_of_hasCompactSupport
+          (HasCompactSupport.of_compactSpace _)
+      have hae_I₀c : ∀ᵐ η ∂μ₁, η ∈ I₀ᶜ := ae_restrict_mem hI₀_meas.compl
+      calc positivePoissonIntegral μ₁ z
+          ≤ ∫ _η : UnitCircle, (2 * ‖z - (ζ : ℂ)‖ / (ρ / 2) ^ 2) ∂μ₁ :=
+            integral_mono_ae hint_K (integrable_const _) (hae_I₀c.mono fun η hη => hK_le η hη)
+        _ = (2 * ‖z - (ζ : ℂ)‖ / (ρ / 2) ^ 2) * μ₁.real Set.univ := by
+            rw [integral_const, smul_eq_mul, mul_comm]
+        _ ≤ (2 * r_z / (ρ / 2) ^ 2) * M₁ := by
+            have h1 : 2 * ‖z - (ζ : ℂ)‖ / (ρ / 2) ^ 2 ≤ 2 * r_z / (ρ / 2) ^ 2 :=
+              div_le_div_of_nonneg_right (by linarith) (sq_nonneg _)
+            have h2 : μ₁.real Set.univ ≤ M₁ := by dsimp only [M₁]; linarith
+            exact mul_le_mul h1 h2 measureReal_nonneg (by positivity)
+        _ ≤ (2 * ((ε / 3) * (ρ / 2) ^ 2 / (2 * M₁)) / (ρ / 2) ^ 2) * M₁ := by
+            have hr_le : r_z ≤ (ε / 3) * (ρ / 2) ^ 2 / (2 * M₁) := min_le_right _ _
+            gcongr
+        _ = ε / 3 := by
+            have hρ2_ne : (ρ / 2) ^ 2 ≠ 0 := (sq_pos_of_pos (half_pos hρ_pos)).ne'
+            field_simp [hρ2_ne, hM₁_pos.ne']
+    -- Combine `μ = μ₀ + μ₁`
+    have hμ_split : μ = μ₀ + μ₁ := (Measure.restrict_add_restrict_compl hI₀_meas).symm
+    have hu_sum : positivePoissonIntegral μ z =
+        positivePoissonIntegral μ₀ z + positivePoissonIntegral μ₁ z := by
+      unfold positivePoissonIntegral
+      have hint0 : Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) μ₀ :=
+        (continuous_poissonKernel_unitCircle hz_U).integrable_of_hasCompactSupport
+          (HasCompactSupport.of_compactSpace _)
+      have hint1 : Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) μ₁ :=
+        (continuous_poissonKernel_unitCircle hz_U).integrable_of_hasCompactSupport
+          (HasCompactSupport.of_compactSpace _)
+      conv_lhs => rw [hμ_split]
+      exact integral_add_measure hint0 hint1
+    have hu_nn : 0 ≤ positivePoissonIntegral μ z :=
+      integral_nonneg (poissonKernel_unitCircle_nonneg hz_U)
+    simp only [Set.mem_ofPred_eq]
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg hu_nn, hu_sum]
+    linarith [hu₀_bound hz_app]
+  -- Deduce complex-valued and `[0, ∞]`-valued nontangential limits from `hreal`
+  have hcomplex : HasNontangentialLimit
+      (poissonMeasureIntegral (μ.withDensityᵥ fun _ : UnitCircle => (1 : ℂ))) ζ 0 := by
+    have hcast : HasNontangentialLimit (fun z => (positivePoissonIntegral μ z : ℂ)) ζ 0 := by
+      intro α hα1 z hz hlim
+      simpa [Function.comp_def] using
+        Complex.continuous_ofReal.continuousAt.tendsto.comp (hreal α hα1 z hz hlim)
+    exact hcast.congr_ball fun z hz => (poissonMeasureIntegral_withDensityᵥ_one μ hz).symm
+  have hennreal : HasNontangentialLimit
+      (fun z : ℂ => ∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ) ζ 0 := by
+    have hofR : HasNontangentialLimit (fun z => ENNReal.ofReal (positivePoissonIntegral μ z)) ζ 0 := by
+      intro α hα1 z hz hlim
+      simpa [Function.comp_def] using ENNReal.tendsto_ofReal (hreal α hα1 z hz hlim)
+    refine hofR.congr_ball fun z hz => ?_
+    unfold positivePoissonIntegral
+    have hint : Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) μ :=
+      (continuous_poissonKernel_unitCircle hz).integrable_of_hasCompactSupport
+        (HasCompactSupport.of_compactSpace _)
+    exact ofReal_integral_eq_lintegral_ofReal hint
+      (ae_of_all _ (poissonKernel_unitCircle_nonneg hz))
+  exact ⟨hreal, hcomplex, hennreal⟩
+
+end Node11_22
+
+section Node11_23
+
+/-- Constant reproduction on `U`: `P[c](z) = c` for all `z ∈ Metric.ball 0 1`. -/
+theorem unitPoissonIntegral_const (c : ℂ) {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    unitPoissonIntegral (fun _ : UnitCircle => c) z = c := by
+  unfold unitPoissonIntegral
+  rw [integral_smul_const, integral_poissonKernel_unitCircle hz, one_smul]
+
+/-- 11.23 (Fatou's Lebesgue-Point Theorem, Rudin p. 244):
+If `f ∈ L¹(T)` (`Integrable f unitCircleMeasure`), then `P[f]` has nontangential limit `f(ζ)`
+at every Lebesgue point `ζ ∈ T` of `f`. -/
+theorem theorem11_23 {f : UnitCircle → ℂ} (hf : Integrable f unitCircleMeasure)
+    {ζ : UnitCircle} (hleb : IsCircleLebesguePoint f ζ) :
+    HasNontangentialLimit (unitPoissonIntegral f) ζ (f ζ) := by
+  let g : UnitCircle → ℝ := fun η => ‖f η - f ζ‖
+  have hg_int : Integrable g unitCircleMeasure :=
+    (hf.sub (integrable_const (f ζ))).norm
+  obtain ⟨g₀, hg₀_smeas, hg₀_ae⟩ := hg_int.aestronglyMeasurable
+  let w : UnitCircle → ℝ≥0∞ := fun η => ENNReal.ofReal (max (g₀ η) 0)
+  have hw_meas : Measurable w :=
+    (hg₀_smeas.measurable.max measurable_const).ennreal_ofReal
+  have hw_ae : w =ᵐ[unitCircleMeasure] fun η => ENNReal.ofReal (g η) := by
+    filter_upwards [hg₀_ae] with η hη
+    dsimp only [w]
+    rw [← hη, max_eq_left (norm_nonneg _)]
+  let μ : Measure UnitCircle := unitCircleMeasure.withDensity w
+  have hμ_eq : μ = unitCircleMeasure.withDensity (fun η => ENNReal.ofReal (g η)) :=
+    withDensity_congr_ae hw_ae
+  have hμ_univ : μ Set.univ < ⊤ := by
+    dsimp only [μ]
+    rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ, lintegral_congr_ae hw_ae]
+    have heq : (∫⁻ η, ENNReal.ofReal (g η) ∂unitCircleMeasure) =
+        ∫⁻ η, ‖f η - f ζ‖ₑ ∂unitCircleMeasure :=
+      lintegral_congr fun η => ofReal_norm (f η - f ζ)
+    rw [heq]
+    exact (hf.sub (integrable_const (f ζ))).hasFiniteIntegral
+  have : IsFiniteMeasure μ := ⟨hμ_univ⟩
+  -- Show `(Dμ)(ζ) = 0` from `IsCircleLebesguePoint f ζ`
+  have hderiv : HasPositiveCircleSymmetricDerivAt μ ζ 0 := by
+    unfold HasPositiveCircleSymmetricDerivAt
+    have hofR := ENNReal.tendsto_ofReal hleb
+    rw [ENNReal.ofReal_zero] at hofR
+    refine hofR.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with δ hδ
+    have hδ_pos : 0 < δ := hδ
+    let I := openCircleArc ζ δ
+    have hI_meas : MeasurableSet I := (isOpen_openCircleArc ζ δ).measurableSet
+    have hσ_pos : 0 < unitCircleMeasure.real I := by
+      rw [measureReal_def]
+      exact ENNReal.toReal_pos (unitCircleMeasure_openCircleArc_ne_zero ζ hδ_pos) (measure_ne_top _ _)
+    rw [ENNReal.ofReal_mul (inv_nonneg.mpr hσ_pos.le), ENNReal.ofReal_inv_of_pos hσ_pos,
+      ofReal_integral_eq_lintegral_ofReal hg_int.integrableOn (ae_of_all _ fun _ => norm_nonneg _)]
+    have hμI : μ I = ∫⁻ η in I, ENNReal.ofReal (g η) ∂unitCircleMeasure := by
+      rw [hμ_eq, withDensity_apply _ hI_meas]
+    have hσI : ENNReal.ofReal (unitCircleMeasure.real I) = unitCircleMeasure I := by
+      rw [measureReal_def, ENNReal.ofReal_toReal (measure_ne_top _ _)]
+    rw [← hμI, hσI, mul_comm, ← div_eq_mul_inv]
+  have h22 := (theorem11_22 μ hderiv).1
+  -- Pointwise domination `‖P[f](z) - f(ζ)‖ ≤ positivePoissonIntegral μ z` on `U`
+  have hdom : ∀ {z : ℂ}, z ∈ Metric.ball (0 : ℂ) 1 →
+      ‖unitPoissonIntegral f z - f ζ‖ ≤ positivePoissonIntegral μ z := by
+    intro z hz
+    have hdiff_eq : unitPoissonIntegral f z - f ζ =
+        ∫ η : UnitCircle, _root_.poissonKernel 0 z (η : ℂ) • (f η - f ζ) ∂unitCircleMeasure := by
+      conv_lhs => rw [← unitPoissonIntegral_const (f ζ) hz]
+      unfold unitPoissonIntegral
+      have hint1 : Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ) • f η)
+          unitCircleMeasure :=
+        integrable_real_smul_of_continuous (continuous_poissonKernel_unitCircle hz) hf
+      have hint2 : Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ) • f ζ)
+          unitCircleMeasure :=
+        ((continuous_poissonKernel_unitCircle hz).integrable_of_hasCompactSupport
+          (HasCompactSupport.of_compactSpace _)).smul_const (f ζ)
+      rw [← integral_sub hint1 hint2]
+      exact integral_congr_ae (ae_of_all _ fun η => (smul_sub _ _ _).symm)
+    have hpos_eq : positivePoissonIntegral μ z =
+        ∫ η : UnitCircle, _root_.poissonKernel 0 z (η : ℂ) * g η ∂unitCircleMeasure := by
+      unfold positivePoissonIntegral
+      dsimp only [μ]
+      rw [integral_withDensity_eq_integral_toReal_smul hw_meas
+        (ae_of_all _ fun _ => ENNReal.ofReal_lt_top)]
+      refine integral_congr_ae ?_
+      filter_upwards [hg₀_ae] with η hη
+      dsimp only [w]
+      rw [← hη, max_eq_left (norm_nonneg _), ENNReal.toReal_ofReal (norm_nonneg _),
+        smul_eq_mul, mul_comm]
+    rw [hdiff_eq, hpos_eq]
+    calc ‖∫ η : UnitCircle, _root_.poissonKernel 0 z (η : ℂ) • (f η - f ζ) ∂unitCircleMeasure‖
+        ≤ ∫ η : UnitCircle, ‖_root_.poissonKernel 0 z (η : ℂ) • (f η - f ζ)‖ ∂unitCircleMeasure :=
+          norm_integral_le_integral_norm _
+      _ = ∫ η : UnitCircle, _root_.poissonKernel 0 z (η : ℂ) * g η ∂unitCircleMeasure := by
+          refine integral_congr_ae (ae_of_all _ fun η => ?_)
+          dsimp only
+          rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (poissonKernel_unitCircle_nonneg hz η)]
+  intro α hα1 z hz hlim
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  filter_upwards [Metric.tendsto_nhds.mp (h22 α hα1 z hz hlim) ε hε] with j hj
+  have hz_U : z j ∈ Metric.ball (0 : ℂ) 1 := approachRegion_subset_ball α ζ (hz j)
+  have hnn : 0 ≤ positivePoissonIntegral μ (z j) :=
+    integral_nonneg (poissonKernel_unitCircle_nonneg hz_U)
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg hnn] at hj
+  rw [dist_eq_norm]
+  exact (hdom hz_U).trans_lt hj
+
+/-- Almost-everywhere corollary of 11.23 + 11.19: for `f ∈ L¹(T)`, `P[f]` has nontangential limit
+`f(ζ)` at `σ`-almost every `ζ ∈ T`. -/
+theorem ae_hasNontangentialLimit_unitPoissonIntegral {f : UnitCircle → ℂ}
+    (hf : Integrable f unitCircleMeasure) :
+    ∀ᵐ ζ ∂unitCircleMeasure, HasNontangentialLimit (unitPoissonIntegral f) ζ (f ζ) := by
+  filter_upwards [ae_isCircleLebesguePoint hf] with ζ hleb using theorem11_23 hf hleb
+
+end Node11_23
+
+section Node11_24
+
+/-- Measure additivity of `complexMeasureIntegral` for bounded measurable functions on `X`. -/
+theorem complexMeasureIntegral_measure_add {X : Type*} [MeasurableSpace X]
+    (μ₁ μ₂ : ComplexMeasure X) {f : X → ℂ}
+    (hf_meas : Measurable f) {C : ℝ} (hf_bdd : ∀ x : X, ‖f x‖ ≤ C) :
+    RudinRCA.Chapter10.complexMeasureIntegral (μ₁ + μ₂) f =
+      RudinRCA.Chapter10.complexMeasureIntegral μ₁ f +
+        RudinRCA.Chapter10.complexMeasureIntegral μ₂ f := by
+  have : IsFiniteMeasure μ₁.variation := isFiniteMeasure_complexMeasure_variation μ₁
+  have : IsFiniteMeasure μ₂.variation := isFiniteMeasure_complexMeasure_variation μ₂
+  have : IsFiniteMeasure (μ₁ + μ₂).variation := isFiniteMeasure_complexMeasure_variation (μ₁ + μ₂)
+  let ν : Measure X := μ₁.variation + μ₂.variation + (μ₁ + μ₂).variation
+  have hle1 : μ₁.variation ≤ ν := by
+    intro s
+    dsimp only [ν]
+    simp only [Measure.coe_add, Pi.add_apply]
+    exact le_self_add.trans le_self_add
+  have hle2 : μ₂.variation ≤ ν := by
+    intro s
+    dsimp only [ν]
+    simp only [Measure.coe_add, Pi.add_apply]
+    exact le_add_self.trans le_self_add
+  have hle12 : (μ₁ + μ₂).variation ≤ ν := by
+    intro s
+    dsimp only [ν]
+    simp only [Measure.coe_add, Pi.add_apply]
+    exact le_add_self
+  have hf_int_ν : Integrable f ν :=
+    Integrable.of_bound hf_meas.aestronglyMeasurable C (ae_of_all _ hf_bdd)
+  -- Continuity of `g ↦ complexMeasureIntegral c g` with respect to `L¹(ν)` whenever `c.variation ≤ ν`
+  have hcont_c : ∀ (c : ComplexMeasure X) [IsFiniteMeasure c.variation],
+      c.variation ≤ ν →
+      Continuous (fun g : Lp ℂ 1 ν => RudinRCA.Chapter10.complexMeasureIntegral c g) := by
+    intro c _ hc_le
+    obtain ⟨h, hm, hn, hi, hr_pol⟩ := RudinRCA.Chapter06.theorem_6_12_of_finite_variation c
+    have hpolar_lp : ∀ g : Lp ℂ 1 ν,
+        RudinRCA.Chapter10.complexMeasureIntegral c g =
+          ∫ x, (g : X → ℂ) x * h x ∂c.variation := fun g =>
+      RudinRCA.Chapter06.vectorIntegral_eq_polar c h hm hn hi hr_pol
+        (((Lp.memLp g).integrable le_rfl).mono_measure hc_le)
+    rw [Metric.continuous_iff]
+    intro g₁ ε hε
+    refine ⟨ε, hε, fun g₂ hg₂ => ?_⟩
+    rw [dist_eq_norm, hpolar_lp g₂, hpolar_lp g₁]
+    have hint1 : Integrable (fun x => (g₂ : X → ℂ) x * h x) c.variation :=
+      ((((Lp.memLp g₂).integrable le_rfl).mono_measure hc_le).mul_bdd hm.aestronglyMeasurable
+        (ae_of_all _ fun x => (hn x).le))
+    have hint2 : Integrable (fun x => (g₁ : X → ℂ) x * h x) c.variation :=
+      ((((Lp.memLp g₁).integrable le_rfl).mono_measure hc_le).mul_bdd hm.aestronglyMeasurable
+        (ae_of_all _ fun x => (hn x).le))
+    rw [← integral_sub hint1 hint2]
+    have hnorm_sub : ‖∫ x, ((g₂ : X → ℂ) x * h x - (g₁ : X → ℂ) x * h x) ∂c.variation‖ ≤
+        dist g₂ g₁ := by
+      calc ‖∫ x, ((g₂ : X → ℂ) x * h x - (g₁ : X → ℂ) x * h x) ∂c.variation‖
+          ≤ ∫ x, ‖(g₂ : X → ℂ) x * h x - (g₁ : X → ℂ) x * h x‖ ∂c.variation :=
+            norm_integral_le_integral_norm _
+        _ = ∫ x, ‖(g₂ : X → ℂ) x - (g₁ : X → ℂ) x‖ ∂c.variation := by
+            refine integral_congr_ae (ae_of_all _ fun x => ?_)
+            dsimp only
+            rw [← sub_mul, norm_mul, hn x, mul_one]
+        _ ≤ ∫ x, ‖(g₂ : X → ℂ) x - (g₁ : X → ℂ) x‖ ∂ν :=
+            integral_mono_measure hc_le (ae_of_all _ fun _ => norm_nonneg _)
+              (((Lp.memLp g₂).integrable le_rfl).sub ((Lp.memLp g₁).integrable le_rfl)).norm
+        _ = ‖g₂ - g₁‖ := by
+            have hcoe := Lp.coeFn_sub g₂ g₁
+            have hint_eq : (∫ x, ‖(g₂ : X → ℂ) x - (g₁ : X → ℂ) x‖ ∂ν) =
+                ∫ x, ‖((g₂ - g₁ : Lp ℂ 1 ν) : X → ℂ) x‖ ∂ν :=
+              integral_congr_ae (hcoe.mono fun x hx => by
+                dsimp only
+                rw [hx]
+                rfl)
+            rw [hint_eq, Lp.norm_def,
+              eLpNorm_one_eq_lintegral_enorm (Lp.aestronglyMeasurable (g₂ - g₁)),
+              integral_norm_eq_lintegral_enorm (Lp.aestronglyMeasurable (g₂ - g₁))]
+        _ = dist g₂ g₁ := (dist_eq_norm g₂ g₁).symm
+    exact hnorm_sub.trans_lt hg₂
+  -- Additivity of `complexMeasureIntegral c` in the integrand via `vectorIntegral_eq_polar`
+  have hadd_fn : ∀ (c : ComplexMeasure X) [IsFiniteMeasure c.variation],
+      c.variation ≤ ν → ∀ {g₁ g₂ : X → ℂ}, Integrable g₁ ν → Integrable g₂ ν →
+      RudinRCA.Chapter10.complexMeasureIntegral c (g₁ + g₂) =
+        RudinRCA.Chapter10.complexMeasureIntegral c g₁ +
+          RudinRCA.Chapter10.complexMeasureIntegral c g₂ := by
+    intro c _ hc_le g₁ g₂ hg₁ hg₂
+    obtain ⟨h, hm, hn, hi, hr_pol⟩ := RudinRCA.Chapter06.theorem_6_12_of_finite_variation c
+    have hg₁c := hg₁.mono_measure hc_le
+    have hg₂c := hg₂.mono_measure hc_le
+    unfold RudinRCA.Chapter10.complexMeasureIntegral
+    rw [RudinRCA.Chapter06.vectorIntegral_eq_polar c h hm hn hi hr_pol (hg₁c.add hg₂c),
+      RudinRCA.Chapter06.vectorIntegral_eq_polar c h hm hn hi hr_pol hg₁c,
+      RudinRCA.Chapter06.vectorIntegral_eq_polar c h hm hn hi hr_pol hg₂c]
+    have h1 : Integrable (fun x => g₁ x * h x) c.variation :=
+      hg₁c.mul_bdd hm.aestronglyMeasurable (ae_of_all _ fun x => (hn x).le)
+    have h2 : Integrable (fun x => g₂ x * h x) c.variation :=
+      hg₂c.mul_bdd hm.aestronglyMeasurable (ae_of_all _ fun x => (hn x).le)
+    have heq : ∀ x : X, (g₁ + g₂) x * h x = g₁ x * h x + g₂ x * h x := fun x =>
+      add_mul (g₁ x) (g₂ x) (h x)
+    simp_rw [heq]
+    exact integral_add h1 h2
+  refine Integrable.induction
+    (P := fun g => RudinRCA.Chapter10.complexMeasureIntegral (μ₁ + μ₂) g =
+      RudinRCA.Chapter10.complexMeasureIntegral μ₁ g +
+        RudinRCA.Chapter10.complexMeasureIntegral μ₂ g)
+    ?_ ?_ ?_ ?_ hf_int_ν
+  · intro z E hE _
+    unfold RudinRCA.Chapter10.complexMeasureIntegral
+    rw [VectorMeasure.integral_indicator_const z hE,
+      VectorMeasure.integral_indicator_const z hE,
+      VectorMeasure.integral_indicator_const z hE]
+    change z * (μ₁ + μ₂) E = z * μ₁ E + z * μ₂ E
+    rw [add_apply, mul_add]
+  · intro g₁ g₂ _ hg₁ hg₂ h1 h2
+    rw [hadd_fn (μ₁ + μ₂) hle12 hg₁ hg₂, hadd_fn μ₁ hle1 hg₁ hg₂, hadd_fn μ₂ hle2 hg₁ hg₂,
+      h1, h2]
+    ring
+  · exact isClosed_eq (hcont_c (μ₁ + μ₂) hle12) ((hcont_c μ₁ hle1).add (hcont_c μ₂ hle2))
+  · intro g₁ g₂ hfg _ h1
+    unfold RudinRCA.Chapter10.complexMeasureIntegral at h1 ⊢
+    have hae_le : ∀ {m : Measure X}, m ≤ ν → g₁ =ᵐ[m] g₂ := fun hm => by
+      rw [EventuallyEq, ae_iff] at hfg ⊢
+      exact nonpos_iff_eq_zero.mp ((hm _).trans (le_of_eq hfg))
+    rw [← VectorMeasure.integral_congr_ae (hae_le hle12), h1,
+      VectorMeasure.integral_congr_ae (hae_le hle1),
+      VectorMeasure.integral_congr_ae (hae_le hle2)]
+
+/-- Additivity of `poissonMeasureIntegral` in the measure on `U = Metric.ball 0 1`. -/
+theorem poissonMeasureIntegral_add (μ₁ μ₂ : ComplexMeasure UnitCircle)
+    {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    poissonMeasureIntegral (μ₁ + μ₂) z =
+      poissonMeasureIntegral μ₁ z + poissonMeasureIntegral μ₂ z := by
+  unfold poissonMeasureIntegral
+  have hcont : Continuous (fun η : UnitCircle => (_root_.poissonKernel 0 z (η : ℂ) : ℂ)) :=
+    Complex.continuous_ofReal.comp (continuous_poissonKernel_unitCircle hz)
+  obtain ⟨C, hC⟩ := isCompact_range hcont.norm |>.bddAbove
+  exact complexMeasureIntegral_measure_add μ₁ μ₂ hcont.measurable
+    (fun η => hC ⟨η, rfl⟩)
+
+/-- Scalar multiplication `(c • μ)` for `complexMeasureIntegral` on bounded measurable functions. -/
+theorem complexMeasureIntegral_measure_neg {X : Type*} [MeasurableSpace X]
+    (μ : ComplexMeasure X) {f : X → ℂ}
+    (hf_meas : Measurable f) {C : ℝ} (hf_bdd : ∀ x : X, ‖f x‖ ≤ C) :
+    RudinRCA.Chapter10.complexMeasureIntegral (-μ) f =
+      -RudinRCA.Chapter10.complexMeasureIntegral μ f := by
+  have h0 : RudinRCA.Chapter10.complexMeasureIntegral (0 : ComplexMeasure X) f = 0 := by
+    unfold RudinRCA.Chapter10.complexMeasureIntegral
+    simp
+  have hsum := complexMeasureIntegral_measure_add μ (-μ) hf_meas hf_bdd
+  rw [add_neg_cancel, h0] at hsum
+  exact eq_neg_of_add_eq_zero_right hsum.symm
+
+theorem poissonMeasureIntegral_sub (μ₁ μ₂ : ComplexMeasure UnitCircle)
+    {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    poissonMeasureIntegral (μ₁ - μ₂) z =
+      poissonMeasureIntegral μ₁ z - poissonMeasureIntegral μ₂ z := by
+  rw [sub_eq_add_neg, poissonMeasureIntegral_add μ₁ (-μ₂) hz]
+  unfold poissonMeasureIntegral
+  have hcont : Continuous (fun η : UnitCircle => (_root_.poissonKernel 0 z (η : ℂ) : ℂ)) :=
+    Complex.continuous_ofReal.comp (continuous_poissonKernel_unitCircle hz)
+  obtain ⟨C, hC⟩ := isCompact_range hcont.norm |>.bddAbove
+  rw [complexMeasureIntegral_measure_neg μ₂ hcont.measurable (fun η => hC ⟨η, rfl⟩),
+    sub_eq_add_neg]
+
+/-- Pointwise modulus domination `‖P[dμ](z)‖ ≤ P[d|μ|](z)` for any complex Borel measure `μ` on `T`
+and `z ∈ Metric.ball 0 1`. -/
+theorem norm_poissonMeasureIntegral_le_positivePoissonIntegral_variation
+    (μ : ComplexMeasure UnitCircle) {z : ℂ} (hz : z ∈ Metric.ball (0 : ℂ) 1) :
+    ‖poissonMeasureIntegral μ z‖ ≤ positivePoissonIntegral μ.variation z := by
+  unfold poissonMeasureIntegral RudinRCA.Chapter10.complexMeasureIntegral positivePoissonIntegral
+  have : IsFiniteMeasure μ.variation := isFiniteMeasure_complexMeasure_variation μ
+  obtain ⟨h, hm, hn, hi, hr_pol⟩ := RudinRCA.Chapter06.theorem_6_12 μ
+  have hK_cont : Continuous (fun η : UnitCircle => (_root_.poissonKernel 0 z (η : ℂ) : ℂ)) :=
+    Complex.continuous_ofReal.comp (continuous_poissonKernel_unitCircle hz)
+  rw [RudinRCA.Chapter06.vectorIntegral_eq_polar μ h hm hn hi hr_pol
+    (hK_cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))]
+  calc ‖∫ η : UnitCircle, (_root_.poissonKernel 0 z (η : ℂ) : ℂ) * h η ∂μ.variation‖
+      ≤ ∫ η : UnitCircle, ‖(_root_.poissonKernel 0 z (η : ℂ) : ℂ) * h η‖ ∂μ.variation :=
+        norm_integral_le_integral_norm _
+    _ = ∫ η : UnitCircle, _root_.poissonKernel 0 z (η : ℂ) ∂μ.variation := by
+        refine integral_congr_ae (ae_of_all _ fun η => ?_)
+        dsimp only
+        rw [norm_mul, hn η, mul_one, Complex.norm_real, Real.norm_eq_abs,
+          abs_of_nonneg (poissonKernel_unitCircle_nonneg hz η)]
+
+/-- Singular complex measures have nontangential Poisson limit `0` `σ`-almost everywhere on `T`. -/
+theorem ae_hasNontangentialLimit_zero_of_mutuallySingular
+    (μ_s : ComplexMeasure UnitCircle)
+    (hsing : μ_s ⟂ᵥ unitCircleMeasure.toENNRealVectorMeasure) :
+    ∀ᵐ ζ ∂unitCircleMeasure, HasNontangentialLimit (poissonMeasureIntegral μ_s) ζ 0 := by
+  have : IsFiniteMeasure μ_s.variation := isFiniteMeasure_complexMeasure_variation μ_s
+  have hsing_var := (mutuallySingular_complexMeasure_iff_variation μ_s).mp hsing
+  filter_upwards [ae_hasPositiveCircleSymmetricDerivAt_zero_of_mutuallySingular μ_s.variation hsing_var]
+    with ζ hderiv
+  have h22 := (theorem11_22 μ_s.variation hderiv).1
+  intro α hα1 z hz hlim
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  filter_upwards [Metric.tendsto_nhds.mp (h22 α hα1 z hz hlim) ε hε] with j hj
+  have hz_U : z j ∈ Metric.ball (0 : ℂ) 1 := approachRegion_subset_ball α ζ (hz j)
+  have hnn : 0 ≤ positivePoissonIntegral μ_s.variation (z j) :=
+    integral_nonneg (poissonKernel_unitCircle_nonneg hz_U)
+  rw [Real.dist_eq, sub_zero, abs_of_nonneg hnn] at hj
+  rw [dist_zero_right]
+  exact (norm_poissonMeasureIntegral_le_positivePoissonIntegral_variation μ_s hz_U).trans_lt hj
+
+/-- 11.24 (Fatou's Theorem for Complex Measures, Rudin p. 244):
+If `dμ = f dσ + dμ_s` is the Lebesgue decomposition of a complex Borel measure `μ` on `T`,
+where `f ∈ L¹(T)` and `μ_s ⟂ σ`, then `P[dμ]` has nontangential limit `f(ζ)` at `σ`-almost
+every `ζ ∈ T`. -/
+theorem theorem11_24 (μ μ_s : ComplexMeasure UnitCircle) (f : UnitCircle → ℂ)
+    (hf : Integrable f unitCircleMeasure)
+    (hsing : μ_s ⟂ᵥ unitCircleMeasure.toENNRealVectorMeasure)
+    (hdecomp : μ = unitCircleMeasure.withDensityᵥ f + μ_s) :
+    ∀ᵐ ζ ∂unitCircleMeasure, HasNontangentialLimit (poissonMeasureIntegral μ) ζ (f ζ) := by
+  filter_upwards [ae_hasNontangentialLimit_unitPoissonIntegral hf,
+    ae_hasNontangentialLimit_zero_of_mutuallySingular μ_s hsing] with ζ hlim_f hlim_s
+  have hsum : HasNontangentialLimit
+      (fun z => unitPoissonIntegral f z + poissonMeasureIntegral μ_s z) ζ (f ζ) := by
+    intro α hα1 z hz hlim
+    simpa only [add_zero] using (hlim_f α hα1 z hz hlim).add (hlim_s α hα1 z hz hlim)
+  refine hsum.congr_ball fun z hz => ?_
+  rw [hdecomp, poissonMeasureIntegral_add _ _ hz, poissonMeasureIntegral_withDensityᵥ hf hz]
+
+/-- Unconditional form of 11.24: for any complex Borel measure `μ` on `T`, `P[dμ]` has
+nontangential limit `(dμ / dσ)(ζ)` (`μ.rnDeriv unitCircleMeasure ζ`) at `σ`-almost every `ζ ∈ T`. -/
+theorem theorem11_24_rnDeriv (μ : ComplexMeasure UnitCircle) :
+    ∀ᵐ ζ ∂unitCircleMeasure,
+      HasNontangentialLimit (poissonMeasureIntegral μ) ζ (μ.rnDeriv unitCircleMeasure ζ) := by
+  have : μ.HaveLebesgueDecomposition unitCircleMeasure := ⟨inferInstance, inferInstance⟩
+  have hsing : μ.singularPart unitCircleMeasure ⟂ᵥ unitCircleMeasure.toENNRealVectorMeasure := by
+    obtain ⟨A, hA, hr, hμA⟩ := μ.re.mutuallySingular_singularPart unitCircleMeasure
+    obtain ⟨B, hB, hi, hμB⟩ := μ.im.mutuallySingular_singularPart unitCircleMeasure
+    refine VectorMeasure.MutuallySingular.mk (A ∩ B) (hA.inter hB) ?_ ?_
+    · intro E hE _
+      change Complex.mk (μ.re.singularPart unitCircleMeasure E)
+        (μ.im.singularPart unitCircleMeasure E) = 0
+      rw [hr E (hE.trans Set.inter_subset_left), hi E (hE.trans Set.inter_subset_right)]
+      rfl
+    · intro E hE hEm
+      rw [Measure.toENNRealVectorMeasure_apply_measurable hEm]
+      have hAz : unitCircleMeasure Aᶜ = 0 := by
+        simpa only [Measure.toENNRealVectorMeasure_apply_measurable hA.compl] using
+          hμA Aᶜ Set.Subset.rfl
+      have hBz : unitCircleMeasure Bᶜ = 0 := by
+        simpa only [Measure.toENNRealVectorMeasure_apply_measurable hB.compl] using
+          hμB Bᶜ Set.Subset.rfl
+      apply measure_mono_null hE
+      rw [Set.compl_inter]
+      exact measure_union_null hAz hBz
+  have hdecomp : μ =
+      unitCircleMeasure.withDensityᵥ (μ.rnDeriv unitCircleMeasure) +
+        μ.singularPart unitCircleMeasure := by
+    rw [add_comm]
+    exact (ComplexMeasure.singularPart_add_withDensity_rnDeriv_eq
+      (c := μ) (μ := unitCircleMeasure)).symm
+  exact theorem11_24 μ (μ.singularPart unitCircleMeasure) (μ.rnDeriv unitCircleMeasure)
+    (μ.integrable_rnDeriv unitCircleMeasure) hsing hdecomp
+
+end Node11_24
+
+section Node11_25
+
+/-- Explicit constant `A(α, p)` for Theorem 11.25 (`0 < α < 1`, `1 ≤ p ≤ ⊤`). -/
+def nontangentialLpConstant (α : ℝ) (p : ℝ≥0∞) : ℝ :=
+  if p = 1 then
+    3 / nontangentialConstant α
+  else if p = ⊤ then
+    1
+  else
+    ((p.toReal * 6 * (2 ^ (p.toReal - 1) / (p.toReal - 1))) ^ (p.toReal)⁻¹) /
+      nontangentialConstant α
+
+theorem nontangentialLpConstant_pos {α : ℝ} (hα1 : α < 1) {p : ℝ≥0∞} (hp1 : 1 ≤ p) :
+    0 < nontangentialLpConstant α p := by
+  have hc_pos : 0 < nontangentialConstant α := nontangentialConstant_pos hα1
+  unfold nontangentialLpConstant
+  split_ifs with hp_eq1 hp_top
+  · positivity
+  · norm_num
+  · have hp_gt1 : 1 < p := lt_of_le_of_ne hp1 (Ne.symm hp_eq1)
+    have hp'_gt1 : 1 < p.toReal := by
+      have := (ENNReal.toReal_lt_toReal ENNReal.one_ne_top hp_top).mpr hp_gt1
+      simpa using this
+    have hp'_pos : 0 < p.toReal := zero_lt_one.trans hp'_gt1
+    have hp'm1_pos : 0 < p.toReal - 1 := sub_pos.mpr hp'_gt1
+    have hbase_pos : 0 < p.toReal * 6 * (2 ^ (p.toReal - 1) / (p.toReal - 1)) := by
+      positivity
+    exact div_pos (Real.rpow_pos_of_pos hbase_pos _) hc_pos
+
+/-- Pointwise domination `c_α (N_α P[dμ])(ζ) ≤ (M μ)(ζ)` for any complex Borel measure `μ` on `T`
+and `0 < α < 1`. -/
+theorem nontangentialMaximal_poissonMeasureIntegral_le
+    {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) (μ : ComplexMeasure UnitCircle) (ζ : UnitCircle) :
+    ENNReal.ofReal (nontangentialConstant α) *
+      nontangentialMaximal α (poissonMeasureIntegral μ) ζ ≤
+    complexCircleMeasureMaximal μ ζ := by
+  have : IsFiniteMeasure μ.variation := isFiniteMeasure_complexMeasure_variation μ
+  let u_var : ℂ → ℂ := poissonMeasureIntegral (μ.variation.withDensityᵥ fun _ : UnitCircle => (1 : ℂ))
+  have hle_u : nontangentialMaximal α (poissonMeasureIntegral μ) ζ ≤
+      nontangentialMaximal α u_var ζ := by
+    unfold nontangentialMaximal
+    refine iSup₂_le fun z hz => ?_
+    have hz_U : z ∈ Metric.ball (0 : ℂ) 1 := approachRegion_subset_ball α ζ hz
+    have hdom := norm_poissonMeasureIntegral_le_positivePoissonIntegral_variation μ hz_U
+    have hnn : 0 ≤ positivePoissonIntegral μ.variation z :=
+      integral_nonneg (poissonKernel_unitCircle_nonneg hz_U)
+    have hnorm_var : ‖u_var z‖ = positivePoissonIntegral μ.variation z := by
+      dsimp only [u_var]
+      rw [poissonMeasureIntegral_withDensityᵥ_one μ.variation hz_U,
+        Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hnn]
+    have henorm : ‖poissonMeasureIntegral μ z‖ₑ ≤ ‖u_var z‖ₑ := by
+      rw [← ofReal_norm, ← ofReal_norm, hnorm_var]
+      exact ENNReal.ofReal_le_ofReal hdom
+    exact le_iSup₂_of_le z hz henorm
+  have h20 := theorem11_20_explicit hα0 hα1 μ.variation ζ
+  exact (mul_le_mul_of_nonneg_left hle_u zero_le).trans (h20.1.trans h20.2)
+
+/-- 11.25(a) (Weak `(1, 1)` Nontangential Maximal Inequality, Rudin p. 245):
+If `0 < α < 1`, `μ` is a complex Borel measure on `T`, and `u = P[dμ]`, then for all `0 < λ < ∞`,
+`σ{N_α u > λ} ≤ (A(α, 1) / λ) ‖μ‖`. -/
+theorem theorem11_25a {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    (μ : ComplexMeasure UnitCircle) {lam : ℝ} (hlam : 0 < lam) :
+    unitCircleMeasure {ζ : UnitCircle |
+        ENNReal.ofReal lam < nontangentialMaximal α (poissonMeasureIntegral μ) ζ} ≤
+      ENNReal.ofReal ((nontangentialLpConstant α 1 / lam) * μ.variation.real Set.univ) ∧
+    unitCircleMeasure.real {ζ : UnitCircle |
+        ENNReal.ofReal lam < nontangentialMaximal α (poissonMeasureIntegral μ) ζ} ≤
+      (nontangentialLpConstant α 1 / lam) * μ.variation.real Set.univ := by
+  let c_α : ℝ := nontangentialConstant α
+  have hc_pos : 0 < c_α := nontangentialConstant_pos hα1
+  have hsub : {ζ : UnitCircle |
+        ENNReal.ofReal lam < nontangentialMaximal α (poissonMeasureIntegral μ) ζ} ⊆
+      {ζ : UnitCircle | ENNReal.ofReal (c_α * lam) < complexCircleMeasureMaximal μ ζ} := by
+    intro ζ hζ
+    simp only [Set.mem_ofPred_eq] at hζ ⊢
+    rw [ENNReal.ofReal_mul hc_pos.le]
+    have hlt : ENNReal.ofReal c_α * ENNReal.ofReal lam <
+        ENNReal.ofReal c_α * nontangentialMaximal α (poissonMeasureIntegral μ) ζ := by
+      have hmul := ENNReal.mul_lt_mul_left (ENNReal.ofReal_pos.mpr hc_pos).ne'
+        ENNReal.ofReal_ne_top hζ
+      simpa only [mul_comm] using hmul
+    exact hlt.trans_le (nontangentialMaximal_poissonMeasureIntegral_le hα0 hα1 μ ζ)
+  have hweak := weak_type_complexCircleMeasureMaximal μ (mul_pos hc_pos hlam)
+  have hconst : (3 / (c_α * lam)) * μ.variation.real Set.univ =
+      (nontangentialLpConstant α 1 / lam) * μ.variation.real Set.univ := by
+    unfold nontangentialLpConstant
+    simp only [↓reduceIte, c_α]
+    ring
+  have h1 : unitCircleMeasure {ζ : UnitCircle |
+        ENNReal.ofReal lam < nontangentialMaximal α (poissonMeasureIntegral μ) ζ} ≤
+      ENNReal.ofReal ((nontangentialLpConstant α 1 / lam) * μ.variation.real Set.univ) := by
+    rw [← hconst]
+    exact (measure_mono hsub).trans hweak.1
+  refine ⟨h1, ?_⟩
+  rw [measureReal_def]
+  exact ENNReal.toReal_le_of_le_ofReal (by
+    rw [← hconst]
+    exact mul_nonneg (div_nonneg (by norm_num) (mul_pos hc_pos hlam).le) measureReal_nonneg) h1
+
+/-- Truncation-tail distribution bound for `circleMeasureMaximal (unitCircleMeasure.withDensity g)`:
+for `0 < t` and integrable measurable `g : UnitCircle → ℝ≥0∞`,
+`σ{M(g dσ) > t} ≤ (6 / t) ∫_{g > t/2} g dσ`. -/
+theorem circleMeasureMaximal_truncation_tail {g : UnitCircle → ℝ≥0∞}
+    (hg : Measurable g) (hg_fin : (∫⁻ η, g η ∂unitCircleMeasure) < ⊤)
+    {t : ℝ} (ht : 0 < t) :
+    unitCircleMeasure
+        {ζ : UnitCircle |
+          ENNReal.ofReal t < circleMeasureMaximal (unitCircleMeasure.withDensity g) ζ} ≤
+      ENNReal.ofReal (6 / t) *
+        ∫⁻ η in {η : UnitCircle | ENNReal.ofReal (t / 2) < g η}, g η ∂unitCircleMeasure := by
+  let S : Set UnitCircle := {η : UnitCircle | ENNReal.ofReal (t / 2) < g η}
+  have hS_meas : MeasurableSet S := measurableSet_lt measurable_const hg
+  let g₁ : UnitCircle → ℝ≥0∞ := S.indicator g
+  let g₂ : UnitCircle → ℝ≥0∞ := Sᶜ.indicator g
+  have hg₁_meas : Measurable g₁ := hg.indicator hS_meas
+  have hg₂_meas : Measurable g₂ := hg.indicator hS_meas.compl
+  let ν₁ : Measure UnitCircle := unitCircleMeasure.withDensity g₁
+  have hν₁_univ : ν₁ Set.univ = ∫⁻ η in S, g η ∂unitCircleMeasure := by
+    dsimp only [ν₁, g₁]
+    rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ, lintegral_indicator hS_meas]
+  have hν₁_fin : ν₁ Set.univ < ⊤ := by
+    rw [hν₁_univ]
+    exact (setLIntegral_le_lintegral S g).trans_lt hg_fin
+  have : IsFiniteMeasure ν₁ := ⟨hν₁_fin⟩
+  -- Pointwise subadditivity + boundedness of `g₂ ≤ t / 2`
+  have hM_le : ∀ ζ : UnitCircle,
+      circleMeasureMaximal (unitCircleMeasure.withDensity g) ζ ≤
+        circleMeasureMaximal ν₁ ζ + ENNReal.ofReal (t / 2) := by
+    intro ζ
+    unfold circleMeasureMaximal
+    refine iSup₂_le fun δ hδ => ?_
+    have hδ_pos : 0 < δ := hδ
+    let I := openCircleArc ζ δ
+    have hI_meas : MeasurableSet I := (isOpen_openCircleArc ζ δ).measurableSet
+    have hsplit : (unitCircleMeasure.withDensity g) I ≤
+        ν₁ I + ENNReal.ofReal (t / 2) * unitCircleMeasure I := by
+      rw [withDensity_apply _ hI_meas]
+      have hsum : ∀ η : UnitCircle, g η = g₁ η + g₂ η := fun η =>
+        congrFun (Set.indicator_self_add_compl S g).symm η
+      simp_rw [hsum]
+      rw [lintegral_add_left hg₁_meas]
+      have h1 : (∫⁻ η in I, g₁ η ∂unitCircleMeasure) = ν₁ I :=
+        (withDensity_apply g₁ hI_meas).symm
+      have h2 : (∫⁻ η in I, g₂ η ∂unitCircleMeasure) ≤
+          ENNReal.ofReal (t / 2) * unitCircleMeasure I := by
+        calc (∫⁻ η in I, g₂ η ∂unitCircleMeasure)
+            ≤ ∫⁻ _η in I, ENNReal.ofReal (t / 2) ∂unitCircleMeasure := by
+              refine lintegral_mono fun η => ?_
+              dsimp only [g₂]
+              by_cases hη : η ∈ Sᶜ
+              · rw [Set.indicator_of_mem hη]
+                exact not_lt.mp hη
+              · rw [Set.indicator_of_notMem hη]
+                exact zero_le
+          _ = ENNReal.ofReal (t / 2) * unitCircleMeasure I := by
+              rw [lintegral_const, Measure.restrict_apply_univ]
+      rw [h1]
+      exact add_le_add le_rfl h2
+    have hσ0 : unitCircleMeasure I ≠ 0 := unitCircleMeasure_openCircleArc_ne_zero ζ hδ_pos
+    have hσ_top : unitCircleMeasure I ≠ ⊤ := measure_ne_top _ _
+    calc (unitCircleMeasure.withDensity g) I / unitCircleMeasure I
+        ≤ (ν₁ I + ENNReal.ofReal (t / 2) * unitCircleMeasure I) / unitCircleMeasure I :=
+          ENNReal.div_le_div_right hsplit _
+      _ = ν₁ I / unitCircleMeasure I +
+            (ENNReal.ofReal (t / 2) * unitCircleMeasure I) / unitCircleMeasure I :=
+          ENNReal.add_div
+      _ = ν₁ I / unitCircleMeasure I + ENNReal.ofReal (t / 2) := by
+          rw [ENNReal.mul_div_cancel_right hσ0 hσ_top]
+      _ ≤ circleMeasureMaximal ν₁ ζ + ENNReal.ofReal (t / 2) :=
+          add_le_add (le_iSup₂_of_le δ hδ le_rfl) le_rfl
+  have hsub : {ζ : UnitCircle |
+        ENNReal.ofReal t < circleMeasureMaximal (unitCircleMeasure.withDensity g) ζ} ⊆
+      {ζ : UnitCircle | ENNReal.ofReal (t / 2) < circleMeasureMaximal ν₁ ζ} := by
+    intro ζ hζ
+    simp only [Set.mem_ofPred_eq] at hζ ⊢
+    by_contra hle
+    push Not at hle
+    have hle_sum : circleMeasureMaximal (unitCircleMeasure.withDensity g) ζ ≤ ENNReal.ofReal t := by
+      calc circleMeasureMaximal (unitCircleMeasure.withDensity g) ζ
+          ≤ circleMeasureMaximal ν₁ ζ + ENNReal.ofReal (t / 2) := hM_le ζ
+        _ ≤ ENNReal.ofReal (t / 2) + ENNReal.ofReal (t / 2) := add_le_add hle le_rfl
+        _ = ENNReal.ofReal t := by
+            rw [← ENNReal.ofReal_add (half_pos ht).le (half_pos ht).le, add_halves]
+    exact not_le_of_gt hζ hle_sum
+  have hweak := weak_type_circleMeasureMaximal ν₁ (half_pos ht)
+  have h6 : (3 : ℝ) / (t / 2) = 6 / t := by ring
+  rw [h6, hν₁_univ] at hweak
+  exact (measure_mono hsub).trans hweak
+
+/-- Strong `(p, p)` `L^p` bound for `circleMeasureMaximal (unitCircleMeasure.withDensity g)`
+(`1 < p' < ∞`), proved via `layerCake_rpow_ennreal` + `weighted_truncation_tails` (Rudin 8.18(7)). -/
+theorem circleMeasureMaximal_strong_bound {g : UnitCircle → ℝ≥0∞}
+    (hg : Measurable g) (hg_fin : (∫⁻ η, g η ∂unitCircleMeasure) < ⊤)
+    {p' : ℝ} (hp' : 1 < p') :
+    (∫⁻ ζ, circleMeasureMaximal (unitCircleMeasure.withDensity g) ζ ^ p' ∂unitCircleMeasure) ≤
+      ENNReal.ofReal (p' * 6 * (2 ^ (p' - 1) / (p' - 1))) *
+        ∫⁻ η, g η ^ p' ∂unitCircleMeasure := by
+  let M_g := circleMeasureMaximal (unitCircleMeasure.withDensity g)
+  have hM_meas : Measurable M_g :=
+    measurable_circleMeasureMaximal (unitCircleMeasure.withDensity g)
+  have htbound : ∀ t : ℝ, 0 < t →
+      unitCircleMeasure {ζ : UnitCircle | ENNReal.ofReal t < M_g ζ} *
+          ENNReal.ofReal (t ^ (p' - 1)) ≤
+        6 * (ENNReal.ofReal (t ^ (p' - 2)) *
+          ∫⁻ η in {η : UnitCircle | ENNReal.ofReal (t / 2) < g η}, g η ∂unitCircleMeasure) := by
+    intro t ht
+    have htail := mul_le_mul_of_nonneg_right
+      (circleMeasureMaximal_truncation_tail hg hg_fin ht) zero_le
+      (a := ENNReal.ofReal (t ^ (p' - 1)))
+    have hcoeff : ENNReal.ofReal (6 / t) * ENNReal.ofReal (t ^ (p' - 1)) =
+        6 * ENNReal.ofReal (t ^ (p' - 2)) := by
+      have h6 : (6 : ℝ≥0∞) = ENNReal.ofReal 6 := by norm_num
+      rw [h6, ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by norm_num)]
+      congr 1
+      calc (6 / t) * t ^ (p' - 1)
+          = 6 * (t ^ (-1 : ℝ) * t ^ (p' - 1)) := by
+              rw [Real.rpow_neg_one]
+              ring
+        _ = 6 * t ^ ((-1 : ℝ) + (p' - 1)) := by
+              rw [← Real.rpow_add ht]
+        _ = 6 * t ^ (p' - 2) := by
+              congr 2
+              ring
+    calc unitCircleMeasure {ζ : UnitCircle | ENNReal.ofReal t < M_g ζ} *
+            ENNReal.ofReal (t ^ (p' - 1))
+        ≤ (ENNReal.ofReal (6 / t) *
+            ∫⁻ η in {η : UnitCircle | ENNReal.ofReal (t / 2) < g η}, g η ∂unitCircleMeasure) *
+            ENNReal.ofReal (t ^ (p' - 1)) := htail
+      _ = (ENNReal.ofReal (6 / t) * ENNReal.ofReal (t ^ (p' - 1))) *
+            ∫⁻ η in {η : UnitCircle | ENNReal.ofReal (t / 2) < g η}, g η ∂unitCircleMeasure := by
+          ac_rfl
+      _ = 6 * (ENNReal.ofReal (t ^ (p' - 2)) *
+            ∫⁻ η in {η : UnitCircle | ENNReal.ofReal (t / 2) < g η}, g η ∂unitCircleMeasure) := by
+          rw [hcoeff, mul_assoc]
+  rw [RudinRCA.Chapter08.layerCake_rpow_ennreal unitCircleMeasure hM_meas (by linarith : 0 < p')]
+  calc ENNReal.ofReal p' *
+          ∫⁻ t in Set.Ioi 0,
+            unitCircleMeasure {ζ : UnitCircle | ENNReal.ofReal t < M_g ζ} *
+              ENNReal.ofReal (t ^ (p' - 1))
+      ≤ ENNReal.ofReal p' *
+          ∫⁻ t in Set.Ioi 0,
+            6 * (ENNReal.ofReal (t ^ (p' - 2)) *
+              ∫⁻ η in {η : UnitCircle | ENNReal.ofReal (t / 2) < g η}, g η ∂unitCircleMeasure) := by
+        refine mul_le_mul_of_nonneg_left ?_ zero_le
+        exact setLIntegral_mono' measurableSet_Ioi fun t ht => htbound t ht
+    _ = ENNReal.ofReal p' *
+          (6 * (((2 : ℝ≥0∞) ^ (p' - 1) / ENNReal.ofReal (p' - 1)) *
+            ∫⁻ η, g η ^ p' ∂unitCircleMeasure)) := by
+        rw [lintegral_const_mul' 6 _ (by norm_num),
+          RudinRCA.Chapter08.weighted_truncation_tails unitCircleMeasure hg hp']
+    _ = ENNReal.ofReal (p' * 6 * (2 ^ (p' - 1) / (p' - 1))) *
+          ∫⁻ η, g η ^ p' ∂unitCircleMeasure := by
+        have hp'_pos : 0 < p' := by linarith
+        have hp'm1_pos : 0 < p' - 1 := by linarith
+        have h2_eq : ((2 : ℝ≥0∞) ^ (p' - 1)) = ENNReal.ofReal (2 ^ (p' - 1)) := by
+          have h2 : (2 : ℝ≥0∞) = ENNReal.ofReal 2 := by norm_num
+          rw [h2, ← ENNReal.ofReal_rpow_of_pos (by norm_num)]
+        have h6_eq : (6 : ℝ≥0∞) = ENNReal.ofReal 6 := by norm_num
+        rw [h2_eq, h6_eq, ← ENNReal.ofReal_div_of_pos hp'm1_pos,
+          ← mul_assoc, ← mul_assoc,
+          ← ENNReal.ofReal_mul hp'_pos.le,
+          ← ENNReal.ofReal_mul (by positivity)]
+
+/-- Pointwise `L^∞` bound on `nontangentialMaximal`: for every `f` and every `ζ ∈ T`,
+`(N_α P[f])(ζ) ≤ ‖f‖_∞` (`eLpNorm f ⊤ unitCircleMeasure`). -/
+theorem nontangentialMaximal_unitPoissonIntegral_le_eLpNorm_top
+    (α : ℝ) {f : UnitCircle → ℂ} (hf : AEStronglyMeasurable f unitCircleMeasure)
+    (ζ : UnitCircle) :
+    nontangentialMaximal α (unitPoissonIntegral f) ζ ≤ eLpNorm f ⊤ unitCircleMeasure := by
+  rw [eLpNorm_exponent_top hf]
+  change nontangentialMaximal α (unitPoissonIntegral f) ζ ≤
+    essSup (fun η => ‖f η‖ₑ) unitCircleMeasure
+  unfold nontangentialMaximal
+  refine iSup₂_le fun z hz => ?_
+  have hz_U : z ∈ Metric.ball (0 : ℂ) 1 := approachRegion_subset_ball α ζ hz
+  have hae : ∀ᵐ η ∂unitCircleMeasure,
+      ‖f η‖ₑ ≤ essSup (fun x => ‖f x‖ₑ) unitCircleMeasure := ae_le_essSup
+  calc ‖unitPoissonIntegral f z‖ₑ
+      ≤ ∫⁻ η : UnitCircle,
+          ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) * ‖f η‖ₑ
+            ∂unitCircleMeasure := enorm_unitPoissonIntegral_le hz_U
+    _ ≤ ∫⁻ η : UnitCircle,
+          ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) *
+            essSup (fun x => ‖f x‖ₑ) unitCircleMeasure ∂unitCircleMeasure := by
+        refine lintegral_mono_ae ?_
+        filter_upwards [hae] with η hη
+        gcongr
+    _ = (∫⁻ η : UnitCircle,
+          ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ))
+            ∂unitCircleMeasure) * essSup (fun x => ‖f x‖ₑ) unitCircleMeasure :=
+        lintegral_mul_const _
+          (continuous_poissonKernel_unitCircle hz_U).measurable.ennreal_ofReal
+    _ = essSup (fun x => ‖f x‖ₑ) unitCircleMeasure := by
+        rw [lintegral_poissonKernel_unitCircle hz_U, one_mul]
+
+/-- 11.25(b) (Strong `(p, p)` Nontangential Maximal Inequality, Rudin p. 245):
+If `0 < α < 1`, `1 < p ≤ ⊤`, `f ∈ L^p(T)` (`MemLp f p unitCircleMeasure`), and `u = P[f]`, then
+`N_α u < ⊤` `σ`-a.e., `(N_α u).toReal ∈ L^p(T)`, and `‖N_α u‖_p ≤ A(α, p) ‖f‖_p`. -/
+theorem theorem11_25b {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    {p : ℝ≥0∞} (hp1 : 1 < p) {f : UnitCircle → ℂ} (hf : MemLp f p unitCircleMeasure) :
+    let u : ℂ → ℂ := unitPoissonIntegral f
+    (∀ᵐ ζ ∂unitCircleMeasure, nontangentialMaximal α u ζ < ⊤) ∧
+    MemLp (fun ζ : UnitCircle => (nontangentialMaximal α u ζ).toReal) p unitCircleMeasure ∧
+    eLpNorm (fun ζ : UnitCircle => (nontangentialMaximal α u ζ).toReal) p unitCircleMeasure ≤
+      ENNReal.ofReal (nontangentialLpConstant α p) * eLpNorm f p unitCircleMeasure := by
+  intro u
+  have hN_meas : Measurable (nontangentialMaximal α u) :=
+    measurable_nontangentialMaximal hα0 hα1 u
+  have hN_real_smeas : AEStronglyMeasurable
+      (fun ζ : UnitCircle => (nontangentialMaximal α u ζ).toReal) unitCircleMeasure :=
+    hN_meas.ennreal_toReal.aestronglyMeasurable
+  by_cases hp_top : p = ⊤
+  · subst hp_top
+    have hle_all : ∀ ζ : UnitCircle,
+        nontangentialMaximal α u ζ ≤ eLpNorm f ⊤ unitCircleMeasure :=
+      nontangentialMaximal_unitPoissonIntegral_le_eLpNorm_top α hf.aestronglyMeasurable
+    have hlt_top_all : ∀ ζ : UnitCircle, nontangentialMaximal α u ζ < ⊤ :=
+      fun ζ => (hle_all ζ).trans_lt hf.eLpNorm_lt_top
+    have hel_le : eLpNorm (fun ζ : UnitCircle => (nontangentialMaximal α u ζ).toReal) ⊤
+        unitCircleMeasure ≤ eLpNorm f ⊤ unitCircleMeasure := by
+      rw [eLpNorm_exponent_top hN_real_smeas]
+      change essSup (fun ζ => ‖(nontangentialMaximal α u ζ).toReal‖ₑ) unitCircleMeasure ≤
+        eLpNorm f ⊤ unitCircleMeasure
+      refine essSup_le_of_ae_le _ (ae_of_all _ fun ζ => ?_)
+      dsimp only
+      rw [Real.enorm_of_nonneg ENNReal.toReal_nonneg,
+        ENNReal.ofReal_toReal (hlt_top_all ζ).ne]
+      exact hle_all ζ
+    have hA_top : nontangentialLpConstant α ⊤ = 1 := by
+      unfold nontangentialLpConstant
+      simp
+    refine ⟨ae_of_all _ hlt_top_all, hel_le.trans_lt hf.eLpNorm_lt_top, ?_⟩
+    rw [hA_top, ENNReal.ofReal_one, one_mul]
+    exact hel_le
+  · have hp_ne1 : p ≠ 1 := hp1.ne'
+    have hp_ne0 : p ≠ 0 := (zero_lt_one.trans hp1).ne'
+    let p' : ℝ := p.toReal
+    have hp'_gt1 : 1 < p' := by
+      have := (ENNReal.toReal_lt_toReal ENNReal.one_ne_top hp_top).mpr hp1
+      simpa [p'] using this
+    have hp'_pos : 0 < p' := zero_lt_one.trans hp'_gt1
+    let c_α : ℝ := nontangentialConstant α
+    have hc_pos : 0 < c_α := nontangentialConstant_pos hα1
+    -- Measurable representative `g` of `‖f ·‖ₑ`
+    obtain ⟨f₀, hf₀_smeas, hf₀_ae⟩ := hf.aestronglyMeasurable
+    let g : UnitCircle → ℝ≥0∞ := fun η => ‖f₀ η‖ₑ
+    have hg_meas : Measurable g := hf₀_smeas.measurable.enorm
+    have hg_ae : g =ᵐ[unitCircleMeasure] fun η => ‖f η‖ₑ :=
+      hf₀_ae.mono fun η hη => by dsimp only [g]; rw [hη]
+    have hg_fin : (∫⁻ η, g η ∂unitCircleMeasure) < ⊤ := by
+      rw [lintegral_congr_ae hg_ae]
+      exact (hf.integrable hp1.le).hasFiniteIntegral
+    let ν : Measure UnitCircle := unitCircleMeasure.withDensity g
+    have : IsFiniteMeasure ν := ⟨by
+      dsimp only [ν]
+      rwa [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]⟩
+    -- Pointwise domination `c_α (N_α u)(ζ) ≤ (M ν)(ζ)`
+    have hN_le_M : ∀ ζ : UnitCircle,
+        nontangentialMaximal α u ζ ≤
+          ENNReal.ofReal (1 / c_α) * circleMeasureMaximal ν ζ := by
+      intro ζ
+      let u_ν := poissonMeasureIntegral (ν.withDensityᵥ fun _ : UnitCircle => (1 : ℂ))
+      have hu_le : nontangentialMaximal α u ζ ≤ nontangentialMaximal α u_ν ζ := by
+        unfold nontangentialMaximal
+        refine iSup₂_le fun z hz => ?_
+        have hz_U : z ∈ Metric.ball (0 : ℂ) 1 := approachRegion_subset_ball α ζ hz
+        have hK_meas : Measurable (fun η : UnitCircle =>
+            ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ))) :=
+          (continuous_poissonKernel_unitCircle hz_U).measurable.ennreal_ofReal
+        have hint_ν : Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) ν :=
+          (continuous_poissonKernel_unitCircle hz_U).integrable_of_hasCompactSupport
+            (HasCompactSupport.of_compactSpace _)
+        have hu_ν_enorm : ‖u_ν z‖ₑ =
+            ∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂ν := by
+          dsimp only [u_ν]
+          have hnn_ν : 0 ≤ positivePoissonIntegral ν z :=
+            integral_nonneg (poissonKernel_unitCircle_nonneg hz_U)
+          rw [poissonMeasureIntegral_withDensityᵥ_one ν hz_U, ← ofReal_norm,
+            Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hnn_ν]
+          exact ofReal_integral_eq_lintegral_ofReal hint_ν
+            (ae_of_all _ (poissonKernel_unitCircle_nonneg hz_U))
+        have hle_z : ‖u z‖ₑ ≤ ‖u_ν z‖ₑ := by
+          rw [hu_ν_enorm]
+          dsimp only [ν]
+          rw [lintegral_withDensity_eq_lintegral_mul _ hg_meas hK_meas]
+          refine (enorm_unitPoissonIntegral_le hz_U).trans (le_of_eq ?_)
+          refine lintegral_congr_ae (hg_ae.symm.mono fun η hη => ?_)
+          dsimp only [Pi.mul_apply] at hη ⊢
+          rw [hη, mul_comm]
+        exact le_iSup₂_of_le z hz hle_z
+      have h20 := theorem11_20_explicit hα0 hα1 ν ζ
+      have hprod : ENNReal.ofReal c_α * nontangentialMaximal α u ζ ≤ circleMeasureMaximal ν ζ :=
+        (mul_le_mul_of_nonneg_left hu_le zero_le).trans (h20.1.trans h20.2)
+      calc nontangentialMaximal α u ζ
+          = ENNReal.ofReal (1 / c_α) * (ENNReal.ofReal c_α * nontangentialMaximal α u ζ) := by
+            rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity),
+              one_div_mul_cancel hc_pos.ne', ENNReal.ofReal_one, one_mul]
+        _ ≤ ENNReal.ofReal (1 / c_α) * circleMeasureMaximal ν ζ :=
+            mul_le_mul_of_nonneg_left hprod zero_le
+    -- Apply `circleMeasureMaximal_strong_bound`
+    let C_p : ℝ := p' * 6 * (2 ^ (p' - 1) / (p' - 1))
+    have hCp_pos : 0 < C_p := by
+      dsimp only [C_p]
+      have : 0 < p' - 1 := sub_pos.mpr hp'_gt1
+      positivity
+    have hstrong := circleMeasureMaximal_strong_bound hg_meas hg_fin hp'_gt1
+    have hlint_N : (∫⁻ ζ, nontangentialMaximal α u ζ ^ p' ∂unitCircleMeasure) ≤
+        ENNReal.ofReal ((1 / c_α) ^ p' * C_p) * ∫⁻ η, ‖f η‖ₑ ^ p' ∂unitCircleMeasure := by
+      calc (∫⁻ ζ, nontangentialMaximal α u ζ ^ p' ∂unitCircleMeasure)
+          ≤ ∫⁻ ζ, (ENNReal.ofReal (1 / c_α) * circleMeasureMaximal ν ζ) ^ p' ∂unitCircleMeasure := by
+            refine lintegral_mono fun ζ => ENNReal.rpow_le_rpow (hN_le_M ζ) hp'_pos.le
+        _ = ENNReal.ofReal ((1 / c_α) ^ p') *
+              ∫⁻ ζ, circleMeasureMaximal ν ζ ^ p' ∂unitCircleMeasure := by
+            simp_rw [ENNReal.mul_rpow_of_nonneg _ _ hp'_pos.le,
+              ← ENNReal.ofReal_rpow_of_pos (one_div_pos.mpr hc_pos)]
+            exact lintegral_const_mul _
+              ((measurable_circleMeasureMaximal ν).pow_const p')
+        _ ≤ ENNReal.ofReal ((1 / c_α) ^ p') *
+              (ENNReal.ofReal C_p * ∫⁻ η, g η ^ p' ∂unitCircleMeasure) :=
+            mul_le_mul_of_nonneg_left hstrong zero_le
+        _ = ENNReal.ofReal ((1 / c_α) ^ p' * C_p) *
+              ∫⁻ η, ‖f η‖ₑ ^ p' ∂unitCircleMeasure := by
+            rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
+            congr 1
+            exact lintegral_congr_ae (hg_ae.mono fun η hη => by
+              dsimp only at hη ⊢
+              rw [hη])
+    -- Relate `∫⁻ ‖f η‖ₑ ^ p'` to `eLpNorm f p unitCircleMeasure`
+    have hf_lint_eq : (∫⁻ η, ‖f η‖ₑ ^ p' ∂unitCircleMeasure) ^ (1 / p') =
+        eLpNorm f p unitCircleMeasure := by
+      rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne0 hp_top hf.aestronglyMeasurable]
+    have hf_lint_lt_top : (∫⁻ η, ‖f η‖ₑ ^ p' ∂unitCircleMeasure) < ⊤ := by
+      by_contra hge
+      push Not at hge
+      have htop : (∫⁻ η, ‖f η‖ₑ ^ p' ∂unitCircleMeasure) = ⊤ := top_le_iff.mp hge
+      have hlt := hf.eLpNorm_lt_top
+      rw [← hf_lint_eq, htop, ENNReal.top_rpow_of_pos (one_div_pos.mpr hp'_pos)] at hlt
+      exact lt_irrefl ⊤ hlt
+    have hN_lint_lt_top : (∫⁻ ζ, nontangentialMaximal α u ζ ^ p' ∂unitCircleMeasure) < ⊤ :=
+      hlint_N.trans_lt (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hf_lint_lt_top)
+    have hae_fin : ∀ᵐ ζ ∂unitCircleMeasure, nontangentialMaximal α u ζ < ⊤ := by
+      filter_upwards [ae_lt_top (hN_meas.pow_const p') hN_lint_lt_top.ne] with ζ hlt
+      by_contra hge
+      push Not at hge
+      rw [top_le_iff.mp hge, ENNReal.top_rpow_of_pos hp'_pos] at hlt
+      exact lt_irrefl ⊤ hlt
+    have hel_eq : eLpNorm (fun ζ : UnitCircle => (nontangentialMaximal α u ζ).toReal) p
+        unitCircleMeasure =
+        (∫⁻ ζ, nontangentialMaximal α u ζ ^ p' ∂unitCircleMeasure) ^ (1 / p') := by
+      rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hp_ne0 hp_top hN_real_smeas]
+      congr 1
+      refine lintegral_congr_ae (hae_fin.mono fun ζ hζ => ?_)
+      dsimp only [p']
+      rw [Real.enorm_of_nonneg ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hζ.ne]
+    have hconst_eq : (((1 / c_α) ^ p' * C_p) ^ (1 / p')) = nontangentialLpConstant α p := by
+      unfold nontangentialLpConstant
+      simp only [hp_ne1, hp_top, ↓reduceIte]
+      change (((1 / c_α) ^ p' * C_p) ^ (1 / p')) = (C_p ^ p'⁻¹) / c_α
+      rw [one_div p', Real.mul_rpow (by positivity) hCp_pos.le,
+        ← Real.rpow_mul (by positivity), mul_inv_cancel₀ hp'_pos.ne', Real.rpow_one]
+      ring
+    have hel_bound : eLpNorm (fun ζ : UnitCircle => (nontangentialMaximal α u ζ).toReal) p
+        unitCircleMeasure ≤
+        ENNReal.ofReal (nontangentialLpConstant α p) * eLpNorm f p unitCircleMeasure := by
+      rw [hel_eq, ← hf_lint_eq, ← hconst_eq]
+      calc (∫⁻ ζ, nontangentialMaximal α u ζ ^ p' ∂unitCircleMeasure) ^ (1 / p')
+          ≤ (ENNReal.ofReal ((1 / c_α) ^ p' * C_p) *
+              ∫⁻ η, ‖f η‖ₑ ^ p' ∂unitCircleMeasure) ^ (1 / p') :=
+            ENNReal.rpow_le_rpow hlint_N (one_div_pos.mpr hp'_pos).le
+        _ = ENNReal.ofReal (((1 / c_α) ^ p' * C_p) ^ (1 / p')) *
+              (∫⁻ η, ‖f η‖ₑ ^ p' ∂unitCircleMeasure) ^ (1 / p') := by
+            rw [ENNReal.mul_rpow_of_nonneg _ _ (one_div_pos.mpr hp'_pos).le,
+              ENNReal.ofReal_rpow_of_pos (by positivity)]
+    exact ⟨hae_fin,
+      hel_bound.trans_lt (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hf.eLpNorm_lt_top),
+      hel_bound⟩
+
+/-- Literal 3.7 `L^∞` (`rudinEssSup`) form of 11.25(b) at `p = ⊤`. -/
+theorem theorem11_25b_rudinEssSup {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1)
+    {f : UnitCircle → ℂ} (hf : MemLp f ⊤ unitCircleMeasure) :
+    rudinEssSup unitCircleMeasure
+      (fun ζ : UnitCircle => (nontangentialMaximal α (unitPoissonIntegral f) ζ).toReal) ≤
+    nontangentialLpConstant α ⊤ * rudinEssSup unitCircleMeasure f := by
+  obtain ⟨_, hMem, hel⟩ := theorem11_25b hα0 hα1 ENNReal.one_lt_top hf
+  have hσ0 : unitCircleMeasure Set.univ ≠ 0 := by simp
+  rw [rudinEssSup_eq_eLpNorm_top_toReal hσ0 hMem,
+    rudinEssSup_eq_eLpNorm_top_toReal hσ0 hf]
+  have hlt : ENNReal.ofReal (nontangentialLpConstant α ⊤) * eLpNorm f ⊤ unitCircleMeasure ≠ ⊤ :=
+    (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hf.eLpNorm_lt_top).ne
+  have htoR := ENNReal.toReal_mono hlt hel
+  rwa [ENNReal.toReal_mul,
+    ENNReal.toReal_ofReal (nontangentialLpConstant_pos hα1 le_top).le] at htoR
+
+/-- 11.25 (Master Theorem, Rudin pp. 244–245):
+For `0 < α < 1` and `1 ≤ p ≤ ⊤`, there exist constants `A(α, p) < ∞` (`nontangentialLpConstant α p > 0`)
+such that:
+(a) for every complex Borel measure `μ` on `T`, `u = P[dμ]`, and `0 < λ < ∞`,
+`σ{N_α u > λ} ≤ (A(α, 1) / λ) ‖μ‖`;
+(b) for `1 < p ≤ ⊤`, `f ∈ L^p(T)`, and `u = P[f]`, `N_α u < ⊤` `σ`-a.e., `(N_α u).toReal ∈ L^p(T)`,
+and `‖N_α u‖_p ≤ A(α, p) ‖f‖_p` (together with the literal 3.7 `rudinEssSup` bound at `p = ⊤`). -/
+theorem theorem11_25 {α : ℝ} (hα0 : 0 < α) (hα1 : α < 1) :
+    ∃ A : ℝ≥0∞ → ℝ,
+      (∀ p : ℝ≥0∞, 1 ≤ p → 0 < A p) ∧
+      (∀ (μ : ComplexMeasure UnitCircle) {lam : ℝ}, 0 < lam →
+        unitCircleMeasure.real {ζ : UnitCircle |
+          ENNReal.ofReal lam < nontangentialMaximal α (poissonMeasureIntegral μ) ζ} ≤
+        (A 1 / lam) * μ.variation.real Set.univ) ∧
+      (∀ {p : ℝ≥0∞}, 1 < p → ∀ {f : UnitCircle → ℂ}, MemLp f p unitCircleMeasure →
+        (∀ᵐ ζ ∂unitCircleMeasure, nontangentialMaximal α (unitPoissonIntegral f) ζ < ⊤) ∧
+        MemLp (fun ζ : UnitCircle =>
+          (nontangentialMaximal α (unitPoissonIntegral f) ζ).toReal) p unitCircleMeasure ∧
+        eLpNorm (fun ζ : UnitCircle =>
+          (nontangentialMaximal α (unitPoissonIntegral f) ζ).toReal) p unitCircleMeasure ≤
+          ENNReal.ofReal (A p) * eLpNorm f p unitCircleMeasure) ∧
+      (∀ (p : ℝ≥0∞) [Fact (1 ≤ p)], 1 < p → ∀ f : Lp ℂ p unitCircleMeasure,
+        ∃ N_lp : Lp ℝ p unitCircleMeasure,
+          (∀ᵐ ζ ∂unitCircleMeasure,
+            N_lp ζ = (nontangentialMaximal α (unitPoissonIntegral f) ζ).toReal) ∧
+          ‖N_lp‖ ≤ A p * ‖f‖) ∧
+      (∀ {f : UnitCircle → ℂ}, MemLp f ⊤ unitCircleMeasure →
+        rudinEssSup unitCircleMeasure
+          (fun ζ : UnitCircle => (nontangentialMaximal α (unitPoissonIntegral f) ζ).toReal) ≤
+        A ⊤ * rudinEssSup unitCircleMeasure f) := by
+  refine ⟨nontangentialLpConstant α, fun _ hp => nontangentialLpConstant_pos hα1 hp,
+    fun μ _ hlam => (theorem11_25a hα0 hα1 μ hlam).2,
+    fun hp1 _ hf => theorem11_25b hα0 hα1 hp1 hf, ?_,
+    fun hf => theorem11_25b_rudinEssSup hα0 hα1 hf⟩
+  intro p _ hp1 f
+  obtain ⟨_, hMem, hel⟩ := theorem11_25b hα0 hα1 hp1 (Lp.memLp f)
+  refine ⟨hMem.toLp _, hMem.coeFn_toLp, ?_⟩
+  rw [Lp.norm_def, Lp.norm_def, eLpNorm_congr_ae hMem.coeFn_toLp]
+  have hlt : ENNReal.ofReal (nontangentialLpConstant α p) *
+      eLpNorm f p unitCircleMeasure ≠ ⊤ :=
+    (ENNReal.mul_lt_top ENNReal.ofReal_lt_top (Lp.memLp f).eLpNorm_lt_top).ne
+  have htoR := ENNReal.toReal_mono hlt hel
+  rwa [ENNReal.toReal_mul,
+    ENNReal.toReal_ofReal (nontangentialLpConstant_pos hα1 hp1.le).le] at htoR
+
+end Node11_25
+
+end RudinRCA.Chapter11
+
+end
+
+/-!
+# Stage 3 Block 4: Representation Theorems and `H^∞` Boundary Values (Nodes 11.30, 11.26, 11.32)
+-/
+
+noncomputable section
+
+open MeasureTheory Set Filter Topology Complex
+open scoped Real Topology ENNReal NNReal ComplexConjugate
+
+namespace RudinRCA.Chapter11
+
+/-! ### Node 11.30: Poisson Representation of `L^p`-Bounded and Positive Harmonic Functions -/
+
+section Node11_30
+
+/-- Radial dilation `z ↦ u(r z)` (`0 ≤ r < 1`) of a harmonic function `u` on `U = ball 0 1`
+is continuous on `closedBall 0 1`, harmonic on `ball 0 1`, and equals the Poisson integral of
+its radial restriction `u_r` on `ball 0 1` (Rudin p. 247). -/
+theorem harmonicOn_dilate_poisson_eq {u : ℂ → ℂ}
+    (hu : HarmonicOn u (Metric.ball (0 : ℂ) 1)) {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    let h_r : ℂ → ℂ := fun z => u ((r : ℂ) * z)
+    ContinuousOn h_r (Metric.closedBall (0 : ℂ) 1) ∧
+    HarmonicOn h_r (Metric.ball (0 : ℂ) 1) ∧
+    ∀ z ∈ Metric.ball (0 : ℂ) 1,
+      u ((r : ℂ) * z) = unitPoissonIntegral (unitRadialRestriction u r) z := by
+  intro h_r
+  have hcont : ContinuousOn h_r (Metric.closedBall (0 : ℂ) 1) := by
+    refine hu.continuousOn.comp (continuous_const.mul continuous_id).continuousOn fun z hz => ?_
+    have hz1 : ‖z‖ ≤ 1 := by simpa [Metric.mem_closedBall] using hz
+    rw [Metric.mem_ball, dist_zero_right, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg hr0]
+    nlinarith
+  have hharm : HarmonicOn h_r (Metric.ball (0 : ℂ) 1) := by
+    rcases eq_or_lt_of_le hr0 with rfl | hr_pos
+    · have hconst : h_r = fun _ => u 0 := by
+        ext z
+        simp [h_r]
+      rw [hconst]
+      exact harmonicOn_of_mathlib fun z hz =>
+        ((differentiableOn_const (u 0)).analyticAt (Metric.isOpen_ball.mem_nhds hz)).harmonicAt
+    · have hsub : Metric.ball (0 : ℂ) r ⊆ Metric.ball (0 : ℂ) 1 :=
+        Metric.ball_subset_ball hr1.le
+      have hcomp := (hu.mono hsub).comp_affine hr_pos
+      simpa only [zero_add] using hcomp
+  refine ⟨hcont, hharm, fun z hz => ?_⟩
+  have h9 := (theorem11_9 hcont hharm).1 z hz
+  have hP := (unitPoissonIntegral_eq_poissonIntegral h_r z).symm
+  exact h9.trans hP
+
+private def extendZeroSphere (g : C(UnitCircle, ℂ)) (z : ℂ) : ℂ :=
+  open Classical in
+  if hz : z ∈ Metric.sphere (0 : ℂ) 1 then g ⟨z, hz⟩ else 0
+
+private theorem extendZeroSphere_apply (g : C(UnitCircle, ℂ)) (ζ : UnitCircle) :
+    extendZeroSphere g (ζ : ℂ) = g ζ := by
+  unfold extendZeroSphere
+  simp
+
+private theorem continuousOn_extendZeroSphere (g : C(UnitCircle, ℂ)) :
+    ContinuousOn (extendZeroSphere g) (Metric.sphere (0 : ℂ) 1) := by
+  rw [continuousOn_iff_continuous_domRestrict]
+  exact g.continuous.congr fun ζ => (extendZeroSphere_apply g ζ).symm
+
+/-- For every `g ∈ C(T)`, the radial restrictions `u_r` of `u = P[g]` converge uniformly on `T`
+to `g` as `r → 1⁻` (Rudin 11.8 / 11.30, p. 248). -/
+theorem tendstoUniformly_unitRadialRestriction_unitPoissonIntegral
+    (g : C(UnitCircle, ℂ)) :
+    TendstoUniformly (fun r : ℝ => unitRadialRestriction (unitPoissonIntegral g) r)
+      g (𝓝[<] (1 : ℝ)) := by
+  rw [Metric.tendstoUniformly_iff]
+  intro ε hε
+  have hunif := Metric.tendstoUniformlyOn_iff.mp
+    (tendstoUniformlyOn_poissonIntegral_radial (continuousOn_extendZeroSphere g)) ε hε
+  filter_upwards [hunif] with r hr ζ
+  have hcongr : (g : UnitCircle → ℂ) = fun η : UnitCircle => extendZeroSphere g (η : ℂ) :=
+    funext fun η => (extendZeroSphere_apply g η).symm
+  have hval : unitRadialRestriction (unitPoissonIntegral g) r ζ =
+      poissonIntegral (extendZeroSphere g) ((r : ℂ) * (ζ : ℂ)) := by
+    unfold unitRadialRestriction
+    rw [hcongr, unitPoissonIntegral_eq_poissonIntegral]
+  rw [hval, ← extendZeroSphere_apply g ζ]
+  exact hr (ζ : ℂ) ζ.2
+
+/-- Fubini symmetry identity (Rudin 11.30(5), p. 248): for `f ∈ C(T)`, `μ` a complex Borel measure
+on `T`, `u = P[f]`, `v = P[dμ]`, and `0 ≤ r < 1`,
+`∫_T u_r dμ = ∫_T v_r f dσ`. -/
+theorem complexMeasureIntegral_unitRadialRestriction_eq
+    (μ : ComplexMeasure UnitCircle) (f : C(UnitCircle, ℂ))
+    {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
+    RudinRCA.Chapter10.complexMeasureIntegral μ
+        (unitRadialRestriction (unitPoissonIntegral f) r) =
+      ∫ ζ : UnitCircle,
+        unitRadialRestriction (poissonMeasureIntegral μ) r ζ * f ζ ∂unitCircleMeasure := by
+  have : IsFiniteMeasure μ.variation := isFiniteMeasure_complexMeasure_variation μ
+  obtain ⟨h, hm, hn, hi, hr_pol⟩ := RudinRCA.Chapter06.theorem_6_12 μ
+  have hf_int : Integrable (f : UnitCircle → ℂ) unitCircleMeasure :=
+    f.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  have hur_cont : Continuous (unitRadialRestriction (unitPoissonIntegral f) r) :=
+    continuous_unitRadialRestriction_unitPoissonIntegral hf_int hr0 hr1
+  have hlhs_polar :
+      RudinRCA.Chapter10.complexMeasureIntegral μ
+          (unitRadialRestriction (unitPoissonIntegral f) r) =
+        ∫ η : UnitCircle,
+          unitRadialRestriction (unitPoissonIntegral f) r η * h η ∂μ.variation :=
+    RudinRCA.Chapter06.vectorIntegral_eq_polar μ h hm hn hi hr_pol
+      (hur_cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))
+  rw [hlhs_polar]
+  -- Define the product integrand on `UnitCircle × UnitCircle`
+  let K : UnitCircle × UnitCircle → ℂ := fun p =>
+    (_root_.poissonKernel 0 ((r : ℂ) * (p.1 : ℂ)) (p.2 : ℂ) : ℂ) * f p.2
+  have hK_cont : Continuous K :=
+    (Complex.continuous_ofReal.comp (continuous_poissonKernel_unitCircle_pair hr0 hr1)).mul
+      (f.continuous.comp continuous_snd)
+  obtain ⟨C, hC⟩ := (isCompact_range hK_cont.norm).bddAbove
+  let F : UnitCircle × UnitCircle → ℂ := fun p => K p * h p.1
+  have hF_meas : AEStronglyMeasurable F (μ.variation.prod unitCircleMeasure) :=
+    hK_cont.aestronglyMeasurable.mul (hm.comp measurable_fst).aestronglyMeasurable
+  have hF_int : Integrable F (μ.variation.prod unitCircleMeasure) := by
+    refine Integrable.of_bound hF_meas C (ae_of_all _ fun p => ?_)
+    dsimp only [F]
+    rw [norm_mul, hn p.1, mul_one]
+    exact hC ⟨p, rfl⟩
+  have hlhs_F : (∫ η : UnitCircle,
+        unitRadialRestriction (unitPoissonIntegral f) r η * h η ∂μ.variation) =
+      ∫ η : UnitCircle, (∫ ζ : UnitCircle, F (η, ζ) ∂unitCircleMeasure) ∂μ.variation := by
+    refine integral_congr_ae (ae_of_all _ fun η => ?_)
+    dsimp only [unitRadialRestriction, unitPoissonIntegral, F, K]
+    rw [← integral_mul_const]
+    refine integral_congr_ae (ae_of_all _ fun ζ => ?_)
+    dsimp only
+    rw [Complex.real_smul]
+  have hrhs_F : (∫ ζ : UnitCircle,
+        (∫ η : UnitCircle, F (η, ζ) ∂μ.variation) ∂unitCircleMeasure) =
+      ∫ ζ : UnitCircle,
+        unitRadialRestriction (poissonMeasureIntegral μ) r ζ * f ζ ∂unitCircleMeasure := by
+    refine integral_congr_ae (ae_of_all _ fun ζ => ?_)
+    dsimp only
+    have hz := radial_mem_ball_unitCircle hr0 hr1 ζ
+    have hP_cont : Continuous (fun η : UnitCircle =>
+        (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ) : ℂ)) :=
+      Complex.continuous_ofReal.comp (continuous_poissonKernel_unitCircle hz)
+    have hv_polar : unitRadialRestriction (poissonMeasureIntegral μ) r ζ =
+        ∫ η : UnitCircle,
+          (_root_.poissonKernel 0 ((r : ℂ) * (ζ : ℂ)) (η : ℂ) : ℂ) * h η ∂μ.variation := by
+      unfold unitRadialRestriction poissonMeasureIntegral
+      exact RudinRCA.Chapter06.vectorIntegral_eq_polar μ h hm hn hi hr_pol
+        (hP_cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))
+    rw [hv_polar, ← integral_mul_const]
+    refine integral_congr_ae (ae_of_all _ fun η => ?_)
+    dsimp only [F, K]
+    rw [poissonKernel_unitCircle_radial_symm r η ζ]
+    ring
+  rw [hlhs_F, MeasureTheory.integral_integral_swap hF_int, hrhs_F]
+
+/-- Uniqueness core of 11.30 (Rudin p. 248, (5)–(6)): for any complex Borel measure `μ` on `T`,
+`P[dμ] = 0` on `U = ball 0 1` if and only if `μ = 0`. -/
+theorem poissonMeasureIntegral_eq_zero_iff (μ : ComplexMeasure UnitCircle) :
+    (∀ z ∈ Metric.ball (0 : ℂ) 1, poissonMeasureIntegral μ z = 0) ↔ μ = 0 := by
+  constructor
+  · intro hv0
+    have : IsFiniteMeasure μ.variation := isFiniteMeasure_complexMeasure_variation μ
+    have : μ.variation.Regular := inferInstance
+    apply RudinRCA.Chapter06.theorem_6_19_zero μ
+    intro f0
+    let f : C(UnitCircle, ℂ) := ⟨f0, f0.continuous⟩
+    obtain ⟨h, hm, hn, hi, hr_pol⟩ := RudinRCA.Chapter06.theorem_6_12 μ
+    -- For every `0 ≤ r < 1`, `complexMeasureIntegral μ u_r = 0` by (5)
+    have hur_zero : ∀ {r : ℝ}, 0 ≤ r → r < 1 →
+        RudinRCA.Chapter10.complexMeasureIntegral μ
+          (unitRadialRestriction (unitPoissonIntegral f) r) = 0 := by
+      intro r hr0 hr1
+      rw [complexMeasureIntegral_unitRadialRestriction_eq μ f hr0 hr1]
+      refine integral_eq_zero_of_ae (ae_of_all _ fun ζ => ?_)
+      dsimp only [Pi.zero_apply]
+      have hv_r : unitRadialRestriction (poissonMeasureIntegral μ) r ζ = 0 :=
+        hv0 _ (radial_mem_ball_unitCircle hr0 hr1 ζ)
+      rw [hv_r, zero_mul]
+    -- Pass to the limit `r → 1⁻` using uniform convergence `u_r → f`
+    by_contra hne
+    have hpos : 0 < ‖RudinRCA.Chapter06.complexIntegral μ f0‖ := norm_pos_iff.mpr hne
+    let M : ℝ := μ.variation.real Set.univ + 1
+    have hM_pos : 0 < M := by dsimp only [M]; linarith [ @measureReal_nonneg _ _ μ.variation Set.univ ]
+    let ε : ℝ := ‖RudinRCA.Chapter06.complexIntegral μ f0‖ / (2 * M)
+    have hε_pos : 0 < ε := div_pos hpos (by positivity)
+    have hunif := Metric.tendstoUniformly_iff.mp
+      (tendstoUniformly_unitRadialRestriction_unitPoissonIntegral f) ε hε_pos
+    have hmem : Set.Ioo (0 : ℝ) 1 ∈ 𝓝[<] (1 : ℝ) :=
+      inter_mem (nhdsWithin_le_nhds (Ioi_mem_nhds zero_lt_one)) self_mem_nhdsWithin
+    obtain ⟨r, ⟨hr_unif, hr_Ioo⟩⟩ := (hunif.and hmem).exists
+    have hr0 : 0 ≤ r := hr_Ioo.1.le
+    have hr1 : r < 1 := hr_Ioo.2
+    have hf_int : Integrable (f : UnitCircle → ℂ) unitCircleMeasure :=
+      f.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+    have hur_cont : Continuous (unitRadialRestriction (unitPoissonIntegral f) r) :=
+      continuous_unitRadialRestriction_unitPoissonIntegral hf_int hr0 hr1
+    have hc_f : RudinRCA.Chapter06.complexIntegral μ f0 =
+        ∫ η : UnitCircle, f η * h η ∂μ.variation :=
+      RudinRCA.Chapter06.vectorIntegral_eq_polar μ h hm hn hi hr_pol
+        (f.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))
+    have hc_ur : RudinRCA.Chapter10.complexMeasureIntegral μ
+          (unitRadialRestriction (unitPoissonIntegral f) r) =
+        ∫ η : UnitCircle,
+          unitRadialRestriction (unitPoissonIntegral f) r η * h η ∂μ.variation :=
+      RudinRCA.Chapter06.vectorIntegral_eq_polar μ h hm hn hi hr_pol
+        (hur_cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _))
+    have h0_eq := hur_zero hr0 hr1
+    rw [hc_ur] at h0_eq
+    have hdiff_eq : RudinRCA.Chapter06.complexIntegral μ f0 =
+        ∫ η : UnitCircle,
+          (f η - unitRadialRestriction (unitPoissonIntegral f) r η) * h η ∂μ.variation := by
+      have hi1 : Integrable (fun η : UnitCircle => f η * h η) μ.variation :=
+        (f.continuous.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)).mul_bdd
+          hm.aestronglyMeasurable (ae_of_all _ fun η => (hn η).le)
+      have hi2 : Integrable (fun η : UnitCircle =>
+          unitRadialRestriction (unitPoissonIntegral f) r η * h η) μ.variation :=
+        (hur_cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)).mul_bdd
+          hm.aestronglyMeasurable (ae_of_all _ fun η => (hn η).le)
+      calc RudinRCA.Chapter06.complexIntegral μ f0
+          = (∫ η : UnitCircle, f η * h η ∂μ.variation) -
+              ∫ η : UnitCircle,
+                unitRadialRestriction (unitPoissonIntegral f) r η * h η ∂μ.variation := by
+            rw [hc_f, h0_eq, sub_zero]
+        _ = ∫ η : UnitCircle,
+              (f η - unitRadialRestriction (unitPoissonIntegral f) r η) * h η ∂μ.variation := by
+            rw [← integral_sub hi1 hi2]
+            exact integral_congr_ae (ae_of_all _ fun η => (sub_mul _ _ _).symm)
+    have hbound : ‖RudinRCA.Chapter06.complexIntegral μ f0‖ ≤ ε * μ.variation.real Set.univ := by
+      rw [hdiff_eq]
+      calc ‖∫ η : UnitCircle,
+              (f η - unitRadialRestriction (unitPoissonIntegral f) r η) * h η ∂μ.variation‖
+          ≤ ∫ η : UnitCircle,
+              ‖(f η - unitRadialRestriction (unitPoissonIntegral f) r η) * h η‖ ∂μ.variation :=
+            norm_integral_le_integral_norm _
+        _ ≤ ∫ _η : UnitCircle, ε ∂μ.variation := by
+            refine integral_mono_of_nonneg (ae_of_all _ fun _ => norm_nonneg _)
+              (integrable_const ε) (ae_of_all _ fun η => ?_)
+            dsimp only
+            rw [norm_mul, hn η, mul_one, ← dist_eq_norm]
+            exact (hr_unif η).le
+        _ = ε * μ.variation.real Set.univ := by
+            rw [integral_const, smul_eq_mul, mul_comm]
+    have hlt : ε * μ.variation.real Set.univ < ‖RudinRCA.Chapter06.complexIntegral μ f0‖ := by
+      have hvar_lt : μ.variation.real Set.univ < M := by dsimp only [M]; linarith
+      calc ε * μ.variation.real Set.univ
+          ≤ ε * M := mul_le_mul_of_nonneg_left hvar_lt.le hε_pos.le
+        _ = ‖RudinRCA.Chapter06.complexIntegral μ f0‖ / 2 := by
+            dsimp only [ε]
+            field_simp [hM_pos.ne']
+        _ < ‖RudinRCA.Chapter06.complexIntegral μ f0‖ := half_lt_self hpos
+    exact not_lt_of_ge hbound hlt
+  · rintro rfl z _
+    unfold poissonMeasureIntegral RudinRCA.Chapter10.complexMeasureIntegral
+    simp
+
+/-- Injectivity of `μ ↦ P[dμ]` on all complex Borel measures on `T = UnitCircle`. -/
+theorem poissonMeasureIntegral_inj {μ₁ μ₂ : ComplexMeasure UnitCircle}
+    (h : ∀ z ∈ Metric.ball (0 : ℂ) 1,
+      poissonMeasureIntegral μ₁ z = poissonMeasureIntegral μ₂ z) :
+    μ₁ = μ₂ := by
+  apply sub_eq_zero.mp
+  rw [← poissonMeasureIntegral_eq_zero_iff]
+  intro z hz
+  rw [poissonMeasureIntegral_sub μ₁ μ₂ hz, h z hz, sub_self]
+
+/-- Uniqueness of `L¹(T)` boundary functions under the Poisson integral on `U = ball 0 1`. -/
+theorem unitPoissonIntegral_ae_eq_of_eq_on_ball {f₁ f₂ : UnitCircle → ℂ}
+    (hf₁ : Integrable f₁ unitCircleMeasure) (hf₂ : Integrable f₂ unitCircleMeasure)
+    (h : ∀ z ∈ Metric.ball (0 : ℂ) 1, unitPoissonIntegral f₁ z = unitPoissonIntegral f₂ z) :
+    f₁ =ᵐ[unitCircleMeasure] f₂ := by
+  have hμ : unitCircleMeasure.withDensityᵥ f₁ = unitCircleMeasure.withDensityᵥ f₂ := by
+    apply poissonMeasureIntegral_inj
+    intro z hz
+    rw [poissonMeasureIntegral_withDensityᵥ hf₁ hz,
+      poissonMeasureIntegral_withDensityᵥ hf₂ hz, h z hz]
+  refine ae_eq_of_forall_setIntegral_eq_of_sigmaFinite
+    (fun E _ _ => hf₁.integrableOn) (fun E _ _ => hf₂.integrableOn) fun E hE _ => ?_
+  have hev := congrArg (fun c : ComplexMeasure UnitCircle => c E) hμ
+  simpa only [withDensityᵥ_apply hf₁ hE, withDensityᵥ_apply hf₂ hE] using hev
+
+/-- Uniqueness of `Lp ℂ p unitCircleMeasure` boundary classes (`1 ≤ p ≤ ⊤`) under `P[f]`. -/
+theorem unitPoissonIntegral_lp_inj (p : ℝ≥0∞) [Fact (1 ≤ p)]
+    {f₁ f₂ : Lp ℂ p unitCircleMeasure}
+    (h : ∀ z ∈ Metric.ball (0 : ℂ) 1, unitPoissonIntegral f₁ z = unitPoissonIntegral f₂ z) :
+    f₁ = f₂ := by
+  apply Lp.ext
+  exact unitPoissonIntegral_ae_eq_of_eq_on_ball
+    ((Lp.memLp f₁).integrable (Fact.out : 1 ≤ p))
+    ((Lp.memLp f₂).integrable (Fact.out : 1 ≤ p)) h
+
+private def radialSeq (n : ℕ) : ℝ :=
+  1 - 1 / ((n : ℝ) + 2)
+
+private theorem radialSeq_mem_Ioo (n : ℕ) : radialSeq n ∈ Set.Ioo (0 : ℝ) 1 := by
+  dsimp only [radialSeq]
+  have hden : (0 : ℝ) < (n : ℝ) + 2 := by positivity
+  have hlt1 : 1 / ((n : ℝ) + 2) < 1 := (div_lt_one hden).mpr (by linarith)
+  have hpos : 0 < 1 / ((n : ℝ) + 2) := div_pos zero_lt_one hden
+  exact ⟨by linarith, by linarith⟩
+
+private theorem tendsto_radialSeq : Tendsto radialSeq atTop (𝓝 (1 : ℝ)) := by
+  unfold radialSeq
+  have hdiv : Tendsto (fun n : ℕ => (1 : ℝ) / ((n : ℝ) + 2)) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop
+      (Tendsto.atTop_add tendsto_natCast_atTop_atTop tendsto_const_nhds)
+  simpa only [sub_zero] using (tendsto_const_nhds (x := (1 : ℝ))).sub hdiv
+
+/-- 11.30(a) (Theorem, Rudin pp. 247–248):
+Suppose `u` is harmonic in `U = ball 0 1` and `sup_{0 < r < 1} ‖u_r‖₁ < ∞`.
+Then there is a unique complex Borel measure `μ` on `T = UnitCircle` such that `u = P[dμ]` on `U`;
+moreover `‖μ‖ = |μ|(T) = sup_{0 < r < 1} ‖u_r‖₁ = sup_{0 ≤ r < 1} ‖u_r‖₁`. -/
+theorem theorem11_30a {u : ℂ → ℂ} (hu : HarmonicOn u (Metric.ball (0 : ℂ) 1))
+    (hsup : (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+      eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure) < ⊤) :
+    (∃! μ : ComplexMeasure UnitCircle,
+      ∀ z ∈ Metric.ball (0 : ℂ) 1, u z = poissonMeasureIntegral μ z) ∧
+    ∃ μ : ComplexMeasure UnitCircle,
+      (∀ z ∈ Metric.ball (0 : ℂ) 1, u z = poissonMeasureIntegral μ z) ∧
+      μ.variation Set.univ =
+        (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+          eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure) ∧
+      μ.variation Set.univ =
+        (⨆ r ∈ Set.Ico (0 : ℝ) 1,
+          eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure) ∧
+      μ.variation.real Set.univ =
+        (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+          eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure).toReal := by
+  let M_enn : ℝ≥0∞ :=
+    ⨆ r ∈ Set.Ioo (0 : ℝ) 1, eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure
+  let M : ℝ := M_enn.toReal
+  have hM_nonneg : 0 ≤ M := ENNReal.toReal_nonneg
+  -- Construct `Λ_n ∈ StrongDual ℂ C(UnitCircle, ℂ)` along `r_n = radialSeq n`
+  have hur_cont : ∀ n : ℕ, Continuous (unitRadialRestriction u (radialSeq n)) := fun n => by
+    have hr := radialSeq_mem_Ioo n
+    exact hu.continuousOn.comp_continuous (continuous_const.mul continuous_subtype_val)
+      (fun ζ => radial_mem_ball_unitCircle hr.1.le hr.2 ζ)
+  have hur_l1 : ∀ n : ℕ,
+      (∫ ζ : UnitCircle, ‖unitRadialRestriction u (radialSeq n) ζ‖ ∂unitCircleMeasure) ≤ M := by
+    intro n
+    have hr := radialSeq_mem_Ioo n
+    have hle : eLpNorm (unitRadialRestriction u (radialSeq n)) 1 unitCircleMeasure ≤ M_enn :=
+      le_iSup₂_of_le (radialSeq n) hr le_rfl
+    have hint_eq : (∫ ζ : UnitCircle,
+          ‖unitRadialRestriction u (radialSeq n) ζ‖ ∂unitCircleMeasure) =
+        (eLpNorm (unitRadialRestriction u (radialSeq n)) 1 unitCircleMeasure).toReal := by
+      rw [eLpNorm_one_eq_lintegral_enorm (hur_cont n).aestronglyMeasurable,
+        integral_norm_eq_lintegral_enorm (hur_cont n).aestronglyMeasurable]
+    rw [hint_eq]
+    exact ENNReal.toReal_mono hsup.ne hle
+  let Λ_lin : ℕ → C(UnitCircle, ℂ) →ₗ[ℂ] ℂ := fun n =>
+    { toFun := fun g => ∫ ζ : UnitCircle,
+        g ζ * unitRadialRestriction u (radialSeq n) ζ ∂unitCircleMeasure
+      map_add' := fun g₁ g₂ => by
+        have hi₁ : Integrable (fun ζ : UnitCircle =>
+            g₁ ζ * unitRadialRestriction u (radialSeq n) ζ) unitCircleMeasure :=
+          (g₁.continuous.mul (hur_cont n)).integrable_of_hasCompactSupport
+            (HasCompactSupport.of_compactSpace _)
+        have hi₂ : Integrable (fun ζ : UnitCircle =>
+            g₂ ζ * unitRadialRestriction u (radialSeq n) ζ) unitCircleMeasure :=
+          (g₂.continuous.mul (hur_cont n)).integrable_of_hasCompactSupport
+            (HasCompactSupport.of_compactSpace _)
+        simp_rw [ContinuousMap.add_apply, add_mul]
+        exact integral_add hi₁ hi₂
+      map_smul' := fun c g => by
+        simp only [ContinuousMap.smul_apply, smul_eq_mul, RingHom.id_apply, mul_assoc]
+        exact integral_const_mul c _ }
+  let Λ : ℕ → StrongDual ℂ C(UnitCircle, ℂ) := fun n =>
+    (Λ_lin n).mkContinuous M fun g => by
+      calc ‖∫ ζ : UnitCircle,
+              g ζ * unitRadialRestriction u (radialSeq n) ζ ∂unitCircleMeasure‖
+          ≤ ∫ ζ : UnitCircle,
+              ‖g ζ * unitRadialRestriction u (radialSeq n) ζ‖ ∂unitCircleMeasure :=
+            norm_integral_le_integral_norm _
+        _ ≤ ∫ ζ : UnitCircle,
+              ‖g‖ * ‖unitRadialRestriction u (radialSeq n) ζ‖ ∂unitCircleMeasure := by
+            refine integral_mono_of_nonneg (ae_of_all _ fun _ => norm_nonneg _)
+              (((hur_cont n).norm.integrable_of_hasCompactSupport
+                (HasCompactSupport.of_compactSpace _)).const_mul ‖g‖)
+              (ae_of_all _ fun ζ => ?_)
+            dsimp only
+            rw [norm_mul]
+            exact mul_le_mul_of_nonneg_right (ContinuousMap.norm_coe_le_norm g ζ) (norm_nonneg _)
+        _ = ‖g‖ * ∫ ζ : UnitCircle,
+              ‖unitRadialRestriction u (radialSeq n) ζ‖ ∂unitCircleMeasure :=
+            integral_const_mul _ _
+        _ ≤ M * ‖g‖ := by
+            rw [mul_comm M ‖g‖]
+            exact mul_le_mul_of_nonneg_left (hur_l1 n) (norm_nonneg g)
+  have hΛ_norm : ∀ n : ℕ, ‖Λ n‖ ≤ M := fun n =>
+    LinearMap.mkContinuous_norm_le (Λ_lin n) hM_nonneg _
+  obtain ⟨φ, Λ_lim, hφ_mono, hΛ_pt, _, hΛ_lim_le⟩ := theorem11_29 hΛ_norm
+  -- Transfer `Λ_lim` to `ZeroAtInftyContinuousMap UnitCircle ℂ →L[ℂ] ℂ` and apply 6.19
+  let Φ : ZeroAtInftyContinuousMap UnitCircle ℂ →L[ℂ] ℂ :=
+    Λ_lim.comp continuousMapEquivC0UnitCircle.symm.toLinearIsometry.toContinuousLinearMap
+  have hΦ_norm : ‖Φ‖ ≤ M := by
+    refine ContinuousLinearMap.opNorm_le_bound Φ hM_nonneg fun f0 => ?_
+    calc ‖Φ f0‖ = ‖Λ_lim (continuousMapEquivC0UnitCircle.symm f0)‖ := rfl
+      _ ≤ ‖Λ_lim‖ * ‖continuousMapEquivC0UnitCircle.symm f0‖ := Λ_lim.le_opNorm _
+      _ = ‖Λ_lim‖ * ‖f0‖ := by rw [continuousMapEquivC0UnitCircle.symm.norm_map]
+      _ ≤ M * ‖f0‖ := mul_le_mul_of_nonneg_right hΛ_lim_le (norm_nonneg f0)
+  obtain ⟨μ, _, hμ_rep, hμ_norm, _⟩ := RudinRCA.Chapter06.theorem_6_19 Φ
+  have : IsFiniteMeasure μ.variation := isFiniteMeasure_complexMeasure_variation μ
+  -- Show `u z = poissonMeasureIntegral μ z` for every `z ∈ ball 0 1`
+  have hu_eq : ∀ z ∈ Metric.ball (0 : ℂ) 1, u z = poissonMeasureIntegral μ z := by
+    intro z hz
+    let g_z : C(UnitCircle, ℂ) :=
+      ⟨fun η => (_root_.poissonKernel 0 z (η : ℂ) : ℂ),
+        Complex.continuous_ofReal.comp (continuous_poissonKernel_unitCircle hz)⟩
+    have hseq_eq : ∀ k : ℕ, Λ (φ k) g_z = u ((radialSeq (φ k) : ℂ) * z) := by
+      intro k
+      have hr := radialSeq_mem_Ioo (φ k)
+      have hdil := (harmonicOn_dilate_poisson_eq hu hr.1.le hr.2).2.2 z hz
+      rw [hdil]
+      dsimp only [Λ, LinearMap.mkContinuous_apply, Λ_lin, LinearMap.coe_mk, AddHom.coe_mk,
+        g_z, ContinuousMap.coe_mk, unitPoissonIntegral]
+      refine integral_congr_ae (ae_of_all _ fun η => ?_)
+      dsimp only
+      rw [Complex.real_smul]
+    have hr_sub : Tendsto (fun k : ℕ => radialSeq (φ k)) atTop (𝓝 1) :=
+      tendsto_radialSeq.comp hφ_mono.tendsto_atTop
+    have hz_sub : Tendsto (fun k : ℕ => (radialSeq (φ k) : ℂ) * z) atTop (𝓝 z) := by
+      simpa only [Function.comp_def, Complex.ofReal_one, one_mul] using
+        ((Complex.continuous_ofReal.tendsto 1).comp hr_sub).mul_const z
+    have hu_cont_z : ContinuousAt u z :=
+      hu.continuousOn.continuousAt (Metric.isOpen_ball.mem_nhds hz)
+    have hlim1 : Tendsto (fun k : ℕ => Λ (φ k) g_z) atTop (𝓝 (u z)) :=
+      (hu_cont_z.tendsto.comp hz_sub).congr fun k => (hseq_eq k).symm
+    have hlim2 : Tendsto (fun k : ℕ => Λ (φ k) g_z) atTop (𝓝 (poissonMeasureIntegral μ z)) := by
+      have hval : Λ_lim g_z = poissonMeasureIntegral μ z := by
+        have h1 : Φ (continuousMapEquivC0UnitCircle g_z) = Λ_lim g_z := by
+          dsimp only [Φ, ContinuousLinearMap.comp_apply]
+          simp
+        rw [← h1, hμ_rep (continuousMapEquivC0UnitCircle g_z)]
+        rfl
+      rw [← hval]
+      exact hΛ_pt g_z
+    exact tendsto_nhds_unique hlim1 hlim2
+  -- Exact total-variation norm equalities via 11.17
+  have hvar_le_M : μ.variation Set.univ ≤ M_enn := by
+    have hreal_le : μ.variation.real Set.univ ≤ M := hμ_norm ▸ hΦ_norm
+    rw [← ENNReal.ofReal_toReal (measure_ne_top μ.variation Set.univ)]
+    exact (ENNReal.ofReal_le_ofReal hreal_le).trans
+      (le_of_eq (ENNReal.ofReal_toReal hsup.ne))
+  have hIco_le_var :
+      (⨆ r ∈ Set.Ico (0 : ℝ) 1,
+        eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure) ≤ μ.variation Set.univ := by
+    refine iSup₂_le fun r hr => ?_
+    have heq_r : unitRadialRestriction u r =
+        unitRadialRestriction (poissonMeasureIntegral μ) r := by
+      ext ζ
+      exact hu_eq _ (radial_mem_ball_unitCircle hr.1 hr.2 ζ)
+    rw [heq_r]
+    exact ((theorem11_17 μ).2.2 hr.1 hr.2).2.2
+  have hM_le_Ico : M_enn ≤
+      ⨆ r ∈ Set.Ico (0 : ℝ) 1,
+        eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure :=
+    iSup_le_iSup_of_subset Set.Ioo_subset_Ico_self
+  have hvar_eq_M : μ.variation Set.univ = M_enn :=
+    le_antisymm hvar_le_M (hM_le_Ico.trans hIco_le_var)
+  have hvar_eq_Ico : μ.variation Set.univ =
+      ⨆ r ∈ Set.Ico (0 : ℝ) 1,
+        eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure :=
+    le_antisymm (hvar_eq_M ▸ hM_le_Ico) hIco_le_var
+  refine ⟨⟨μ, hu_eq, fun ν hν => poissonMeasureIntegral_inj fun z hz =>
+      (hν z hz).symm.trans (hu_eq z hz)⟩,
+    μ, hu_eq, hvar_eq_M, hvar_eq_Ico, ?_⟩
+  rw [measureReal_def, hvar_eq_M]
+
+private theorem exists_holderConjugate_unit {p : ℝ≥0∞} (hp : 1 < p) :
+    ∃ q : ℝ≥0∞, 1 ≤ q ∧ q ≠ ⊤ ∧ p.HolderConjugate q := by
+  by_cases hp_top : p = ⊤
+  · subst hp_top
+    refine ⟨1, le_rfl, ENNReal.one_ne_top, ?_⟩
+    rw [ENNReal.holderConjugate_iff]
+    simp
+  · let p' : ℝ := p.toReal
+    have hp'_gt1 : 1 < p' := by
+      have := (ENNReal.toReal_lt_toReal ENNReal.one_ne_top hp_top).mpr hp
+      simpa [p'] using this
+    have hp'_pos : 0 < p' := zero_lt_one.trans hp'_gt1
+    have hpm1_pos : 0 < p' - 1 := sub_pos.mpr hp'_gt1
+    let q' : ℝ := p' / (p' - 1)
+    have hq'_gt1 : 1 < q' := (one_lt_div hpm1_pos).mpr (by linarith)
+    refine ⟨ENNReal.ofReal q', ?_, ENNReal.ofReal_ne_top, ?_⟩
+    · rw [← ENNReal.ofReal_one]
+      exact ENNReal.ofReal_le_ofReal hq'_gt1.le
+    · rw [ENNReal.holderConjugate_iff]
+      have hp_eq : p = ENNReal.ofReal p' := (ENNReal.ofReal_toReal hp_top).symm
+      rw [hp_eq, ← ENNReal.ofReal_inv_of_pos hp'_pos,
+        ← ENNReal.ofReal_inv_of_pos (zero_lt_one.trans hq'_gt1),
+        ← ENNReal.ofReal_add (inv_nonneg.mpr hp'_pos.le)
+          (inv_nonneg.mpr (zero_lt_one.trans hq'_gt1).le)]
+      have hsum : p'⁻¹ + q'⁻¹ = 1 := by
+        dsimp only [q']
+        field_simp [hp'_pos.ne', hpm1_pos.ne']
+        ring
+      rw [hsum, ENNReal.ofReal_one]
+
+/-- 11.30(b) (Theorem, Rudin pp. 247–248):
+Suppose `u` is harmonic in `U = ball 0 1`, `1 < p ≤ ⊤`, and `sup_{0 < r < 1} ‖u_r‖_p < ∞`.
+Then there is a unique `f ∈ L^p(T)` (`Lp ℂ p unitCircleMeasure`) such that `u = P[f]` on `U`;
+moreover `‖f‖_p = sup_{0 < r < 1} ‖u_r‖_p = sup_{0 ≤ r < 1} ‖u_r‖_p` (and at `p = ⊤`,
+`rudinEssSup unitCircleMeasure f = ‖f‖`). -/
+theorem theorem11_30b {u : ℂ → ℂ} (hu : HarmonicOn u (Metric.ball (0 : ℂ) 1))
+    {p : ℝ≥0∞} (hp1 : 1 < p)
+    (hsup : (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+      eLpNorm (unitRadialRestriction u r) p unitCircleMeasure) < ⊤) :
+    have : Fact (1 ≤ p) := ⟨hp1.le⟩
+    (∃! f : Lp ℂ p unitCircleMeasure,
+      ∀ z ∈ Metric.ball (0 : ℂ) 1, u z = unitPoissonIntegral f z) ∧
+    ∃ f : Lp ℂ p unitCircleMeasure,
+      (∀ z ∈ Metric.ball (0 : ℂ) 1, u z = unitPoissonIntegral f z) ∧
+      eLpNorm f p unitCircleMeasure =
+        (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+          eLpNorm (unitRadialRestriction u r) p unitCircleMeasure) ∧
+      eLpNorm f p unitCircleMeasure =
+        (⨆ r ∈ Set.Ico (0 : ℝ) 1,
+          eLpNorm (unitRadialRestriction u r) p unitCircleMeasure) ∧
+      ‖f‖ =
+        (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+          eLpNorm (unitRadialRestriction u r) p unitCircleMeasure).toReal ∧
+      (p = ⊤ → rudinEssSup unitCircleMeasure f = ‖f‖) := by
+  let _ : Fact (1 ≤ p) := ⟨hp1.le⟩
+  obtain ⟨q, hq1, hq_top, hpq⟩ := exists_holderConjugate_unit hp1
+  let _ : Fact (1 ≤ q) := ⟨hq1⟩
+  let _ : q.HolderConjugate p := hpq.symm
+  let _ : TopologicalSpace.SeparableSpace (Lp ℂ q unitCircleMeasure) :=
+    separableSpace_lp_unitCircle q hq_top
+  let M_enn : ℝ≥0∞ :=
+    ⨆ r ∈ Set.Ioo (0 : ℝ) 1, eLpNorm (unitRadialRestriction u r) p unitCircleMeasure
+  let M : ℝ := M_enn.toReal
+  -- Construct `Λ_n ∈ StrongDual ℂ (Lp ℂ q unitCircleMeasure)` via `Chapter06.theorem_6_15`
+  let ur_c : ∀ n : ℕ, C(UnitCircle, ℂ) := fun n =>
+    ⟨unitRadialRestriction u (radialSeq n), by
+      have hr := radialSeq_mem_Ioo n
+      exact hu.continuousOn.comp_continuous (continuous_const.mul continuous_subtype_val)
+        (fun ζ => radial_mem_ball_unitCircle hr.1.le hr.2 ζ)⟩
+  let ur_lp : ∀ n : ℕ, Lp ℂ p unitCircleMeasure := fun n =>
+    ContinuousMap.toLp p unitCircleMeasure ℂ (ur_c n)
+  have hur_norm : ∀ n : ℕ, ‖ur_lp n‖ ≤ M := by
+    intro n
+    have hr := radialSeq_mem_Ioo n
+    rw [Lp.norm_def,
+      eLpNorm_congr_ae (ContinuousMap.coeFn_toLp (p := p) (𝕜 := ℂ) unitCircleMeasure (ur_c n))]
+    exact ENNReal.toReal_mono hsup.ne (le_iSup₂_of_le (radialSeq n) hr le_rfl)
+  choose Λ hΛ_eq hΛ_le using fun n : ℕ =>
+    RudinRCA.Chapter06.theorem_6_15 unitCircleMeasure q p (ur_lp n)
+  have hΛ_M : ∀ n : ℕ, ‖Λ n‖ ≤ M := fun n => (hΛ_le n).trans (hur_norm n)
+  obtain ⟨φ, Λ_lim, hφ_mono, hΛ_pt, _, hΛ_lim_le⟩ := theorem11_29 hΛ_M
+  -- Represent `Λ_lim` by `f ∈ Lp ℂ p unitCircleMeasure` via `Chapter06.theorem_6_16`
+  obtain ⟨f, ⟨hf_rep, hf_norm_eq⟩, _⟩ :=
+    RudinRCA.Chapter06.theorem_6_16 unitCircleMeasure q p hq_top Λ_lim
+  have hf_le_M : ‖f‖ ≤ M := hf_norm_eq ▸ hΛ_lim_le
+  -- Identify `u z = unitPoissonIntegral f z` on `ball 0 1`
+  have hu_eq : ∀ z ∈ Metric.ball (0 : ℂ) 1, u z = unitPoissonIntegral f z := by
+    intro z hz
+    let K_z : C(UnitCircle, ℂ) :=
+      ⟨fun η => (_root_.poissonKernel 0 z (η : ℂ) : ℂ),
+        Complex.continuous_ofReal.comp (continuous_poissonKernel_unitCircle hz)⟩
+    let g_z : Lp ℂ q unitCircleMeasure := ContinuousMap.toLp q unitCircleMeasure ℂ K_z
+    have hg_coe : (g_z : UnitCircle → ℂ) =ᵐ[unitCircleMeasure] K_z :=
+      ContinuousMap.coeFn_toLp (p := q) (𝕜 := ℂ) unitCircleMeasure K_z
+    have hseq_eq : ∀ k : ℕ, Λ (φ k) g_z = u ((radialSeq (φ k) : ℂ) * z) := by
+      intro k
+      have hr := radialSeq_mem_Ioo (φ k)
+      have hdil := (harmonicOn_dilate_poisson_eq hu hr.1.le hr.2).2.2 z hz
+      rw [hdil, hΛ_eq (φ k) g_z]
+      unfold unitPoissonIntegral
+      refine integral_congr_ae ?_
+      filter_upwards [hg_coe,
+        ContinuousMap.coeFn_toLp (p := p) (𝕜 := ℂ) unitCircleMeasure (ur_c (φ k))] with η hη₁ hη₂
+      rw [hη₁, hη₂]
+      dsimp only [K_z, ur_c, ContinuousMap.coe_mk]
+      rw [Complex.real_smul]
+      rfl
+    have hr_sub : Tendsto (fun k : ℕ => radialSeq (φ k)) atTop (𝓝 1) :=
+      tendsto_radialSeq.comp hφ_mono.tendsto_atTop
+    have hz_sub : Tendsto (fun k : ℕ => (radialSeq (φ k) : ℂ) * z) atTop (𝓝 z) := by
+      simpa only [Function.comp_def, Complex.ofReal_one, one_mul] using
+        ((Complex.continuous_ofReal.tendsto 1).comp hr_sub).mul_const z
+    have hu_cont_z : ContinuousAt u z :=
+      hu.continuousOn.continuousAt (Metric.isOpen_ball.mem_nhds hz)
+    have hlim1 : Tendsto (fun k : ℕ => Λ (φ k) g_z) atTop (𝓝 (u z)) :=
+      (hu_cont_z.tendsto.comp hz_sub).congr fun k => (hseq_eq k).symm
+    have hlim2 : Tendsto (fun k : ℕ => Λ (φ k) g_z) atTop (𝓝 (unitPoissonIntegral f z)) := by
+      have hval : Λ_lim g_z = unitPoissonIntegral f z := by
+        rw [hf_rep g_z]
+        unfold unitPoissonIntegral
+        refine integral_congr_ae (hg_coe.mono fun η hη => ?_)
+        dsimp only
+        rw [hη]
+        dsimp only [K_z, ContinuousMap.coe_mk]
+        rw [Complex.real_smul]
+      rw [← hval]
+      exact hΛ_pt g_z
+    exact tendsto_nhds_unique hlim1 hlim2
+  -- Exact `Lp` norm equalities via 11.16
+  have hf_enn_le : eLpNorm f p unitCircleMeasure ≤ M_enn := by
+    rw [← ENNReal.ofReal_toReal (Lp.eLpNorm_ne_top f), ← Lp.norm_def]
+    exact (ENNReal.ofReal_le_ofReal hf_le_M).trans
+      (le_of_eq (ENNReal.ofReal_toReal hsup.ne))
+  have hIco_le_f :
+      (⨆ r ∈ Set.Ico (0 : ℝ) 1,
+        eLpNorm (unitRadialRestriction u r) p unitCircleMeasure) ≤
+      eLpNorm f p unitCircleMeasure := by
+    refine iSup₂_le fun r hr => ?_
+    have heq_r : unitRadialRestriction u r =
+        unitRadialRestriction (unitPoissonIntegral f) r := by
+      ext ζ
+      exact hu_eq _ (radial_mem_ball_unitCircle hr.1 hr.2 ζ)
+    rw [heq_r]
+    exact ((theorem11_16 p f).1 hr.1 hr.2).2
+  have hM_le_Ico : M_enn ≤
+      ⨆ r ∈ Set.Ico (0 : ℝ) 1,
+        eLpNorm (unitRadialRestriction u r) p unitCircleMeasure :=
+    iSup_le_iSup_of_subset Set.Ioo_subset_Ico_self
+  have hf_eq_M : eLpNorm f p unitCircleMeasure = M_enn :=
+    le_antisymm hf_enn_le (hM_le_Ico.trans hIco_le_f)
+  have hf_eq_Ico : eLpNorm f p unitCircleMeasure =
+      ⨆ r ∈ Set.Ico (0 : ℝ) 1,
+        eLpNorm (unitRadialRestriction u r) p unitCircleMeasure :=
+    le_antisymm (hf_eq_M ▸ hM_le_Ico) hIco_le_f
+  refine ⟨⟨f, hu_eq, fun g hg => unitPoissonIntegral_lp_inj p fun z hz =>
+      (hg z hz).symm.trans (hu_eq z hz)⟩,
+    f, hu_eq, hf_eq_M, hf_eq_Ico, ?_, ?_⟩
+  · rw [Lp.norm_def, hf_eq_M]
+  · intro hp_top
+    subst hp_top
+    exact (rudinEssSup_lp_top_eq_norm unitCircleMeasure_univ_ne_zero f).2.2
+
+/-- 11.30(c) (Herglotz Theorem, Rudin pp. 247–248):
+Every positive (`≥ 0`, hence in particular every strictly positive `> 0`) real harmonic function `u`
+in `U = ball 0 1` is the Poisson integral of a unique positive Borel measure `μ` on `T = UnitCircle`
+(unique across *all* positive Borel measures `ν : Measure UnitCircle`, without assuming `ν(T) < ∞`
+a priori). -/
+theorem theorem11_30c {u : ℂ → ℝ} (hu : HarmonicOn u (Metric.ball (0 : ℂ) 1))
+    (hpos : ∀ z ∈ Metric.ball (0 : ℂ) 1, 0 ≤ u z) :
+    (∃! μ : Measure UnitCircle,
+      ∀ z ∈ Metric.ball (0 : ℂ) 1,
+        ENNReal.ofReal (u z) =
+          ∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ) ∧
+    ∃ μ : Measure UnitCircle, IsFiniteMeasure μ ∧
+      μ Set.univ = ENNReal.ofReal (u 0) ∧
+      (∀ z ∈ Metric.ball (0 : ℂ) 1, u z = positivePoissonIntegral μ z) ∧
+      ∀ (ν : Measure UnitCircle) [IsFiniteMeasure ν],
+        (∀ z ∈ Metric.ball (0 : ℂ) 1, u z = positivePoissonIntegral ν z) → ν = μ := by
+  let uC : ℂ → ℂ := fun z => (u z : ℂ)
+  have huC : HarmonicOn uC (Metric.ball (0 : ℂ) 1) :=
+    hu.comp_clm Metric.isOpen_ball Complex.ofRealCLM
+  have hu0_nn : 0 ≤ u 0 := hpos 0 (Metric.mem_ball_self zero_lt_one)
+  -- Mean value property + `u ≥ 0` gives `‖u_{C, r}‖₁ = u(0)` for all `0 < r < 1` (Rudin 11.30(7))
+  have hL1_eq : ∀ {r : ℝ}, 0 < r → r < 1 →
+      eLpNorm (unitRadialRestriction uC r) 1 unitCircleMeasure = ENNReal.ofReal (u 0) := by
+    intro r hr0 hr1
+    have hur_cont : Continuous (unitRadialRestriction uC r) :=
+      huC.continuousOn.comp_continuous (continuous_const.mul continuous_subtype_val)
+        (fun ζ => radial_mem_ball_unitCircle hr0.le hr1 ζ)
+    have hmvp := (theorem11_12_real Metric.isOpen_ball hu).1 hr0
+      (Metric.closedBall_subset_ball hr1)
+    have hint_u : (∫ ζ : UnitCircle, u ((r : ℂ) * (ζ : ℂ)) ∂unitCircleMeasure) = u 0 := by
+      rw [(integral_unitCircleMeasure_eq_interval _).2, ← hmvp, Real.circleAverage_def]
+      congr 1
+      refine intervalIntegral.integral_congr fun θ _ => ?_
+      simp [circleMap]
+    have hur_norm_int : (∫ ζ : UnitCircle, ‖unitRadialRestriction uC r ζ‖ ∂unitCircleMeasure) =
+        u 0 := by
+      rw [← hint_u]
+      refine integral_congr_ae (ae_of_all _ fun ζ => ?_)
+      dsimp only [unitRadialRestriction, uC]
+      rw [Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (hpos _ (radial_mem_ball_unitCircle hr0.le hr1 ζ))]
+    have hur_int : Integrable (fun ζ : UnitCircle => ‖unitRadialRestriction uC r ζ‖)
+        unitCircleMeasure :=
+      hur_cont.norm.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+    rw [eLpNorm_one_eq_lintegral_enorm hur_cont.aestronglyMeasurable,
+      ← hur_norm_int, ofReal_integral_eq_lintegral_ofReal hur_int
+        (ae_of_all _ fun _ => norm_nonneg _)]
+    exact lintegral_congr fun ζ => (ofReal_norm _).symm
+  have hsup_le : (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+      eLpNorm (unitRadialRestriction uC r) 1 unitCircleMeasure) ≤ ENNReal.ofReal (u 0) :=
+    iSup₂_le fun r hr => (hL1_eq hr.1 hr.2).le
+  obtain ⟨_, c, hc_eq, hc_var_eq, _, _⟩ :=
+    theorem11_30a huC (hsup_le.trans_lt ENNReal.ofReal_lt_top)
+  have : IsFiniteMeasure c.variation := isFiniteMeasure_complexMeasure_variation c
+  have hc_var_le : c.variation.real Set.univ ≤ u 0 := by
+    rw [measureReal_def, hc_var_eq]
+    exact ENNReal.toReal_le_of_le_ofReal hu0_nn hsup_le
+  -- Evaluate `uC 0 = poissonMeasureIntegral c 0` to get `c Set.univ = u 0`
+  have hc_univ : c Set.univ = (u 0 : ℂ) := by
+    have h0 := hc_eq 0 (Metric.mem_ball_self zero_lt_one)
+    have hker0 : (fun η : UnitCircle => (_root_.poissonKernel 0 0 (η : ℂ) : ℂ)) =
+        (Set.univ : Set UnitCircle).indicator fun _ => (1 : ℂ) := by
+      ext η
+      simp [_root_.poissonKernel]
+    unfold poissonMeasureIntegral RudinRCA.Chapter10.complexMeasureIntegral at h0
+    rw [hker0, VectorMeasure.integral_indicator_const (1 : ℂ) MeasurableSet.univ] at h0
+    have h1 : ((1 : ℂ) • c Set.univ : ℂ) = c Set.univ := one_smul ℂ _
+    exact (h0.trans h1).symm
+  -- Deduce `c E = c.variation.real E` for every measurable `E`, hence `c = c.variation.withDensityᵥ 1`
+  have hc_set : ∀ E : Set UnitCircle, MeasurableSet E → c E = (c.variation.real E : ℂ) := by
+    intro E hE
+    have hunion : c E + c Eᶜ = (u 0 : ℂ) := by
+      rw [← VectorMeasure.of_union disjoint_compl_right hE hE.compl, Set.union_compl_self, hc_univ]
+    have hre_sum : (c E).re + (c Eᶜ).re = u 0 := by
+      have := congrArg Complex.re hunion
+      simpa using this
+    have hnE : ‖c E‖ ≤ c.variation.real E := by
+      have he := c.enorm_measure_le_variation E
+      rw [← ofReal_norm] at he
+      rw [measureReal_def]
+      exact (ENNReal.ofReal_le_iff_le_toReal (measure_ne_top _ _)).mp he
+    have hnEc : ‖c Eᶜ‖ ≤ c.variation.real Eᶜ := by
+      have he := c.enorm_measure_le_variation Eᶜ
+      rw [← ofReal_norm] at he
+      rw [measureReal_def]
+      exact (ENNReal.ofReal_le_iff_le_toReal (measure_ne_top _ _)).mp he
+    have hvar_split : c.variation.real E + c.variation.real Eᶜ = c.variation.real Set.univ := by
+      rw [← measureReal_union disjoint_compl_right hE.compl, Set.union_compl_self]
+    have hre_le1 : (c E).re ≤ ‖c E‖ := Complex.re_le_norm (c E)
+    have hre_le2 : (c Eᶜ).re ≤ ‖c Eᶜ‖ := Complex.re_le_norm (c Eᶜ)
+    have hre_eq_norm : (c E).re = ‖c E‖ := by linarith
+    have hnorm_eq_var : ‖c E‖ = c.variation.real E := by linarith
+    have him_zero : (c E).im = 0 := by
+      have hsq : (c E).re * (c E).re + (c E).im * (c E).im = ‖c E‖ * ‖c E‖ := by
+        rw [← Complex.normSq_apply, Complex.normSq_eq_norm_sq, sq]
+      have him2 : (c E).im * (c E).im = 0 := by
+        rw [hre_eq_norm] at hsq
+        linarith
+      exact mul_self_eq_zero.mp him2
+    apply Complex.ext
+    · simp [hre_eq_norm, hnorm_eq_var]
+    · simp [him_zero]
+  let μ : Measure UnitCircle := c.variation
+  have hc_wd : c = μ.withDensityᵥ (fun _ : UnitCircle => (1 : ℂ)) := by
+    ext E hE
+    rw [hc_set E hE, withDensityᵥ_apply (integrable_const (1 : ℂ)) hE, setIntegral_const,
+      Complex.real_smul, mul_one]
+  have hu_posP : ∀ z ∈ Metric.ball (0 : ℂ) 1, u z = positivePoissonIntegral μ z := by
+    intro z hz
+    have h1 := hc_eq z hz
+    rw [hc_wd, poissonMeasureIntegral_withDensityᵥ_one μ hz] at h1
+    exact Complex.ofReal_injective h1
+  have hu_lint : ∀ z ∈ Metric.ball (0 : ℂ) 1,
+      ENNReal.ofReal (u z) =
+        ∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ := by
+    intro z hz
+    rw [hu_posP z hz]
+    unfold positivePoissonIntegral
+    have hint : Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) μ :=
+      (continuous_poissonKernel_unitCircle hz).integrable_of_hasCompactSupport
+        (HasCompactSupport.of_compactSpace _)
+    exact ofReal_integral_eq_lintegral_ofReal hint
+      (ae_of_all _ (poissonKernel_unitCircle_nonneg hz))
+  have hμ_univ : μ Set.univ = ENNReal.ofReal (u 0) := by
+    have h0 := hu_lint 0 (Metric.mem_ball_self zero_lt_one)
+    have hker0 : ∀ η : UnitCircle,
+        ENNReal.ofReal (_root_.poissonKernel 0 0 (η : ℂ)) = 1 := fun η => by
+      simp [_root_.poissonKernel]
+    simp_rw [hker0] at h0
+    simpa using h0.symm
+  -- Uniqueness among finite measures with `u = positivePoissonIntegral ν`
+  have huniq_fin : ∀ (ν : Measure UnitCircle) [IsFiniteMeasure ν],
+      (∀ z ∈ Metric.ball (0 : ℂ) 1, u z = positivePoissonIntegral ν z) → ν = μ := by
+    intro ν _ hν
+    have hwd_eq : ν.withDensityᵥ (fun _ : UnitCircle => (1 : ℂ)) =
+        μ.withDensityᵥ (fun _ : UnitCircle => (1 : ℂ)) := by
+      apply poissonMeasureIntegral_inj
+      intro z hz
+      rw [poissonMeasureIntegral_withDensityᵥ_one ν hz,
+        poissonMeasureIntegral_withDensityᵥ_one μ hz, ← hν z hz, ← hu_posP z hz]
+    ext E hE
+    have hev := congrArg (fun d : ComplexMeasure UnitCircle => (d E).re) hwd_eq
+    simp only [withDensityᵥ_apply (integrable_const (1 : ℂ)) hE, setIntegral_const,
+      Complex.real_smul, mul_one, Complex.ofReal_re] at hev
+    rw [← ENNReal.ofReal_toReal (measure_ne_top ν E),
+      ← ENNReal.ofReal_toReal (measure_ne_top μ E)]
+    exact congrArg ENNReal.ofReal hev
+  -- Uniqueness among *all* positive Borel measures `ν` via `[0, ∞]` lintegral
+  refine ⟨⟨μ, hu_lint, fun ν hν => ?_⟩, μ, inferInstance, hμ_univ, hu_posP, huniq_fin⟩
+  have hν_univ : ν Set.univ = ENNReal.ofReal (u 0) := by
+    have h0 := hν 0 (Metric.mem_ball_self zero_lt_one)
+    have hker0 : ∀ η : UnitCircle,
+        ENNReal.ofReal (_root_.poissonKernel 0 0 (η : ℂ)) = 1 := fun η => by
+      simp [_root_.poissonKernel]
+    simp_rw [hker0] at h0
+    simpa using h0.symm
+  have : IsFiniteMeasure ν := ⟨hν_univ ▸ ENNReal.ofReal_lt_top⟩
+  refine huniq_fin ν fun z hz => ?_
+  have h1 := hν z hz
+  have hint_ν : Integrable (fun η : UnitCircle => _root_.poissonKernel 0 z (η : ℂ)) ν :=
+    (continuous_poissonKernel_unitCircle hz).integrable_of_hasCompactSupport
+      (HasCompactSupport.of_compactSpace _)
+  have h2 := ofReal_integral_eq_lintegral_ofReal hint_ν
+    (ae_of_all _ (poissonKernel_unitCircle_nonneg hz))
+  change ENNReal.ofReal (positivePoissonIntegral ν z) = _ at h2
+  have heq_ofR : ENNReal.ofReal (u z) = ENNReal.ofReal (positivePoissonIntegral ν z) :=
+    h1.trans h2.symm
+  have hnn_P : 0 ≤ positivePoissonIntegral ν z :=
+    integral_nonneg (poissonKernel_unitCircle_nonneg hz)
+  have := congrArg ENNReal.toReal heq_ofR
+  rwa [ENNReal.toReal_ofReal (hpos z hz), ENNReal.toReal_ofReal hnn_P] at this
+
+/-- 11.30 (Master Theorem, Rudin pp. 247–248): bundles parts (a), (b), and (c). -/
+theorem theorem11_30 :
+    -- (a) p = 1
+    (∀ {u : ℂ → ℂ}, HarmonicOn u (Metric.ball (0 : ℂ) 1) →
+      (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+        eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure) < ⊤ →
+      ∃! μ : ComplexMeasure UnitCircle,
+        ∀ z ∈ Metric.ball (0 : ℂ) 1, u z = poissonMeasureIntegral μ z) ∧
+    -- (b) 1 < p ≤ ⊤
+    (∀ {u : ℂ → ℂ} {p : ℝ≥0∞} [Fact (1 ≤ p)], 1 < p →
+      HarmonicOn u (Metric.ball (0 : ℂ) 1) →
+      (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+        eLpNorm (unitRadialRestriction u r) p unitCircleMeasure) < ⊤ →
+      ∃! f : Lp ℂ p unitCircleMeasure,
+        ∀ z ∈ Metric.ball (0 : ℂ) 1, u z = unitPoissonIntegral f z) ∧
+    -- (c) Positive harmonic functions in U
+    (∀ {u : ℂ → ℝ}, HarmonicOn u (Metric.ball (0 : ℂ) 1) →
+      (∀ z ∈ Metric.ball (0 : ℂ) 1, 0 ≤ u z) →
+      ∃! μ : Measure UnitCircle,
+        ∀ z ∈ Metric.ball (0 : ℂ) 1,
+          ENNReal.ofReal (u z) =
+            ∫⁻ η : UnitCircle, ENNReal.ofReal (_root_.poissonKernel 0 z (η : ℂ)) ∂μ) :=
+  ⟨fun hu hsup => (theorem11_30a hu hsup).1,
+   fun hp1 hu hsup => (theorem11_30b hu hp1 hsup).1,
+   fun hu hpos => (theorem11_30c hu hpos).1⟩
+
+end Node11_30
+
+/-! ### Node 11.26: `L^p`-Boundedness Characterization of Poisson Integrals -/
+
+section Node11_26
+
+/-- 11.26 (Rudin p. 245):
+For a harmonic function `u` in `U = ball 0 1`:
+1. `{u_r : 0 ≤ r < 1}` is `L¹(T)`-bounded (equivalently `sup_{0 < r < 1} ‖u_r‖₁ < ∞`) if and only
+   if `u = P[dμ]` for a complex Borel measure `μ` on `T`;
+2. for `1 < p ≤ ⊤`, `{u_r : 0 ≤ r < 1}` is `L^p(T)`-bounded if and only if `u = P[f]` for some
+   `f ∈ L^p(T)` (and at `p = ⊤`, boundedness in literal 3.7 `rudinEssSup` is equivalent as well);
+3. in particular, `L¹(T)`-boundedness of `u_r` as `r → 1⁻` implies that `u` has nontangential
+   limits `σ`-almost everywhere on `T`. -/
+theorem theorem11_26 {u : ℂ → ℂ} (hu : HarmonicOn u (Metric.ball (0 : ℂ) 1)) :
+    (((⨆ r ∈ Set.Ico (0 : ℝ) 1,
+        eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure) < ⊤) ↔
+      ∃ μ : ComplexMeasure UnitCircle,
+        ∀ z ∈ Metric.ball (0 : ℂ) 1, u z = poissonMeasureIntegral μ z) ∧
+    (∀ (p : ℝ≥0∞) [Fact (1 ≤ p)], 1 < p →
+      (((⨆ r ∈ Set.Ico (0 : ℝ) 1,
+          eLpNorm (unitRadialRestriction u r) p unitCircleMeasure) < ⊤) ↔
+        ∃ f : Lp ℂ p unitCircleMeasure,
+          ∀ z ∈ Metric.ball (0 : ℂ) 1, u z = unitPoissonIntegral f z)) ∧
+    ((∃ M : ℝ, ∀ r ∈ Set.Ico (0 : ℝ) 1,
+        rudinEssSup unitCircleMeasure (unitRadialRestriction u r) ≤ M) ↔
+      ∃ f : Lp ℂ ⊤ unitCircleMeasure,
+        ∀ z ∈ Metric.ball (0 : ℂ) 1, u z = unitPoissonIntegral f z) ∧
+    (((⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+        eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure) < ⊤) →
+      ∃ f : UnitCircle → ℂ, Integrable f unitCircleMeasure ∧
+        ∀ᵐ ζ ∂unitCircleMeasure, HasNontangentialLimit u ζ (f ζ)) := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · constructor
+    · intro hIco
+      have hIoo : (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+          eLpNorm (unitRadialRestriction u r) 1 unitCircleMeasure) < ⊤ :=
+        (iSup_le_iSup_of_subset Set.Ioo_subset_Ico_self).trans_lt hIco
+      exact (theorem11_30a hu hIoo).1.exists
+    · rintro ⟨μ, hμ⟩
+      have : IsFiniteMeasure μ.variation := isFiniteMeasure_complexMeasure_variation μ
+      refine (iSup₂_le fun r hr => ?_).trans_lt (measure_lt_top μ.variation Set.univ)
+      have heq_r : unitRadialRestriction u r =
+          unitRadialRestriction (poissonMeasureIntegral μ) r :=
+        funext fun ζ => hμ _ (radial_mem_ball_unitCircle hr.1 hr.2 ζ)
+      rw [heq_r]
+      exact ((theorem11_17 μ).2.2 hr.1 hr.2).2.2
+  · intro p _ hp1
+    constructor
+    · intro hIco
+      have hIoo : (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+          eLpNorm (unitRadialRestriction u r) p unitCircleMeasure) < ⊤ :=
+        (iSup_le_iSup_of_subset Set.Ioo_subset_Ico_self).trans_lt hIco
+      exact (theorem11_30b hu hp1 hIoo).1.exists
+    · rintro ⟨f, hf⟩
+      refine (iSup₂_le fun r hr => ?_).trans_lt (Lp.memLp f).eLpNorm_lt_top
+      have heq_r : unitRadialRestriction u r =
+          unitRadialRestriction (unitPoissonIntegral f) r :=
+        funext fun ζ => hf _ (radial_mem_ball_unitCircle hr.1 hr.2 ζ)
+      rw [heq_r]
+      exact ((theorem11_16 p f).1 hr.1 hr.2).2
+  · constructor
+    · rintro ⟨M, hM⟩
+      have hIoo : (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+          eLpNorm (unitRadialRestriction u r) ⊤ unitCircleMeasure) < ⊤ := by
+        refine (iSup₂_le fun r hr => ?_).trans_lt (@ENNReal.ofReal_lt_top (max 0 M))
+        have hc : Continuous (unitRadialRestriction u r) :=
+          hu.continuousOn.comp_continuous (continuous_const.mul continuous_subtype_val)
+            (fun ζ => radial_mem_ball_unitCircle hr.1.le hr.2 ζ)
+        have hmem : MemLp (unitRadialRestriction u r) ⊤ unitCircleMeasure :=
+          memLp_top_of_continuous_unitCircle hc
+        rw [← ENNReal.ofReal_toReal hmem.eLpNorm_lt_top.ne,
+          ← rudinEssSup_eq_eLpNorm_top_toReal unitCircleMeasure_univ_ne_zero hmem]
+        exact ENNReal.ofReal_le_ofReal ((hM r ⟨hr.1.le, hr.2⟩).trans (le_max_right 0 M))
+      exact (theorem11_30b hu ENNReal.one_lt_top hIoo).1.exists
+    · rintro ⟨f, hf⟩
+      refine ⟨rudinEssSup unitCircleMeasure f, fun r hr => ?_⟩
+      have heq_r : unitRadialRestriction u r =
+          unitRadialRestriction (unitPoissonIntegral f) r :=
+        funext fun ζ => hf _ (radial_mem_ball_unitCircle hr.1 hr.2 ζ)
+      rw [heq_r]
+      exact (theorem11_16 ⊤ f).2.1 rfl hr.1 hr.2
+  · intro hIoo
+    obtain ⟨μ, hμ, _⟩ := (theorem11_30a hu hIoo).1
+    have : μ.HaveLebesgueDecomposition unitCircleMeasure := ⟨inferInstance, inferInstance⟩
+    refine ⟨μ.rnDeriv unitCircleMeasure, ComplexMeasure.integrable_rnDeriv μ unitCircleMeasure, ?_⟩
+    filter_upwards [theorem11_24_rnDeriv μ] with ζ hlim
+    exact hlim.congr_ball fun z hz => (hμ z hz).symm
+
+end Node11_26
+
+/-! ### Node 11.32: Boundary Values, Isometry, and Arc Uniqueness for `H^∞` -/
+
+section Node11_32
+
+private theorem ae_comp_unitCircleRotate (α : UnitCircle) {P : UnitCircle → Prop}
+    (hP : ∀ᵐ η ∂unitCircleMeasure, P η) :
+    ∀ᵐ ζ ∂unitCircleMeasure, P (unitCircleRotate α ζ) := by
+  have hnull : unitCircleMeasure {η : UnitCircle | ¬ P η} = 0 := hP
+  let N := toMeasurable unitCircleMeasure {η : UnitCircle | ¬ P η}
+  have hN_meas : MeasurableSet N := measurableSet_toMeasurable _ _
+  have hN_zero : unitCircleMeasure N = 0 := by
+    dsimp only [N]
+    rw [measure_toMeasurable]
+    exact hnull
+  have hpre_zero : unitCircleMeasure (unitCircleRotate α ⁻¹' N) = 0 := by
+    rw [← Measure.map_apply (unitCircleRotate α).continuous.measurable hN_meas,
+      (measurePreserving_unitCircleRotate α).map_eq]
+    exact hN_zero
+  rw [ae_iff]
+  refine measure_mono_null (fun ζ hζ => ?_) hpre_zero
+  exact subset_toMeasurable _ _ hζ
+
+private theorem exists_rotation_mem_openCircleArc (ζ₀ : UnitCircle) {δ : ℝ} {n : ℕ}
+    (hn : 0 < n) (hδ : Real.pi / (n : ℝ) < δ) (ζ : UnitCircle) :
+    ∃ k ∈ Finset.range n,
+      unitCircleRotate
+        ⟨Complex.exp (((2 * Real.pi * (k : ℝ) / (n : ℝ) : ℝ) : ℂ) * Complex.I),
+          exp_mem_unitCircle _⟩
+        ζ ∈ openCircleArc ζ₀ δ := by
+  have hn_pos : (0 : ℝ) < (n : ℝ) := Nat.cast_pos.mpr hn
+  have h2pi_pos : (0 : ℝ) < 2 * Real.pi := by positivity
+  -- Choose `φ ∈ [0, 2π)` such that `ζ₀ = exp(i φ) * ζ`
+  let w : ℂ := (ζ₀ : ℂ) * conj (ζ : ℂ)
+  have hw_norm : ‖w‖ = 1 := by
+    dsimp only [w]
+    rw [norm_mul, RCLike.norm_conj, norm_unitCircle, norm_unitCircle, mul_one]
+  let θ₀ : ℝ := Complex.arg w
+  let φ : ℝ := if 0 ≤ θ₀ then θ₀ else θ₀ + 2 * Real.pi
+  have hφ_nonneg : 0 ≤ φ := by
+    dsimp only [φ]
+    split_ifs with h
+    · exact h
+    · have := Complex.neg_pi_lt_arg w
+      linarith [Real.pi_pos]
+  have hφ_lt : φ < 2 * Real.pi := by
+    dsimp only [φ]
+    split_ifs with h
+    · have := Complex.arg_le_pi w
+      linarith [Real.pi_pos]
+    · linarith
+  have hexp_φ : Complex.exp ((φ : ℂ) * Complex.I) = w := by
+    have hexp_θ₀ : Complex.exp ((θ₀ : ℂ) * Complex.I) = w := by
+      have h := Complex.norm_mul_exp_arg_mul_I w
+      rwa [hw_norm, Complex.ofReal_one, one_mul] at h
+    dsimp only [φ]
+    split_ifs with h
+    · exact hexp_θ₀
+    · push_cast
+      rw [add_mul, Complex.exp_add, hexp_θ₀,
+        show (2 : ℂ) * ↑Real.pi * Complex.I = 2 * Real.pi * Complex.I by ring,
+        Complex.exp_two_pi_mul_I, mul_one]
+  have hζ_eq : (ζ : ℂ) = (ζ₀ : ℂ) * Complex.exp (((-φ : ℝ) : ℂ) * Complex.I) := by
+    calc (ζ : ℂ) = ((ζ₀ : ℂ) * conj (ζ : ℂ)) * (ζ : ℂ) * conj w := by
+          dsimp only [w]
+          calc (ζ : ℂ) = (ζ : ℂ) * ((ζ₀ : ℂ) * conj (ζ₀ : ℂ)) * ((ζ : ℂ) * conj (ζ : ℂ)) := by
+                rw [unitCircle_mul_conj ζ₀, unitCircle_mul_conj ζ, mul_one, mul_one]
+            _ = ((ζ₀ : ℂ) * conj (ζ : ℂ)) * (ζ : ℂ) * (conj (ζ₀ : ℂ) * (ζ : ℂ)) := by ring
+            _ = ((ζ₀ : ℂ) * conj (ζ : ℂ)) * (ζ : ℂ) * conj ((ζ₀ : ℂ) * conj (ζ : ℂ)) := by
+                simp [mul_comm]
+      _ = (ζ₀ : ℂ) * conj w := by
+          dsimp only [w]
+          calc (ζ₀ : ℂ) * conj (ζ : ℂ) * (ζ : ℂ) * conj ((ζ₀ : ℂ) * conj (ζ : ℂ))
+              = (ζ₀ : ℂ) * ((ζ : ℂ) * conj (ζ : ℂ)) * conj ((ζ₀ : ℂ) * conj (ζ : ℂ)) := by ring
+            _ = (ζ₀ : ℂ) * conj ((ζ₀ : ℂ) * conj (ζ : ℂ)) := by
+                rw [unitCircle_mul_conj ζ, mul_one]
+      _ = (ζ₀ : ℂ) * Complex.exp (((-φ : ℝ) : ℂ) * Complex.I) := by
+          rw [← hexp_φ, ← Complex.exp_conj]
+          congr 2
+          simp
+  -- Partition `[0, n)` by `m = ⌊x⌋₊` where `x = φ * n / (2π)`
+  let x : ℝ := φ * (n : ℝ) / (2 * Real.pi)
+  have hx_nn : 0 ≤ x := by positivity
+  have hx_lt_n : x < (n : ℝ) := by
+    dsimp only [x]
+    rw [div_lt_iff₀ h2pi_pos]
+    nlinarith
+  let m : ℕ := ⌊x⌋₊
+  have hm_lt_n : m < n := (Nat.floor_lt hx_nn).mpr hx_lt_n
+  have hm_le_x : (m : ℝ) ≤ x := Nat.floor_le hx_nn
+  have hx_lt_m1 : x < (m : ℝ) + 1 := Nat.lt_floor_add_one x
+  have hφ_x : φ = 2 * Real.pi * x / (n : ℝ) := by
+    dsimp only [x]
+    field_simp [hn_pos.ne', h2pi_pos.ne']
+  by_cases hhalf : x - (m : ℝ) ≤ 1 / 2
+  · refine ⟨m, Finset.mem_range.mpr hm_lt_n, ?_⟩
+    refine ⟨2 * Real.pi * (m : ℝ) / (n : ℝ) - φ, ?_, ?_⟩
+    · have hdiff : 2 * Real.pi * (m : ℝ) / (n : ℝ) - φ =
+          -(2 * Real.pi / (n : ℝ) * (x - (m : ℝ))) := by
+        rw [hφ_x]
+        ring
+      rw [hdiff, abs_neg, abs_of_nonneg (mul_nonneg (by positivity) (sub_nonneg.mpr hm_le_x))]
+      have hle : 2 * Real.pi / (n : ℝ) * (x - (m : ℝ)) ≤ Real.pi / (n : ℝ) := by
+        calc 2 * Real.pi / (n : ℝ) * (x - (m : ℝ))
+            ≤ 2 * Real.pi / (n : ℝ) * (1 / 2) :=
+              mul_le_mul_of_nonneg_left hhalf (by positivity)
+          _ = Real.pi / (n : ℝ) := by ring
+      exact hle.trans_lt hδ
+    · rw [unitCircleRotate_coe, hζ_eq]
+      dsimp only
+      calc Complex.exp (((2 * Real.pi * (m : ℝ) / (n : ℝ) : ℝ) : ℂ) * Complex.I) *
+              ((ζ₀ : ℂ) * Complex.exp (((-φ : ℝ) : ℂ) * Complex.I))
+          = (ζ₀ : ℂ) * (Complex.exp (((2 * Real.pi * (m : ℝ) / (n : ℝ) : ℝ) : ℂ) * Complex.I) *
+              Complex.exp (((-φ : ℝ) : ℂ) * Complex.I)) := by ring
+        _ = (ζ₀ : ℂ) * Complex.exp (((2 * Real.pi * (m : ℝ) / (n : ℝ) - φ : ℝ) : ℂ) * Complex.I) := by
+            rw [← Complex.exp_add]
+            congr 2
+            push_cast
+            ring
+  · push Not at hhalf
+    have hm1_lt_half : (m : ℝ) + 1 - x < 1 / 2 := by linarith
+    by_cases hm1 : m + 1 < n
+    · refine ⟨m + 1, Finset.mem_range.mpr hm1, ?_⟩
+      refine ⟨2 * Real.pi * ((m + 1 : ℕ) : ℝ) / (n : ℝ) - φ, ?_, ?_⟩
+      · have hdiff : 2 * Real.pi * ((m + 1 : ℕ) : ℝ) / (n : ℝ) - φ =
+            2 * Real.pi / (n : ℝ) * ((m : ℝ) + 1 - x) := by
+          rw [hφ_x]
+          push_cast
+          ring
+        rw [hdiff, abs_of_nonneg (mul_nonneg (by positivity) (by linarith))]
+        have hlt : 2 * Real.pi / (n : ℝ) * ((m : ℝ) + 1 - x) < Real.pi / (n : ℝ) := by
+          calc 2 * Real.pi / (n : ℝ) * ((m : ℝ) + 1 - x)
+              < 2 * Real.pi / (n : ℝ) * (1 / 2) :=
+                mul_lt_mul_of_pos_left hm1_lt_half (by positivity)
+            _ = Real.pi / (n : ℝ) := by ring
+        exact hlt.trans hδ
+      · rw [unitCircleRotate_coe, hζ_eq]
+        dsimp only
+        calc Complex.exp (((2 * Real.pi * ((m + 1 : ℕ) : ℝ) / (n : ℝ) : ℝ) : ℂ) * Complex.I) *
+                ((ζ₀ : ℂ) * Complex.exp (((-φ : ℝ) : ℂ) * Complex.I))
+            = (ζ₀ : ℂ) *
+                (Complex.exp (((2 * Real.pi * ((m + 1 : ℕ) : ℝ) / (n : ℝ) : ℝ) : ℂ) * Complex.I) *
+                Complex.exp (((-φ : ℝ) : ℂ) * Complex.I)) := by ring
+          _ = (ζ₀ : ℂ) *
+                Complex.exp (((2 * Real.pi * ((m + 1 : ℕ) : ℝ) / (n : ℝ) - φ : ℝ) : ℂ) * Complex.I) := by
+              rw [← Complex.exp_add]
+              congr 2
+              push_cast
+              ring
+    · have hm_eq : m + 1 = n := by omega
+      refine ⟨0, Finset.mem_range.mpr hn, ?_⟩
+      refine ⟨2 * Real.pi - φ, ?_, ?_⟩
+      · have hdiff : 2 * Real.pi - φ = 2 * Real.pi / (n : ℝ) * ((m : ℝ) + 1 - x) := by
+          have hn_cast : (n : ℝ) = (m : ℝ) + 1 := by exact_mod_cast hm_eq.symm
+          rw [hφ_x, ← hn_cast]
+          field_simp [hn_pos.ne']
+        rw [hdiff, abs_of_nonneg (mul_nonneg (by positivity) (by linarith))]
+        have hlt : 2 * Real.pi / (n : ℝ) * ((m : ℝ) + 1 - x) < Real.pi / (n : ℝ) := by
+          calc 2 * Real.pi / (n : ℝ) * ((m : ℝ) + 1 - x)
+              < 2 * Real.pi / (n : ℝ) * (1 / 2) :=
+                mul_lt_mul_of_pos_left hm1_lt_half (by positivity)
+            _ = Real.pi / (n : ℝ) := by ring
+        exact hlt.trans hδ
+      · rw [unitCircleRotate_coe, hζ_eq]
+        dsimp only
+        simp only [Nat.cast_zero, mul_zero, zero_div, Complex.ofReal_zero, zero_mul,
+          Complex.exp_zero, one_mul]
+        congr 1
+        have hsum : (((2 * Real.pi - φ : ℝ) : ℂ) * Complex.I) =
+            2 * Real.pi * Complex.I + ((-φ : ℝ) : ℂ) * Complex.I := by
+          push_cast
+          ring
+        rw [hsum, Complex.exp_add, Complex.exp_two_pi_mul_I, one_mul]
+
+private theorem not_countable_ball_unit : ¬ (Metric.ball (0 : ℂ) 1).Countable := by
+  intro hcnt
+  let ι : Set.Ioo (0 : ℝ) 1 → Metric.ball (0 : ℂ) 1 := fun r =>
+    ⟨(r.1 : ℂ), by
+      rw [Metric.mem_ball, dist_zero_right, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_pos r.2.1]
+      exact r.2.2⟩
+  have hι_inj : Function.Injective ι := by
+    intro a b hab
+    ext
+    exact Complex.ofReal_injective (congrArg Subtype.val hab)
+  have hcard_le : Cardinal.mk (Set.Ioo (0 : ℝ) 1) ≤ Cardinal.aleph0 :=
+    (Cardinal.mk_le_of_injective hι_inj).trans hcnt.le_aleph0
+  rw [Cardinal.mk_Ioo_real zero_lt_one] at hcard_le
+  exact not_lt_of_ge hcard_le Cardinal.aleph0_lt_continuum
+
+/-- Boundary-value existence, Poisson representation, nontangential/radial convergence, and
+isometric `L^∞` norm equality for `f ∈ H^∞` (first half of 11.32, Rudin p. 249). -/
+theorem exists_unique_hInfty_boundary (f : HInfty) :
+    ∃! f_star : Lp ℂ ⊤ unitCircleMeasure,
+      (∀ z : Metric.ball (0 : ℂ) 1,
+        (f : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ) z =
+          unitPoissonIntegral f_star z.1) ∧
+      (∀ᵐ (ζ : UnitCircle) ∂unitCircleMeasure,
+        HasNontangentialLimit
+          (extendZero (f : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ))
+          ζ (f_star ζ)) ∧
+      (∀ᵐ (ζ : UnitCircle) ∂unitCircleMeasure,
+        Tendsto (fun r : ℝ =>
+          extendZero (f : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ)
+            ((r : ℂ) * (ζ : ℂ)))
+          (𝓝[<] 1) (𝓝 (f_star ζ))) ∧
+      ‖f‖ = ‖f_star‖ ∧
+      ‖f‖ = rudinEssSup unitCircleMeasure f_star := by
+  let f_bcf : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ := f.1
+  let f_ext : ℂ → ℂ := extendZero f_bcf
+  have hf_holo : DifferentiableOn ℂ f_ext (Metric.ball (0 : ℂ) 1) := f.2
+  have hf_harm : HarmonicOn f_ext (Metric.ball (0 : ℂ) 1) :=
+    harmonicOn_of_mathlib fun z hz =>
+      (hf_holo.analyticAt (Metric.isOpen_ball.mem_nhds hz)).harmonicAt
+  have hsup_le : (⨆ r ∈ Set.Ioo (0 : ℝ) 1,
+      eLpNorm (unitRadialRestriction f_ext r) ⊤ unitCircleMeasure) ≤ ENNReal.ofReal ‖f‖ := by
+    refine iSup₂_le fun r hr => ?_
+    have hmem : MemLp (unitRadialRestriction f_ext r) ⊤ unitCircleMeasure := by
+      refine memLp_top_of_bound
+        (hf_harm.continuousOn.comp_continuous (continuous_const.mul continuous_subtype_val)
+          (fun ζ => radial_mem_ball_unitCircle hr.1.le hr.2 ζ)).aestronglyMeasurable
+        ‖f‖ (ae_of_all _ fun ζ => ?_)
+      have hz := radial_mem_ball_unitCircle hr.1.le hr.2 ζ
+      dsimp only [unitRadialRestriction, f_ext]
+      rw [extendZero_apply_of_mem f_bcf hz]
+      exact BoundedContinuousFunction.norm_coe_le_norm f_bcf ⟨_, hz⟩
+    rw [eLpNorm_exponent_top hmem.aestronglyMeasurable]
+    refine essSup_le_of_ae_le _ (ae_of_all _ fun ζ => ?_)
+    have hz := radial_mem_ball_unitCircle hr.1.le hr.2 ζ
+    dsimp only [unitRadialRestriction, f_ext]
+    rw [extendZero_apply_of_mem f_bcf hz, ← ofReal_norm]
+    exact ENNReal.ofReal_le_ofReal (BoundedContinuousFunction.norm_coe_le_norm f_bcf ⟨_, hz⟩)
+  obtain ⟨huniq_P, f_star, hf_P, _, _, hf_star_norm_eq, hf_ess⟩ :=
+    theorem11_30b hf_harm ENNReal.one_lt_top (hsup_le.trans_lt ENNReal.ofReal_lt_top)
+  have hf_star_le_f : ‖f_star‖ ≤ ‖f‖ := by
+    rw [hf_star_norm_eq]
+    exact ENNReal.toReal_le_of_le_ofReal (norm_nonneg f) hsup_le
+  -- Opposite inequality `‖f‖ ≤ ‖f_star‖`
+  have hf_le_f_star : ‖f‖ ≤ ‖f_star‖ := by
+    change ‖f_bcf‖ ≤ ‖f_star‖
+    refine (BoundedContinuousFunction.norm_le (norm_nonneg f_star)).mpr fun z => ?_
+    have hz_P : f_bcf z = unitPoissonIntegral f_star z.1 := by
+      have := hf_P z.1 z.2
+      dsimp only [f_ext] at this
+      rwa [extendZero_apply_of_mem f_bcf z.2] at this
+    rw [hz_P]
+    have hmem := Lp.memLp f_star
+    have hen : ‖unitPoissonIntegral f_star z.1‖ₑ ≤ eLpNorm f_star ⊤ unitCircleMeasure := by
+      calc ‖unitPoissonIntegral f_star z.1‖ₑ
+          ≤ ∫⁻ η : UnitCircle,
+              ENNReal.ofReal (_root_.poissonKernel 0 z.1 (η : ℂ)) * ‖f_star η‖ₑ
+                ∂unitCircleMeasure := enorm_unitPoissonIntegral_le z.2
+        _ ≤ ∫⁻ η : UnitCircle,
+              ENNReal.ofReal (_root_.poissonKernel 0 z.1 (η : ℂ)) *
+                eLpNorm f_star ⊤ unitCircleMeasure ∂unitCircleMeasure := by
+            refine lintegral_mono_ae ?_
+            have hae : ∀ᵐ η ∂unitCircleMeasure,
+                ‖f_star η‖ₑ ≤ eLpNorm f_star ⊤ unitCircleMeasure := by
+              rw [eLpNorm_exponent_top hmem.aestronglyMeasurable]
+              exact ae_le_essSup
+            filter_upwards [hae] with η hη
+            gcongr
+        _ = eLpNorm f_star ⊤ unitCircleMeasure := by
+            rw [lintegral_mul_const _
+              (continuous_poissonKernel_unitCircle z.2).measurable.ennreal_ofReal,
+              lintegral_poissonKernel_unitCircle z.2, one_mul]
+    rw [← toReal_enorm, Lp.norm_def]
+    exact ENNReal.toReal_mono (Lp.eLpNorm_ne_top f_star) hen
+  have hnorm_eq : ‖f‖ = ‖f_star‖ := le_antisymm hf_le_f_star hf_star_le_f
+  have hess_eq : ‖f‖ = rudinEssSup unitCircleMeasure f_star :=
+    hnorm_eq.trans (hf_ess rfl).symm
+  -- Almost-everywhere nontangential and radial convergence (Fatou, 11.23)
+  have hf_star_int : Integrable f_star unitCircleMeasure :=
+    (Lp.memLp f_star).integrable le_top
+  have hae_nt : ∀ᵐ (ζ : UnitCircle) ∂unitCircleMeasure, HasNontangentialLimit f_ext ζ (f_star ζ) := by
+    filter_upwards [ae_hasNontangentialLimit_unitPoissonIntegral hf_star_int] with ζ hlim
+    exact hlim.congr_ball fun z hz => (hf_P z hz).symm
+  have hae_rad : ∀ᵐ (ζ : UnitCircle) ∂unitCircleMeasure,
+      Tendsto (fun r : ℝ => f_ext ((r : ℂ) * (ζ : ℂ))) (𝓝[<] 1) (𝓝 (f_star ζ)) := by
+    filter_upwards [hae_nt] with ζ hlim using hlim.tendsto_radial
+  refine ⟨f_star, ⟨fun z => by
+      have := hf_P z.1 z.2
+      dsimp only [f_ext] at this
+      rw [extendZero_apply_of_mem f_bcf z.2] at this
+      exact this,
+    hae_nt, hae_rad, hnorm_eq, hess_eq⟩, ?_⟩
+  -- Uniqueness: even radial limit characterization (1) alone determines `f_star` in `Lp ℂ ⊤`
+  intro g ⟨hg_P, _, _, _, _⟩
+  refine huniq_P.unique (fun z hz => ?_) hf_P
+  have := hg_P ⟨z, hz⟩
+  dsimp only [f_ext]
+  rw [extendZero_apply_of_mem f_bcf hz]
+  exact this
+
+/-- 11.32 (Theorem, Rudin p. 249):
+1. To every `f ∈ H^∞` corresponds a unique `f* ∈ L^∞(T)` (`Lp ℂ ⊤ unitCircleMeasure`) defined
+   `σ`-almost everywhere by `f*(ζ) = lim_{r → 1⁻} f(r ζ)` (and in fact nontangentially, with
+   `f = P[f*]`), and the norm equality `‖f‖_∞ = ‖f*‖_∞` holds in both `Lp ℂ ⊤` norm and literal
+   3.7 `rudinEssSup`;
+2. Moreover, any measurable function `g : UnitCircle → ℂ` satisfying `g(ζ) = lim_{r → 1⁻} f(r ζ)`
+   `σ`-almost everywhere agrees `σ`-a.e. with `f*`;
+3. If `f*(ζ) = 0` for `σ`-almost every `ζ` on some nonempty open arc `I = openCircleArc ζ₀ δ ⊂ T`
+   (`δ > 0`), then `f(z) = 0` for every `z ∈ U` (`f = 0`). -/
+theorem theorem11_32 (f : HInfty) :
+    ∃! f_star : Lp ℂ ⊤ unitCircleMeasure,
+      (∀ z : Metric.ball (0 : ℂ) 1,
+        (f : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ) z =
+          unitPoissonIntegral f_star z.1) ∧
+      (∀ᵐ (ζ : UnitCircle) ∂unitCircleMeasure,
+        HasNontangentialLimit
+          (extendZero (f : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ))
+          ζ (f_star ζ)) ∧
+      (∀ᵐ (ζ : UnitCircle) ∂unitCircleMeasure,
+        Tendsto (fun r : ℝ =>
+          extendZero (f : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ)
+            ((r : ℂ) * (ζ : ℂ)))
+          (𝓝[<] 1) (𝓝 (f_star ζ))) ∧
+      ‖f‖ = ‖f_star‖ ∧
+      ‖f‖ = rudinEssSup unitCircleMeasure f_star ∧
+      (∀ g : UnitCircle → ℂ,
+        (∀ᵐ (ζ : UnitCircle) ∂unitCircleMeasure,
+          Tendsto (fun r : ℝ =>
+            extendZero (f : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ)
+              ((r : ℂ) * (ζ : ℂ)))
+            (𝓝[<] 1) (𝓝 (g ζ))) →
+        g =ᵐ[unitCircleMeasure] f_star) ∧
+      (∀ (ζ₀ : UnitCircle) {δ : ℝ}, 0 < δ →
+        (∀ᵐ (ζ : UnitCircle) ∂unitCircleMeasure.restrict (openCircleArc ζ₀ δ), f_star ζ = 0) →
+        ∀ z : Metric.ball (0 : ℂ) 1,
+          (f : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ) z = 0) := by
+  obtain ⟨f_star, ⟨hf_P, hae_nt, hae_rad, hnorm_eq, hess_eq⟩, huniq⟩ :=
+    exists_unique_hInfty_boundary f
+  have hrad_uniq : ∀ g : UnitCircle → ℂ,
+      (∀ᵐ (ζ : UnitCircle) ∂unitCircleMeasure,
+        Tendsto (fun r : ℝ =>
+          extendZero (f : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ)
+            ((r : ℂ) * (ζ : ℂ)))
+          (𝓝[<] 1) (𝓝 (g ζ))) →
+      g =ᵐ[unitCircleMeasure] f_star := by
+    intro g hg
+    filter_upwards [hg, hae_rad] with ζ h1 h2 using tendsto_nhds_unique h1 h2
+  have harc_zero : ∀ (ζ₀ : UnitCircle) {δ : ℝ}, 0 < δ →
+      (∀ᵐ (ζ : UnitCircle) ∂unitCircleMeasure.restrict (openCircleArc ζ₀ δ), f_star ζ = 0) →
+      ∀ z : Metric.ball (0 : ℂ) 1,
+        (f : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ) z = 0 := by
+    intro ζ₀ δ hδ harc
+    let f_bcf : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ := f.1
+    let f_ext : ℂ → ℂ := extendZero f_bcf
+    -- Choose `n > 0` with `π / n < δ`
+    obtain ⟨m, hm⟩ := exists_nat_gt (Real.pi / δ)
+    let n : ℕ := m + 1
+    have hn_pos : 0 < n := Nat.succ_pos m
+    have hpi_n_lt : Real.pi / (n : ℝ) < δ := by
+      have hm_lt : Real.pi / δ < (n : ℝ) := hm.trans (by exact_mod_cast Nat.lt_succ_self m)
+      exact (div_lt_iff₀ (Nat.cast_pos.mpr hn_pos)).mpr
+        ((div_lt_iff₀ hδ).mp hm_lt |>.trans_eq (mul_comm _ _))
+    let α_rot : ℕ → UnitCircle := fun k =>
+      ⟨Complex.exp (((2 * Real.pi * (k : ℝ) / (n : ℝ) : ℝ) : ℂ) * Complex.I),
+        exp_mem_unitCircle _⟩
+    -- Define `G(z) = ∏_{k < n} f(α_k z)` and lift to `F ∈ H^∞` via 11.31
+    let G : ℂ → ℂ := fun z => ∏ k ∈ Finset.range n, f_ext ((α_rot k : ℂ) * z)
+    have hrot_ball : ∀ k : ℕ, ∀ {z : ℂ}, z ∈ Metric.ball (0 : ℂ) 1 →
+        (α_rot k : ℂ) * z ∈ Metric.ball (0 : ℂ) 1 := by
+      intro k z hz
+      rw [Metric.mem_ball, dist_zero_right, norm_mul, norm_unitCircle, one_mul]
+      simpa [Metric.mem_ball] using hz
+    have hG_holo : DifferentiableOn ℂ G (Metric.ball (0 : ℂ) 1) := by
+      intro z hz
+      have hterm : ∀ k ∈ Finset.range n,
+          DifferentiableAt ℂ (fun w => f_ext ((α_rot k : ℂ) * w)) z := by
+        intro k _
+        have hdiff_at := f.2.differentiableAt (Metric.isOpen_ball.mem_nhds (hrot_ball k hz))
+        exact hdiff_at.comp z ((differentiableAt_const (α_rot k : ℂ)).mul differentiableAt_id)
+      exact (DifferentiableAt.fun_finsetProd hterm).differentiableWithinAt
+    have hG_bdd : ∀ z ∈ Metric.ball (0 : ℂ) 1, ‖G z‖ ≤ ‖f_bcf‖ ^ n := by
+      intro z hz
+      dsimp only [G]
+      rw [norm_prod]
+      calc (∏ k ∈ Finset.range n, ‖f_ext ((α_rot k : ℂ) * z)‖)
+          ≤ ∏ _k ∈ Finset.range n, ‖f_bcf‖ := by
+            gcongr with k _
+            have hkz := hrot_ball k hz
+            dsimp only [f_ext]
+            rw [extendZero_apply_of_mem f_bcf hkz]
+            exact BoundedContinuousFunction.norm_coe_le_norm f_bcf ⟨_, hkz⟩
+        _ = ‖f_bcf‖ ^ n := by rw [Finset.prod_const, Finset.card_range]
+    obtain ⟨F, hF_eq, _⟩ := (theorem11_31 Metric.isOpen_ball).2.2 hG_holo hG_bdd
+    obtain ⟨F_star, ⟨_, _, hF_rad, hF_norm, _⟩, _⟩ := exists_unique_hInfty_boundary F
+    -- Show `F_star =ᵐ[unitCircleMeasure] 0`
+    have harc_imp : ∀ᵐ η ∂unitCircleMeasure, η ∈ openCircleArc ζ₀ δ → f_star η = 0 :=
+      (ae_restrict_iff' (isOpen_openCircleArc ζ₀ δ).measurableSet).mp harc
+    have hrot_rad_all : ∀ᵐ ζ ∂unitCircleMeasure, ∀ k ∈ Finset.range n,
+        Tendsto (fun r : ℝ => f_ext ((r : ℂ) * ((unitCircleRotate (α_rot k) ζ : UnitCircle) : ℂ)))
+          (𝓝[<] 1) (𝓝 (f_star (unitCircleRotate (α_rot k) ζ))) := by
+      simpa only [Finset.mem_coe] using
+        (Finset.range n).finite_toSet.eventually_all.mpr fun k _ =>
+          ae_comp_unitCircleRotate (α_rot k) hae_rad
+    have hrot_zero_all : ∀ᵐ ζ ∂unitCircleMeasure, ∀ k ∈ Finset.range n,
+        unitCircleRotate (α_rot k) ζ ∈ openCircleArc ζ₀ δ →
+          f_star (unitCircleRotate (α_rot k) ζ) = 0 := by
+      simpa only [Finset.mem_coe] using
+        (Finset.range n).finite_toSet.eventually_all.mpr fun k _ =>
+          ae_comp_unitCircleRotate (α_rot k) harc_imp
+    have hF_star_zero : F_star =ᵐ[unitCircleMeasure] (0 : Lp ℂ ⊤ unitCircleMeasure) := by
+      filter_upwards [hF_rad, hrot_rad_all, hrot_zero_all, Lp.coeFn_zero ℂ ⊤ unitCircleMeasure]
+        with ζ hFl hrl hzl h0coe
+      have hprod_lim : Tendsto
+          (fun r : ℝ => extendZero (F : BoundedContinuousFunction (Metric.ball (0 : ℂ) 1) ℂ)
+            ((r : ℂ) * (ζ : ℂ)))
+          (𝓝[<] 1)
+          (𝓝 (∏ k ∈ Finset.range n, f_star (unitCircleRotate (α_rot k) ζ))) := by
+        have ht := tendsto_finsetProd (Finset.range n) fun k hk => hrl k hk
+        refine ht.congr' ?_
+        filter_upwards [nhdsWithin_le_nhds (Ioi_mem_nhds (zero_lt_one : (0 : ℝ) < 1)),
+          self_mem_nhdsWithin] with r hr0 hr1
+        have hz_r : (r : ℂ) * (ζ : ℂ) ∈ Metric.ball (0 : ℂ) 1 :=
+          radial_mem_ball_unitCircle hr0.le hr1 ζ
+        rw [extendZero_apply_of_mem _ hz_r, hF_eq ⟨_, hz_r⟩]
+        dsimp only [G]
+        refine Finset.prod_congr rfl fun k _ => ?_
+        rw [unitCircleRotate_coe]
+        congr 1
+        ring
+      obtain ⟨k₀, hk₀_mem, hk₀_arc⟩ := exists_rotation_mem_openCircleArc ζ₀ hn_pos hpi_n_lt ζ
+      have hprod_eq_zero :
+          (∏ k ∈ Finset.range n, f_star (unitCircleRotate (α_rot k) ζ)) = 0 :=
+        Finset.prod_eq_zero hk₀_mem (hzl k₀ hk₀_mem hk₀_arc)
+      rw [hprod_eq_zero] at hprod_lim
+      rw [h0coe, Pi.zero_apply]
+      exact tendsto_nhds_unique hFl hprod_lim
+    have hF_star_eq : F_star = 0 := Lp.ext hF_star_zero
+    have hF_norm_zero : ‖F‖ = 0 := by rw [hF_norm, hF_star_eq, norm_zero]
+    have hG_zero : ∀ z ∈ Metric.ball (0 : ℂ) 1, G z = 0 := by
+      intro z hz
+      have hF0 : F = 0 := norm_eq_zero.mp hF_norm_zero
+      have := hF_eq ⟨z, hz⟩
+      rw [hF0] at this
+      exact this.symm
+    -- Deduce `f = 0` on `U` via Theorem 10.18 (`zeroSet_countable`) + uncountability of `U`
+    intro z₀
+    by_contra hne₀
+    have hnot_eqOn : ¬ Set.EqOn f_ext 0 (Metric.ball (0 : ℂ) 1) := by
+      intro heq
+      have := heq z₀.2
+      dsimp only [f_ext, Pi.zero_apply] at this
+      rw [extendZero_apply_of_mem f_bcf z₀.2] at this
+      exact hne₀ this
+    have hZ_cnt : (RudinRCA.Chapter10.zeroSet f_ext (Metric.ball (0 : ℂ) 1)).Countable :=
+      RudinRCA.Chapter10.zeroSet_countable
+        (RudinRCA.Chapter10.disc_isRegion 0 zero_lt_one)
+        ((RudinRCA.Chapter10.holomorphicOn_iff_differentiableOn Metric.isOpen_ball).mpr f.2)
+        hnot_eqOn
+    let Z := RudinRCA.Chapter10.zeroSet f_ext (Metric.ball (0 : ℂ) 1)
+    have hball_sub : Metric.ball (0 : ℂ) 1 ⊆
+        ⋃ k ∈ Finset.range n, (fun w : ℂ => conj (α_rot k : ℂ) * w) '' Z := by
+      intro z hz
+      obtain ⟨k, hk_mem, hfk_zero⟩ := Finset.prod_eq_zero_iff.mp (hG_zero z hz)
+      refine Set.mem_biUnion hk_mem ⟨(α_rot k : ℂ) * z, ⟨hrot_ball k hz, hfk_zero⟩, ?_⟩
+      calc conj (α_rot k : ℂ) * ((α_rot k : ℂ) * z)
+          = ((α_rot k : ℂ) * conj (α_rot k : ℂ)) * z := by ring
+        _ = z := by rw [unitCircle_mul_conj (α_rot k), one_mul]
+    have hball_cnt : (Metric.ball (0 : ℂ) 1).Countable :=
+      ((Finset.range n).countable_toSet.biUnion fun k _ => hZ_cnt.image _).mono hball_sub
+    exact not_countable_ball_unit hball_cnt
+  refine ⟨f_star, ⟨hf_P, hae_nt, hae_rad, hnorm_eq, hess_eq, hrad_uniq, harc_zero⟩, ?_⟩
+  intro g ⟨hg_P, hg_nt, hg_rad, hg_norm, hg_ess, _, _⟩
+  exact huniq g ⟨hg_P, hg_nt, hg_rad, hg_norm, hg_ess⟩
+
+end Node11_32
+
+end RudinRCA.Chapter11
+
+end

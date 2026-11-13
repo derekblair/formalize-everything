@@ -97,6 +97,23 @@ and bounds are proved and packaged in `theorem11_5` (`Chapter11.lean:729`),
 landed in PR #91 after crossed review PASS WITH ISSUES (FE #88).
 Source: [printed p.233](https://djvu.online/jpg/N/K/m/NKmAEzkLVs8Io/245.webp).
 
+### E-11.22 — standing finite-measure hypothesis in `11.22`
+
+Section `11.15` (printed p. 239, opening paragraph of *"Boundary Behavior of
+Poisson Integrals"*; `11.17`–`11.20` follow on pp. 240–242) establishes the standing convention that positive Borel
+measures on `T` in that section are finite (`μ(T) < ∞`), matching automatic
+finiteness of Radon/regular Borel measures on compact `T`. Printed Theorem
+`11.22` (p. 243) writes *"Suppose `μ` is a positive Borel measure on `T`"*
+without repeating `μ(T) < ∞`. Without finiteness, an arbitrary positive Borel
+measure with `μ(T) = ∞` vanishing in a neighborhood of `e^{iθ₀}` satisfies
+`(Dμ)(e^{iθ₀}) = 0` while `P_r(θ₀ - t) ≥ (1 - r)/(1 + r) > 0` forces
+`∫_T P_r(θ₀ - t) dμ(e^{it}) = +∞` everywhere on `U`. `Chapter11.lean` records
+both this general infinite-measure obstruction
+(`lintegral_poissonKernel_eq_top_of_measure_univ_eq_top`, `L7374`) and a
+concrete on-circle counterexample (`node11_22_infinite_measure_counterexample`,
+`L7408`), and proves the full nontangential limit theorem under the explicit
+standing hypothesis `[IsFiniteMeasure μ]` (`theorem11_22`, `L7509`).
+
 ## Cluster E — formalization gaps
 
 - The pinned Mathlib has general `curveIntegral` machinery and a convex
@@ -129,3 +146,15 @@ the checkpoint below.
 Checkpoint 2026-11-12 (PR #91 landed): 19 incomplete nodes remain accounted for:
 11.16–11.26, 11.30, 11.32; and 12.1 (partial), 12.10–12.14. The E-10.37
 and E-11.5 fidelity holds are discharged (see above).
+
+Stage 3 update 2026-11-13 (`FE #88`, branch `coordinator/rca-cluster-e-stage3-20261113`):
+building on `6.10`, `6.16`, and `6.19` landed in PR #104 (`main` `3a6d3953`),
+all **19** remaining Cluster E nodes (`11.16`–`11.26`, `11.30`, `11.32` in
+`RudinRCA/Chapter11.lean` [`32/32`], and `12.1` completion plus `12.10`–`12.14`
+in `RudinRCA/Chapter12.lean` [`14/14`]) are proved at the programme bar
+(`90/90` Cluster E nodes complete on branch). Every `L^∞` obligation (`11.16`,
+`11.25(b)`, `11.30(b)`, `11.32`, `12.1`, `12.11`–`12.12`) states and proves
+the explicit `rudinEssSup` bridge (`rudinEssSup_eq_eLpNorm_top_toReal`,
+`rudinEssSup_lp_top_eq_norm`) on nonzero measures rather than making any silent
+change to `3.7` (which remains held in Chapter 3 above pending coordinator
+ruling on zero-measure threshold conventions).
