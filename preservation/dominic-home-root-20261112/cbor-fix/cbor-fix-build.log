@@ -1,0 +1,34 @@
+✔ [2/16] Built Cbor.Rfc8949.Lex (360ms)
+ℹ [3/16] Built Cbor.Rfc8949.Boundary.ArrayCountFragment (491ms)
+info: Cbor/Rfc8949/Boundary/ArrayCountFragment.lean:87:0: 'CborLengthCounterexample.beValue_lt' depends on axioms: [propext, Quot.sound]
+info: Cbor/Rfc8949/Boundary/ArrayCountFragment.lean:88:0: 'CborLengthCounterexample.definiteArrayHead_count_lt' depends on axioms: [propext, Quot.sound]
+info: Cbor/Rfc8949/Boundary/ArrayCountFragment.lean:89:0: 'CborLengthCounterexample.zeroSequence_replicate' does not depend on any axioms
+info: Cbor/Rfc8949/Boundary/ArrayCountFragment.lean:90:0: 'CborLengthCounterexample.counterexample_wellFormed' does not depend on any axioms
+info: Cbor/Rfc8949/Boundary/ArrayCountFragment.lean:91:0: 'CborLengthCounterexample.no_definite_head' depends on axioms: [propext, Quot.sound]
+info: Cbor/Rfc8949/Boundary/ArrayCountFragment.lean:92:0: 'CborLengthCounterexample.unrestricted_deflation_counterexample' depends on axioms: [propext, Quot.sound]
+ℹ [4/16] Built Cbor.Rfc8949.Boundary.ChunkCountFragment (530ms)
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:145:0: 'CborChunkCountCounterexample.beValue_lt' depends on axioms: [propext, Quot.sound]
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:146:0: 'CborChunkCountCounterexample.definiteByteStringHead_length_lt' depends on axioms: [propext, Quot.sound]
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:147:0: 'CborChunkCountCounterexample.definiteByteString_length_lt' depends on axioms: [propext, Quot.sound]
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:148:0: 'CborChunkCountCounterexample.chunkPayload_length' depends on axioms: [propext]
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:149:0: 'CborChunkCountCounterexample.chunkHead_encodes_length' does not depend on any axioms
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:150:0: 'CborChunkCountCounterexample.chunk_wellFormed' depends on axioms: [propext]
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:151:0: 'CborChunkCountCounterexample.two_chunks_wellFormed' depends on axioms: [propext]
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:152:0: 'CborChunkCountCounterexample.counterexample_wellFormed' depends on axioms: [propext]
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:153:0: 'CborChunkCountCounterexample.counterexample_satisfies_chunkCountBound' depends on axioms: [propext]
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:154:0: 'CborChunkCountCounterexample.joinedPayload_length' depends on axioms: [propext]
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:155:0: 'CborChunkCountCounterexample.no_definite_preserving_payload' depends on axioms: [propext, Quot.sound]
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:156:0: 'CborChunkCountCounterexample.chunk_count_bound_deflation_counterexample' depends on axioms: [propext, Quot.sound]
+info: Cbor/Rfc8949/Boundary/ChunkCountFragment.lean:157:0: 'CborChunkCountCounterexample.chunk_count_bound_insufficient' depends on axioms: [propext, Quot.sound]
+✔ [5/16] Built Cbor.Rfc8949.Head (893ms)
+✔ [6/16] Built Cbor.Rfc8949.Item (1.3s)
+✔ [7/16] Built Cbor.Rfc8949.Parse (306ms)
+✔ [8/16] Built Cbor.Rfc8949.Grammar (1.1s)
+✔ [9/16] Built Cbor.Rfc8949.Deterministic (514ms)
+✔ [10/16] Built Cbor.Rfc8949.Bignum (773ms)
+✔ [11/16] Built Cbor.Rfc8949.Equiv (479ms)
+✔ [12/16] Built Cbor.Rfc8949.Duplicates (518ms)
+✔ [13/16] Built Cbor.Rfc8949.Indefinite (908ms)
+✔ [14/16] Built Cbor.Rfc8949.Boundary (307ms)
+✔ [15/16] Built Cbor (312ms)
+Build completed successfully (16 jobs).

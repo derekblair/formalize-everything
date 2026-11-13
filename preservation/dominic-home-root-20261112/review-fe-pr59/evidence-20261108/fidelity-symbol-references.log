@@ -1,0 +1,14 @@
+$ rg -n "Chapter03|correctedEssentialSupremum|definition_3_7" RudinRCA RudinRCA.lean --glob "*.lean"
+EXIT 0
+RudinRCA.lean:3:import RudinRCA.Chapter03
+RudinRCA/Chapter03.lean:10:namespace RudinRCA.Chapter03
+RudinRCA/Chapter03.lean:18:theorem definition_3_7_zero_measure_counterexample :
+RudinRCA/Chapter03.lean:27:noncomputable def correctedEssentialSupremum {X : Type*} [MeasurableSpace X]
+RudinRCA/Chapter03.lean:31:theorem correctedEssentialSupremum_eq_sInf {X : Type*} [MeasurableSpace X]
+RudinRCA/Chapter03.lean:33:    correctedEssentialSupremum g μ = sInf {a : ℝ≥0∞ | μ {x | a < g x} = 0} :=
+RudinRCA/Chapter03.lean:37:theorem correctedEssentialSupremum_le_iff {X : Type*} [MeasurableSpace X]
+RudinRCA/Chapter03.lean:39:    correctedEssentialSupremum g μ ≤ a ↔ ∀ᵐ x ∂μ, g x ≤ a := by
+RudinRCA/Chapter03.lean:47:theorem correctedEssentialSupremum_zero_measure {X : Type*} [MeasurableSpace X]
+RudinRCA/Chapter03.lean:48:    (g : X → ℝ≥0∞) : correctedEssentialSupremum g (0 : Measure X) = 0 :=
+RudinRCA/Chapter03.lean:51:end RudinRCA.Chapter03
+RudinRCA/AuditA.lean:72:    #[`RudinRCA, `RudinRCA.Chapter01, `RudinRCA.Chapter02, `RudinRCA.Chapter03,

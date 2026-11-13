@@ -1,0 +1,2 @@
+$ git diff --check b7593a8..f3190878
+EXIT 0
