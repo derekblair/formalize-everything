@@ -147,9 +147,9 @@ see [QUEUE.md](QUEUE.md). No exercise is included.
 | Chapter | Inventoried | Formalized items | Remaining original items | Proved result groups / total |
 |---|---:|---:|---:|---:|
 | 1 | 41 | 41 | 0 | 25 / 25 |
-| 2 | 25 | 14 | 11 | 7 / 14 |
+| 2 | 25 | 24 | 1 | 14 / 14 |
 | 3 | 17 | 0 | 17 | 0 / 10 |
-| Total | 83 | 55 | 28 | 32 / 49 |
+| Total | 83 | 65 | 18 | 39 / 49 |
 
 Chapter 2 covers 2.1, 2.3–2.13, and 2.15–2.16, including definition
 assertions, notation 2.11, and attached corollaries. The consequences in
