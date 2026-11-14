@@ -15,13 +15,16 @@ import RudinRCA.Chapter14
 import RudinRCA.Chapter15
 import RudinRCA.Chapter16
 import RudinRCA.Chapter17
+import RudinRCA.Chapter18
+import RudinRCA.Chapter19
+import RudinRCA.Chapter20
 import RudinRCA.AuditE
 
 /-!
 Rudin, *Real and Complex Analysis* (3rd edition, McGraw-Hill, 1987).
 Chapter coverage and remaining numbered nodes are tracked in PROGRESS.md and SCOPING-D.md.
 
-This umbrella imports the current book development (Chapters 1–17, and `AuditE`).
+This umbrella imports the current book development (Chapters 1–20, and `AuditE`).
 Inventory, precise coverage and fidelity holds are recorded in PROGRESS.md,
 the chapter inventories, SCOPING-A.md and QUEUE.md.
 The independently built AuditA module audits this entire import graph.
