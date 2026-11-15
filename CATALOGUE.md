@@ -9,7 +9,7 @@ Every formalization target, its status, and where it lives. A target is **done**
 | Rudin, *Principles of Mathematical Analysis* (3rd ed.) | In progress — Chapters 1–7 complete and verified (252 nodes); Chapter 8 underway | [rudin-lean](https://github.com/derekblair/rudin-lean) |
 | Rudin, *Real and Complex Analysis* | Started 2026-10-27 — novelty gate PARTIAL (sole prior art: Hirata's AFP Riesz-representation fragment, Isabelle, 2024); book skeleton landed, chapter-cluster lanes running | here, [books/rudin-real-and-complex-analysis/](books/rudin-real-and-complex-analysis/) |
 | Rudin, *Functional Analysis* | Queued — follows RCA | here (planned) |
-| Garling, *A Course in Galois Theory* | In progress — milestone 2: Ch. 2 formalized (1/1 numbered main-text theorem + 0/1 unnumbered Zorn block [1 hold]; 3/4 exercises + 1 hold in QUEUE.md; 4/5 strictly numbered / 4/6 headed literal); Ch. 1 22/25 literal + 3 holds | here (planned) |
+| Garling, *A Course in Galois Theory* | In progress — milestone 2: Ch. 3 formalized (21/21 main-text theorems/corollaries + 25/27 exercises literal + 2 holds in QUEUE.md; 46/48 total); Ch. 2 4/5 strictly numbered / 4/6 headed literal + 2 holds; Ch. 1 22/25 literal + 3 holds | here (planned) |
 
 ## Software
 
