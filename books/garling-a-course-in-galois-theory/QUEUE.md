@@ -134,3 +134,118 @@ All **10 / 10** main-text theorem/corollary items in Chapter 4 (**8** numbered t
   - `Garling.Chapter04.exercise_4_5_coeffs_in_base_iff`: proves for any tower `K → L → M` and algebraic `α ∈ M` over `K` that `(∀ i, (minpoly L α).coeff i ∈ Set.range (algebraMap K L)) ↔ minpoly L α = (minpoly K α).map (algebraMap K L) ↔ extDegree L L(α) = extDegree K K(α)`.
   - `Garling.Chapter04.exercise_4_5` / `Garling.Chapter04.exercise_4_5_garling_relPrime`: prove that whenever `extDegree K K(α) = m` and `extDegree K L = n` are finite and relatively prime (`Nat.Coprime m n` / `IsGarlingRelativelyPrime ({(m : ℤ), (n : ℤ)} : Set ℤ)`), `α` is algebraic over both `K` and `L`, `extDegree L L(α) = m`, `minpoly L α = (minpoly K α).map (algebraMap K L)`, and every coefficient of `minpoly L α` lies in `Set.range (algebraMap K L)`.
 - **Status:** Held pending coordinator ruling on the printed `[L(α):L]` vs. `[K(α):K]` textbook error in Exercise 4.5.
+
+
+---
+
+# Chapter 5 — Fidelity Holds (Printed pp. 49–53 / PDF pp. 57–61)
+
+Chapter 5 contains **3** main-text theorems (`Theorem 5.1`, `Theorem 5.2 (Eisenstein's criterion)`, `Theorem 5.3 (Localization principle)`; `0` corollaries, `0` numbered definitions, `0` unnumbered headed blocks) and **12** numbered exercises (`5.1`–`5.12`), for **15** scope-of-record items total. Among these **15** items, **7 / 15** — `Theorem 5.3` and `Exercises 5.5, 5.8, 5.9, 5.10, 5.11, 5.12` — are proved literally as printed, while **8 / 15** (`Theorem 5.1`, `Theorem 5.2`, and `Exercises 5.1, 5.2, 5.3, 5.4, 5.6, 5.7`) are held below as source-fidelity holds because the literal printed statement either omits a non-zero / non-unit / positive-degree guard (`Theorem 5.1`, `Exercise 5.3`, `Exercise 5.4`, `Theorem 5.2`, `Exercise 5.6`, `Exercise 5.7`) or uses an informal / open-ended algorithmic prompt without a printed machine or cost model (`Theorem 5.1`, `Exercise 5.1`, `Exercise 5.2`, `Exercise 5.3`). For every held item, `Garling/Chapter05.lean` kernel-proves concrete counterexamples (where degenerate cases fail), exact `iff` characterizations, total computable algorithms / explicit upper bounds, and the repaired theorem(s); none is silently weakened or counted as literally closed prior to coordinator ruling.
+
+---
+
+## Ch. 5, Theorem 5.1 (§5.1, printed p. 49; proof p. 50) — printed *"any element"* includes `0` and `±1`, plus informal *"algorithm"* phrasing (fidelity hold)
+
+- **Printed statement (p. 49):** *"There is an algorithm to express any element of $\mathbb{Z}[x]$ as a product of irreducible factors."*
+- **Exact blockers:**
+  1. **Zero and unit counterexamples (`0` and `±1` in $\mathbb{Z}[x]$):** Unlike §3.4 Theorem 3.4 and the UFD definition (printed pp. 25–26: *"every non-zero element of $R$ which is not a unit"*), Theorem 5.1 literally quantifies over **any element** of $\mathbb{Z}[x]$. The zero polynomial $0 \in \mathbb{Z}[x]$ is never a product of irreducible factors; the unit $-1 \in \mathbb{Z}[x]$ is never a product (empty or non-empty) of irreducible factors; and $1 \in \mathbb{Z}[x]$ is not a non-empty product of irreducible factors (though `([] : List ℤ[X]).prod = 1`).
+  2. **Informal prose *"algorithm"*:** Immediately after Theorem 5.1 on p. 49, Garling explains *"An algorithm is a procedure which takes a finite number of steps; the number of steps depends upon the polynomial in question, but an upper bound can be given for it in each case"*, without fixing a formal model of computation.
+- **Kernel-proved declarations in `Garling/Chapter05.lean`:**
+  - `Garling.Chapter05.zero_not_prod_irreducibles` / `Garling.Chapter05.theorem_5_1_zero_counterexample` / `Garling.Chapter05.theorem_5_1_unit_counterexample`: prove that `0` and `-1` in `ℤ[X]` admit no `List ℤ[X]` of irreducibles multiplying to them, and `1` admits no non-empty list.
+  - `Garling.Chapter05.kroneckerFactorWithUnit` / `Garling.Chapter05.kroneckerFactorList`: total computable Kronecker factorization functions on `ℤ[X]` via divisor-tuple enumeration and exact Lagrange interpolation (`kroneckerInterpPoly_spec`).
+  - `Garling.Chapter05.theorem_5_1`: proves that for every `f : ℤ[X]` with `f ≠ 0` and `¬ IsUnit f`, `kroneckerFactorList f` is non-empty, every element satisfies `Irreducible` and `IsGarlingIrreducible`, and `(kroneckerFactorList f).prod = f`.
+  - `Garling.Chapter05.theorem_5_1_with_unit`: proves that for every `f ≠ 0` in `ℤ[X]`, `kroneckerFactorWithUnit f = (u, L)` satisfies `(u = 1 ∨ u = -1)`, every `p ∈ L` is irreducible, and `C u * L.prod = f`.
+  - `Garling.Chapter05.theorem_5_1_iff`: proves the exact characterization across all `f : ℤ[X]` (`(∃ L ≠ [], (∀ p ∈ L, Irreducible p) ∧ L.prod = f) ↔ f ≠ 0 ∧ ¬ IsUnit f`, and without `L ≠ []` iff `(f ≠ 0 ∧ ¬ IsUnit f) ∨ f = 1`).
+- **Status:** Held pending coordinator ruling on whether the `f ≠ 0 ∧ ¬ IsUnit f` guard + computable `kroneckerFactorList` + `theorem_5_1_iff` closes Theorem 5.1.
+
+---
+
+## Ch. 5, Exercise 5.1 (§5.1, printed p. 50) — non-propositional programme prompt + `0`/`±1` classification (fidelity hold)
+
+- **Printed statement (p. 50):** *"Write (an outline of) a computer programme to implement the algorithm of Theorem 5.1."*
+- **Exact blockers:**
+  1. **Non-propositional imperative prompt:** Asking to *"Write (an outline of) a computer programme..."* does not determine a unique formal type signature without choosing an explicit polynomial representation and output format.
+  2. **Inherits Theorem 5.1's `0` and `±1` boundary cases** when run on arbitrary inputs in `ℤ[X]`.
+- **Kernel-proved declarations in `Garling/Chapter05.lean`:**
+  - `Garling.Chapter05.kroneckerProgramme`: total computable Lean implementation `List ℤ → Option (ℤ × List (List ℤ))` (built from computable `coeffsTrim`, `coeffsNatGcd`, `natPrimeFactorList`, `intDivisorsList`, `cartesianTuples`, `lagrangeInterpCoeffs?`, `coeffsDivExact?`, `kroneckerFindProperFactor`, and `kroneckerFactorPrimAux`).
+  - `Garling.Chapter05.exercise_5_1`: proves total soundness and completeness of `kroneckerProgramme` on every `f : ℤ[X]` (`none` iff `f = 0`; `some (u, factors)` for `f ≠ 0` with `u ∈ {1, -1}`, every factor list decoding to an `Irreducible` and `IsGarlingIrreducible` polynomial in `ℤ[X]`, `C u * prod = f`, and `u = 1` with `factors ≠ []` whenever `¬ IsUnit f`).
+- **Status:** Held pending coordinator ruling on whether `kroneckerProgramme` + `exercise_5_1` closes Exercise 5.1.
+
+---
+
+## Ch. 5, Exercise 5.2 (§5.1, printed p. 50) — open-ended bound prompt with no printed calculation cost model (fidelity hold)
+
+- **Printed statement (p. 50):** *"Suppose that $f = a_0 + \dots + a_n x^n$ is a polynomial in $\mathbb{Z}[x]$ of degree $n$, and that $\max_i |a_i| = K$. Obtain an upper bound, in terms of $n$ and $K$, for the number of calculations required to determine whether or not $f$ is irreducible."*
+- **Exact blocker:** The printed text neither defines a formal machine/cost model for *"the number of calculations"* nor specifies a particular target formula in $n$ and $K$.
+- **Kernel-proved declarations in `Garling/Chapter05.lean`:**
+  - `Garling.Chapter05.kroneckerIsIrreducibleWithSteps`: total computable step-counting Kronecker irreducibility procedure `List ℤ → Bool × ℕ` counting content, point-evaluation, divisor, and Lagrange-interpolation candidate tests across all degrees `n ≥ 0` (including constant integer primality at `n = 0`, primitive linear polynomials at `n = 1`, and evaluations at `0, ..., ⌊n/2⌋` for `n ≥ 2`).
+  - `Garling.Chapter05.kroneckerCalcBound`: closed-form elementary bound `K + (n / 2 + 1) + 1 + (2 * K * (n + 1) ^ (n + 1)) ^ (n / 2 + 1)`.
+  - `Garling.Chapter05.exercise_5_2`: proves for **every** non-zero `f : ℤ[X]` of degree `garlingDegree f hf = n` and `max_{i ≤ n} |a_i| = K` that `kroneckerIsIrreducibleWithSteps (polyToCoeffs f)` both decides `Irreducible f` (`res.1 = true ↔ Irreducible f`) and satisfies `res.2 ≤ kroneckerCalcBound n K`.
+- **Status:** Held pending coordinator ruling on whether the explicit step-counting procedure + `kroneckerCalcBound` + `exercise_5_2` closes Exercise 5.2.
+
+---
+
+## Ch. 5, Exercise 5.3 (§5.1, printed p. 50) — printed *"any element"* includes `0` and units `Kˣ`, plus informal *"algorithm"* phrasing (fidelity hold)
+
+- **Printed statement (p. 50):** *"Suppose that $K$ is a field with finitely many elements. Show that there is an algorithm to express any element of $K[x]$ as a product of irreducible factors."*
+- **Exact blockers:**
+  1. **Zero and unit counterexamples (`0` and `Kˣ` in $K[x]$):** Over any field $K$, $0 \in K[x]$ is never a product of irreducible factors; no non-zero constant $c \in K^\times$ is a non-empty product of irreducibles; and for $|K| > 2$ (or $-1 \ne 1$), constants $c \in K \setminus \{0, 1\}$ are not even possibly-empty products of irreducibles.
+  2. **Informal prose *"algorithm"*:** Same informal algorithmic phrasing as Theorem 5.1.
+- **Kernel-proved declarations in `Garling/Chapter05.lean`:**
+  - `Garling.Chapter05.exercise_5_3_zero_counterexample` / `Garling.Chapter05.exercise_5_3_unit_counterexample`: prove the zero and non-zero constant unit counterexamples over any field `K` (and concrete `-1` / `ZMod 3` unit counterexamples for possibly-empty products).
+  - `Garling.Chapter05.finiteFieldFactorWithUnit` / `Garling.Chapter05.finiteFieldFactorList`: explicit finite-field factorization functions enumerating `polysBoundedDegree` over `[Field K] [Fintype K] [DecidableEq K]`.
+  - `Garling.Chapter05.exercise_5_3` / `Garling.Chapter05.exercise_5_3_finite` / `Garling.Chapter05.exercise_5_3_with_unit`: prove factorization into `Irreducible` / `IsGarlingIrreducible` factors for every `f : K[X]` with `f ≠ 0` and `¬ IsUnit f` (both under `[Fintype K]` and `[Finite K]`), plus unit-times-irreducibles factorization for every `f ≠ 0`.
+  - `Garling.Chapter05.exercise_5_3_iff`: proves the exact `iff` characterization across all `f : K[X]`.
+- **Status:** Held pending coordinator ruling on whether the `f ≠ 0 ∧ ¬ IsUnit f` guard + `finiteFieldFactorList` + `exercise_5_3_iff` closes Exercise 5.3.
+
+---
+
+## Ch. 5, Exercise 5.4 (§5.1, printed p. 50) — fails when both `f, g ∈ K[x]` are constant (fidelity hold)
+
+- **Printed statement (p. 50):** *"Suppose that $K$ is a field and that $f$ and $g$ are relatively prime in $K[x]$. Show that $f - yg$ is irreducible in $K(y)[x]$."*
+- **Exact blockers:**
+  1. **Constant-pair counterexamples ($\max(\deg f, \deg g) = 0$):** Over every field $K$, each of the constant pairs $(f, g) = (1, 1)$, $(1, 0)$, and $(0, 1)$ in $K[x]$ is relatively prime (both under §3.6 `IsGarlingRelativelyPrime` and Mathlib's `IsRelPrime`), yet $f - yg$ equals $1 - y$, $1$, and $-y$, each of which has $x$-degree $0$ with non-zero coefficient in the field $K(y)$ and is therefore a **unit** in $K(y)[x]$, not irreducible.
+  2. **Implicit second indeterminate $y$:** $y$ is not bound in the printed hypothesis and represents a transcendental indeterminate over $K$ with $K(y) = \operatorname{Frac}(K[y])$.
+- **Kernel-proved declarations in `Garling/Chapter05.lean`:**
+  - `Garling.Chapter05.ratFuncVar` / `Garling.Chapter05.linearPencilRatFunc`: define `y ∈ FractionRing K[X]` and `f(x) - y g(x) ∈ (FractionRing K[X])[X]`.
+  - `Garling.Chapter05.exercise_5_4_constant_counterexample`: proves on every field `K` that `(1, 1)`, `(1, 0)`, and `(0, 1)` satisfy `IsGarlingRelativelyPrime` and `IsRelPrime` while `linearPencilRatFunc f g` is a unit and `¬ Irreducible`.
+  - `Garling.Chapter05.isGarlingRelativelyPrime_pair_iff`: proves `IsGarlingRelativelyPrime ({f, g} : Set R) ↔ IsRelPrime f g`.
+  - `Garling.Chapter05.exercise_5_4` / `Garling.Chapter05.exercise_5_4_relPrime`: prove `Irreducible (linearPencilRatFunc f g)` and `IsGarlingIrreducible (linearPencilRatFunc f g)` whenever `0 < f.natDegree ∨ 0 < g.natDegree`.
+  - `Garling.Chapter05.exercise_5_4_iff`: proves that for relatively prime `f, g ∈ K[X]`, `Irreducible (linearPencilRatFunc f g) ↔ (0 < f.natDegree ∨ 0 < g.natDegree)`.
+- **Status:** Held pending coordinator ruling on whether the `0 < f.natDegree ∨ 0 < g.natDegree` guard (+ `exercise_5_4_iff`) closes Exercise 5.4.
+
+---
+
+## Ch. 5, Theorem 5.2 (Eisenstein's criterion) (§5.2, printed p. 51) — omitted `n ≥ 1` hypothesis at `n = 0` (fidelity hold)
+
+- **Printed statement (p. 51):** *"Suppose that $R$ is an integral domain, and that $f = f_0 + f_1 x + \dots + f_n x^n \in R[x]$ has the property that $f_0, \dots, f_n$ are relatively prime. Suppose that $p$ is a prime in $R$, and that $p \mid f_i$ for $0 \leqslant i < n$, while $p$ does not divide $f_n$ and $p^2$ does not divide $f_0$. Then $f$ is irreducible in $R[x]$."*
+- **Exact blocker:** The printed statement omits $n \ge 1$ ($\operatorname{degree} f \ge 1$). At $n = 0$ with $R = \mathbb{Z}$, $f = f_0 = 1 \in \mathbb{Z}[x]$, and $p = 2$: $\{f_0\} = \{1\}$ is relatively prime in $\mathbb{Z}$, the condition $p \mid f_i$ for $0 \leqslant i < 0$ holds vacuously, $2 \nmid 1$, and $2^2 \nmid 1$ — yet $f = 1$ is a **unit** in $\mathbb{Z}[x]$ and hence not irreducible (§3.4, p. 24).
+- **Kernel-proved declarations in `Garling/Chapter05.lean`:**
+  - `Garling.Chapter05.theorem_5_2_zero_counterexample`: proves on `R = ℤ`, `f = 1`, `p = 2`, `n = 0` that every printed hypothesis holds while `IsUnit f`, `¬ Irreducible f`, and `¬ IsGarlingIrreducible f`.
+  - `Garling.Chapter05.theorem_5_2` / `Garling.Chapter05.theorem_5_2_garling`: prove Eisenstein's criterion in full generality for any integral domain `[CommRing R] [IsDomain R]` (not restricted to UFDs), `1 ≤ n`, `IsGarlingRelativelyPrime` coefficients, and `Prime p` / `IsGarlingPrime p`.
+  - `Garling.Chapter05.theorem_5_2_iff_pos`: proves across all `n : ℕ` that under the printed hypotheses, `Irreducible f ↔ 1 ≤ n`.
+- **Status:** Held pending coordinator ruling on whether the explicit `1 ≤ n` guard (+ `theorem_5_2_iff_pos`) closes Theorem 5.2.
+
+---
+
+## Ch. 5, Exercise 5.6 (§5.2, printed pp. 51–52) — omitted `n ≥ 1` hypothesis at `n = 0` (fidelity hold)
+
+- **Printed statement (pp. 51–52):** *"Suppose that $R$ is an integral domain and that $f = f_0 + f_1 x + \dots + f_n x^n \in R[x]$ has the property that $f_0, \dots, f_n$ are relatively prime. Suppose that $p$ is a prime in $R$, and that $p \mid f_i$ for $1 \leqslant i \leqslant n$, while $p$ does not divide $f_0$ and $p^2$ does not divide $f_n$. Show that $f$ is irreducible in $R[x]$."*
+- **Exact blocker:** Same omitted $n \ge 1$ defect as Theorem 5.2: at $n = 0$ with $R = \mathbb{Z}$, $f = f_0 = 1 \in \mathbb{Z}[x]$, and $p = 2$, $\{1\}$ is relatively prime, $1 \leqslant i \leqslant 0$ is vacuous, $2 \nmid 1$, and $2^2 \nmid 1$, while $f = 1$ is a unit in $\mathbb{Z}[x]$ and not irreducible.
+- **Kernel-proved declarations in `Garling/Chapter05.lean`:**
+  - `Garling.Chapter05.exercise_5_6_zero_counterexample`: proves the `n = 0`, `R = ℤ`, `f = 1`, `p = 2` counterexample.
+  - `Garling.Chapter05.exercise_5_6` / `Garling.Chapter05.exercise_5_6_garling`: prove the reverse Eisenstein criterion over any integral domain `[CommRing R] [IsDomain R]` for `1 ≤ n` (`f.natDegree = n` follows automatically from `¬ (p ^ 2 ∣ f_n)`).
+  - `Garling.Chapter05.exercise_5_6_iff_pos`: proves across all `n : ℕ` that under the printed hypotheses (with `f.natDegree = n`), `Irreducible f ↔ 1 ≤ n`.
+- **Status:** Held pending coordinator ruling on whether the explicit `1 ≤ n` guard (+ `exercise_5_6_iff_pos`) closes Exercise 5.6.
+
+---
+
+## Ch. 5, Exercise 5.7 (§5.2, printed p. 52) — omitted `n ≥ 1` hypothesis at `n = 0` (fidelity hold)
+
+- **Printed statement (p. 52):** *"Show that if $p$ is a prime number then $x^n - p$ is irreducible in $\mathbb{Q}[x]$."*
+- **Exact blocker:** No hypothesis $n \ge 1$ is printed. When $n = 0$, $x^0 - p = 1 - p \in \mathbb{Q}^\times$ (since $p \ge 2 \implies 1 - p \ne 0$) is a unit in $\mathbb{Q}[x]$ and hence not irreducible.
+- **Kernel-proved declarations in `Garling/Chapter05.lean`:**
+  - `Garling.Chapter05.exercise_5_7_zero_counterexample`: proves for every prime `p : ℕ` that `(X ^ 0 - C (p : ℚ) : ℚ[X])` satisfies `IsUnit`, `¬ Irreducible`, and `¬ IsGarlingIrreducible`.
+  - `Garling.Chapter05.exercise_5_7_int` / `Garling.Chapter05.exercise_5_7`: prove for every prime `p : ℕ` and every `n ≥ 1` that `X ^ n - C p` is `Irreducible` and `IsGarlingIrreducible` in both `ℤ[X]` and `ℚ[X]`.
+  - `Garling.Chapter05.exercise_5_7_iff`: proves for every prime `p : ℕ` and every `n : ℕ` that `Irreducible (X ^ n - C (p : ℚ) : ℚ[X]) ↔ 1 ≤ n`.
+- **Status:** Held pending coordinator ruling on whether the explicit `1 ≤ n` guard (+ `exercise_5_7_iff`) closes Exercise 5.7.
