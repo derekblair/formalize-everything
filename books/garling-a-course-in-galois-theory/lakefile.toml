@@ -1,0 +1,13 @@
+name = "garling"
+version = "0.1.0"
+defaultTargets = ["Garling"]
+# Keep chapter elaboration serialized on shared build machines.
+weakLeanArgs = ["-j1"]
+
+[[lean_lib]]
+name = "Garling"
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "d13f23b723b8a846827a245b89c10fc7d3f11612"
