@@ -11,3 +11,6 @@ import Cbor.Rfc8949.Indefinite
 import Cbor.Rfc8949.Boundary
 import Cbor.Rfc8949.Boundary.ArrayCountFragment
 import Cbor.Rfc8949.Boundary.ChunkCountFragment
+import Cbor.Rfc8949.Ordering
+import Cbor.Rfc8949.Vectors
+import Cbor.Rfc8949.Audit
