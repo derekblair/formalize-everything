@@ -421,4 +421,90 @@ theorem decodeFirstWins_ne_of_dup {dm : DataModel} {bs : List UInt8} {x : Item}
   rw [hdup] at this
   exact Bool.false_ne_true this
 
+/-! ## Strict deterministic key order excludes §5.6.1 duplicates -/
+
+theorem Item.nodup_canon_of_keysStrict :
+    ∀ {kvs : List (Item × Item)}, Item.keysStrict kvs = true →
+      Item.isDeterministicPairs kvs = true → (kvs.map fun kv => kv.1.canon).Nodup
+  | [], _, _ => by simp
+  | p :: rest, hs, hd => by
+    rw [Item.isDeterministicPairs_iff] at hd
+    simp only [List.map_cons, List.nodup_cons, List.mem_map, not_exists, not_and]
+    refine ⟨fun kv hkv heq => ?_,
+      Item.nodup_canon_of_keysStrict (Item.keysStrict_tail p rest hs)
+        ((Item.isDeterministicPairs_iff rest).2 fun q hq => hd q (by simp [hq]))⟩
+    have hp : p.1.canon = p.1 := Item.canon_of_isDeterministic (hd p (by simp)).1
+    have hq : kv.1.canon = kv.1 := Item.canon_of_isDeterministic (hd kv (by simp [hkv])).1
+    rw [hp, hq] at heq
+    have hlt := Item.keysStrict_head_lt p rest hs kv hkv
+    unfold keyLt at hlt
+    rw [heq, lexLt_irrefl] at hlt
+    exact Bool.noConfusion hlt
+
+/-- Every item in core deterministic shape is duplicate-free under §5.6.1 basic
+equivalence (`DataModel.basic`). -/
+theorem Item.noDupKeys_of_isDeterministic {x : Item} (hx : x.isDeterministic = true) :
+    x.noDupKeys DataModel.basic.key = true := by
+  induction x using Item.rec' with
+  | uint _ | nint _ | bytes _ | text _ | simple _ => rfl
+  | bytesIndef _ | textIndef _ | arrayIndef _ | mapIndef _ => simp [Item.isDeterministic] at hx
+  | array xs ih =>
+    simp only [Item.isDeterministic, Item.isDeterministicList_iff] at hx
+    simp only [Item.noDupKeys, Item.noDupKeysList_iff]
+    exact fun x hx' => ih x hx' (hx x hx')
+  | map kvs ih =>
+    simp only [Item.isDeterministic, Bool.and_eq_true] at hx
+    obtain ⟨hs, hd⟩ := hx
+    have hnd := Item.nodup_canon_of_keysStrict hs hd
+    rw [Item.isDeterministicPairs_iff] at hd
+    simp only [Item.noDupKeys, DataModel.key, keysNodup, Bool.and_eq_true,
+      Item.noDupKeysPairs_iff]
+    exact ⟨decide_eq_true hnd,
+      fun kv hkv => ⟨(ih kv hkv).1 (hd kv hkv).1, (ih kv hkv).2 (hd kv hkv).2⟩⟩
+  | tag _ _ ih => exact ih hx
+
+/-- Whatever `decodeDeterministic` accepts is also accepted by `decodeStrict .basic`. -/
+theorem decodeStrict_of_decodeDeterministic {bs : List UInt8} {x : Item}
+    (h : decodeDeterministic bs = some x) : decodeStrict .basic bs = some x := by
+  obtain ⟨_, hdet, _, _⟩ := encodeDeterministic_of_decodeDeterministic h
+  exact decodeStrict_eq_some_iff.2
+    ⟨parseWellFormed_of_decodeDeterministic h, Item.noDupKeys_of_isDeterministic hdet⟩
+
+/-! ## Extended duplicate-key cases across chunking and tag-2/3 bignums -/
+
+/-- Indefinite-length chunked keys and definite byte-string keys with the same
+concatenated bytes collide under first-wins in both data models. -/
+theorem firstWins_indef_bytes_dup (dm : DataModel) (cs : List (List UInt8)) (v₁ v₂ : Item) :
+    firstWins dm.key [(.bytesIndef cs, v₁), (.bytes cs.flatten, v₂)] = [(.bytesIndef cs, v₁)] := by
+  cases dm <;>
+    simp [firstWins, firstWinsAux, DataModel.key, Item.canon, Item.canonExt, Item.canonWith]
+
+/-- Indefinite-length and definite-length array keys with the same elements
+collide under first-wins in both data models. -/
+theorem firstWins_indef_array_dup (dm : DataModel) (xs : List Item) (v₁ v₂ : Item) :
+    firstWins dm.key [(.arrayIndef xs, v₁), (.array xs, v₂)] = [(.arrayIndef xs, v₁)] := by
+  cases dm <;>
+    simp [firstWins, firstWinsAux, DataModel.key, Item.canon, Item.canonExt, Item.canonWith]
+
+/-- In the extended generic data model (`DataModel.extended`), any two
+well-formed integer/bignum keys denoting the same `z : Int` (major 0/1 or
+definite/chunked/leading-zero tag 2/3) collide, and `firstWins` keeps the first. -/
+theorem firstWins_extended_int_dup {k₁ k₂ : Item} {z : Int} (hk₁ : k₁.WF) (hk₂ : k₂.WF)
+    (hv₁ : k₁.intValue? = some z) (hv₂ : k₂.intValue? = some z) (v₁ v₂ : Item) :
+    firstWins DataModel.extended.key [(k₁, v₁), (k₂, v₂)] = [(k₁, v₁)] := by
+  have heq : DataModel.extended.key k₂ = DataModel.extended.key k₁ :=
+    (Item.equivExt_of_intValue? hk₂ hk₁ hv₂ hv₁).2 rfl
+  simp [firstWins, firstWinsAux, heq]
+
+/-- Concrete basic-vs-extended split on `{0: 1, 2(h''): 2}` (`a2 00 01 c2 40 02`):
+accepted by `decodeStrict .basic`, rejected by `decodeStrict .extended`, and
+collapsed to `{0: 1}` by `decodeFirstWins .extended`. -/
+theorem zero_vs_tag2_empty_map_split :
+    let wire : List UInt8 := [0xa2, 0x00, 0x01, 0xc2, 0x40, 0x02]
+    decodeStrict .basic wire =
+      some (.map [(.uint 0, .uint 1), (.tag 2 (.bytes []), .uint 2)]) ∧
+    decodeStrict .extended wire = none ∧
+    decodeFirstWins .extended wire = some (.map [(.uint 0, .uint 1)]) := by
+  refine ⟨rfl, rfl, rfl⟩
+
 end Cbor.Rfc8949

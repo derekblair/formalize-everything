@@ -22,18 +22,23 @@ package's own parser and equivalence:
 
 Both wires violate `Item.IndefBounded`; both are left indefinite by
 `deflateIndefinite`. The lists are symbolic: nothing of length 2^63 or 2^64
-is ever evaluated. Concretely, no proof in this file may use `decide`,
-`native_decide`, a bare `rfl` (definitional equality), or `simp` with a
-definition argument on any goal mentioning `arrayWire`, `arrayItem`,
-`arrayRaw`, `stringWire`, `stringItem`, `stringRaw`, or `chunkPayload`:
-kernel evaluation and definitional unfolding traverse the 2^63/2^64-element
-lists element by element and exhaust memory (Nov 2026: three lanes
-OOM-killed, `lean` at ~53 GB anon RSS on a 61 GiB machine, before this
-file ever elaborated). Lengths are always computed symbolically via
-`List.length_replicate`, `List.length_flatten`, and `List.map_replicate`,
-and equalities between giant lists are proved by rewriting plus `congr`,
-never by `rfl`. The grammar-fragment proofs from those comments are kept
-verbatim (hash-checked) in `Cbor.Rfc8949.Boundary.ArrayCountFragment` and
+is ever evaluated, because kernel evaluation and definitional unfolding of a
+2^63/2^64-element `List.replicate` traverse it element by element and exhaust
+memory (Nov 2026: three lanes OOM-killed, `lean` at ~53 GB anon RSS on a
+61 GiB machine, before this file ever elaborated). Concretely, the true
+invariant maintained across this file is that `List.replicate` and
+`chunkPayload` must remain opaque to `decide`/`native_decide`/`rfl`/`simp`,
+with `chunkPayload` unfolded only once in
+`rw [chunkPayload, List.length_replicate]`; outer wrapper definitions
+(`arrayWire`, `arrayItem`, `arrayRaw`, `stringWire`, `stringItem`,
+`stringRaw`) may only be unfolded via `simp only` or outer-shell `rfl` while
+keeping `chunkPayload` and `List.replicate` un-unfolded; `decide` may run only
+on closed scalar/head goals or fixed-length outer spines; giant lengths are
+computed symbolically (`List.length_replicate`, `List.length_flatten`,
+`List.map_replicate`); and equalities whose sides differ inside
+`List.replicate` are proved by symbolic rewriting plus `congr`, never `rfl`.
+The grammar-fragment proofs from those comments are kept verbatim
+(hash-checked) in `Cbor.Rfc8949.Boundary.ArrayCountFragment` and
 `Cbor.Rfc8949.Boundary.ChunkCountFragment`.
 -/
 

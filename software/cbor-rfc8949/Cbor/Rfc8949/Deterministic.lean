@@ -288,10 +288,67 @@ theorem parseWellFormed_of_decodeDeterministic {bs : List UInt8} {x : Item}
     · simp only [Option.some.injEq] at h; subst h; exact hy
     · simp at h
 
-/-- `encodeDeterministic` factors through `normalise`, which is idempotent on
-the encoding: `encodeDeterministic ∘ normalise = encodeDeterministic` holds
-whenever deterministic shape is reached (see `Item.normalise_normalise`). -/
+/-- `encodeDeterministic` factors through `normalise`, which is idempotent
+(`Item.normalise_normalise`). -/
 theorem encodeDeterministic_eq (x : Item) :
     encodeDeterministic x = encodePreferred x.normalise := rfl
+
+theorem keyLt_asymm {p q : Item × Item} (h : keyLt p q = true) : keyLt q p = false :=
+  lexLt_asymm h
+
+theorem keyLt_neg_trans {p q r : Item × Item} (h1 : keyLt p q = false) (h2 : keyLt q r = false) :
+    keyLt p r = false :=
+  lexLt_neg_trans h1 h2
+
+/-- `normalise` is idempotent on every item. -/
+theorem Item.normalise_normalise (x : Item) : x.normalise.normalise = x.normalise := by
+  induction x using Item.rec' with
+  | uint n => rfl
+  | nint n => rfl
+  | bytes p => rfl
+  | text p => rfl
+  | bytesIndef cs => rfl
+  | textIndef cs => rfl
+  | array xs ih =>
+    simp only [Item.normalise, Item.normaliseList_eq, List.map_map]
+    congr 1
+    exact List.map_congr_left fun x hx => ih x hx
+  | arrayIndef xs ih =>
+    simp only [Item.normalise, Item.normaliseList_eq, List.map_map]
+    congr 1
+    exact List.map_congr_left fun x hx => ih x hx
+  | map kvs ih =>
+    simp only [Item.normalise]
+    congr 1
+    have hpairs : Item.normalisePairs (sortBy keyLt (Item.normalisePairs kvs)) =
+        sortBy keyLt (Item.normalisePairs kvs) := by
+      rw [Item.normalisePairs_eq]
+      refine (List.map_congr_left fun kv hkv => ?_).trans (List.map_id _)
+      have hmem := (sortBy_perm keyLt (Item.normalisePairs kvs)).mem_iff.1 hkv
+      rw [Item.normalisePairs_eq, List.mem_map] at hmem
+      obtain ⟨kv₀, hkv₀, rfl⟩ := hmem
+      simp [(ih kv₀ hkv₀).1, (ih kv₀ hkv₀).2]
+    rw [hpairs]
+    exact sortBy_idem keyLt keyLt_asymm keyLt_neg_trans _
+  | mapIndef kvs ih =>
+    simp only [Item.normalise]
+    congr 1
+    have hpairs : Item.normalisePairs (sortBy keyLt (Item.normalisePairs kvs)) =
+        sortBy keyLt (Item.normalisePairs kvs) := by
+      rw [Item.normalisePairs_eq]
+      refine (List.map_congr_left fun kv hkv => ?_).trans (List.map_id _)
+      have hmem := (sortBy_perm keyLt (Item.normalisePairs kvs)).mem_iff.1 hkv
+      rw [Item.normalisePairs_eq, List.mem_map] at hmem
+      obtain ⟨kv₀, hkv₀, rfl⟩ := hmem
+      simp [(ih kv₀ hkv₀).1, (ih kv₀ hkv₀).2]
+    rw [hpairs]
+    exact sortBy_idem keyLt keyLt_asymm keyLt_neg_trans _
+  | tag t x ih => simp [Item.normalise, ih]
+  | simple v => rfl
+
+/-- `encodeDeterministic ∘ normalise = encodeDeterministic`. -/
+theorem encodeDeterministic_normalise (x : Item) :
+    encodeDeterministic x.normalise = encodeDeterministic x := by
+  simp [encodeDeterministic, Item.normalise_normalise]
 
 end Cbor.Rfc8949
