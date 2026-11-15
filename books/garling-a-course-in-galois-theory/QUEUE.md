@@ -80,3 +80,34 @@ Chapter 2 contains **1** numbered main-text theorem (`Theorem 2.1`, proved liter
   - `Garling.Chapter02.exercise_2_3_uncountable_iff` / `Garling.Chapter02.exercise_2_3_uncountable_iff_raw` / `Garling.Chapter02.exercise_2_3_uncountable_dichotomy`: prove the exact characterization and dichotomy for uncountable well-ordered sets.
   - `Garling.Chapter02.exercise_2_3_uncountable_of_aleph1_lt`: proves Part 2 for every well-ordered set of cardinality strictly greater than $\aleph_1$.
 - **Status:** Held pending coordinator ruling on the printed textbook error in Exercise 2.3.
+
+---
+
+# Chapter 3 — Fidelity Holds (Printed pp. 18–36 / PDF pp. 26–44)
+
+All **21 / 21** main-text theorem/corollary items in Chapter 3 (**17** numbered theorems `Theorem 3.1`–`Theorem 3.17` + **4** corollaries: `Corollary (Gauss' lemma)` [to Theorem 3.12], `Corollary 1` [to Theorem 3.13], `Corollary 2` [to Theorem 3.13], and `Corollary` [to Theorem 3.16]) are proved literally as printed with zero holds. Among the **27** numbered Chapter 3 exercises (`3.1`–`3.27`), **25 / 27** are proved literally as printed and **2** (`Exercise 3.1`, `Exercise 3.11`) are held below as source-fidelity holds because the literal printed statement omits a degenerate-case hypothesis (`S ≠ ∅` and `a ≠ 0`, respectively) required by Garling's own definitions on pp. 18 and 26. For each held exercise, `Garling/Chapter03.lean` kernel-proves both the counterexample to the literal printed claim and the exact characterization / repaired theorem(s); neither exercise is silently weakened or counted as literally closed prior to coordinator ruling.
+
+---
+
+## Ch. 3, Exercise 3.1 (§3.1, printed p. 20) — omitted `S ≠ ∅` hypothesis under p. 18 `1 ≠ 0` ring axiom (fidelity hold)
+
+- **Printed statement (p. 20):** *"Suppose that $S$ is a set and $R$ is a ring. Let $R^S$ denote the set of all mappings from $S$ to $R$. Show that $R^S$ is a ring, under the operations defined by $(f + g)(s) = f(s) + g(s)$, $(fg)(s) = f(s)g(s)$. Show that if $S$ has more than one element then there exist non-zero elements $f$ and $g$ in $R^S$ for which $fg = 0$."*
+- **Exact blocker:** Section 3.1 (printed p. 18) explicitly defines a *ring* (abbreviating "commutative ring with a $1$") to satisfy condition (d): *"there exists an identity element $1$, different from $0$, such that $r \cdot 1 = r$"*. When $S = \emptyset$, the set $R^\emptyset$ of all mappings $\emptyset \to R$ has a single element (the empty mapping), so $1 = 0$ in $R^\emptyset$ even when $R = \mathbb{Z}$, violating condition (d). (Part 2 holds unconditionally as printed since $|S| > 1$ already implies $S \ne \emptyset$.)
+- **Kernel-proved declarations in `Garling/Chapter03.lean`:**
+  - `Garling.Chapter03.exercise_3_1_empty_counterexample`: proves `IsGarlingRing ℤ (· + ·) (· * ·) ∧ ¬ IsGarlingRing (Empty → ℤ) (· + ·) (· * ·)`.
+  - `Garling.Chapter03.exercise_3_1_isGarlingRing_iff`: proves that for any Garling ring `R` (`[CommRing R] [Nontrivial R]`), `IsGarlingRing (S → R) (· + ·) (· * ·) ↔ Nonempty S`.
+  - `Garling.Chapter03.exercise_3_1`: proves both Part 1 (`IsGarlingRing (S → R) (· + ·) (· * ·)`) and Part 2 (`(1 : ℕ∞) < setOrder S → ∃ f g : S → R, f ≠ 0 ∧ g ≠ 0 ∧ f * g = 0`) under `[Nonempty S]`.
+  - `Garling.Chapter03.exercise_3_1_zero_divisors`: proves Part 2 unconditionally for every set `S` with `(1 : ℕ∞) < setOrder S`.
+- **Status:** Held pending coordinator ruling on whether the explicit `[Nonempty S]` guard on Part 1 (+ `exercise_3_1_isGarlingRing_iff` + unconditional `exercise_3_1_zero_divisors`) closes Exercise 3.1.
+
+---
+
+## Ch. 3, Exercise 3.11 (§3.4, printed p. 27) — omitted `a ≠ 0` hypothesis under p. 26 non-zero prime definition (fidelity hold)
+
+- **Printed statement (p. 27):** *"Show that an element $a$ of an integral domain $R$ is prime if and only if $R/(a)$ is an integral domain."*
+- **Exact blocker:** Section 3.4 (printed p. 26) explicitly defines a *prime* element of an integral domain $R$ to be **non-zero**: *"A non-zero element $a$ of an integral domain is said to be a prime if $a$ is not a unit and whenever $a \mid bc$ then either $a \mid b$ or $a \mid c$"* (compare Exercise 3.14 three items later on p. 27, which explicitly states *"Show that a non-zero element $c$ of $R$ is prime if and only if $(c)$ is a prime ideal"*). When $a = 0$ in any integral domain $R$, $(0) = \{0\}$ and $R/(0) \cong R$ is an integral domain, whereas $0$ is excluded from prime elements by p. 26's non-zero requirement.
+- **Kernel-proved declarations in `Garling/Chapter03.lean`:**
+  - `Garling.Chapter03.exercise_3_11_zero_counterexample`: proves `IsDomain (ℤ ⧸ Ideal.span {(0 : ℤ)}) ∧ ¬ Prime (0 : ℤ) ∧ ¬ IsGarlingPrime (0 : ℤ)`.
+  - `Garling.Chapter03.exercise_3_11`: proves `Prime a ↔ IsDomain (R ⧸ Ideal.span {a})` (equivalently `IsGarlingPrime a ↔ IsDomain (R ⧸ Ideal.span {a})` via `isGarlingPrime_iff`) for every non-zero element `a ≠ 0` of an integral domain `R`.
+  - `Garling.Chapter03.exercise_3_11_iff_zero_or_prime`: proves the unconditional characterization `IsDomain (R ⧸ Ideal.span {a}) ↔ a = 0 ∨ Prime a` for every element `a` of an integral domain `R`.
+- **Status:** Held pending coordinator ruling on whether the explicit `a ≠ 0` guard (+ `exercise_3_11_iff_zero_or_prime`) closes Exercise 3.11.
