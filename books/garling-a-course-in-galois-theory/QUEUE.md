@@ -152,11 +152,11 @@ Chapter 5 contains **3** main-text theorems (`Theorem 5.1`, `Theorem 5.2 (Eisens
   2. **Informal prose *"algorithm"*:** Immediately after Theorem 5.1 on p. 49, Garling explains *"An algorithm is a procedure which takes a finite number of steps; the number of steps depends upon the polynomial in question, but an upper bound can be given for it in each case"*, without fixing a formal model of computation.
 - **Kernel-proved declarations in `Garling/Chapter05.lean`:**
   - `Garling.Chapter05.zero_not_prod_irreducibles` / `Garling.Chapter05.theorem_5_1_zero_counterexample` / `Garling.Chapter05.theorem_5_1_unit_counterexample`: prove that `0` and `-1` in `ℤ[X]` admit no `List ℤ[X]` of irreducibles multiplying to them, and `1` admits no non-empty list.
-  - `Garling.Chapter05.kroneckerFactorWithUnit` / `Garling.Chapter05.kroneckerFactorList`: total computable Kronecker factorization functions on `ℤ[X]` via divisor-tuple enumeration and exact Lagrange interpolation (`kroneckerInterpPoly_spec`).
+  - `Garling.Chapter05.kroneckerFactorWithUnit` / `Garling.Chapter05.kroneckerFactorList`: total `Polynomial`-typed (`noncomputable def`) Kronecker factorization functions on `ℤ[X]` wrapping the computable `List ℤ` divisor-tuple enumeration and exact Lagrange interpolation engine (`kroneckerProgramme`, `kroneckerInterpPoly_spec`).
   - `Garling.Chapter05.theorem_5_1`: proves that for every `f : ℤ[X]` with `f ≠ 0` and `¬ IsUnit f`, `kroneckerFactorList f` is non-empty, every element satisfies `Irreducible` and `IsGarlingIrreducible`, and `(kroneckerFactorList f).prod = f`.
   - `Garling.Chapter05.theorem_5_1_with_unit`: proves that for every `f ≠ 0` in `ℤ[X]`, `kroneckerFactorWithUnit f = (u, L)` satisfies `(u = 1 ∨ u = -1)`, every `p ∈ L` is irreducible, and `C u * L.prod = f`.
   - `Garling.Chapter05.theorem_5_1_iff`: proves the exact characterization across all `f : ℤ[X]` (`(∃ L ≠ [], (∀ p ∈ L, Irreducible p) ∧ L.prod = f) ↔ f ≠ 0 ∧ ¬ IsUnit f`, and without `L ≠ []` iff `(f ≠ 0 ∧ ¬ IsUnit f) ∨ f = 1`).
-- **Status:** Held pending coordinator ruling on whether the `f ≠ 0 ∧ ¬ IsUnit f` guard + computable `kroneckerFactorList` + `theorem_5_1_iff` closes Theorem 5.1.
+- **Status:** Held pending coordinator ruling on whether the `f ≠ 0 ∧ ¬ IsUnit f` guard + computable `kroneckerProgramme` / `Polynomial`-wrapper `kroneckerFactorList` + `theorem_5_1_iff` closes Theorem 5.1.
 
 ---
 
@@ -249,3 +249,27 @@ Chapter 5 contains **3** main-text theorems (`Theorem 5.1`, `Theorem 5.2 (Eisens
   - `Garling.Chapter05.exercise_5_7_int` / `Garling.Chapter05.exercise_5_7`: prove for every prime `p : ℕ` and every `n ≥ 1` that `X ^ n - C p` is `Irreducible` and `IsGarlingIrreducible` in both `ℤ[X]` and `ℚ[X]`.
   - `Garling.Chapter05.exercise_5_7_iff`: proves for every prime `p : ℕ` and every `n : ℕ` that `Irreducible (X ^ n - C (p : ℚ) : ℚ[X]) ↔ 1 ≤ n`.
 - **Status:** Held pending coordinator ruling on whether the explicit `1 ≤ n` guard (+ `exercise_5_7_iff`) closes Exercise 5.7.
+
+---
+
+# Chapter 6 — Fidelity Holds (Printed pp. 54–58 / PDF pp. 62–66)
+
+Chapter 6 contains **1** main-text theorem (`Theorem 6.1`, plus §6.2's unnumbered main-text prose proof that $\pi/3$ cannot be trisected; `0` corollaries, `0` numbered definitions, `0` unnumbered headed blocks) and **7** numbered exercises (`6.1`–`6.7`), for **8** numbered scope-of-record items total. Among these **8** items, **7 / 8** — `Theorem 6.1` and `Exercises 6.2, 6.3, 6.4, 6.5, 6.6, 6.7` (as well as §6.2's unnumbered prose trisection theorem) — are proved literally as printed, while **1 / 8** (`Exercise 6.1`) is held below as a source-fidelity hold because the printed text is a non-propositional expository prompt whose geometric line/ray closure formulations require explicit parameterizations and non-degeneracy guards.
+
+---
+
+## Ch. 6, Exercise 6.1 (§6.1, printed p. 57 / PDF p. 65; referencing p. 54) — non-propositional *"Describe how..."* prompt + line/ray non-degeneracy guards (fidelity hold)
+
+- **Printed statement (p. 57):** *"Describe how the constructions mentioned in the first paragraph of Section 6.1 are made."* (First paragraph of §6.1, printed p. 54: constructing an equilateral triangle, a square, or a regular hexagon; bisecting an angle; dropping a perpendicular from a point onto a line; constructing a line through a point parallel to a given line; and dividing a given interval in a rational ratio — together with the second paragraph's consequence that any point with rational coordinates is constructible.)
+- **Exact blockers:**
+  1. **Non-propositional expository prompt:** Asking to *"Describe how the constructions ... are made"* does not specify a single formal proposition without choosing concrete input/output signatures for each geometric construction.
+  2. **Unprinted non-degeneracy hypotheses for lines, rays, and ratios:** Representing a line by two constructible points $A, B$ or an angle at $O$ by two points $A, B$ requires $A \ne B$ (for lines; when $A = B$, Garling's line equation $(x - a_2)(b_1 - b_2) = (a_1 - a_2)(y - b_2)$ defines the entire plane $\mathbb{R}^2$, admitting neither a unique perpendicular foot nor a well-defined parallel direction), $A \ne O \land B \ne O$ (for angle rays), and $p + q \ne 0$ (when dividing $AB$ in rational ratio $p : q$).
+- **Kernel-proved declarations in `Garling/Chapter06.lean`:**
+  - `Garling.Chapter06.exercise_6_1_degenerate_line_counterexample`: proves `garlingLine A A = Set.univ` for every `A : PlanePoint`, witnessing why `A ≠ B` cannot be omitted when specifying a line via a pair of points.
+  - `Garling.Chapter06.exercise_6_1_polygons`: proves constructibility of an equilateral-triangle apex and square vertices on any constructible `A ≠ B`, and all `6` unit-circle regular-hexagon vertices `(cos(2πk/6), sin(2πk/6))`.
+  - `Garling.Chapter06.exercise_6_1_bisect_angle`: proves that for constructible `O, A, B` with `A ≠ O` and `B ≠ O`, there exists a constructible `C ≠ O` making equal non-negative normalized inner product with rays `OA` and `OB` (handling both generic angles and straight angles `π`).
+  - `Garling.Chapter06.exercise_6_1_drop_perpendicular`: proves constructibility of both the orthogonal foot `F ∈ garlingLine A B` and a distinct point `Q ≠ P` defining the perpendicular line `garlingLine P Q` through `P` and `F` for constructible `A ≠ B` and `P`.
+  - `Garling.Chapter06.exercise_6_1_parallel_line`: proves constructibility of `Q = P + (B - A) ≠ P` such that `garlingLine P Q` passes through `P`, shares direction `B - A`, is disjoint from `garlingLine A B` when `P ∉ garlingLine A B`, and equals `garlingLine A B` when `P ∈ garlingLine A B`.
+  - `Garling.Chapter06.exercise_6_1_divide_interval_rat` and `Garling.Chapter06.exercise_6_1_rational_point`: prove constructibility of rational-ratio division points on `garlingLine A B` (`p + q ≠ 0`, plus affine parameter `r : ℚ`) and of every rational point `(q₁, q₂) ∈ ℚ × ℚ`.
+  - `Garling.Chapter06.exercise_6_1`: bundles all six §6.1 construction families into a single theorem.
+- **Status:** Held pending coordinator ruling on whether the explicit non-degeneracy guards (`A ≠ B`, `A ≠ O ∧ B ≠ O`, `p + q ≠ 0`) + `exercise_6_1` close Exercise 6.1.
