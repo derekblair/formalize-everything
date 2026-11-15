@@ -4,6 +4,7 @@ import Garling.Chapter03
 import Garling.Chapter04
 import Garling.Chapter05
 import Garling.Chapter06
+import Garling.Chapter13
 
 /-!
 # D. J. H. Garling, *A Course in Galois Theory* (Cambridge University Press, 1986)
