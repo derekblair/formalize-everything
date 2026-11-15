@@ -1,0 +1,18 @@
+name = "humphreys"
+version = "0.1.0"
+defaultTargets = ["Humphreys"]
+# Keep chapter elaboration serialized on shared build machines.
+weakLeanArgs = ["-j1"]
+
+[[lean_lib]]
+name = "Humphreys"
+
+[[require]]
+name = "TauCeti"
+git = "https://github.com/TauCetiProject/TauCeti"
+rev = "83769e442d55cda9d85b3927a93b286831c595ff"
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "1b1ccf4b088b32fa3f23f2de1127433254a81e1e"
