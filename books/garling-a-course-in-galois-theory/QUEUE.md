@@ -43,3 +43,40 @@ All **7 / 7** main-text theorem/corollary items in Chapter 1 (§1.3: Theorems 1.
   - `Garling.Chapter01.exercise_1_18_one_dim_lower_bound`: proves the printed bound `(k^r - 1) / (k - 1) ≤ n` under the hypothesis `∀ i, dim U_i ≤ 1` (which includes all proper subspaces when `r = 2`).
   - `Garling.Chapter01.exercise_1_18_exists_proper_subspaces_union`: proves that for `2 ≤ r`, there exist `(k^r - 1) / (k - 1)` pairwise distinct proper subspaces of `V` whose union is `V`.
 - **Status:** Held pending coordinator ruling on the printed textbook error in Exercise 1.18.
+
+
+---
+
+# Chapter 2 — Fidelity Holds (Printed pp. 14–17 / PDF pp. 22–25)
+
+Chapter 2 contains **1** numbered main-text theorem (`Theorem 2.1`, proved literally as printed), **1** unnumbered bold-headed main-text lemma block (`Zorn's lemma` on p. 15, stated without proof in the book), and **4** numbered exercises (`2.1`–`2.4`, of which `2.1`, `2.2`, and `2.4` are proved literally as printed). Two items — the unnumbered `Zorn's lemma` block (§2.2, p. 15) and `Exercise 2.3` (§2.3, p. 17) — are held below as source-fidelity holds because the literal printed statements fail on $S = \emptyset$ and on $(\mathbb{N}, \leqslant)$ / $\omega_1$, respectively. For each held item, `Garling/Chapter02.lean` kernel-proves both the counterexample(s) to the literal printed claim and the repaired/characterization theorem(s); neither item is silently weakened or counted as literally closed prior to coordinator ruling.
+
+---
+
+## Ch. 2, Zorn's lemma (§2.2, printed p. 15) — omitted `S ≠ ∅` hypothesis under explicit non-empty chain definition (fidelity hold)
+
+- **Printed statement (p. 15):** *"A relation $\leqslant$ on a set $S$ is said to be a partial order if (a) $x \leqslant x$ for all $x$ in $S$, (b) if $x \leqslant y$ and $y \leqslant z$ then $x \leqslant z$, and (c) if $x \leqslant y$ and $y \leqslant x$ then $x = y$. ... A non-empty subset $C$ of a partially ordered set $S$ is a chain if it is totally ordered in the ordering inherited from $S$. ... **Zorn's lemma** Suppose that $S$ is a partially ordered set with the property that every chain in $S$ has an upper bound. Then $S$ has at least one maximal element."*
+- **Exact blocker:** Unlike §1.1 (p. 3, *"A group $G$ is a non-empty set..."*), Exercise 2.2 (p. 17, *"every non-empty set"*), and §3.1 (p. 18, *"A commutative ring with a 1 is a non-empty set $R$..."*), p. 15 does not require a partially ordered set $S$ to be non-empty, yet explicitly defines a chain to be a **non-empty** totally ordered subset $C \subseteq S$. When $S = \emptyset$, there are no non-empty subsets $C \subseteq \emptyset$, so *"every chain in $S$ has an upper bound"* holds vacuously, whereas $S = \emptyset$ has no maximal element. (Halmos, *Naive Set Theory*, 1974 — cited in footnote 1 on p. 15 — avoids this by allowing the empty chain $C = \emptyset$, whose upper bound in $S$ forces $S \ne \emptyset$.)
+- **Kernel-proved declarations in `Garling/Chapter02.lean`:**
+  - `Garling.Chapter02.zorn_lemma_empty_counterexample`: proves that `(∅ : Set X)` satisfies `IsGarlingPartialOrder`, vacuously satisfies `∀ C, IsGarlingChain ∅ le C → ∃ x, IsGarlingUpperBound ∅ le C x`, and has `¬ ∃ m, IsGarlingMaximal ∅ le m`.
+  - `Garling.Chapter02.zorn_lemma_set` / `Garling.Chapter02.zorn_lemma` / `Garling.Chapter02.garlingZornLemma_holds` / `Garling.Chapter02.garlingZornLemma_iff_set`: prove Zorn's lemma for Garling's literal non-empty chains (`IsGarlingChain` / `IsGarlingChainType`) under the explicit `S.Nonempty` / `[Nonempty S]` guard, together with equivalence between the subset and type formulations.
+  - `Garling.Chapter02.zorn_lemma_possibly_empty_chains`: proves Zorn's lemma with no separate `S.Nonempty` hypothesis when all totally ordered subsets $C \subseteq S$ (including $C = \emptyset$, per Halmos 1974) have an upper bound in $S$.
+- **Status:** Held pending coordinator ruling on whether the explicit `S.Nonempty` / `[Nonempty S]` guard (plus Halmos's possibly-empty-chains version) closes the unnumbered §2.2 Zorn's lemma block.
+
+---
+
+## Ch. 2, Exercise 2.3 (§2.3, printed p. 17) — printed statement false on `(ℕ, ≤)` and `ω₁` (fidelity hold)
+
+- **Printed statement (p. 17):** *"Suppose that $(A, \leqslant)$ is an infinite well-ordered set. Show that there is a unique element $a$ such that $\{x : x < a\}$ is infinite, while $\{x : x < b\}$ is finite for each $b < a$. Suppose that $A$ is uncountable. Show that there is a unique element $c$ such that $\{x : x < c\}$ is uncountable, while $\{x : x < d\}$ is countable for each $d < c$."*
+- **Exact blockers:**
+  1. **Part 1 is mathematically false as printed for $(A, \leqslant) = (\mathbb{N}, \leqslant)$ (order type $\omega$):** $(\mathbb{N}, \leqslant)$ is an infinite well-ordered set, yet for every $a \in \mathbb{N}$, $\{x \in \mathbb{N} : x < a\} = \{0, 1, \dots, a - 1\}$ has finite size $a$. Up to unique order isomorphism, $(\mathbb{N}, \leqslant)$ is the *only* infinite well-ordered counterexample: the element $a$ exists (and is unique, of order type $\omega$) if and only if $(A, \leqslant)$ has order type strictly greater than $\omega$ (equivalently, $\exists a \in A$ with $\{x < a\}$ infinite; in particular, whenever $A$ is uncountable).
+  2. **Part 2 is mathematically false as printed for $(A, \leqslant) = \omega_1$ (`Omega1 = (Cardinal.aleph.{0} 1).ord.ToType`):** $\omega_1$ is an uncountable well-ordered set of cardinality $\aleph_1$, yet every strict initial segment $\{x \in \omega_1 : x < c\}$ has cardinality $< \aleph_1$, hence $\le \aleph_0$ (countable). More generally, any uncountable well-ordered set whose order type lies in $[\omega_1, \omega_1]$ (i.e. order type $\omega_1$) has all strict initial segments countable; the element $c$ exists (and is unique, with $\{x < c\}$ of order type $\omega_1$) if and only if $\text{type}(A, <) > \omega_1$ (equivalently, $\exists c \in A$ with $\{x < c\}$ uncountable; in particular, whenever $|A| > \aleph_1$).
+- **Kernel-proved declarations in `Garling/Chapter02.lean`:**
+  - `Garling.Chapter02.exercise_2_3_infinite_counterexample`: proves `Infinite ℕ`, `IsGarlingWellOrder ℕ (· ≤ ·)`, `¬ ∃ a : ℕ, ({x : ℕ | x < a}).Infinite`, and the literal negation of the printed `∃! a` claim on `ℕ`.
+  - `Garling.Chapter02.exercise_2_3_uncountable_counterexample`: proves `¬ Countable Omega1`, `IsGarlingWellOrder Omega1 (· ≤ ·)`, `¬ ∃ c : Omega1, ¬ ({x : Omega1 | x < c}).Countable`, and the literal negation of the printed `∃! c` claim on `Omega1`.
+  - `Garling.Chapter02.exercise_2_3_infinite_iff` / `Garling.Chapter02.exercise_2_3_infinite_iff_raw` / `Garling.Chapter02.exercise_2_3_infinite_dichotomy`: prove the exact characterization and dichotomy for infinite well-ordered sets.
+  - `Garling.Chapter02.exercise_2_3_orderIso_nat_of_forall_Iio_finite`: proves that any infinite well-ordered set with all strict initial segments finite is order-isomorphic to `(ℕ, ≤)`.
+  - `Garling.Chapter02.exercise_2_3_infinite_of_uncountable`: proves Part 1 unconditionally for every *uncountable* well-ordered set.
+  - `Garling.Chapter02.exercise_2_3_uncountable_iff` / `Garling.Chapter02.exercise_2_3_uncountable_iff_raw` / `Garling.Chapter02.exercise_2_3_uncountable_dichotomy`: prove the exact characterization and dichotomy for uncountable well-ordered sets.
+  - `Garling.Chapter02.exercise_2_3_uncountable_of_aleph1_lt`: proves Part 2 for every well-ordered set of cardinality strictly greater than $\aleph_1$.
+- **Status:** Held pending coordinator ruling on the printed textbook error in Exercise 2.3.
