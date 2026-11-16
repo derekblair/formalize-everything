@@ -14,7 +14,8 @@
 | `PIN-CHEVALLEY-14-3` | Ch. IV, §14.3, Proposition & uniqueness (p. 77) | `Humphreys/Ch4/ChevalleyInvolution14_3.lean` | 3 / 3 | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #121 (`35155479`) |
 | `PIN-CHEVALLEY-25-2` | Ch. VII, §25.2, Proposition (a)–(b) (pp. 146–147) | `Humphreys/Ch7/ChevalleyBasis25_2.lean` | 3 / 3 | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #122 (`5a9afe6d`) |
 | `PIN-KOSTANT-26-4` | Ch. VII, §26.4, Theorem (Kostant) (p. 156) | `Humphreys/Ch7/KostantTheorem26_4.lean` (+ `Kostant/GapA..GapD.lean`) | 11 / 11 (7 defs + 4 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #124 (`5c3001aa`) |
-| `PIN-ADMISSIBLE-LATTICE-27-1` | Ch. VII, §27.1, Lemma 27.1 & Theorem 27.1(a)–(b) (pp. 157–159) | `Humphreys/Ch7/AdmissibleLattice27_1.lean` | 15 / 15 (7 defs + 8 theorems) | `[propext, Classical.choice, Quot.sound]` | Proved; crossed review PENDING |
+| `PIN-ADMISSIBLE-LATTICE-27-1` | Ch. VII, §27.1, Lemma 27.1 & Theorem 27.1(a)–(b) (pp. 157–159) | `Humphreys/Ch7/AdmissibleLattice27_1.lean` | 15 / 15 (7 defs + 8 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #129 (`a790602f`) |
+| `PIN-STABILIZER-27-2` | Ch. VII, §27.2, Lemma 27.2, Ex. 21.5(1) & Prop. 27.2 (pp. 159–160, 116) | `Humphreys/Ch7/StabilizerLattice27_2.lean` | 9 / 9 (4 defs + 5 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #131 |
 
 ## `PIN-CHEVALLEY-14-3` Declarations (`Humphreys/Ch4/ChevalleyInvolution14_3.lean`)
 
@@ -46,3 +47,18 @@
 5. `Humphreys27_1.weightSpace_inter_directSum_of_isKostantInvariant` — Theorem 27.1(a) (p. 158): any additive subgroup `M ≤ V` invariant under `𝔘_ℤ` decomposes as the internal direct sum `⨁_χ (M ∩ V_χ)`.
 6. `Humphreys27_1.isAdmissibleLattice_minAdmissibleLattice` & `Humphreys27_1.isAdmissibleLattice_minAdmissibleLattice_irreducibleQuotient` — Theorem 27.1(b) irreducible construction (`M_min = 𝔘_ℤ · v = 𝔘_ℤ⁻ · v`, admissibility, and `M_min ∩ V_lam = ℤ · v`, plus specialization to `V(λ)`).
 7. `Humphreys27_1.exists_isAdmissibleLattice` & `Humphreys27_1.exists_chevalleySystem_and_admissibleLattice` — Theorem 27.1(b) existence of an admissible lattice in any finite-dimensional `L`-module `V` over a characteristic-zero field `K` with split `H` (both for given `(ω, x)` and unconditionally via §25.2).
+
+
+## `PIN-STABILIZER-27-2` Declarations (`Humphreys/Ch7/StabilizerLattice27_2.lean`)
+
+1. `Humphreys27_2.ad_dividedPower_apply_uea` — Lemma 27.2 (p. 159): divided-power identity `(1/n!)(ad (ι x))^n(u) = ∑_{i=0}^n (-1)^i x^{(n-i)} u x^{(i)}` in `𝔘_K(L)` for all `x ∈ L`, `u ∈ 𝔘_K(L)`, `n ∈ ℕ`, in strictly greater generality than the printed text (arbitrary Lie algebra over a characteristic-zero field; no finite-dimensionality, semisimplicity, or algebraic closure on `L` or `K`).
+2. `Humphreys27_2.rootLattice` — Root lattice `Λ_r` (H §13.1, §27.2 p. 159): `ℤ`-span of the roots in `H*`.
+3. `Humphreys27_2.moduleWeightLattice` — Module weight lattice `Λ(V)` (p. 159): `ℤ`-span of the weights of `V` in `H*`.
+4. `Humphreys27_2.rootLattice_le_moduleWeightLattice_le_integralWeightLattice` — Exercise 21.5(1) as invoked in §27.2 (p. 116): `Λ_r ⊆ Λ(V) ⊆ Λ` for any faithful finite-dimensional `L`-module `V` over a split characteristic-zero `(K, L, H)`.
+5. `Humphreys27_2.stabilizerLattice` — Stabilizer lattice `L_V` (p. 159): `{y ∈ L | ∀ m ∈ M, ⁅y, m⁆ ∈ M}` as a `ℤ`-submodule of `L`, parameterized directly by `M : Submodule ℤ V` without `Classical.choose`.
+6. `Humphreys27_2.cartanWeightDualSubmodule` — Cartan weight-dual submodule (p. 159): `{h ∈ H | ∀ μ ∈ Λ(V), μ(h) ∈ ℤ}`, defined from `Λ(V)` independently of `M`.
+7. `Humphreys27_2.cartanStabilizer_eq_weightDual_and_isFullZLattice` — §27.2 (p. 159) setup: `L_V ∩ H = ι_H({h ∈ H | ∀ μ ∈ Λ(V), μ(h) ∈ ℤ})` and that submodule is a full `ℤ`-lattice in `H`.
+8. `Humphreys27_2.isAdmissibleLattice_stabilizerLattice_and_decomposition` — Proposition 27.2 (p. 160): `L_V` is an admissible lattice (`IsFullZLattice` + `IsKostantInvariant`), `L_V ∩ L_α = ℤ x_α` for every root `α`, and the internal direct-sum decomposition `L_V = (L_V ∩ H) ⊕ ⨁_{α ∈ Φ} ℤ x_α`.
+9. `Humphreys27_2.stabilizerLattice_eq_of_moduleWeightLattice_eq` — Proposition 27.2 invariance clause (p. 160): `Λ(V₁) = Λ(V₂) ⟹ L_{V₁}(M₁) = L_{V₂}(M₂)`, universe-polymorphic across `V₁`, `V₂`.
+
+The module also contains three `private theorem` proof-script helpers (`mem_one_submodule_int_iff`, `mem_cartanWeightDualSubmodule_iff`, `mem_cartanWeightDualSubmodule_iff_forall_weight`), not counted in the 9 pinned declarations.
