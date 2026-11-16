@@ -13,4 +13,5 @@ import Cbor.Rfc8949.Boundary.ArrayCountFragment
 import Cbor.Rfc8949.Boundary.ChunkCountFragment
 import Cbor.Rfc8949.Ordering
 import Cbor.Rfc8949.Vectors
+import Cbor.Rfc8949.Float
 import Cbor.Rfc8949.Audit

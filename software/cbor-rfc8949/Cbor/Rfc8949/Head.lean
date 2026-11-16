@@ -336,7 +336,7 @@ theorem decodeHead_sound {bs rest : List UInt8} {h : Head}
           · rename_i hai3
             split at hd
             · simp at hd
-            · rename_i c rest' 
+            · rename_i c rest'
               split at hd
               · simp at hd
               · rename_i hc

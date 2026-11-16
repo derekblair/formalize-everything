@@ -6,6 +6,7 @@ import Cbor.Rfc8949.Boundary
 import Cbor.Rfc8949.Boundary.ArrayCountFragment
 import Cbor.Rfc8949.Boundary.ChunkCountFragment
 import Cbor.Rfc8949.Vectors
+import Cbor.Rfc8949.Float
 import Lean.Util.CollectAxioms
 import Lean.Elab.Command
 
@@ -56,6 +57,11 @@ run_cmd do
     `Cbor.Rfc8949.Vectors.AppendixA,
     `Cbor.Rfc8949.Vectors.AppendixF1,
     `Cbor.Rfc8949.Vectors.Ordering,
+    `Cbor.Rfc8949.Float,
+    `Cbor.Rfc8949.Float.IEEE754,
+    `Cbor.Rfc8949.Float.Narrowing,
+    `Cbor.Rfc8949.Float.DataModel,
+    `Cbor.Rfc8949.Float.Vectors,
     `Cbor.Rfc8949.Audit
   ]
   let importOnly : Array Name := #[`Cbor, `Cbor.Rfc8949.Audit]
@@ -270,3 +276,100 @@ run_cmd do
 #print axioms Cbor.Rfc8949.Vectors.sortBy_lengthFirst_from_core
 #print axioms Cbor.Rfc8949.Vectors.sortBy_ctap2_from_core_and_lengthFirst
 #print axioms Cbor.Rfc8949.Vectors.normalise_map_lengthFirst_to_core
+
+/-! ## Milestone 2: IEEE 754 float wire codecs & Appendix D (`Float.IEEE754`, §3.3, Appendix D) -/
+#print axioms Cbor.Rfc8949.FloatWidth.initialByte_eq_major7
+#print axioms Cbor.Rfc8949.Float16.ofBits_toBits
+#print axioms Cbor.Rfc8949.Float16.toBits_ofBits_of_lt
+#print axioms Cbor.Rfc8949.Float32.ofBits_toBits
+#print axioms Cbor.Rfc8949.Float32.toBits_ofBits_of_lt
+#print axioms Cbor.Rfc8949.Float64.ofBits_toBits
+#print axioms Cbor.Rfc8949.Float64.toBits_ofBits_of_lt
+#print axioms Cbor.Rfc8949.decodeFloat16_encodeFloat16
+#print axioms Cbor.Rfc8949.decodeFloat16_eq_some_iff
+#print axioms Cbor.Rfc8949.decodeFloat32_encodeFloat32
+#print axioms Cbor.Rfc8949.decodeFloat32_eq_some_iff
+#print axioms Cbor.Rfc8949.decodeFloat64_encodeFloat64
+#print axioms Cbor.Rfc8949.decodeFloat64_eq_some_iff
+#print axioms Cbor.Rfc8949.decodeFloat_encodeFloat
+#print axioms Cbor.Rfc8949.decodeFloat_eq_some_iff
+#print axioms Cbor.Rfc8949.encodeFloat_prefix_unique
+#print axioms Cbor.Rfc8949.encodeFloat_injective
+#print axioms Cbor.Rfc8949.decodeFloatPrefix_truncated_f16
+#print axioms Cbor.Rfc8949.decodeFloatPrefix_truncated_f32
+#print axioms Cbor.Rfc8949.decodeFloatPrefix_truncated_f64
+#print axioms Cbor.Rfc8949.Float16.classify_partition
+#print axioms Cbor.Rfc8949.Float16.nan_iff_quiet_or_signaling
+#print axioms Cbor.Rfc8949.Float32.classify_partition
+#print axioms Cbor.Rfc8949.Float64.classify_partition
+#print axioms Cbor.Rfc8949.Float64.toIEEEValue_injective
+#print axioms Cbor.Rfc8949.decodeFloat16_eq_appendixD
+
+/-! ## Milestone 2: Shortest-float narrowing, deterministic NaN & boundaries (`Float.Narrowing`, §4.1, §4.2.1, §4.2.2) -/
+#print axioms Cbor.Rfc8949.widen16To32_toIEEEValue
+#print axioms Cbor.Rfc8949.widen32To64_toIEEEValue
+#print axioms Cbor.Rfc8949.widen16To64_toIEEEValue
+#print axioms Cbor.Rfc8949.Float32.toIEEEValue_injective
+#print axioms Cbor.Rfc8949.Float16.toIEEEValue_injective
+#print axioms Cbor.Rfc8949.narrow32To16?_eq_some_iff
+#print axioms Cbor.Rfc8949.narrow32To16?_eq_none_iff
+#print axioms Cbor.Rfc8949.narrow64To32?_eq_some_iff
+#print axioms Cbor.Rfc8949.narrow64To32?_eq_none_iff
+#print axioms Cbor.Rfc8949.narrow64To16?_eq_some_iff
+#print axioms Cbor.Rfc8949.preferredFloat_toIEEEValue
+#print axioms Cbor.Rfc8949.isPreferredFloat_iff_eq_preferredFloat
+#print axioms Cbor.Rfc8949.preferredFloat_idem
+#print axioms Cbor.Rfc8949.encodeFloatPreferred_shortest
+#print axioms Cbor.Rfc8949.decodeFloatPreferred_encodeFloatPreferred
+#print axioms Cbor.Rfc8949.decodeFloatPreferred_eq_some_iff
+#print axioms Cbor.Rfc8949.isDeterministicFloat_iff_eq_canonicalFloatDet
+#print axioms Cbor.Rfc8949.canonicalFloatDet_idem
+#print axioms Cbor.Rfc8949.encodeFloatDeterministic_nan
+#print axioms Cbor.Rfc8949.decodeFloatDeterministic_encodeFloatDeterministic
+#print axioms Cbor.Rfc8949.decodeFloatDeterministic_eq_some_iff
+#print axioms Cbor.Rfc8949.round64To32_eq_of_narrow64To32?
+#print axioms Cbor.Rfc8949.widen32To64_round64To32_eq_iff
+#print axioms Cbor.Rfc8949.signed_zero_boundary
+#print axioms Cbor.Rfc8949.infinity_boundary
+#print axioms Cbor.Rfc8949.nan_payload_and_canonical_boundary
+#print axioms Cbor.Rfc8949.subnormal_boundary
+#print axioms Cbor.Rfc8949.lossy_narrowing_boundary
+
+/-! ## Milestone 2: Float data-model equivalence, full grammar & F.1 refusal (`Float.DataModel`, §2, §5.6.1) -/
+#print axioms Cbor.Rfc8949.FloatEquiv.refl
+#print axioms Cbor.Rfc8949.FloatEquiv.symm
+#print axioms Cbor.Rfc8949.FloatEquiv.trans
+#print axioms Cbor.Rfc8949.floatEquiv_widen16To32
+#print axioms Cbor.Rfc8949.floatEquiv_widen32To64
+#print axioms Cbor.Rfc8949.floatEquiv_preferredFloat
+#print axioms Cbor.Rfc8949.floatEquiv_posZero_negZero
+#print axioms Cbor.Rfc8949.floatEquiv_nan_iff
+#print axioms Cbor.Rfc8949.canonFloatKey_eq_iff
+#print axioms Cbor.Rfc8949.decodeFullHead_bytes
+#print axioms Cbor.Rfc8949.decodeFullHead_sound
+#print axioms Cbor.Rfc8949.fullHead_complete_vs_truncated
+#print axioms Cbor.Rfc8949.parseFullRaw_eq_some_iff
+#print axioms Cbor.Rfc8949.FullRawItem.encode_prefix_unique
+#print axioms Cbor.Rfc8949.FullRawItem.encode_injective
+#print axioms Cbor.Rfc8949.parseFullRaw_of_parseRaw
+#print axioms Cbor.Rfc8949.encodeFullDeterministic_of_decodeFullDeterministic
+#print axioms Cbor.Rfc8949.FullItem.Equiv.refl
+#print axioms Cbor.Rfc8949.FullItem.Equiv.symm
+#print axioms Cbor.Rfc8949.FullItem.Equiv.trans
+#print axioms Cbor.Rfc8949.FullItem.equiv_float_iff
+#print axioms Cbor.Rfc8949.FullItem.not_equiv_float_uint
+#print axioms Cbor.Rfc8949.FullItem.not_equiv_float_nint
+#print axioms Cbor.Rfc8949.FullItem.not_equiv_float_tag
+#print axioms Cbor.Rfc8949.FullItem.not_equiv_float_simple
+#print axioms Cbor.Rfc8949.FullItem.equiv_ofItem_iff
+#print axioms Cbor.Rfc8949.float_dataModel_equiv_witnesses
+#print axioms Cbor.Rfc8949.appendixF1_all_refused_full
+
+/-! ## Milestone 2: 23 Appendix A float vectors & 81-row completeness (`Float.Vectors`, Appendix A) -/
+#print axioms Cbor.Rfc8949.Vectors.appendixAFloatVectors_length
+#print axioms Cbor.Rfc8949.Vectors.appendixAFloatVectors_preferred_count
+#print axioms Cbor.Rfc8949.Vectors.appendixAFloatVectors_nonPreferred_count
+#print axioms Cbor.Rfc8949.Vectors.appendixAFloatVectors_rows
+#print axioms Cbor.Rfc8949.Vectors.appendixAFloat_all_bidirectional
+#print axioms Cbor.Rfc8949.Vectors.appendixAFloatVectors_rows_nodup
+#print axioms Cbor.Rfc8949.Vectors.appendixA_complete_81_rows
