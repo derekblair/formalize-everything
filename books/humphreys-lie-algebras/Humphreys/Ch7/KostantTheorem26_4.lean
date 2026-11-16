@@ -7,6 +7,9 @@ import TauCeti.Algebra.Lie.UniversalEnveloping.Kostant.Adjoint.Basic
 import TauCeti.Algebra.Lie.Weights.Chevalley.System
 import TauCeti.Algebra.Module.Rat
 import TauCeti.RingTheory.DividedPowers.Associative
+import Humphreys.Ch7.Kostant.GapA
+import Humphreys.Ch7.Kostant.GapB
+import Humphreys.Ch7.Kostant.GapD
 
 open LieAlgebra LieAlgebra.IsKilling LieModule RootPairing TauCeti TauCeti.Associative
 
@@ -98,7 +101,14 @@ theorem kostantMonomial_basis_over_field
     (baseOrd : Fin ℓ ≃ ↥b.support) :
     LinearIndependent K (kostantMonomial b posOrd baseOrd x) ∧
       Submodule.span K (Set.range (kostantMonomial b posOrd baseOrd x)) = ⊤ := by
-  sorry
+  have hfun :
+      (GapB.kostantMonomialBasisK hx b posOrd baseOrd :
+        ((Fin m → ℕ) × (Fin ℓ → ℕ) × (Fin m → ℕ)) → _root_.UniversalEnvelopingAlgebra K L) =
+      kostantMonomial b posOrd baseOrd x := by
+    funext p
+    exact GapB.kostantMonomialBasisK_apply hx b posOrd baseOrd p
+  exact ⟨hfun ▸ (GapB.kostantMonomialBasisK hx b posOrd baseOrd).linearIndependent,
+    hfun ▸ (GapB.kostantMonomialBasisK hx b posOrd baseOrd).span_eq⟩
 
 /-- **Humphreys §26.4, Theorem (Kostant) (p. 156, verbatim): `𝔅 = 𝔘(L)_ℤ`.**
 For any Chevalley basis `(x_α, h_i)` of `(L, H)` and any ordering `(α₁, …, αₘ)` of `Φ⁺`, the
@@ -111,7 +121,7 @@ theorem kostantLattice_eq_kostantSubring
     (baseOrd : Fin ℓ ≃ ↥b.support) :
     (kostantLattice b posOrd baseOrd x : Set (_root_.UniversalEnvelopingAlgebra K L)) =
       (kostantSubring H x : Set (_root_.UniversalEnvelopingAlgebra K L)) := by
-  sorry
+  exact GapD.latticeSpan_eq_rootSubring hx b posOrd baseOrd
 
 /-- **Bundled `ℤ`-basis form of Kostant's Theorem (H §26.4, p. 156).**
 Exhibits `(A, B, C) ↦ f_A h_B e_C` directly as a free `ℤ`-module basis of `𝔘(L)_ℤ`. -/
@@ -121,7 +131,42 @@ noncomputable def kostantSubringBasis
     (posOrd : Fin m ≃ {α : H.root // b.IsPos α})
     (baseOrd : Fin ℓ ≃ ↥b.support) :
     Module.Basis ((Fin m → ℕ) × (Fin ℓ → ℕ) × (Fin m → ℕ)) ℤ (kostantSubring H x) := by
-  sorry
+  refine Module.Basis.mk
+    (v := fun p => ⟨kostantMonomial b posOrd baseOrd x p,
+      GapA.kostantMonomial_mem_rootSubring hx b posOrd baseOrd p⟩) ?_ ?_
+  · rw [linearIndependent_iff']
+    intro s c hsum p hp
+    have hK_li := (kostantMonomial_basis_over_field hx b posOrd baseOrd).1
+    rw [linearIndependent_iff'] at hK_li
+    have hsumK : ∑ q ∈ s, (c q : K) • kostantMonomial b posOrd baseOrd x q = 0 := by
+      have hval := congrArg (kostantSubring H x).subtype hsum
+      rw [map_sum, map_zero] at hval
+      simpa only [map_zsmul, Subring.coe_subtype, Int.cast_smul_eq_zsmul] using hval
+    exact Int.cast_eq_zero.mp (hK_li s (fun q => (c q : K)) hsumK p hp)
+  · intro y _
+    have hy : (y : _root_.UniversalEnvelopingAlgebra K L) ∈ kostantLattice b posOrd baseOrd x := by
+      change (y : _root_.UniversalEnvelopingAlgebra K L) ∈
+        (kostantLattice b posOrd baseOrd x : Set (_root_.UniversalEnvelopingAlgebra K L))
+      rw [kostantLattice_eq_kostantSubring hx b posOrd baseOrd]
+      exact y.2
+    suffices hlift :
+        ∃ hy' : (y : _root_.UniversalEnvelopingAlgebra K L) ∈ kostantSubring H x,
+          (⟨(y : _root_.UniversalEnvelopingAlgebra K L), hy'⟩ : kostantSubring H x) ∈
+            Submodule.span ℤ (Set.range fun p =>
+              (⟨kostantMonomial b posOrd baseOrd x p,
+                GapA.kostantMonomial_mem_rootSubring hx b posOrd baseOrd p⟩ :
+                kostantSubring H x)) by
+      obtain ⟨_, hmem⟩ := hlift
+      exact hmem
+    refine Submodule.span_induction ?_ ?_ ?_ ?_ hy
+    · rintro _ ⟨p, rfl⟩
+      exact ⟨GapA.kostantMonomial_mem_rootSubring hx b posOrd baseOrd p,
+        Submodule.subset_span ⟨p, rfl⟩⟩
+    · exact ⟨(kostantSubring H x).zero_mem, Submodule.zero_mem _⟩
+    · rintro a₁ a₂ _ _ ⟨ha₁, h₁⟩ ⟨ha₂, h₂⟩
+      exact ⟨(kostantSubring H x).add_mem ha₁ ha₂, Submodule.add_mem _ h₁ h₂⟩
+    · rintro z a₁ _ ⟨ha₁, h₁⟩
+      exact ⟨zsmul_mem ha₁ z, Submodule.smul_mem _ z h₁⟩
 
 @[simp]
 theorem coe_kostantSubringBasis_apply
@@ -133,7 +178,7 @@ theorem coe_kostantSubringBasis_apply
     ((kostantSubringBasis hx b posOrd baseOrd p : kostantSubring H x) :
         _root_.UniversalEnvelopingAlgebra K L) =
       kostantMonomial b posOrd baseOrd x p := by
-  sorry
+  rw [kostantSubringBasis, Module.Basis.mk_apply]
 
 end GeneralCharZeroField
 
@@ -150,7 +195,7 @@ Over `K = ℚ`, Humphreys's root-divided-powers-only subring `kostantSubring H x
 theorem kostantSubring_eq_chevalleyKostantForm_rat
     {ω : L ≃ₗ⁅ℚ⁆ L} {x : Weight ℚ H L → L} (hx : TauCeti.IsChevalleySystem ω x) :
     kostantSubring H x = TauCeti.chevalleyKostantForm x := by
-  sorry
+  exact GapA.rootSubring_eq_chevalleyKostantForm_rat hx
 
 end RatBridge
 
