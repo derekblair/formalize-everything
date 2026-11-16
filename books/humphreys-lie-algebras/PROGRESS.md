@@ -13,7 +13,7 @@
 |---|---|---|---|---|---|
 | `PIN-CHEVALLEY-14-3` | Ch. IV, §14.3, Proposition & uniqueness (p. 77) | `Humphreys/Ch4/ChevalleyInvolution14_3.lean` | 3 / 3 | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #121 (`35155479`) |
 | `PIN-CHEVALLEY-25-2` | Ch. VII, §25.2, Proposition (a)–(b) (pp. 146–147) | `Humphreys/Ch7/ChevalleyBasis25_2.lean` | 3 / 3 | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #122 (`5a9afe6d`) |
-| `PIN-KOSTANT-26-4` | Ch. VII, §26.4, Theorem (Kostant) (p. 156) | `Humphreys/Ch7/KostantTheorem26_4.lean` (+ `Kostant/GapA..GapD.lean`) | 10 / 10 (6 defs + 4 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #124 (`5c3001aa`) |
+| `PIN-KOSTANT-26-4` | Ch. VII, §26.4, Theorem (Kostant) (p. 156) | `Humphreys/Ch7/KostantTheorem26_4.lean` (+ `Kostant/GapA..GapD.lean`) | 11 / 11 (7 defs + 4 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #124 (`5c3001aa`) |
 | `PIN-ADMISSIBLE-LATTICE-27-1` | Ch. VII, §27.1, Lemma 27.1 & Theorem 27.1(a)–(b) (pp. 157–159) | `Humphreys/Ch7/AdmissibleLattice27_1.lean` | 15 / 15 (7 defs + 8 theorems) | `[propext, Classical.choice, Quot.sound]` | Proved; crossed review PENDING |
 
 ## `PIN-CHEVALLEY-14-3` Declarations (`Humphreys/Ch4/ChevalleyInvolution14_3.lean`)
