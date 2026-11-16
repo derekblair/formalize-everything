@@ -276,6 +276,127 @@ Chapter 6 contains **1** main-text theorem (`Theorem 6.1`, plus §6.2's unnumber
 
 ---
 
+# Chapter 7 — Fidelity Holds (Printed pp. 59–70 / PDF pp. 67–78)
+
+Chapter 7 (*Splitting fields*) contains **10** main-text theorem/corollary items (`5` numbered theorems `Theorem 7.1`–`Theorem 7.5` + `5` corollaries: `Corollary` [to Theorem 7.1], `Corollary 1` & `Corollary 2` [to Theorem 7.4], `Corollary 1` & `Corollary 2` [to Theorem 7.5]; `0` numbered definitions, `0` unnumbered headed blocks) and **10** numbered exercises (`Exercise 7.1`–`Exercise 7.10`), for **20** numbered scope-of-record items total (plus §7.3's `4` worked `Example` blocks, formalized as supporting declarations). Among these **20** items, **11 / 20** (`7 / 10` main-text: `Corollary` [to Theorem 7.1], `Theorem 7.2`, `Theorem 7.4`, `Corollary 2` [to Theorem 7.4], `Theorem 7.5`, `Corollary 1` [to Theorem 7.5], `Corollary 2` [to Theorem 7.5]; + `4 / 10` exercises: `Exercise 7.1`, `Exercise 7.4`, `Exercise 7.5`, `Exercise 7.9`) are proved literally as printed, while **9 / 20** (`3 / 10` main-text: `Theorem 7.1`, `Theorem 7.3`, `Corollary 1` [to Theorem 7.4]; + `6 / 10` exercises: `Exercise 7.2`, `Exercise 7.3`, `Exercise 7.6`, `Exercise 7.7`, `Exercise 7.8`, `Exercise 7.10`) are held below as source-fidelity holds with kernel-proved counterexamples (where the literal claim fails), exact characterizations, and complete constructive witnesses.
+
+---
+
+## Ch. 7, Theorem 7.1 (§7.1, printed p. 60 / PDF p. 68) — fails literally at `f = 0` (`λ = 0`) (fidelity hold)
+
+- **Printed statement (p. 60):** *"Suppose that $L:K$ is an extension and that $f \in K[x]$ splits over $L$ as $f = \lambda(x - \alpha_1)\dots(x - \alpha_n)$. Then $K(\alpha_1, \dots, \alpha_n)$ is a splitting field for $f$."*
+- **Exact blocker:** On printed p. 60, Garling defines *$f \in K[x]$ splits over $L$* by existence of $\lambda \in K$ and $\alpha_1, \dots, \alpha_n \in L$ with $f = \lambda(x - \alpha_1)\dots(x - \alpha_n)$ (without requiring $f \ne 0$ or $\lambda \ne 0$), and defines $F:K$ to be a *splitting field extension* for $f$ if $f$ splits over $F$ and does **not** split over any proper intermediate subfield $K \subseteq M \subsetneq F$. At $f = 0$ ($\lambda = 0$), $0 = 0 \cdot (x - i)$ splits over $\mathbb{C} : \mathbb{R}$ with $\alpha_1 = i$, yet $\mathbb{R}(i) = \mathbb{C}$ is **not** a splitting field for $0$ over $\mathbb{R}$ because $0 = 0 \cdot 1$ already splits over the proper subfield $\mathbb{R} \subsetneq \mathbb{C}$.
+- **Kernel-proved declarations in `Garling/Chapter07.lean`:**
+  - `Garling.Chapter07.theorem_7_1_zero_counterexample`: refutes the literal unguarded statement at $K = \mathbb{R}, L = \mathbb{C}, f = 0, \lambda = 0, \alpha_1 = i$.
+  - `Garling.Chapter07.theorem_7_1` and `Garling.Chapter07.theorem_7_1_nonzero_coeff`: prove that $K(\alpha_1, \dots, \alpha_n)$ (in both `IntermediateField.adjoin` and Chapter 4's `garlingFieldGenSubfield` form) is a splitting field for $f$ over $K$ whenever $f \ne 0$ (equivalently $\lambda \ne 0$).
+  - `Garling.Chapter07.theorem_7_1_iff`: proves the exact characterization `IsGarlingSplittingFieldExtension K K(α₁, ..., αₙ) f ↔ f ≠ 0 ∨ K(α₁, ..., αₙ) = ⊥`.
+- **Status:** Held pending coordinator ruling on whether the explicit `f ≠ 0` / `λ ≠ 0` guard (+ `theorem_7_1_iff`) closes Theorem 7.1.
+
+---
+
+## Ch. 7, Theorem 7.3 (§7.1, printed p. 61 / PDF p. 69) — unbound `n` in printed statement + `garlingDegree` non-zero guard (fidelity hold)
+
+- **Printed statement (p. 61):** *"Suppose that $f \in K[x]$. Then there exists a splitting field extension $L:K$ for $f$, with $[L:K] \leqslant n!$."*
+- **Exact blockers:**
+  1. **Unbound variable `n`:** The printed theorem statement does not bind $n$; only the proof's first line (*"By induction on $n = \operatorname{degree} f$"*) identifies $n$ as the degree of $f$. Quantifying universally over unbound $n : \mathbb{N}$ is false (e.g. $n = 0$ on $x^2 + 1 \in \mathbb{R}[x]$ requires $[L:\mathbb{R}] \le 0! = 1$, impossible).
+  2. **Zero polynomial and `garlingDegree`:** Garling (§3.1, p. 19) defines $\operatorname{degree} f$ (`garlingDegree f hf`) only for $f \ne 0$.
+- **Kernel-proved declarations in `Garling/Chapter07.lean`:**
+  - `Garling.Chapter07.theorem_7_3_unbound_n_counterexample`: proves there is no splitting field extension $L : \mathbb{R}$ for $x^2 + 1 \in \mathbb{R}[x]$ with $[L:\mathbb{R}] \le 0!$.
+  - `Garling.Chapter07.theorem_7_3`: proves for every $f \ne 0$ in $K[x]$ with `garlingDegree f hf = n` that there exists a splitting field extension $L:K$ for $f$ with `extDegree K L ≤ (n.factorial : ℕ∞)` and `Module.finrank K L ≤ n.factorial`.
+  - `Garling.Chapter07.theorem_7_3_natDegree`: proves unconditionally for **every** $f \in K[x]$ (including $f = 0$, where $L = K$ has $[K:K] = 1 \le 0! = 1$) that there exists a splitting field extension $L:K$ for $f$ with `extDegree K L ≤ (f.natDegree.factorial : ℕ∞)` and `Module.finrank K L ≤ f.natDegree.factorial`.
+- **Status:** Held pending coordinator ruling on whether binding `n = garlingDegree f hf` (`theorem_7_3`) + unconditional `theorem_7_3_natDegree` closes Theorem 7.3.
+
+---
+
+## Ch. 7, Exercise 7.2 (§7.1, printed p. 62 / PDF p. 70) — construction + multiplication-table prompt (fidelity hold)
+
+- **Printed statement (p. 62):** *"Show that $f = x^3 - x + 1$ is irreducible in $\mathbb{Z}_3[x]$. Show that if $\zeta$ is a root of $f$ in a splitting field extension, then $\zeta + 1$ and $\zeta - 1$ are also roots. Construct a splitting field extension, and write out its multiplication table."*
+- **Exact blocker:** Sentences 1–2 are purely propositional, whereas Sentence 3 (*"Construct a splitting field extension, and write out its multiplication table"*) is an imperative construction/tabulation prompt with no canonical propositional encoding without choosing a concrete basis/coordinate indexing of the $27$-element field $\mathbb{F}_{27}$.
+- **Kernel-proved declarations in `Garling/Chapter07.lean`:**
+  - `Garling.Chapter07.exercise_7_2_irreducible`: proves `∀ a : ZMod 3, ex72Poly.eval a = 1`, `Irreducible ex72Poly`, and `IsGarlingIrreducible ex72Poly`.
+  - `Garling.Chapter07.exercise_7_2_roots`: proves that for any root $\zeta$ of $x^3 - x + 1$ in an extension $L$ of $\mathbb{Z}_3$, $\zeta + 1$ and $\zeta - 1$ are roots, $\zeta, \zeta + 1, \zeta - 1$ are pairwise distinct, and $f = (x - \zeta)(x - (\zeta + 1))(x - (\zeta - 1))$ over $L$.
+  - `Garling.Chapter07.Ex72Field`, `Garling.Chapter07.ex72MulMatrix`, and `Garling.Chapter07.exercise_7_2`: construct $\mathbb{F}_{27} = \mathbb{Z}_3[x]/(x^3 - x + 1)$ (`Nat.card Ex72Field = 27`, `Module.finrank (ZMod 3) Ex72Field = 3`), prove `IsGarlingSplittingFieldExtension (ZMod 3) Ex72Field ex72Poly`, define the explicit computable $27 \times 27$ multiplication table `ex72MulMatrix : Matrix Ex72Elem Ex72Elem Ex72Elem` (`Ex72Elem = ZMod 3 × ZMod 3 × ZMod 3`, `ex72MulTable`, `ex72FromCoords`) in the basis $\{1, \zeta, \zeta^2\}$, and prove `Function.Bijective ex72FromCoords` and `(ex72FromCoords u) * (ex72FromCoords v) = ex72FromCoords (ex72MulMatrix u v)` for all `u, v : Ex72Elem`.
+- **Status:** Held pending coordinator ruling on whether `exercise_7_2` + `ex72MulMatrix` closes Exercise 7.2.
+
+---
+
+## Ch. 7, Exercise 7.3 (§7.1, printed p. 62 / PDF p. 70) — omitted `n ≥ 1` guard (fails at `n = 0`) + construction prompt (fidelity hold)
+
+- **Printed statement (p. 62):** *"Suppose that $K$ is a field over which $x^n - 1$ splits, and suppose that $K(t):K$ is a simple transcendental extension. Show that $x^n - t$ is irreducible in $K(t)[x]$ (Exercise 5.4). Construct a splitting field extension for $x^n - t$ by considering another simple transcendental extension $K(s):K$ and a monomorphism $i: K(t) \to K(s)$ which fixes $K$ and sends $t$ to $s^n$."*
+- **Exact blockers:**
+  1. **Omitted `1 ≤ n` hypothesis (fails at `n = 0`):** Over every field $K$, $x^0 - 1 = 0$ splits over $K$, yet in $K(t)[x]$, $x^0 - t = 1 - t$ is a non-zero constant (`IsUnit`), hence **not** irreducible, and there is **no** $K$-fixing ring homomorphism $i : K(t) \to K(s)$ sending $t \mapsto s^0 = 1$ (since $t - 1 \ne 0$ in $K(t)$ is invertible while $1 - 1 = 0$ is not).
+  2. **Construction prompt:** Sentence 3 asks to *"Construct a splitting field extension..."* via the triple $(i, K(t), K(s))$.
+- **Kernel-proved declarations in `Garling/Chapter07.lean`:**
+  - `Garling.Chapter07.exercise_7_3_zero_counterexample`: proves that for every field $K$, $x^0 - 1$ splits over $K$, $x^0 - t \in K(t)[x]$ is **not** irreducible, and no ring homomorphism $i : K(t) \to+* K(s)$ sends $t \mapsto s^0$.
+  - `Garling.Chapter07.exercise_7_3` (with `simpleTranscendentalEquiv`, `simpleTranscendentalEquiv_var`): proves for every $n \ge 1$ and arbitrary simple transcendental extensions $K(t):K$ and $K(s):K$ over a field $K$ where $x^n - 1$ splits that $x^n - t$ is irreducible in $K(t)[x]$ (via `Exercise 5.4`), constructs the **unique** $K$-fixing monomorphism `i : Kt →+* Ks` sending $t \mapsto s^n$, and proves that under the induced `Algebra Kt Ks` structure (`i.toAlgebra`), $K(s) : i(K(t))$ is a splitting field extension for $x^n - t$ of degree $n$.
+  - `Garling.Chapter07.exercise_7_3_iff`: proves `Irreducible (X^n - C t : Kt[X]) ↔ 1 ≤ n`.
+- **Status:** Held pending coordinator ruling on whether the explicit `1 ≤ n` guard + `exercise_7_3_iff` + `exercise_7_3` closes Exercise 7.3.
+
+---
+
+## Ch. 7, Corollary 1 [to Theorem 7.4] (§7.2, printed p. 64 / PDF p. 72) — printed typo *"α' algebraic over K"* for *"over K'"* (fidelity hold)
+
+- **Printed statement (p. 64):** *"Suppose that $K(\alpha):K$ and $K'(\alpha'):K'$ are simple extensions, and that $\alpha$ is algebraic over $K$, $\alpha'$ algebraic over $K$ $[\text{sic}]$. Suppose that $i: K \to K'$ is an isomorphism. Then there exists an isomorphism $j: K(\alpha) \to K'(\alpha')$ with $j(\alpha) = \alpha'$ and $j\|_K = i$ if and only if $i(m_\alpha) = m_{\alpha'}$. If so, $j$ is unique."*
+- **Exact blocker:** The printed text reads *"$\alpha'$ algebraic over $K$"* instead of *"$\alpha'$ algebraic over $K'$"*, while the conclusion writes $m_{\alpha'}$ as an element of $K'[x]$ (`i(m_\alpha) = m_{\alpha'}` where $i : K[x] \xrightarrow{\sim} K'[x]$). For abstractly unrelated fields $K, K'$, *"$\alpha'$ algebraic over $K$"* is not even well-typed without $K'$-algebraicity (or pulling back via $i$, which is equivalent to algebraicity over $K'$); and when $K \subseteq K' \subseteq E$ sit inside a common ambient field $E$, requiring $\alpha'$ to be algebraic over $K$ omits valid instances where $\alpha'$ is algebraic over $K'$ (so $m_{\alpha', K'} \in K'[x]$ exists and equals $i(m_{\alpha, K})$) yet transcendental over $K$.
+- **Kernel-proved declarations in `Garling/Chapter07.lean`:**
+  - `Garling.Chapter07.corollary_1_to_theorem_7_4_ambient_counterexample`: exhibits $K = \mathbb{Z}_2(t^2) \subsetneq K' = \mathbb{Z}_2(t)$ inside $E = \mathbb{Z}_2(s)$ ($t = s^2$) — concretely $K = \bot \cong \mathbb{Z}_2(u^2)$, $K' = \mathbb{Z}_2(s^2)$, $\alpha' = s$ — showing $\alpha'$ is algebraic over $K'$ ($m_{\alpha', K'} = x^2 - s^2$) yet transcendental over $\mathbb{Z}_2$, while an isomorphism $i : K_0 \xrightarrow{\sim} K'$ extends uniquely to $K_0(\alpha) \xrightarrow{\sim} K'(\alpha')$.
+  - `Garling.Chapter07.corollary_1_to_theorem_7_4` and `Garling.Chapter07.corollary_1_to_theorem_7_4_equiv`: prove existence and uniqueness of the isomorphism $j : K(\alpha) \cong K'(\alpha')$ sending $\alpha \mapsto \alpha'$ with $j|_K = i$ iff `garlingMapPoly i (minpoly K α) = minpoly K' α'` under the intended hypothesis `IsGarlingAlgebraic K' α'`.
+- **Status:** Held pending coordinator ruling on whether repairing the printed typo `over K` → `over K'` closes Corollary 1 [to Theorem 7.4].
+
+---
+
+## Ch. 7, Exercise 7.6 (§7.3, printed p. 70 / PDF p. 78) — *"Write down / factorize / construct / Which are isomorphic?"* prompt (fidelity hold)
+
+- **Printed statement (p. 70):** *"Write down all monic cubic polynomials in $\mathbb{Z}_2[x]$, factorize them completely and construct a splitting field for each of them. Which of these fields are isomorphic?"*
+- **Exact blocker:** Imperative enumeration, factorization, construction, and isomorphism-classification prompt requiring concrete indexing/packaging choices (`Fin 8`).
+- **Kernel-proved declarations in `Garling/Chapter07.lean`:**
+  - `Garling.Chapter07.ex76Cubic`, `Garling.Chapter07.ex76Cubic_monic_and_natDegree`, `Garling.Chapter07.ex76Cubic_injective`, `Garling.Chapter07.ex76Cubic_complete`: injectively and exhaustively enumerate all $8$ monic cubic polynomials in $\mathbb{Z}_2[x]$.
+  - `Garling.Chapter07.ex76Cubic_factorizations`: proves irreducibility of every factor and complete factorizations over $\mathbb{Z}_2$ of all $8$ cubics.
+  - `Garling.Chapter07.Ex76Field`, `Garling.Chapter07.ex76Deg`, `Garling.Chapter07.ex76CubicFieldEquiv`, and `Garling.Chapter07.exercise_7_6`: construct a splitting field extension `Ex76Field i` for every `i : Fin 8` of degree `ex76Deg i` (`![1, 1, 1, 1, 2, 2, 3, 3]`) and cardinality `2 ^ (ex76Deg i)`, construct the explicit $\mathbb{Z}_2$-algebra isomorphism `ℤ₂[x]/(x^3 + x + 1) ≃ₐ[ℤ₂] ℤ₂[x]/(x^3 + x^2 + 1)` (`γ ↦ δ + 1`), and prove `Nonempty (Ex76Field i ≃ₐ[ZMod 2] Ex76Field j) ↔ ex76Deg i = ex76Deg j` and `Nonempty (Ex76Field i ≃+* Ex76Field j) ↔ ex76Deg i = ex76Deg j` for all `i, j : Fin 8`.
+- **Status:** Held pending coordinator ruling on whether `exercise_7_6` closes Exercise 7.6.
+
+---
+
+## Ch. 7, Exercise 7.7 (§7.3, printed p. 70 / PDF p. 78) — *"Find a splitting field ... determine degree ... find α"* prompt (fidelity hold)
+
+- **Printed statement (p. 70):** *"Find a splitting field extension $K:\mathbb{Q}$ for each of the following polynomials over $\mathbb{Q}$: $x^4 - 5x^2 + 6$, $x^4 + 5x^2 + 6$, $x^4 - 5$. In each case determine the degree $[K:\mathbb{Q}]$ and find $\alpha$ such that $K = \mathbb{Q}(\alpha)$."*
+- **Exact blocker:** Open-ended *"Find ... determine ... find $\alpha$"* identification prompt across three polynomials.
+- **Kernel-proved declarations in `Garling/Chapter07.lean`:**
+  - `Garling.Chapter07.exercise_7_7` (with `fivePowQuarter`): proves in `IntermediateField ℚ ℂ` that:
+    1. $K_1 = \mathbb{Q}(\sqrt{2}, \sqrt{3})$ is a splitting field extension for $x^4 - 5x^2 + 6$ over $\mathbb{Q}$ with $[K_1 : \mathbb{Q}] = 4$ (both `Module.finrank` and `extDegree`) and $K_1 = \mathbb{Q}(\sqrt{2} + \sqrt{3})$;
+    2. $K_2 = \mathbb{Q}(i\sqrt{2}, i\sqrt{3})$ is a splitting field extension for $x^4 + 5x^2 + 6$ over $\mathbb{Q}$ with $[K_2 : \mathbb{Q}] = 4$ and $K_2 = \mathbb{Q}(i\sqrt{2} + i\sqrt{3})$;
+    3. $K_3 = \mathbb{Q}(5^{1/4}, i)$ is a splitting field extension for $x^4 - 5$ over $\mathbb{Q}$ with $[K_3 : \mathbb{Q}] = 8$ and $K_3 = \mathbb{Q}(5^{1/4} + i)$.
+- **Status:** Held pending coordinator ruling on whether `exercise_7_7` closes Exercise 7.7.
+
+---
+
+## Ch. 7, Exercise 7.8 (§7.3, printed p. 70 / PDF p. 78) — *"Find a splitting field ... determine degree ... find α"* prompt (fidelity hold)
+
+- **Printed statement (p. 70):** *"Find a splitting field extension $K:\mathbb{Q}$ for each of the following polynomials over $\mathbb{Q}$: $x^4 + 1$, $x^4 + 4$, $(x^4 + 1)(x^4 + 4)$, $(x^4 - 1)(x^4 + 4)$. In each case determine the degree $[K:\mathbb{Q}]$ and find $\alpha$ such that $K = \mathbb{Q}(\alpha)$."*
+- **Exact blocker:** Open-ended *"Find ... determine ... find $\alpha$"* identification prompt across four polynomials.
+- **Kernel-proved declarations in `Garling/Chapter07.lean`:**
+  - `Garling.Chapter07.exercise_7_8` (with `zeta8 = (1 + i)/\sqrt{2}`): proves $\mathbb{Q}(\zeta_8) = \mathbb{Q}(\sqrt{2}, i)$ and proves in `IntermediateField ℚ ℂ` (with both `Module.finrank` and `extDegree`):
+    1. For $x^4 + 1$: splitting field $K = \mathbb{Q}(\zeta_8)$, $[K : \mathbb{Q}] = 4$, primitive element $\alpha = \zeta_8$;
+    2. For $x^4 + 4$: splitting field $K = \mathbb{Q}(i)$, $[K : \mathbb{Q}] = 2$, primitive element $\alpha = i$;
+    3. For $(x^4 + 1)(x^4 + 4)$: splitting field $K = \mathbb{Q}(\zeta_8)$, $[K : \mathbb{Q}] = 4$, primitive element $\alpha = \zeta_8$;
+    4. For $(x^4 - 1)(x^4 + 4)$: splitting field $K = \mathbb{Q}(i)$, $[K : \mathbb{Q}] = 2$, primitive element $\alpha = i$.
+- **Status:** Held pending coordinator ruling on whether `exercise_7_8` closes Exercise 7.8.
+
+---
+
+## Ch. 7, Exercise 7.10 (§7.3, printed p. 70 / PDF p. 78) — *"Find a splitting field extension..."* prompt (fidelity hold)
+
+- **Printed statement (p. 70):** *"Find a splitting field extension for $x^3 - 5$ over $\mathbb{Z}_7$, $\mathbb{Z}_{11}$ and $\mathbb{Z}_{13}$."*
+- **Exact blocker:** Open-ended *"Find a splitting field extension..."* construction/identification prompt across three finite prime fields.
+- **Kernel-proved declarations in `Garling/Chapter07.lean`:**
+  - `Garling.Chapter07.exercise_7_10` (with `ex710Poly7`, `ex710Poly7_irreducible`, `Ex710Field7`, `ex710Quad11`, `ex710Quad11_irreducible`, `Ex710Field11`): proves
+    1. Over $\mathbb{Z}_7$: $x^3 - 5$ is irreducible in $\mathbb{Z}_7[x]$ and `Ex710Field7 = AdjoinRoot (X^3 - 5)` ($\mathbb{F}_{343}$, cardinality $343$) is a splitting field extension of degree $3$;
+    2. Over $\mathbb{Z}_{11}$: $x^3 - 5 = (x - 3)(x^2 + 3x + 9)$ with $x^2 + 3x + 9$ irreducible in $\mathbb{Z}_{11}[x]$, and `Ex710Field11 = AdjoinRoot (X^2 + 3X + 9)` ($\mathbb{F}_{121}$, cardinality $121$) is a splitting field extension of degree $2$;
+    3. Over $\mathbb{Z}_{13}$: $x^3 - 5 = (x - 7)(x - 8)(x - 11)$ already splits in $\mathbb{Z}_{13}[x]$, and $\mathbb{Z}_{13} : \mathbb{Z}_{13}$ (cardinality $13$) is a splitting field extension of degree $1$.
+- **Status:** Held pending coordinator ruling on whether `exercise_7_10` closes Exercise 7.10.
+
+---
+
 # Chapter 13 — Fidelity Holds (Printed pp. 107–109 / PDF pp. 115–117)
 
 ## Ch. 13, Exercise 13.4 (§13.2, printed p. 109) — printed `only if` (`⇒`) direction false as printed (fidelity hold)
