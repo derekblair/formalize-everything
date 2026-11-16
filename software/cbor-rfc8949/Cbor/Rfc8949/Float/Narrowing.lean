@@ -1002,7 +1002,7 @@ def round32To16 (s : Float32) : Float16 :=
     if s.mant = 0 then ⟨s.sign, 31, 0, by omega, by omega⟩
     else
       ⟨s.sign, 31, 512 + (s.mant / 8192) % 512, by omega, by omega⟩
-  else if _hle102 : s.exp ≤ 102 then
+  else if _hle101 : s.exp ≤ 101 then
     ⟨s.sign, 0, 0, by omega, by omega⟩
   else if _hle112 : s.exp ≤ 112 then
     if hm : divPow2RNE (8388608 + s.mant) (126 - s.exp) < 1024 then
@@ -1083,6 +1083,74 @@ theorem widen32To64_round64To32_eq_iff {d : Float64} (hfin : d.isNaN = false) :
     | some s =>
       rw [round64To32_eq_of_narrow64To32? hfin hn]
       exact Float64.toIEEEValue_injective (by rw [widen32To64_toIEEEValue, narrow64To32?_sound hn])
+
+/-- Every finite or infinite `Float32` that admits an exact `Float16` narrowing
+is preserved identically by IEEE 754 RNE `round32To16`. -/
+theorem round32To16_eq_of_narrow32To16? {s : Float32} {h : Float16}
+    (hfin : s.isNaN = false) (hn : narrow32To16? s = some h) :
+    round32To16 s = h := by
+  have he := s.hexp; have hm := s.hmant
+  unfold narrow32To16? at hn
+  by_cases he0 : s.exp = 0
+  · simp only [he0, ↓reduceIte] at hn
+    by_cases hm0 : s.mant = 0
+    · simp only [hm0, ↓reduceIte, Option.some.injEq] at hn
+      subst hn; simp [round32To16, he0]
+    · simp [hm0] at hn
+  · by_cases he255 : s.exp = 255
+    · by_cases hm0 : s.mant = 0
+      · simp [he255, hm0] at hn
+        subst hn; simp [round32To16, he255, hm0]
+      · simp [Float32.isNaN, he255, hm0] at hfin
+    · by_cases hsub : 103 ≤ s.exp ∧ s.exp ≤ 112
+      · simp only [he0, he255, hsub, and_self, ↓reduceIte, ↓reduceDIte] at hn
+        by_cases hmod : (8388608 + s.mant) % (2 ^ (126 - s.exp)) = 0
+        · simp only [hmod, ↓reduceIte, Option.some.injEq] at hn
+          subst hn
+          have hle1 : ¬ (s.exp ≤ 101) := by omega
+          have hle2 : s.exp ≤ 112 := hsub.2
+          have hrne : divPow2RNE (8388608 + s.mant) (126 - s.exp) =
+              (8388608 + s.mant) / 2 ^ (126 - s.exp) :=
+            divPow2RNE_of_mod_zero (by omega) hmod
+          have hpow14 : 16384 ≤ 2 ^ (126 - s.exp) := by
+            change 2 ^ 14 ≤ 2 ^ (126 - s.exp)
+            exact Nat.pow_le_pow_right (by omega) (by omega)
+          have hlt : (8388608 + s.mant) / 2 ^ (126 - s.exp) < 1024 :=
+            Nat.div_lt_of_lt_mul (by omega)
+          simp [round32To16, he0, he255, hle1, hle2, hrne, hlt]
+        · simp [hmod] at hn
+      · by_cases hnorm : 113 ≤ s.exp ∧ s.exp ≤ 142
+        · simp only [he0, he255, hsub, hnorm, and_self, ↓reduceIte, ↓reduceDIte] at hn
+          by_cases hmod : s.mant % 8192 = 0
+          · simp only [hmod, ↓reduceIte, Option.some.injEq] at hn
+            subst hn
+            have hle1 : ¬ (s.exp ≤ 101) := by omega
+            have hle2 : ¬ (s.exp ≤ 112) := by omega
+            have hle3 : s.exp ≤ 142 := hnorm.2
+            have hrne : divPow2RNE s.mant 13 = s.mant / 8192 :=
+              divPow2RNE_of_mod_zero (by omega) hmod
+            have hlt : s.mant / 8192 < 1024 := by omega
+            simp [round32To16, he0, he255, hle1, hle2, hle3, hrne, hlt]
+          · simp [hmod] at hn
+        · simp [he0, he255, hsub, hnorm] at hn
+
+/-- **Exact characterization of lossy vs. exact `round32To16` round-trip:**
+for every non-NaN `s : Float32`, `widen16To32 (round32To16 s) = s` holds
+**if and only if** `narrow32To16? s` succeeds (`≠ none`). When `narrow32To16? s = none`,
+no `Float16` (including `round32To16 s`) widens back to `s`. -/
+theorem widen16To32_round32To16_eq_iff {s : Float32} (hfin : s.isNaN = false) :
+    widen16To32 (round32To16 s) = s ↔ narrow32To16? s ≠ none := by
+  constructor
+  · intro hw hnone
+    have hv : (round32To16 s).toIEEEValue = s.toIEEEValue := by
+      rw [← widen16To32_toIEEEValue, hw]
+    exact (narrow32To16?_eq_none_iff.mp hnone) (round32To16 s) hv
+  · intro hsome
+    cases hn : narrow32To16? s with
+    | none => exact absurd hn hsome
+    | some h =>
+      rw [round32To16_eq_of_narrow32To16? hfin hn]
+      exact Float32.toIEEEValue_injective (by rw [widen16To32_toIEEEValue, narrow32To16?_sound hn])
 
 /-! ### Explicit Boundary Witnesses (§2.4): Signed Zero, `±Infinity`, NaN Payloads, Subnormals, and Lossy Narrowing -/
 
@@ -1235,11 +1303,13 @@ theorem lossy_narrowing_boundary :
     round32To16 float32HundredThousand = Float16.posInf ∧
     narrow64To32? float64OneE300 = none ∧
     round64To32 float64OneE300 = Float32.posInf ∧
-    -- Exponent underflow: 2^-25 and 2^-1074
+    -- Exponent underflow: 2^-25 (exact tie -> +0.0), s.exp = 102 non-tie -> 2^-24, and 2^-1074
     narrow32To16? float32TwoPowNeg25 = none ∧
     round32To16 float32TwoPowNeg25 = Float16.posZero ∧
+    round32To16 (Float32.ofBits 0x33000001) = Float16.minPosSubnormal ∧
+    round32To16 (Float32.ofBits 0x33400000) = Float16.minPosSubnormal ∧
     round64To32 Float64.minPosSubnormal = Float32.posZero := by
-  refine ⟨rfl, rfl, rfl, ?_, rfl, rfl, ?_, rfl, rfl, ?_, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+  refine ⟨rfl, rfl, rfl, ?_, rfl, rfl, ?_, rfl, rfl, ?_, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
   · intro h
     have := congrArg Float64.toBits h
     revert this; intro h'; cases h'

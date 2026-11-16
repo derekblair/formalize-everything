@@ -329,6 +329,8 @@ run_cmd do
 #print axioms Cbor.Rfc8949.decodeFloatDeterministic_eq_some_iff
 #print axioms Cbor.Rfc8949.round64To32_eq_of_narrow64To32?
 #print axioms Cbor.Rfc8949.widen32To64_round64To32_eq_iff
+#print axioms Cbor.Rfc8949.round32To16_eq_of_narrow32To16?
+#print axioms Cbor.Rfc8949.widen16To32_round32To16_eq_iff
 #print axioms Cbor.Rfc8949.signed_zero_boundary
 #print axioms Cbor.Rfc8949.infinity_boundary
 #print axioms Cbor.Rfc8949.nan_payload_and_canonical_boundary
