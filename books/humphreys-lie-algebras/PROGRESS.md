@@ -15,7 +15,8 @@
 | `PIN-CHEVALLEY-25-2` | Ch. VII, §25.2, Proposition (a)–(b) (pp. 146–147) | `Humphreys/Ch7/ChevalleyBasis25_2.lean` | 3 / 3 | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #122 (`5a9afe6d`) |
 | `PIN-KOSTANT-26-4` | Ch. VII, §26.4, Theorem (Kostant) (p. 156) | `Humphreys/Ch7/KostantTheorem26_4.lean` (+ `Kostant/GapA..GapD.lean`) | 11 / 11 (7 defs + 4 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #124 (`5c3001aa`) |
 | `PIN-ADMISSIBLE-LATTICE-27-1` | Ch. VII, §27.1, Lemma 27.1 & Theorem 27.1(a)–(b) (pp. 157–159) | `Humphreys/Ch7/AdmissibleLattice27_1.lean` | 15 / 15 (7 defs + 8 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #129 (`a790602f`) |
-| `PIN-STABILIZER-27-2` | Ch. VII, §27.2, Lemma 27.2, Ex. 21.5(1) & Prop. 27.2 (pp. 159–160, 116) | `Humphreys/Ch7/StabilizerLattice27_2.lean` | 9 / 9 (4 defs + 5 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #131 |
+| `PIN-STABILIZER-27-2` | Ch. VII, §27.2, Lemma 27.2, Ex. 21.5(1) & Prop. 27.2 (pp. 159–160, 116) | `Humphreys/Ch7/StabilizerLattice27_2.lean` | 9 / 9 (4 defs + 5 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #131 (`b9b927dd`) |
+| `PIN-LATTICE-VARIATION-27-3` | Ch. VII, §27.3, Proposition 27.3(a)–(b) & Ch. VI, Ex. 21.6 (pp. 161–162, 116) | `Humphreys/Ch7/LatticeVariation27_3.lean` | 8 / 8 (3 defs + 5 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #132 |
 
 ## `PIN-CHEVALLEY-14-3` Declarations (`Humphreys/Ch4/ChevalleyInvolution14_3.lean`)
 
@@ -62,3 +63,10 @@
 9. `Humphreys27_2.stabilizerLattice_eq_of_moduleWeightLattice_eq` — Proposition 27.2 invariance clause (p. 160): `Λ(V₁) = Λ(V₂) ⟹ L_{V₁}(M₁) = L_{V₂}(M₂)`, universe-polymorphic across `V₁`, `V₂`.
 
 The module also contains three `private theorem` proof-script helpers (`mem_one_submodule_int_iff`, `mem_cartanWeightDualSubmodule_iff`, `mem_cartanWeightDualSubmodule_iff_forall_weight`), not counted in the 9 pinned declarations.
+## `PIN-LATTICE-VARIATION-27-3` Declarations (`Humphreys/Ch7/LatticeVariation27_3.lean`)
+
+1. `Humphreys27_3.nonempty_lieModuleEquiv_dual_irreducibleQuotient` — Exercise 21.6 (p. 116) as invoked in §27.3 (p. 161): `V(λ)* ≃ₗ⁅K,L⁆ V(-w₀ λ)` for `λ ∈ Λ⁺` over an arbitrary characteristic-zero field `K` with splitting Cartan subalgebra `H`.
+2. `Humphreys27_3.preDualLattice` (`D27.3`, pp. 161–162) and `Humphreys27_3.isAdmissibleLattice_dualLattice_and_preDual` — Integral pre-dual pullback `{v ∈ V | ∀ φ ∈ N, φ(v) ∈ ℤ}`, admissibility of `M.dualLattice K` in `Module.Dual K V`, and bidual recovery `preDualLattice K (M.dualLattice K) = M`.
+3. `Humphreys27_3.dualMinAdmissibleLattice`, `Humphreys27_3.maxAdmissibleLattice` (`D27.3`, pp. 161–162), and `Humphreys27_3.exists_dualHighestWeightGenerator_and_isAdmissibleLattice_maxAdmissibleLattice` — Canonical `𝔘_ℤ`-orbit `(M*)_min`, maximal lattice `M_max = ((M*)_min)*`, existence of a dual highest-weight generator `f⁺` of weight `-w₀ λ` with `(M_min)* ∩ (V*)_{-w₀ λ} = ℤ · f⁺` and `(M*)_min = 𝔘_ℤ · f⁺`, and sharpness (`M_max` is admissible with `M_max ∩ V_λ = ℤ · v`).
+4. `Humphreys27_3.minAdmissibleLattice_le_and_le_maxAdmissibleLattice` — Proposition 27.3(a)–(b) (p. 162, general irreducible highest-weight form): `M_min ≤ M ∧ M ≤ M_max` for every admissible lattice `M ⊂ V` satisfying `M ∩ V_λ = ℤ · v`.
+5. `Humphreys27_3.minAdmissibleLattice_le_and_le_maxAdmissibleLattice_irreducibleQuotient` — Proposition 27.3(a)–(b) (p. 162, verbatim at `V = V(λ) = TauCeti.irreducibleQuotient b lam` with `v⁺ = TauCeti.irreducibleQuotientGenerator b lam`).
