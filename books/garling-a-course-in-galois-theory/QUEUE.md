@@ -445,3 +445,34 @@ Chapter 7 (*Splitting fields*) contains **10** main-text theorem/corollary items
   - `Garling.Chapter08.exercise_8_8`: bundles all three senses in a single theorem.
   - `Garling.Chapter08.exercise_8_8_non_algebraic_counterexample`: proves that the hypothesis `IsAlgebraicExtension K L` is essential (`¬ IsAlgebraicExtension ℚ ℂ`, `ℂ` is an algebraic closure of `ℂ`, `GarlingAlgebraicNumbers` is an algebraic closure of `ℚ`, `GarlingAlgebraicNumbers ≠ ⊤`, and `IsEmpty (GarlingAlgebraicNumbers ≃+* ℂ)` since the former is countable and $\mathbb{C}$ is uncountable).
 - **Status:** Held pending coordinator ruling on whether `exercise_8_8` closes Exercise 8.8.
+
+---
+
+# Chapter 10 — Fidelity Holds (Printed pp. 82–90 / PDF pp. 90–98)
+
+## Ch. 10, Theorem 10.5 (§10.4, printed pp. 85–86 / PDF pp. 93–94) — Printed *"in `K[x]`"* slip in p. 85 prose definition of *repeated root* invoked by `(i)` (fidelity hold)
+
+- **Printed statement (pp. 85–86):**
+  - Prose definition on printed p. 85, ll. 8–10: *"Suppose that $f \in K[x]$ and that $L:K$ is a splitting field for $f$. We say that $\alpha \in L$ is a **repeated root** of $f$ if $(x - \alpha)^k \mid f$ in $K[x]$ for some $k > 1$."*
+  - Theorem statement on printed pp. 85–86: *"Suppose that $f \in K[x]$ is non-zero and that $L:K$ is a splitting field for $f$. Then the following are equivalent: (i) $f$ has a repeated root in $L$. (ii) There exists $\alpha \in L$ such that $f(\alpha) = \mathrm{D}f(\alpha) = 0$. (iii) There is a polynomial $m$ in $K[x]$ of degree at least $1$ which divides both $f$ and $\mathrm{D}f$."*
+- **Exact blocker:** Taken literally, p. 85's prose definition requires $(x - \alpha)^k \mid f$ **in $K[x]$** for $\alpha \in L$ and $k > 1$ (`HasLiteralPrintedRepeatedRootInBasePoly K L f`, or even `(X - C α)^k ∈ Set.range (Polynomial.map (algebraMap K L))`), which fails whenever $f$ has repeated irreducible factors of degree $\ge 2$ whose roots lie in $L \setminus K$ — for example, $f = (x^2 - 2)^2 \in \mathbb{Q}[x]$ in splitting field $L = \mathbb{Q}(\sqrt{2})$ satisfies `(ii)` ($\alpha = \sqrt{2}$) and `(iii)` ($m = x^2 - 2$), yet $(x - \alpha)^k \notin \mathbb{Q}[x]$ for every root $\alpha = \pm\sqrt{2}$ and every $k > 1$ (since the degree-$(k-1)$ coefficient of $(x - \alpha)^k$ is $-k\alpha \notin \mathbb{Q}$). On printed p. 86 l. 1, Garling's own proof immediately writes *"If $\alpha$ is a repeated root of $f$ in $L$, $f = (x - \alpha)^k g$, where $k > 1$ and $g \in L[x]$"*, confirming that divisibility **in $L[x]$** (`HasGarlingRepeatedRoot K L f`) was intended.
+- **Kernel-proved declarations in `Garling/Chapter10.lean`:**
+  - `Garling.Chapter10.theorem_10_5_literal_p85_counterexample`: refutes `(ii) ⇒ (i)` and `(iii) ⇒ (i)` under the literal p. 85 `in K[x]` wording on $K = \mathbb{Q}$, $f = (x^2 - 2)^2 \in \mathbb{Q}[x]$, and $L = \mathbb{Q}(\sqrt{2})$ (`qSqrtTwoSubfield`), proving `f ≠ 0`, `IsGarlingSplittingFieldExtension ℚ L f`, `(ii)`, `(iii)`, and `HasGarlingRepeatedRoot ℚ L f`, while `¬ HasLiteralPrintedRepeatedRootInBasePoly ℚ L f` and `¬ ∃ (α : L) (k : ℕ), 1 < k ∧ (X - C α)^k ∣ f.map (algebraMap ℚ L) ∧ (X - C α)^k ∈ Set.range (Polynomial.map (algebraMap ℚ L))`.
+  - `Garling.Chapter10.theorem_10_5`: proves the full 3-way equivalence `(i) ↔ (ii) ↔ (iii)` (`((i) ↔ (ii)) ∧ ((ii) ↔ (iii))`) for every non-zero $f \in K[x]$ and splitting field extension `IsGarlingSplittingFieldExtension K L f` under p. 86's `L[x]` divisibility definition `HasGarlingRepeatedRoot K L f` (with zero algebraic closures).
+- **Status:** Held in `QUEUE.md` as a textbook prose-definition slip fidelity hold; literal p. 85 refutation and repaired `L[x]` 3-way equivalence are both kernel-proved.
+
+---
+
+## Ch. 10, Exercise 10.3 (§10.4, printed p. 87 / PDF p. 95) — Omitted `= 0` at end of displayed equality chain + unprinted prose definition of *exact multiplicity* (fidelity hold)
+
+- **Printed statement (p. 87):** *"Suppose that $f$ is a polynomial in $K[x]$ of degree $n$ and that either $\operatorname{char} K = 0$ or $\operatorname{char} K > n$. Show that $\alpha$ is a root of exact multiplicity $r(\le n)$ if and only if*
+  $$f(\alpha) = \mathrm{D}f(\alpha) = \dots = \mathrm{D}^{r-1}f(\alpha) \quad \text{and} \quad \mathrm{D}^r f(\alpha) \ne 0.\text{"}$$
+- **Exact blockers:**
+  1. **Omitted `= 0` in the printed displayed condition:** The printed equality chain omits **`= 0`** after $\mathrm{D}^{r-1}f(\alpha)$. Without `= 0`, the literal right-hand side is false **both** at $r = 1$ (where the 1-term chain `f(α)` imposes no equality condition at all: on $K = \mathbb{Q}$, $f = x$, $n = 1$, $\alpha = 1$, we have $(\mathrm{D}f)(1) = 1 \ne 0$ while $f(1) = 1 \ne 0$) **and** at $r \ge 2$ (where equal non-zero values $f(\alpha) = \dots = \mathrm{D}^{r-1}f(\alpha) = c \ne 0$ satisfy the chain for non-roots: on $K = \mathbb{Q}$, $f = x^2 + x + 1$, $n = 2$, $r = 2$, $\alpha = 0$, we have $f(0) = (\mathrm{D}f)(0) = 1$ and $(\mathrm{D}^2 f)(0) = 2 \ne 0$, while $f(0) = 1 \ne 0$).
+  2. ***Exact multiplicity* not defined earlier in Chapter 10's prose:** Chapter 10 defines *repeated root* ($k > 1$) on p. 85 without an earlier standalone prose definition of *multiplicity* / *exact multiplicity* $r$, and *"$\alpha$ is a root of exact multiplicity $r(\le n)$"* admits both the root-presupposing reading $1 \le r \le n$ (`IsRootOfExactMultiplicity f α r`) and the general $0 \le r \le n$ divisibility reading $(x - \alpha)^r \mid f \land (x - \alpha)^{r+1} \nmid f$ (`HasExactRootMultiplicity f α r`, bridged to Mathlib's `Polynomial.rootMultiplicity` via `hasExactRootMultiplicity_iff_rootMultiplicity`).
+- **Kernel-proved declarations in `Garling/Chapter10.lean`:**
+  - `Garling.Chapter10.exercise_10_3_omitted_zero_counterexamples`: kernel-proves both explicit counterexamples ($r = 1$ on $f_1 = x, \alpha = 1 \in \mathbb{Q}$ and $r = 2$ on $f_2 = x^2 + x + 1, \alpha = 0 \in \mathbb{Q}$) refuting the literal `= 0`-omitted right-hand side under both `IsRoot` and `HasExactRootMultiplicity`.
+  - `Garling.Chapter10.exercise_10_3`: proves `IsRootOfExactMultiplicity f α r ↔ (∀ j < r, (garlingDeriv^[j] f).eval α = 0) ∧ (garlingDeriv^[r] f).eval α ≠ 0` for all $1 \le r \le n$ directly from `Exercise 10.2` (`exercise_10_2`).
+  - `Garling.Chapter10.exercise_10_3_all_r`: proves `HasExactRootMultiplicity f α r ↔ (∀ j < r, (garlingDeriv^[j] f).eval α = 0) ∧ (garlingDeriv^[r] f).eval α ≠ 0` for all $0 \le r \le n$ (including $r = 0$, where the empty chain holds vacuously and $(\mathrm{D}^0 f)(\alpha) = f(\alpha) \ne 0$).
+  - `Garling.Chapter10.exercise_10_3_extension`: proves the extension-field companion for roots $\alpha \in L$ in any field extension $L:K$.
+- **Status:** Held in `QUEUE.md` as a textbook misprint (`= 0` omitted) + unprinted-prose-definition fidelity hold; counterexamples and all repaired characterizations (`1 ≤ r ≤ n`, `0 ≤ r ≤ n`, and `α ∈ L`) are kernel-proved.
