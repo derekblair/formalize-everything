@@ -476,3 +476,122 @@ Chapter 7 (*Splitting fields*) contains **10** main-text theorem/corollary items
   - `Garling.Chapter10.exercise_10_3_all_r`: proves `HasExactRootMultiplicity f α r ↔ (∀ j < r, (garlingDeriv^[j] f).eval α = 0) ∧ (garlingDeriv^[r] f).eval α ≠ 0` for all $0 \le r \le n$ (including $r = 0$, where the empty chain holds vacuously and $(\mathrm{D}^0 f)(\alpha) = f(\alpha) \ne 0$).
   - `Garling.Chapter10.exercise_10_3_extension`: proves the extension-field companion for roots $\alpha \in L$ in any field extension $L:K$.
 - **Status:** Held in `QUEUE.md` as a textbook misprint (`= 0` omitted) + unprinted-prose-definition fidelity hold; counterexamples and all repaired characterizations (`1 ≤ r ≤ n`, `0 ≤ r ≤ n`, and `α ∈ L`) are kernel-proved.
+
+
+---
+
+# Chapter 11 — Fidelity Holds (Printed pp. 91–100 / PDF pp. 99–108)
+
+## Ch. 11, Theorem 11.5 (§11.2, printed p. 95 / PDF p. 103) — Zero-polynomial `f = 0` edge case over imperfect fields (fidelity hold)
+
+- **Printed statement (p. 95, verified on 160 DPI scan; OCR `garling1986_pages.txt` corrupts `[L:K]` to `[L:~]`):** *"Suppose that $f \in K[x]$, and that $L:K$ is a splitting field for $f$ over $K$. If $f$ is separable over $K$ then $L:K$ is a Galois extension, $|\Gamma(f)| = [L:K]$ and $K$ is the fixed field of $\Gamma(f)$. Conversely, if $|\Gamma(f)| = [L:K]$, or if $K$ is the fixed field of $\Gamma(f)$, then $f$ is separable over $K$."*
+- **Exact blocker:** Under Garling's literal §10.1 definition of polynomial separability (`IsGarlingSeparablePoly f`, p. 82: *"A polynomial $f$ in $K[x]$ is separable over $K$ if it is the product of irreducible separable polynomials"*), the zero polynomial $f = 0 \in K[x]$ is **not** a product of irreducibles (`isGarlingSeparablePoly_zero_iff : ¬ IsGarlingSeparablePoly (0 : K[X])`, cf. Ch. 5 `zero_not_prod_irreducibles`), whereas $L = K$ is a splitting field extension for $0$ over $K$ (`isGarlingSplittingFieldExtension_zero_iff`) with $[K:K] = 1$, $|\Gamma_K(0)| = |\Gamma(K:K)| = 1 = [K:K]$, and fixed field $\phi(\Gamma(K:K)) = K$. In particular, even over an imperfect field $K = \mathbb{Z}_2(t) = \operatorname{FractionRing}(\mathbb{Z}_2[X])$, the converse claims (`|Γ(f)| = [L:K] → IsGarlingSeparablePoly f` and `K = φ(Γ(f)) → IsGarlingSeparablePoly f`) fail literally at $f = 0$.
+- **Kernel-proved declarations in `Garling/Chapter11.lean`:**
+  - `Garling.Chapter11.theorem_11_5_zero_imperfect_counterexample`: refutes the literal converse at $f = 0$ over the imperfect field $K = \operatorname{FractionRing}(\mathbb{Z}_2[X])$ with $L = K$, proving `¬ IsGarlingPerfectField K`, `IsGarlingSplittingFieldExtension K K 0`, `IsGarlingGaloisExtension K K`, `Nat.card (GarlingPolyGaloisGroup K K 0) = Module.finrank K K`, and `(algebraMap K K).fieldRange = garlingPhi (garlingPolyGaloisSubgroup K K 0)`, while `¬ IsGarlingSeparablePoly (0 : K[X])`.
+  - `Garling.Chapter11.theorem_11_5` and `Garling.Chapter11.theorem_11_5_subfield`: prove both directions literally as printed for every non-zero $f \in K[x]$ (`hf0 : f ≠ 0`), both in general `[Algebra K L]` form (`(algebraMap K L).fieldRange = garlingPhi ...`) and in `K : Subfield L` form (`K = garlingPhi ...`), using `Corollary 3` to `Theorem 10.3` and `Theorem 11.4`.
+  - `Garling.Chapter11.theorem_11_5_unconditional`: proves the unconditional characterization across all $f \in K[x]$ (including $f = 0$) with `f = 0 ∨ IsGarlingSeparablePoly f`.
+  - `Garling.Chapter11.theorem_11_5_perfect`: proves the forward claims unconditionally for all $f \in K[x]$ (including $f = 0$) whenever `IsGarlingPerfectField K`.
+- **Status:** Held in `QUEUE.md` as a zero-polynomial edge-case fidelity hold; literal `f = 0` counterexample and `f ≠ 0` / unconditional / perfect-field theorems are all kernel-proved.
+
+---
+
+## Ch. 11, Exercise 11.5 (§11.2, printed p. 95 / PDF p. 103) — *"Describe the transitive subgroups of Σ_3, Σ_4 and Σ_5"* classification prompt (fidelity hold)
+
+- **Printed statement (p. 95, verified on 160 DPI scan; OCR corrupts `Σ_3, Σ_4, Σ_5` to `1:3, 1:4 and 1:5`):** *"Describe the transitive subgroups of $\Sigma_3$, $\Sigma_4$ and $\Sigma_5$."*
+- **Exact blocker:** Non-propositional *"Describe..."* classification prompt (does not prescribe whether subgroups are listed individually or classified up to conjugacy in $\Sigma_n$).
+- **Kernel-proved declarations in `Garling/Chapter11.lean`:**
+  - `Garling.Chapter11.s3TransitiveModel`, `Garling.Chapter11.exercise_11_5_s3`: proves that the transitive subgroups of $\Sigma_3 = \operatorname{Perm}(\operatorname{Fin} 3)$ are **exactly** the two pairwise non-conjugate (in fact normal) subgroups $A_3$ (`alternatingGroup (Fin 3)`, order $3$) and $\Sigma_3$ (`⊤`, order $6$).
+  - `Garling.Chapter11.s4V4`, `Garling.Chapter11.s4C4`, `Garling.Chapter11.s4D4`, `Garling.Chapter11.dihedral4MulEquivS4D4`, `Garling.Chapter11.s4_subgroup_card_eight_conj_d4`, `Garling.Chapter11.s4TransitiveModel`, `Garling.Chapter11.exercise_11_5_s4`: proves that a subgroup $H \le \Sigma_4 = \operatorname{Perm}(\operatorname{Fin} 4)$ acts transitively on $\operatorname{Fin} 4$ **if and only if** $H$ is conjugate in $\Sigma_4$ (`IsConjugateSubgroup`) to a **unique** representative among the $5$ subgroups $V_4$ (`s4V4`, normal, order $4$), $C_4$ (`s4C4 = ⟨c[0, 1, 2, 3]⟩`, order $4$), $D_4$ (`s4D4 ≅ DihedralGroup 4`, order $8$), $A_4$ (`alternatingGroup (Fin 4)`, order $12$), and $\Sigma_4$ (`⊤`, order $24$).
+  - `Garling.Chapter11.s5C5`, `Garling.Chapter11.s5D5`, `Garling.Chapter11.agl1ZMod5Perm`, `Garling.Chapter11.s5F20`, `Garling.Chapter11.s5TransitiveModel`, `Garling.Chapter11.exercise_11_5_s5`: proves via Sylow $5$-subgroups and the affine group $\operatorname{AGL}_1(\mathbb{Z}_5)$ (`s5F20`, order $20$) that a subgroup $H \le \Sigma_5 = \operatorname{Perm}(\operatorname{Fin} 5)$ acts transitively on $\operatorname{Fin} 5$ **if and only if** $H$ is conjugate in $\Sigma_5$ to a **unique** representative among the $5$ subgroups $C_5$ (`s5C5`, order $5$), $D_5$ (`s5D5 ≅ DihedralGroup 5`, order $10$), $F_{20}$ (`s5F20`, order $20$), $A_5$ (`alternatingGroup (Fin 5)`, order $60$), and $\Sigma_5$ (`⊤`, order $120$).
+  - `Garling.Chapter11.exercise_11_5`: bundles the complete conjugacy classifications of transitive subgroups of $\Sigma_3$, $\Sigma_4$, and $\Sigma_5$.
+- **Status:** Held pending coordinator ruling on whether `exercise_11_5` closes Exercise 11.5.
+
+---
+
+## Ch. 11, Exercise 11.6 (§11.2, printed p. 95 / PDF p. 103) — *"Find the Galois group of x^4 - 2 over Q, Z_3 and Z_7"* identification prompt (fidelity hold)
+
+- **Printed statement (p. 95):** *"Find the Galois group of $x^4 - 2$ over (a) the rational field $\mathbb{Q}$, (b) the field $\mathbb{Z}_3$ and (c) the field $\mathbb{Z}_7$."*
+- **Exact blocker:** Non-propositional *"Find..."* identification prompt, and $\Gamma_K(f)$ is canonical up to group isomorphism across splitting fields (`garlingPolyGaloisGroup_independent_of_splittingField`).
+- **Kernel-proved declarations in `Garling/Chapter11.lean`:**
+  - `Garling.Chapter11.rat_splittingField_X_pow_four_pm_two`, `Garling.Chapter11.quartic_galoisGroup_d4_of_splittingField_finrank_eight`, `Garling.Chapter11.quartic_galoisGroup_c2_of_quad_adjoinRoot`: establish splitting-field degree $8$ over $\mathbb{Q}$ for both $x^4 - 2$ (`ℚ(2^(1/4), i) ⊆ ℂ`) and $x^4 + 2$ (`ℚ(2^(1/4)ζ_8, i) ⊆ ℂ`), deduce $\Gamma_{\mathbb{Q}}(x^4 \mp 2) \cong D_4$ (`DihedralGroup 4`) via `Exercise 11.5` (`s4_subgroup_card_eight_conj_d4`), and establish quadratic splitting fields over finite prime fields.
+  - `Garling.Chapter11.exercise_11_6`: proves universally across **every** splitting field extension `IsGarlingSplittingFieldExtension K L (X^4 - 2)` that:
+    - **(a) over $\mathbb{Q}$:** $x^4 - 2$ is irreducible and separable, $|\Gamma_{\mathbb{Q}}(x^4 - 2)| = 8$, and $\Gamma_{\mathbb{Q}}(x^4 - 2) \cong D_4$ (`Nonempty (GarlingPolyGaloisGroup ℚ L (X^4 - 2) ≃* DihedralGroup 4)`);
+    - **(b) over $\mathbb{Z}_3$ (`ZMod 3`):** $x^4 - 2 = (x^2 + x + 2)(x^2 + 2x + 2)$ with both quadratics irreducible, $|\Gamma_{\mathbb{Z}_3}(x^4 - 2)| = 2$, and $\Gamma_{\mathbb{Z}_3}(x^4 - 2) \cong C_2$ (`Multiplicative (ZMod 2)`);
+    - **(c) over $\mathbb{Z}_7$ (`ZMod 7`):** $x^4 - 2 = (x - 2)(x - 5)(x^2 - 3)$ with $x^2 - 3$ irreducible, $|\Gamma_{\mathbb{Z}_7}(x^4 - 2)| = 2$, and $\Gamma_{\mathbb{Z}_7}(x^4 - 2) \cong C_2$ (`Multiplicative (ZMod 2)`).
+- **Status:** Held pending coordinator ruling on whether `exercise_11_6` closes Exercise 11.6.
+
+---
+
+## Ch. 11, Exercise 11.7 (§11.2, printed p. 96 / PDF p. 104) — *"Find the Galois group of x^4 + 2 over Q, Z_3 and Z_5"* identification prompt (fidelity hold)
+
+- **Printed statement (p. 96):** *"Find the Galois group of $x^4 + 2$ over (a) the rational field $\mathbb{Q}$, (b) the field $\mathbb{Z}_3$ and (c) the field $\mathbb{Z}_5$."*
+- **Exact blocker:** Non-propositional *"Find..."* identification prompt, and $\Gamma_K(f)$ is canonical up to group isomorphism across splitting fields.
+- **Kernel-proved declarations in `Garling/Chapter11.lean`:**
+  - `Garling.Chapter11.exercise_11_7`: proves universally across **every** splitting field extension `IsGarlingSplittingFieldExtension K L (X^4 + 2)` that:
+    - **(a) over $\mathbb{Q}$:** $x^4 + 2$ is irreducible and separable, $|\Gamma_{\mathbb{Q}}(x^4 + 2)| = 8$, and $\Gamma_{\mathbb{Q}}(x^4 + 2) \cong D_4$ (`Nonempty (GarlingPolyGaloisGroup ℚ L (X^4 + 2) ≃* DihedralGroup 4)`);
+    - **(b) over $\mathbb{Z}_3$ (`ZMod 3`):** $x^4 + 2 = (x - 1)(x + 1)(x^2 + 1)$ with $x^2 + 1$ irreducible, $|\Gamma_{\mathbb{Z}_3}(x^4 + 2)| = 2$, and $\Gamma_{\mathbb{Z}_3}(x^4 + 2) \cong C_2$ (`Multiplicative (ZMod 2)`);
+    - **(c) over $\mathbb{Z}_5$ (`ZMod 5`):** $x^4 + 2$ is irreducible over $\mathbb{Z}_5$, $|\Gamma_{\mathbb{Z}_5}(x^4 + 2)| = 4$, and $\Gamma_{\mathbb{Z}_5}(x^4 + 2) \cong C_4$ (`Multiplicative (ZMod 4)`, proved by verifying that the Frobenius automorphism $\alpha \mapsto \alpha^5$ of `AdjoinRoot (X^4 + 2 : (ZMod 5)[X])` satisfies $\alpha^5 = -2\alpha$, $\alpha^{25} = -\alpha \ne \alpha$, and hence has order $4$).
+- **Status:** Held pending coordinator ruling on whether `exercise_11_7` closes Exercise 11.7.
+
+---
+
+## Ch. 11, Exercise 11.8 (§11.3, printed p. 97 / PDF p. 105) — *"Sketch the graph of f_r ... determine its Galois group over Q when 2r + 3 is a prime"* graphing + identification prompt (fidelity hold)
+
+- **Printed statement (p. 97, verified on 160 DPI scan; OCR `garling1986_pages.txt` corrupts `|f_r(k)| ≥ 5` to `lfikl ~ 5`):** *"Sketch the graph of the polynomial $f_r = (x^2 + 4)x(x^2 - 4)(x^2 - 16)\dots(x^2 - 4r^2)$. Show that if $k$ is an odd integer then $|f_r(k)| \geqslant 5$. Show that $f_r - 2$ is irreducible over $\mathbb{Q}$, and determine its Galois group over $\mathbb{Q}$ when $2r + 3$ is a prime."*
+- **Exact blockers:**
+  1. Opens with the non-propositional visual graphing imperative *"Sketch the graph of the polynomial $f_r = \dots$"*.
+  2. Concludes with the open-ended identification prompt *"and determine its Galois group over $\mathbb{Q}$ when $2r + 3$ is a prime"*.
+- **Kernel-proved declarations in `Garling/Chapter11.lean`:**
+  - `Garling.Chapter11.ex118Poly`, `Garling.Chapter11.ex118RatPoly`, `Garling.Chapter11.ex118_linear_prod_eq`, `Garling.Chapter11.ex118Poly_monic_deg_and_mod_two`: define $f_r = (x^2 + 4)x \prod_{j=1}^r (x^2 - 4j^2) \in \mathbb{Z}[x]$ for all $r \in \mathbb{N}$ (including $r = 0$, where $f_0 = (x^2 + 4)x = x^3 + 4x$ and $2r + 3 = 3$), rewrite $x \prod_{j=1}^r (x^2 - 4j^2) = \prod_{m=0}^{2r} (x - 2(m - r))$, and prove $f_r$ is monic of degree $2r + 3$ with every lower coefficient divisible by $4$ (`(ex118Poly r).map (Int.castRingHom (ZMod 2)) = X^(2*r + 3)` and `(ex118Poly r - 2).coeff 0 = -2`).
+  - `Garling.Chapter11.exercise_11_8`: proves for **every** $r \in \mathbb{N}$:
+    1. **Graph qualitative profile:** the real zeros of $f_r$ are exactly $\{-2r, -2(r-1), \dots, 2r\}$, and at the $2r + 2$ consecutive odd integers $k_m = 2m - (2r + 1)$ ($0 \le m \le 2r + 1$), $f_r(k_m)$ strictly alternates in sign with $|f_r(k_m)| \ge 5$, so $f_r - 2$ strictly alternates in sign across $k_0 < k_1 < \dots < k_{2r+1}$;
+    2. **Odd-integer bound:** for **every** odd integer $k \in \mathbb{Z}$, $|f_r(k)| \ge 5$;
+    3. **Irreducibility & root count:** $f_r - 2$ is irreducible over $\mathbb{Q}$ (via Eisenstein's criterion `theorem_5_2` at $p = 2$) and has **exactly $2r + 1$ real roots** and **exactly $2$ non-real complex roots** (proved via IVT across $(k_m, k_{m+1})$, Rolle's theorem on the $2r$ real critical points in $(-2r, 2r)$, and the two purely imaginary roots of $f_r'(iy)$ in $i(-2, 0)$ and $i(0, 2)$, which leave at most $2r$ real roots of $(f_r - 2)'$);
+    4. **Galois group when $2r + 3$ is prime:** whenever `Nat.Prime (2 * r + 3)` and `IsGarlingSplittingFieldExtension ℚ L (ex118RatPoly r - 2)`, `Theorem 11.7` yields `Function.Bijective (garlingRootPermHom ℚ L (ex118RatPoly r - 2))` and `Nonempty (GarlingPolyGaloisGroup ℚ L (ex118RatPoly r - 2) ≃* Equiv.Perm (Fin (2 * r + 3)))` ($\Gamma_{\mathbb{Q}}(f_r - 2) \cong \Sigma_{2r+3}$).
+- **Status:** Held pending coordinator ruling on whether `exercise_11_8` closes Exercise 11.8.
+
+---
+
+## Ch. 11, Exercise 11.11 (§11.4, printed p. 99 / PDF p. 107) — Unbound exponent `n` in parts `(i)` and `(ii)` (fidelity hold)
+
+- **Printed statement (p. 99, verified on 160 DPI scan; OCR `garling1986_pages.txt` corrupts `|G| = 2^n` to `IGI = 2 / 11`):** *"If $G$ is a finite group and $|G| = p^r q$ where $p$ is a prime which does not divide $q$ then $G$ has subgroups of order $p^s$ for $1 \leqslant s \leqslant r$. (A subgroup of order $p^r$ is called a Sylow $p$-subgroup.) Suppose that $L:K$ is an extension with $[L:K] = 2$, that every element of $L$ has a square root in $L$, that every polynomial of odd degree in $K[x]$ has a root in $K$ and that $\operatorname{char} K \ne 2$. Let $f$ be an irreducible polynomial in $K[x]$, let $M:L$ be a splitting field extension for $f$ over $L$, let $G = \Gamma(M:K)$ and let $H = \Gamma(M:L)$.*
+  *(i) By considering the fixed field of a Sylow $2$-subgroup of $G$, show that $|G| = 2^n$.*
+  *(ii) By considering a subgroup of index $2$ in $H$, show that if $n > 1$ then there is an irreducible quadratic in $L[x]$.*
+  *(iii) Show that $L$ is algebraically closed.*
+  *(iv) Show that the complex numbers are algebraically closed."*
+- **Exact blocker:** The setup paragraph never binds $n$. Part `(i)` existentially asserts $\exists n \in \mathbb{N}$ (in fact $n \ge 1$) such that $|G| = 2^n$, and part `(ii)` refers anaphorically to that 2-adic exponent $n$ ($|G| = 2^n$ and $n > 1$). Neither universal quantification over $n$ nor setting $n := \deg f$ holds: for $K = \mathbb{R}$, $L = M = \mathbb{C}$, and $f = x^2 + 1 \in \mathbb{R}[x]$, $f$ is irreducible of degree $2 > 1$, yet $|G| = |\Gamma(\mathbb{C}:\mathbb{R})| = 2 = 2^1 \ne 2^{\deg f}$ and $\mathbb{C}[x]$ has no irreducible quadratic.
+- **Kernel-proved declarations in `Garling/Chapter11.lean` (all proved with ZERO dependency on `Complex.isAlgClosed`, `IsAlgClosed`, or `complex_isGarlingAlgebraicallyClosed`):**
+  - `Garling.Chapter11.exercise_11_11_unbound_n_counterexamples`: refutes both universal quantification (`∀ n, |G| = 2^n`) and `n := f.natDegree` on $K = \mathbb{R}$, $L = M = \mathbb{C}$, $f = X^2 + 1 \in \mathbb{R}[X]$ (`Irreducible f`, `f.natDegree = 2`, `|G| = 2`, and `¬ ∃ q : ℂ[X], Irreducible q ∧ q.natDegree = 2`).
+  - `Garling.Chapter11.IsGarlingSylowSubgroup`, `Garling.Chapter11.sylow_prime_power_subgroups`: formalize the inline Sylow $p$-subgroup definition and group-theory fact on p. 99.
+  - `Garling.Chapter11.exercise_11_11`: proves `(i)`–`(iii)` across arbitrary universes `u, v, w` without any extra characteristic-$0$ hypothesis (establishing `IsGarlingPerfectField K` in odd prime characteristic via `Exercise 10.7` and the odd-degree root hypothesis on $X^p - a$, then proving `IsGarlingGaloisExtension K M`, `(i)` `∃ n ≥ 1, |G| = 2^n`, `(ii)` `|G| = 2^n → 1 < n → (∃ J ≤ H, J.index = 2) ∧ (∃ q : L[X], Irreducible q ∧ q.natDegree = 2)`, and `(iii)` `IsGarlingAlgebraicallyClosed L` via `no_irreducible_quadratic_of_sqrt_and_char_ne_two`, `Theorem 7.3`, and `isGarlingAlgebraicallyClosed_of_irreducible_base_splits`).
+  - `Garling.Chapter11.complex_exists_sq_eq`, `Garling.Chapter11.real_odd_natDegree_exists_root`, `Garling.Chapter11.exercise_11_11_iv_complex_algebraically_closed`: prove explicit complex square roots via `Real.sqrt`, odd-degree real roots via IVT, and `(iv)` `IsGarlingAlgebraicallyClosed ℂ` (the Fundamental Theorem of Algebra) strictly by instantiating `exercise_11_11` `(iii)` at $K = \mathbb{R}, L = \mathbb{C}$, verified at the kernel constant level to have **zero** transitive dependency on `Complex.isAlgClosed`.
+- **Status:** Held in `QUEUE.md` as an unbound-variable (`n`) textbook-statement fidelity hold; counterexamples and all four parts `(i)`–`(iv)` are kernel-proved.
+
+---
+
+## Ch. 11, Exercise 11.12 (§11.4, printed p. 99 / PDF p. 107) — Literal *"all polynomials of odd degree over Z_2"* forces algebraic closure; odd-*irreducible* repair & scope of `(iii)` (fidelity hold)
+
+- **Printed statement (p. 99):** *"By considering the splitting field of all polynomials of odd degree over $\mathbb{Z}_2$, show that the condition $\operatorname{char} K \ne 2$ cannot be dropped from question 11.11."*
+- **Exact blockers:**
+  1. **Literal *"all polynomials of odd degree over $\mathbb{Z}_2$"* produces an algebraically closed field $K$ admitting NO degree-$2$ extension $L:K$:** For **every** polynomial $f \in \mathbb{Z}_2[x]$ of positive *even* degree (such as $f = x^2 + x + 1$ or $f = x^4 + x + 1$), the reducible product $x \cdot f \in \mathbb{Z}_2[x]$ has **odd** degree $\deg f + 1$. Consequently, if $K : \mathbb{Z}_2$ is a splitting field of $\{g \in \mathbb{Z}_2[x] : \operatorname{Odd}(\deg g)\}$, then $x \cdot f$ splits over $K$, hence $f$ splits over $K$ as well — so $K$ is **already algebraically closed** (`IsGarlingAlgebraicallyClosed K`, i.e., $K = \overline{\mathbb{F}}_2$), and there exists **no** field extension $L : K$ with $[L:K] = 2$! Garling intended the splitting field of all **irreducible** polynomials of odd degree over $\mathbb{Z}_2$ ($K = \bigcup_{d \text{ odd}} \mathbb{F}_{2^d} \subsetneq \overline{\mathbb{F}}_2$).
+  2. **Target within Exercise 11.11:** With $K = \bigcup_{d \text{ odd}} \mathbb{F}_{2^d}$ and $L = K(\omega)$ ($\omega^2 + \omega + 1 = 0$), parts `(i)` and `(ii)` of `Exercise 11.11` remain true (`K` is still perfect in characteristic $2$), while conclusion **`(iii)`** (`L` algebraically closed) fails (`x^4 + x + 1` has no root in $L = \bigcup_{d \text{ odd}} \mathbb{F}_{2^{2d}}$).
+- **Kernel-proved declarations in `Garling/Chapter11.lean`:**
+  - `Garling.Chapter11.exercise_11_12_literal_all_odd_is_algClosed`: proves that for any splitting field extension `IsGarlingSplittingFieldExtensionSet (ZMod 2) K {f : (ZMod 2)[X] | Odd f.natDegree}`, `IsGarlingAlgebraicallyClosed K` holds and `¬ ∃ (L : Type v) (_ : Field L) (_ : Algebra K L), Module.finrank K L = 2`.
+  - `Garling.Chapter11.exercise_11_12`: constructs inside Chapter 8's algebraic closure $\Omega$ of $\mathbb{Z}_2$ (`Theorem 8.2`) the intermediate fields $K = \{x \in \Omega : \exists d \text{ odd},\, x^{2^d} = x\}$ and $L = K(\omega)$ ($\omega^2 + \omega + 1 = 0$), and kernel-proves:
+    1. `IsGarlingSplittingFieldExtensionSet (ZMod 2) K {f : (ZMod 2)[X] | Irreducible f ∧ Odd f.natDegree}`;
+    2. `ringChar K = 2` and `Module.finrank K L = 2`;
+    3. `∀ w : L, ∃ u : L, u ^ 2 = w` and `∀ h : K[X], Odd h.natDegree → ∃ x : K, h.eval x = 0` (all remaining hypotheses of `Exercise 11.11`);
+    4. `¬ IsGarlingAlgebraicallyClosed L` (witnessed by $X^4 + X + 1 \in L[X]$, whose roots satisfy $\lambda^{2^{2d}} = \lambda + 1 \ne \lambda$ for every odd $d$).
+- **Status:** Held in `QUEUE.md` as a textbook wording slip (`all [irreducible] polynomials of odd degree`) fidelity hold; both the literal refutation and the full characteristic-$2$ counterexample to `11.11 (iii)` are kernel-proved.
+
+---
+
+## Ch. 11, Theorem 11.9 (§11.5, printed pp. 99–100 / PDF pp. 107–108) — Zero-polynomial `f = 0` edge case on finite root tuple `α_1, ..., α_n` and splitting field `M : K` (fidelity hold)
+
+- **Printed statement (pp. 99–100):** *"Suppose that $f \in K[x]$ and that $L:K$ is an extension. Let $N:L$ be a splitting field extension for $f$ over $L$, let $\alpha_1, \dots, \alpha_n$ be the roots of $f$ in $N$ and let $M = K(\alpha_1, \dots, \alpha_n)$ (so that $M:K$ is a splitting field extension for $f$ over $K$). Let $L_0$ be the fixed field of $\Gamma_L(f)$. Then if $\sigma \in \Gamma_L(f)$, $\sigma|_M \in \Gamma(M : L_0 \cap M)$, and the map $\theta : \sigma \to \sigma|_M$ is an isomorphism of $\Gamma_L(f)$ onto the subgroup $\Gamma(M : L_0 \cap M)$ of $\Gamma_K(f)$."*
+- **Exact blocker:** When $f = 0 \in K[x]$ and $L:K$ is an infinite extension (for example $K = \mathbb{Q}$ and $L = N = \mathbb{Q}(t) = \operatorname{FractionRing}(\mathbb{Q}[X])$), $N:L$ is a splitting field extension for $0$ over $L$ (`0` splits trivially over $L$, so $N = L$), yet the set of roots $\{x \in N : f(x) = 0\} = N$ is **infinite** (cannot be enumerated by any finite tuple $\alpha_1, \dots, \alpha_n$) and generates $M = K(N) = N \ne \mathbb{Q}$, which is **not** a splitting field extension for $0$ over $K = \mathbb{Q}$ (since the unique splitting field of $0$ over $K$ up to isomorphism is $K$ itself, `isGarlingSplittingFieldExtension_zero_iff`).
+- **Kernel-proved declarations in `Garling/Chapter11.lean`:**
+  - `Garling.Chapter11.theorem_11_9_zero_counterexample`: refutes the literal $f = 0$ case on $K = \mathbb{Q}$, $L = N = \operatorname{FractionRing}(\mathbb{Q}[X])$, proving `IsGarlingSplittingFieldExtension N N ((0 : ℚ[X]).map (algebraMap ℚ N))`, `garlingRootSet ℚ N 0 = Set.univ`, `(garlingRootSet ℚ N 0).Infinite`, `¬ ∃ (n : ℕ) (α : Fin n → N), Set.range α = garlingRootSet ℚ N 0`, and `¬ IsGarlingSplittingFieldExtension ℚ (IntermediateField.adjoin ℚ (garlingRootSet ℚ N 0)) 0`.
+  - `Garling.Chapter11.garlingNatIrrM`, `Garling.Chapter11.garlingNatIrrInter`, `Garling.Chapter11.garlingNatIrrM_stable`, `Garling.Chapter11.garlingNatIrrTheta`, `Garling.Chapter11.theorem_11_9`: prove **all** claims of `Theorem 11.9` across arbitrary universes `u, v, w` for every non-zero $f \in K[x]$ (`hf0 : f ≠ 0`, including non-zero constant polynomials of degree $0$), following Garling's p. 100 proof via `Theorem 11.3` (`φ(θ(Γ_L(f))) = L₀ ∩ M`).
+  - `Garling.Chapter11.theorem_11_9_separable`: formalizes the closing 2-line remark on printed p. 100 (`IsGarlingSeparablePoly f` $\implies$ `IsGarlingSeparablePoly (f.map (algebraMap K L))`, `L = L₀`, `L₀ ∩ M = L ∩ M`, `Γ_L(f) ≃* Γ(M : L ∩ M)`, and `[N:L] = [M : L ∩ M]`).
+- **Status:** Held in `QUEUE.md` as a zero-polynomial (`f ≠ 0`) edge-case fidelity hold; literal `f = 0` counterexample and general `f ≠ 0` theorem (plus p. 100's separable specialization) are all kernel-proved.
