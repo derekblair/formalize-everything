@@ -3562,7 +3562,7 @@ theorem section_10_6_inseparable_example {p : ℕ} (hp : Nat.Prime p) :
 def IsGarlingPerfectField (K : Type*) [Field K] : Prop :=
   ∀ f : K[X], IsGarlingSeparablePoly f
 
-/-- Exact equivalence between Garling's `IsGarlingPerfectField K` (§10.6, p. 89) and Mathlib's
+/-- Exact equivalence between Garling's `IsGarlingPerfectField K` (§10.6, printed p. 90 / PDF p. 98) and Mathlib's
 `PerfectField K` (`∀ {f : K[X]}, Irreducible f → f.Separable`). -/
 theorem isGarlingPerfectField_iff_perfectField (K : Type*) [Field K] :
     IsGarlingPerfectField K ↔ PerfectField K := by
