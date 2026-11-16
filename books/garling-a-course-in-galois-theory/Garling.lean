@@ -9,6 +9,7 @@ import Garling.Chapter08
 import Garling.Chapter09
 import Garling.Chapter10
 import Garling.Chapter11
+import Garling.Chapter12
 import Garling.Chapter13
 
 /-!

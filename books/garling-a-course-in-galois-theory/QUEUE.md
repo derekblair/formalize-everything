@@ -595,3 +595,70 @@ Chapter 7 (*Splitting fields*) contains **10** main-text theorem/corollary items
   - `Garling.Chapter11.garlingNatIrrM`, `Garling.Chapter11.garlingNatIrrInter`, `Garling.Chapter11.garlingNatIrrM_stable`, `Garling.Chapter11.garlingNatIrrTheta`, `Garling.Chapter11.theorem_11_9`: prove **all** claims of `Theorem 11.9` across arbitrary universes `u, v, w` for every non-zero $f \in K[x]$ (`hf0 : f ≠ 0`, including non-zero constant polynomials of degree $0$), following Garling's p. 100 proof via `Theorem 11.3` (`φ(θ(Γ_L(f))) = L₀ ∩ M`).
   - `Garling.Chapter11.theorem_11_9_separable`: formalizes the closing 2-line remark on printed p. 100 (`IsGarlingSeparablePoly f` $\implies$ `IsGarlingSeparablePoly (f.map (algebraMap K L))`, `L = L₀`, `L₀ ∩ M = L ∩ M`, `Γ_L(f) ≃* Γ(M : L ∩ M)`, and `[N:L] = [M : L ∩ M]`).
 - **Status:** Held in `QUEUE.md` as a zero-polynomial (`f ≠ 0`) edge-case fidelity hold; literal `f = 0` counterexample and general `f ≠ 0` theorem (plus p. 100's separable specialization) are all kernel-proved.
+
+---
+
+# Chapter 12 — Fidelity Holds (Printed pp. 101–106 / PDF pp. 109–114)
+
+## Ch. 12, Exercise 12.3 (§12.1, printed p. 102 / PDF p. 110) — Implicit primality of `p` (`Nat.Prime p`) omitted from statement (fidelity hold)
+
+- **Printed statement (p. 102):** *"Suppose that $L:K$ is an extension and that $L$ has $p^n$ elements. Show that $|K| = p^d$, where $d \mid n$. Conversely, if $d \mid n$, show that $(x^{p^d} - x) \mid (x^{p^n} - x)$ and deduce that $L$ has exactly one subfield with $p^d$ elements."*
+- **Exact blocker:** Unlike `Theorem 12.1` (*"For each prime number $p$..."*) and `Exercise 12.1` (*"...and $p$ is a prime..."*), `Exercise 12.3` omits *"where $p$ is a prime"* (relying on §12.1's standing notation $p = \operatorname{char} L$). Without `Nat.Prime p`, Part 1 is **false**: taking $p = 4, n = 1$, $L = \mathbb{F}_4$ (`|L| = 4^1 = 4`), and subfield $K = \mathbb{F}_2 \subseteq \mathbb{F}_4$, $|K| = 2$ is not of the form $4^d$ for any $d \in \mathbb{N}$.
+- **Kernel-proved declarations in `Garling/Chapter12.lean`:**
+  - `Garling.Chapter12.exercise_12_3_nonprime_counterexample`: constructs $L = \mathbb{F}_4$ (`Nat.card L = 4 ^ 1`) and $K = \operatorname{primeSubfield} L \cong \mathbb{F}_2$ (`Nat.card K = 2`), proving `∀ d : ℕ, Nat.card K ≠ 4 ^ d`.
+  - `Garling.Chapter12.poly_X_pow_sub_X_dvd`, `Garling.Chapter12.exercise_12_3`: prove both parts in full under `hp : Nat.Prime p` across arbitrary universes `u, v` (both `Nat.card` and `setOrder` forms).
+  - `Garling.Chapter12.exercise_12_3_converse_unconditional`: proves Part 2 (`(X^{p^d} - X) ∣ (X^{p^n} - X)` and unique subfield of order $p^d$) unconditionally for any field $L$ with `setOrder L = (p ^ n : ℕ)` and `d ∣ n` without assuming `Nat.Prime p`.
+- **Status:** Held in `QUEUE.md` as an omitted-primality-hypothesis (`Nat.Prime p`) fidelity hold; composite-`p` counterexample to Part 1, prime-`p` full theorem, and unconditional Part 2 converse are all kernel-proved.
+
+---
+
+## Ch. 12, Exercise 12.4 (§12.2, printed p. 103 / PDF p. 111) — Non-propositional *"Factorize..."* prompt + implicit `Nat.Prime p` (fidelity hold)
+
+- **Printed statement (p. 103):** *"Factorize $x^{p^p} - x$ over $\mathbb{Z}_p$."*
+- **Exact blockers:**
+  1. Non-propositional computational prompt (*"Factorize..."*) rather than a *"Show that..."* proposition.
+  2. Implicitly carries §12.2's standing hypothesis that $p$ is prime (`Nat.Prime p`, needed so $\mathbb{Z}_p$ is a field; note also that `DOSSIER-GARLING.md` l. 353's invented formula $x \prod_{j=1}^{p-1} (x^p - x - j)$ is mathematically false for every prime $p$).
+- **Kernel-proved declarations in `Garling/Chapter12.lean`:**
+  - `Garling.Chapter12.monicIrredDegPFinset`, `Garling.Chapter12.mem_monicIrredDegPFinset_iff`, `Garling.Chapter12.exercise_12_4`: prove over `ZMod p` (`[Fact p.Prime]`) the complete monic irreducible factorization
+    $$x^{p^p} - x = \Bigl(\prod_{a \in \mathbb{Z}_p} (x - a)\Bigr) \cdot \Bigl(\prod_{g \in \mathrm{DegP}} g\Bigr),$$
+    where `Lin` has cardinality $p$ (with product $x^p - x$), `DegP = monicIrredDegPFinset p` is disjoint from `Lin` and has cardinality $p^{p-1} - 1 = (p^p - p)/p$, every factor in `Lin ∪ DegP` is monic and irreducible (`Irreducible` and `IsGarlingIrreducible`), and all $p - 1$ non-zero §12.2 Artin–Schreier polynomials `artinSchreierPoly p j` ($j \ne 0$) belong to `DegP`.
+  - `Garling.Chapter12.exercise_12_4_p2`: proves explicitly at $p = 2$ that $x^4 - x = x(x - 1)(x^2 - x - 1)$ in $\mathbb{Z}_2[x]$ with all three factors irreducible.
+  - `Garling.Chapter12.exercise_12_4_dossier_formula_false`: kernel-refutes `DOSSIER-GARLING.md` l. 353's false formula $x \prod_{j \in \mathbb{Z}_p \setminus \{0\}} (x^p - x - j)$ for **every** prime $p$ (and $(x^p - x) \prod_{j \in \mathbb{Z}_p \setminus \{0\}} (x^p - x - j)$ for every odd prime $p \ge 3$).
+- **Status:** Held in `QUEUE.md` per the repo's computational-prompt + implicit-primality standard; complete factorization, $p = 2$ closed form, and dossier refutation are all kernel-proved.
+
+---
+
+## Ch. 12, Exercise 12.8 (§12.3, printed p. 105 / PDF p. 113) — Trivial-group `|G| = 1` conflict with §1.1 p. 7's non-empty generating-set definition and `ℕ` subtraction `s - 1` (fidelity hold)
+
+- **Printed statement (p. 105):** *"Suppose that $G$ is a finitely generated abelian group every element of which, except the identity, has infinite order. Show that $G \cong \mathbb{Z}^s$, where $s$ is defined by the property that $G$ is generated by $s$ elements, but is not generated by $s - 1$ elements."*
+- **Exact blocker:** The trivial group $G = \{0\}$ (`|G| = 1`) is a finitely generated abelian group in which every element except the identity vacuously has infinite order, and satisfies $G \cong \mathbb{Z}^0$. However:
+  1. Under Garling's own §1.1 definition of *"the subgroup generated by $A$"* (printed p. 7 / PDF p. 15, explicitly defined only for **non-empty** $A \subseteq G$, `IsGarlingAddGeneratedBy`), $G = \{0\}$ is generated by $\{0\}$ ($s = 1$) and **not** generated by $0$ elements ($s - 1 = 0$), uniquely pinning $s = 1$, for which $G \cong \mathbb{Z}^1 = \mathbb{Z}$ is **false**!
+  2. Under possibly-empty generation (`IsAddGeneratedBy`, $\langle \emptyset \rangle = \{0\}$), $G = \{0\}$ is generated by $s = 0$ elements, where `"s - 1 elements"` is $-1$ elements (and under naive `ℕ` truncated subtraction `0 - 1 = 0`, no $s \in \mathbb{N}$ satisfies `IsAddGeneratedBy G s ∧ ¬ IsAddGeneratedBy G (s - 1)`).
+- **Kernel-proved declarations in `Garling/Chapter12.lean`:**
+  - `Garling.Chapter12.exercise_12_8_trivial_counterexample`: proves on `Unit` (`|Unit| = 1`) that every non-zero element vacuously has infinite order, `IsGarlingAddGeneratedBy Unit s ∧ ¬ IsGarlingAddGeneratedBy Unit (s - 1) ↔ s = 1` while `IsEmpty (Unit ≃+ (Fin 1 → ℤ))`, and `¬ ∃ s : ℕ, IsAddGeneratedBy Unit s ∧ ¬ IsAddGeneratedBy Unit (s - 1)`.
+  - `Garling.Chapter12.exercise_12_8`: proves unconditionally for **every** finitely generated torsion-free abelian group `G` (`|G| ≥ 1`) that `∃! s : ℕ`, `IsAddGeneratedBy G s`, `∀ t < s, ¬ IsAddGeneratedBy G t`, `¬ ∃ t : ℕ, (t : ℤ) = (s : ℤ) - 1 ∧ IsAddGeneratedBy G t`, and `Nonempty (G ≃+ (Fin s → ℤ))`.
+  - `Garling.Chapter12.exercise_12_8_nontrivial`: proves under `[Nontrivial G]` (`|G| > 1`) that `0 < s` and `∃! s : ℕ` holds literally with `ℕ` subtraction `s - 1` under **both** `IsAddGeneratedBy` and §1.1's `IsGarlingAddGeneratedBy`.
+- **Status:** Held in `QUEUE.md` as a trivial-group (`|G| = 1`) edge-case fidelity hold; trivial-group counterexample and both unconditional and `[Nontrivial G]` theorems are kernel-proved.
+
+---
+
+## Ch. 12, Theorem 12.4 (§12.5, printed p. 105 / PDF p. 113) — Implicit primality of `p` (`Nat.Prime p`) omitted from statement (fidelity hold)
+
+- **Printed statement (p. 105):** *"Suppose that $K$ is a finite field with $p^n$ elements. Then the group of all automorphisms of $K$ is cyclic of order $n$, and is generated by the Frobenius automorphism $\phi$."*
+- **Exact blocker:** Like `Exercise 12.3`, `Theorem 12.4` omits *"where $p$ is a prime"*, relying on §12.1's standing notation $p = \operatorname{char} K$ (confirmed in line 1 of its proof: *"We can identify the prime subfield of $K$ with $\mathbb{Z}_p$"*, and by §10.5 where $\phi$ is defined on fields of prime characteristic $p$). Taken literally without `Nat.Prime p`, at $p = 4, n = 1$, the field $K = \mathbb{F}_4$ has $4^1 = 4$ elements, yet $|\operatorname{Aut}(\mathbb{F}_4)| = 2 \ne 1 = n$.
+- **Kernel-proved declarations in `Garling/Chapter12.lean`:**
+  - `Garling.Chapter12.theorem_12_4_nonprime_counterexample`: exhibits `K` (`𝔽_4`) with `Nat.card K = 4 ^ 1` and `setOrder K = (4 ^ 1 : ℕ)` for which `Nat.card (GarlingAut K) = 2 ≠ 1`.
+  - `Garling.Chapter12.garlingFrobeniusAut`, `Garling.Chapter12.theorem_12_4`: prove under `hp : Nat.Prime p` and `Nat.card K = p ^ n` (deducing `0 < n`, `Finite K`, and `ringChar K = p` automatically) that `IsCyclic (GarlingAut K)`, `Nat.card (GarlingAut K) = n`, `setOrder (GarlingAut K) = (n : ℕ)`, `orderOf φ = n`, and `Subgroup.zpowers φ = ⊤`.
+- **Status:** Held in `QUEUE.md` as an omitted-primality-hypothesis (`Nat.Prime p`) fidelity hold; composite-`p` counterexample and prime-`p` theorem are both kernel-proved.
+
+---
+
+## Ch. 12, Exercise 12.10 (§12.5, printed p. 106 / PDF p. 114) — Proof-method prompt (`"Use Theorem 12.4..."`) + inherited `Nat.Prime p` from `Exercise 12.3` / `Theorem 12.4` (fidelity hold)
+
+- **Printed statement (p. 106):** *"Use Theorem 12.4 to give another solution to Exercise 12.3."*
+- **Exact blockers:**
+  1. Non-propositional proof-method prompt prescribing a specific derivation route (`Theorem 12.4` + FTGT) rather than a standalone mathematical proposition (in Lean proof irrelevance, a proposition's type does not constrain its proof term unless intermediate Galois-correspondence witnesses are exposed).
+  2. Inherits the omitted `Nat.Prime p` hypothesis of both `Exercise 12.3` and `Theorem 12.4`.
+- **Kernel-proved declarations in `Garling/Chapter12.lean`:**
+  - `Garling.Chapter12.exercise_12_10`: re-proves `Exercise 12.3` under `hp : Nat.Prime p` **genuinely** from `theorem_12_4`, `corollary_to_theorem_12_4_subfield`, and Chapter 11's Fundamental Theorem of Galois Theory (`theorem_11_8` and `theorem_11_4` over `primeSubfield L`) — proving that `Hd = Subgroup.zpowers (φ ^ d)` is the **unique** subgroup of `GarlingAut L` of order `n / d` and `Fd = garlingPhi Hd` is the **unique** subfield of `L` of order `p ^ d` — with **zero** calls to `exercise_12_3`.
+- **Status:** Held in `QUEUE.md` as a proof-method prompt + inherited `Nat.Prime p` fidelity hold; genuine FTGT + `Theorem 12.4` solution is kernel-proved.
