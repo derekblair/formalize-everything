@@ -6,6 +6,7 @@ import Garling.Chapter05
 import Garling.Chapter06
 import Garling.Chapter07
 import Garling.Chapter08
+import Garling.Chapter09
 import Garling.Chapter13
 
 /-!
