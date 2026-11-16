@@ -52,7 +52,7 @@ Accordingly, the package partitions its deliverables cleanly between
 | **4. Extended duplicate-key & collapse semantics (§5.3.1, §5.6.1)** | **Novel** (narrowed per I2) | [`Equiv.lean`](Cbor/Rfc8949/Equiv.lean), [`Duplicates.lean`](Cbor/Rfc8949/Duplicates.lean) | Maps-as-sets-of-pairs characterization (`Item.equiv_map_iff`, `Item.equiv_mapIndef_iff`) under explicit canonical-entry well-formedness hypotheses `WFPairs (canonWithPairs false kvs₁)` and `WFPairs (canonWithPairs false kvs₂)` (automatic when canonicalized aggregate sizes are `< 2^64`); first-wins / collapse-to-one-instance decoder (`firstWins`, `decodeFirstWins`) alongside strict rejection (`decodeStrict`); duplicate equivalence across indefinite chunks/containers (`firstWins_indef_bytes_dup`, `firstWins_indef_array_dup`) and extended tag-2/3 bignum ↔ major 0/1 integer keys (`Item.equivExt_of_intValue?`, `firstWins_extended_int_dup`, `zero_vs_tag2_empty_map_split`). |
 | **5. Map-key ordering profiles (§4.2.1, §4.2.3, CTAP2)** | **Novel** (I1 applied) | [`Lex.lean`](Cbor/Rfc8949/Lex.lean), [`Ordering.lean`](Cbor/Rfc8949/Ordering.lean) | Core bytewise-lex (`lexLt`), length-first (`lengthFirstLt`), and FIDO CTAP2 canonical order (`ctap2Lt`) proved strict total orders with stable `sortBy`; exact atomic-key agreement on major types `{0, 1, 2, 3, 7}` (`order_core_eq_ctap2_atomic`, `order_core_eq_ctap2_atomic_indefBounded`, `order_core_eq_ctap2_atomic_wire`, `sortBy_core_eq_ctap2_atomic`); compound-key counterexample `[100]` vs `[-1]` from §4.2.1 (`order_core_ne_ctap2_compound`, `not_order_core_eq_ctap2_all`) and cross-major divergence against §4.2.3 (`order_core_ne_lengthFirst_atomic`). |
 | **6. Full float-free RFC 8949 conformance vector suite** | **Novel** (Amendment 1 counts) | [`Vectors.lean`](Cbor/Rfc8949/Vectors.lean), [`Vectors/AppendixA.lean`](Cbor/Rfc8949/Vectors/AppendixA.lean), [`Vectors/AppendixF1.lean`](Cbor/Rfc8949/Vectors/AppendixF1.lean), [`Vectors/Ordering.lean`](Cbor/Rfc8949/Vectors/Ordering.lean) | In-kernel verification of all **58** float-free Appendix A rows in both directions (plus 18 `Int`/bignum semantic round trips), refusal of all **94** Appendix F.1 malformed byte sequences across all 14 RFC categories, and the **8**-key §4.2.1 / §4.2.3 / CTAP2 ordering vector suite. |
-| **7. Build-enforced foundation audit & docs** | Verification gate | [`Audit.lean`](Cbor/Rfc8949/Audit.lean) | Imported by root [`Cbor.lean`](Cbor.lean); three-way source-tree/module-inventory check + transitive `collectAxioms` scan across all **5,090** project declarations (`23` audited modules, `25` source modules total) plus explicit `#print axioms` on every M1 and M2 theorem family. |
+| **7. Build-enforced foundation audit & docs** | Verification gate | [`Audit.lean`](Cbor/Rfc8949/Audit.lean) | Imported by root [`Cbor.lean`](Cbor.lean); three-way source-tree/module-inventory check + transitive `collectAxioms` scan across all **5,101** project declarations (`23` audited modules, `25` source modules total) plus explicit `#print axioms` on every M1 and M2 theorem family. |
 | **8. Milestone 2: IEEE 754 float slice & 23 Appendix A float vectors (FE #126)** | **Novel** | [`Float.lean`](Cbor/Rfc8949/Float.lean), [`Float/IEEE754.lean`](Cbor/Rfc8949/Float/IEEE754.lean), [`Float/Narrowing.lean`](Cbor/Rfc8949/Float/Narrowing.lean), [`Float/DataModel.lean`](Cbor/Rfc8949/Float/DataModel.lean), [`Float/Vectors.lean`](Cbor/Rfc8949/Float/Vectors.lean) | Explicit bit-level `Float16`/`Float32`/`Float64`/`CborFloat` codecs (`0xf9`/`0xfa`/`0xfb`, §3.3 & Appendix D Figure 3); stepwise `binary64 → binary32 → binary16` value-preserving narrowing (§4.1 `preferredFloat`, `encodeFloatPreferred_shortest`) and deterministic `0xf97e00` NaN canonicalization (§4.2.1/§4.2.2 `canonicalFloatDet`); signed-zero, `±Infinity`, NaN-payload, subnormal, and IEEE 754 RNE lossy-narrowing boundary theorems; §2/§5.6.1 `FloatEquiv` & `FullItem.Equiv`; full-grammar `parseFullRaw_eq_some_iff` + 94-sequence Appendix F.1 refusal; and all **23** float Appendix A rows (`19..40` and `49`) + complete **81**-row partition (`58 + 23 = 81`). |
 
 ---
@@ -226,6 +226,9 @@ with **zero** reliance on Lean's opaque `Float`:
      mechanisms (precision narrowing on `1.1` Row 22, `1363896240.5` Row 49, and
      `1.0 + 2^-11`; exponent overflow to `+Infinity` on `100000.0` Row 25 and
      `1.0e+300` Row 27; exponent underflow to `+0.0` on `2^-25` and `2^-1074`).
+     The `32 → 16` counterpart `widen16To32_round32To16_eq_iff` states the same
+     round-trip property for `round32To16` via `widen16To32` iff
+     `narrow32To16? s ≠ none`.
 4. **Float data-model equivalence & full-grammar F.1 refusal (`Float/DataModel.lean`, §2 & §5.6.1):**
    * `FloatEquiv` and `FullItem.Equiv` erase float width, equate `-0.0` and
      `+0.0` as generic data-model values / map keys (`floatEquiv_posZero_negZero`,
@@ -289,7 +292,7 @@ rm -rf .lake && lake build
 * [`Cbor/Rfc8949/Audit.lean`](Cbor/Rfc8949/Audit.lean) is imported by the
   default target [`Cbor.lean`](Cbor.lean), so every `lake build` verifies
   module coverage across all **25** `.lean` source files (`23` audited modules)
-  and checks transitive foundations across all **5,090** project declarations
+  and checks transitive foundations across all **5,101** project declarations
   (`⊆ {propext, Classical.choice, Quot.sound}`, zero `sorryAx`).
   Run `CBOR_AUDIT_VERBOSE=1 lake env lean Cbor/Rfc8949/Audit.lean` to log each
   declaration individually.
