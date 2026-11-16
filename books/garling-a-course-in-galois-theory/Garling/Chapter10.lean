@@ -3557,7 +3557,7 @@ theorem section_10_6_inseparable_example {p : ℕ} (hp : Nat.Prime p) :
   rw [Polynomial.eval_pow, Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C] at hγ_eval
   exact sub_eq_zero.mp ((pow_eq_zero_iff hp.ne_zero).mp hγ_eval)
 
-/-- Garling's prose definition of a *perfect field* (§10.6, printed p. 89 / PDF p. 97):
+/-- Garling's prose definition of a *perfect field* (§10.6, printed p. 90 / PDF p. 98):
 *"A field `K` is said to be **perfect** if every polynomial in `K[x]` is separable."* -/
 def IsGarlingPerfectField (K : Type*) [Field K] : Prop :=
   ∀ f : K[X], IsGarlingSeparablePoly f
@@ -3578,7 +3578,7 @@ theorem isGarlingPerfectField_of_char_zero {K : Type*} [Field K] (hchar : ringCh
     IsGarlingPerfectField K :=
   fun f => corollary_to_theorem_10_6 hchar f
 
-/-- **Exercise 10.7** (§10.6, printed p. 89 / PDF p. 97):
+/-- **Exercise 10.7** (§10.6, printed p. 90 / PDF p. 98):
 *"Suppose that `char K = p ≠ 0`. Show that `K` is perfect if and only if the Frobenius monomorphism
 is an automorphism."* -/
 theorem exercise_10_7 {K : Type*} [Field K] {p : ℕ} (hchar : ringChar K = p) (hp0 : p ≠ 0) :
@@ -3619,7 +3619,7 @@ theorem exercise_10_7 {K : Type*} [Field K] {p : ℕ} (hchar : ringChar K = p) (
     intro hauto
     exact isGarlingSeparablePoly_of_frobenius_surjective hchar hp0 hauto.2
 
-/-- Universe-polymorphic forward direction of **Exercise 10.8** (§10.6, printed p. 89 / PDF p. 97):
+/-- Universe-polymorphic forward direction of **Exercise 10.8** (§10.6, printed p. 90 / PDF p. 98):
 over a perfect field `K : Type u`, every algebraic (and hence every finite) extension `L : Type v`
 is separable. -/
 theorem exercise_10_8_mp_univ {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
@@ -3627,7 +3627,7 @@ theorem exercise_10_8_mp_univ {K : Type u} {L : Type v} [Field K] [Field L] [Alg
     IsGarlingSeparableExtension K L :=
   fun α => ⟨halg α, hperf (minpoly K α)⟩
 
-/-- **Exercise 10.8** (§10.6, printed p. 89 / PDF p. 97):
+/-- **Exercise 10.8** (§10.6, printed p. 90 / PDF p. 98):
 *"Show that a field `K` is perfect if and only if every finite extension of `K` is separable."*
 
 Proved directly via `Theorem 4.6` (`theorem_4_6`: finite extensions are algebraic) for `(⇒)` and
@@ -3660,7 +3660,7 @@ theorem exercise_10_8 {K : Type u} [Field K] :
     have hg_dvd_min : g ∣ minpoly K α := ⟨↑u₀⁻¹, by rw [hu, mul_assoc, Units.mul_inv, mul_one]⟩
     exact (isGarlingSeparableIrreducible_iff_separable hg_irr).mpr (hmin_sep.of_dvd hg_dvd_min)
 
-/-- **Exercise 10.9** (§10.6, printed p. 89 / PDF p. 97):
+/-- **Exercise 10.9** (§10.6, printed p. 90 / PDF p. 98):
 *"Suppose that `char K = p > 0` and that `f` is an irreducible polynomial in `K[x]`. Show that there
 exist a non-negative integer `n` and a separable irreducible polynomial `g` in `K[x]` such that
 `f(x) = g(x^{p^n})`."* -/
