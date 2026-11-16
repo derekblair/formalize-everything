@@ -3817,4 +3817,3 @@ theorem exercise_10_11 {K L : Type*} [Field K] [Field L] [Algebra K L] {p : ℕ}
   exact ⟨⟨hfL_root, hexact⟩, hmult_fL⟩
 
 end Garling.Chapter10
-
