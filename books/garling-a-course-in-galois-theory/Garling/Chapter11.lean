@@ -3420,7 +3420,7 @@ local instance instFactPrime5 : Fact (Nat.Prime 5) := ⟨by decide⟩
 local instance instFactPrime7 : Fact (Nat.Prime 7) := ⟨by decide⟩
 
 /-- **Exercise 11.6** (§11.2, printed p. 95 / PDF p. 103; see `QUEUE.md` on `"Find..."` prompt):
-*"Find the Galois group of `x⁴ - 2` over (a) `ℚ`, (b) `ℤ₃`, and (c) `ℤ₇`."*
+*"Find the Galois group of `x⁴ - 2` over (a) the rational field `ℚ`, (b) the field `ℤ₃` and (c) the field `ℤ₇`."*
 - **(a) Over `ℚ`:** `Γ_ℚ(x⁴ - 2) ≅ D₄` (`DihedralGroup 4`, order `8`, splitting field `ℚ(2^(1/4), i)`).
 - **(b) Over `ℤ₃`:** `x⁴ - 2 = (x² + x + 2)(x² + 2x + 2)`, splitting field of degree `2`,
   `Γ_{ℤ₃}(x⁴ - 2) ≅ C₂` (`Multiplicative (ZMod 2)`, order `2`).
@@ -3606,7 +3606,7 @@ theorem exercise_11_6 :
   exact ⟨ha, hb, hc⟩
 
 /-- **Exercise 11.7** (§11.2, printed p. 96 / PDF p. 104; see `QUEUE.md` on `"Find..."` prompt):
-*"Find the Galois group of `x⁴ + 2` over (a) `ℚ`, (b) `ℤ₃`, and (c) `ℤ₅`."*
+*"Find the Galois group of `x⁴ + 2` over (a) the rational field `ℚ`, (b) the field `ℤ₃` and (c) the field `ℤ₅`."*
 - **(a) Over `ℚ`:** `Γ_ℚ(x⁴ + 2) ≅ D₄` (`DihedralGroup 4`, order `8`, splitting field `ℚ(2^(1/4), i)`).
 - **(b) Over `ℤ₃`:** `x⁴ + 2 = x⁴ - 1 = (x - 1)(x + 1)(x² + 1)`, splitting field of degree `2`,
   `Γ_{ℤ₃}(x⁴ + 2) ≅ C₂` (`Multiplicative (ZMod 2)`, order `2`).
@@ -3983,8 +3983,8 @@ theorem exercise_11_7 :
 /-! ## §11.3 An example (printed pp. 96–97, PDF pp. 104–105) -/
 
 /-- **§11.3 Unnumbered Prose Lemma** (printed p. 96 / PDF p. 104):
-*"First we need a lemma: if `p` is prime and `G` is a transitive subgroup of `Σ_X` (where
-`|X| = p`) which contains a transposition, then `G = Σ_X`."*
+*"In particular if `X` has a prime number of elements, if `G` acts transitively on `X` and if `G`
+contains at least one transposition, ... it follows that `G = Σ_X`."*
 
 Proved directly via Garling's p. 96 equivalence relation `x ~ y ↔ x = y ∨ (x y) ∈ G`,
 equal equivalence-class sizes under transitivity of `G`, primality of `|X|`, and generation of
@@ -4231,8 +4231,8 @@ theorem separable_rat_roots_partition {f : ℚ[X]} (hsep : f.Separable) :
 roots and `2` complex roots in `ℂ` then the Galois group `Γ(f)` of `f` over `ℚ` is `Σ_p`."*
 
 Here `"complex roots in ℂ"` means non-real complex roots (`z.im ≠ 0`), as Garling's proof on p. 96
-explicitly uses (*"complex conjugation restricts to an element `τ` of `Γ(f)` which leaves each of
-the real roots invariant, and interchanges the complex roots; `τ` acts as a transposition on `R`"*).
+explicitly uses (*"Also the automorphism `z → z̄` of `ℂ` fixes the real roots of `f` and
+interchanges the complex ones ... and `Γ(f)` contains a transposition."*).
 For **every** splitting field extension `L : ℚ` of `f`, the canonical root-permutation homomorphism
 `garlingRootPermHom ℚ L f : Γ_ℚ(f) →* Equiv.Perm (garlingRootSet ℚ L f)` is bijective and
 `Γ_ℚ(f) ≃* Equiv.Perm (Fin p)` (`|Γ_ℚ(f)| = [L : ℚ] = p!`). -/
