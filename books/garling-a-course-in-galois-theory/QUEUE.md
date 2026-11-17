@@ -662,3 +662,89 @@ Chapter 7 (*Splitting fields*) contains **10** main-text theorem/corollary items
 - **Kernel-proved declarations in `Garling/Chapter12.lean`:**
   - `Garling.Chapter12.exercise_12_10`: re-proves `Exercise 12.3` under `hp : Nat.Prime p` **genuinely** from `theorem_12_4`, `corollary_to_theorem_12_4_subfield`, and Chapter 11's Fundamental Theorem of Galois Theory (`theorem_11_8` and `theorem_11_4` over `primeSubfield L`) — proving that `Hd = Subgroup.zpowers (φ ^ d)` is the **unique** subgroup of `GarlingAut L` of order `n / d` and `Fd = garlingPhi Hd` is the **unique** subfield of `L` of order `p ^ d` — with **zero** calls to `exercise_12_3`.
 - **Status:** Held in `QUEUE.md` as a proof-method prompt + inherited `Nat.Prime p` fidelity hold; genuine FTGT + `Theorem 12.4` solution is kernel-proved.
+
+---
+
+# Chapter 14 — Fidelity Holds (Printed pp. 110–117 / PDF pp. 118–125)
+
+## Ch. 14, Exercise 14.1 (§14.2, printed p. 112 / PDF p. 120) — Omitted `monic` hypothesis (`a_n^n` factor under p. 111's `Δ = δ²` definition) (fidelity hold)
+
+- **Printed statement (p. 112):** *"Suppose that $f$ is a polynomial in $K[x]$, with roots $\alpha_1, \dots, \alpha_n$ in some splitting field extension. Show that $\Delta = \eta_n \prod_{j=1}^n \mathrm{D}f(\alpha_j)$, where $\eta_n = 1$ if $n\ (\mathrm{mod}\ 4) = 0$ or $1$ and $\eta_n = -1$ otherwise."*
+- **Exact blocker:** On printed p. 111, Garling defines the discriminant of $f \in K[x]$ with roots $\alpha_1, \dots, \alpha_n$ in $L$ directly as $\Delta = \delta^2 = \prod_{1 \le i < j \le n} (\alpha_j - \alpha_i)^2$ **without** any factor of the leading coefficient $a_n$. For $f = a_n \prod_{i=1}^n (x - \alpha_i)$ ($a_n \ne 0$), $\mathrm{D}f(\alpha_j) = a_n \prod_{i \ne j} (\alpha_j - \alpha_i)$, so $\eta_n \prod_{j=1}^n \mathrm{D}f(\alpha_j) = a_n^n \Delta$. When $f$ is non-monic (with $a_n^n \ne 1$ and $\Delta \ne 0$), the literal printed identity fails — e.g. for $f = 2x^2 - 2x = 2x(x - 1) \in \mathbb{Q}[x]$ ($n = 2$, roots $0, 1$), $\Delta = (1 - 0)^2 = 1$, whereas $\eta_2 \mathrm{D}f(0)\mathrm{D}f(1) = (-1)(-2)(2) = 4 \ne 1$.
+- **Kernel-proved declarations in `Garling/Chapter14.lean`:**
+  - `Garling.Chapter14.exercise_14_1_nonmonic_counterexample`: refutes the literal unguarded identity on $K = L = \mathbb{Q}$, $f = 2X^2 - 2X$, $\alpha = ![0, 1]$, proving `IsGarlingSplittingFieldExtension ℚ ℚ f`, `GarlingSplitsExplicit ℚ ℚ f 2 2 α`, `garlingDiscriminant f = 1`, and `garlingEta 2 * ∏ j : Fin 2, (garlingDeriv f).eval (α j) = 4 ≠ garlingDiscriminant f`.
+  - `Garling.Chapter14.exercise_14_1_general`: proves for **every** non-zero $f \in K[x]$ with `GarlingSplitsExplicit K L f n c α` that `(garlingEta n : L) * ∏ j : Fin n, Polynomial.aeval (α j) (garlingDeriv f) = algebraMap K L (c ^ n * garlingDiscriminant f)`.
+  - `Garling.Chapter14.exercise_14_1`: proves the printed identity literally for **every monic** $f \in K[x]$ (`hf : f.Monic`, including $n = 0$, $f = 1$).
+  - `Garling.Chapter14.exercise_14_1_iff_of_disc_ne_zero`: proves that whenever `garlingDiscriminant f ≠ 0`, the printed identity holds **if and only if** `f.leadingCoeff ^ n = 1`.
+- **Status:** Held in `QUEUE.md` as an omitted-monicity textbook-statement fidelity hold; non-monic counterexample, general `a_n^n Δ` identity, monic `Δ` theorem, and exact `a_n^n = 1` characterization are all kernel-proved.
+
+---
+
+## Ch. 14, Exercise 14.3 (§14.2, printed p. 113 / PDF p. 121) — Power-sum collision at `n = 2` + genuine textbook sign error in printed discriminant formula for all odd `n ≥ 3` (fidelity hold)
+
+- **Printed statement (p. 113, verified on 200 DPI scan; OCR `garling1986_pages.txt` mangles the discriminant line to `L1=1'fll+lnnqn-l_17n(n-1)11-lpn`):** *"Suppose that $f = x^n + px + q$. Show that $\lambda_1 = \lambda_2 = \dots = \lambda_{n-2} = 0$, $\lambda_{n-1} = -(n - 1)p$, $\lambda_n = -nq$, $\lambda_{n+1} = \dots = \lambda_{2n-3} = 0$ and $\lambda_{2n-2} = (n - 1)p^2$. Show that the discriminant $\Delta$ of $f$ is*
+  $$\Delta = \eta_{n+1} n^n q^{n-1} - \eta_n (n - 1)^{n-1} p^n$$
+  *where $\eta_n = 1$ if $n\ (\mathrm{mod}\ 4) = 0$ or $1$ and $\eta_n = -1$ otherwise."*
+- **Exact blockers:**
+  1. **Power sums require $n \ge 3$ (index collision at $n = 2$):** At $n = 2$ ($f = x^2 + px + q$), the indices $n = 2$ and $2n - 2 = 2$ coincide, and the true power sum is $\lambda_2 = p^2 - 2q = (n - 1)p^2 - nq$, which contradicts both $\lambda_n = -nq$ (whenever $p \ne 0$) and $\lambda_{2n-2} = (n - 1)p^2$ (whenever $2q \ne 0$), e.g. on $f = x^2 + x + 1 \in \mathbb{Q}[x]$ where $\lambda_2 = -1 \notin \{-2, 1\}$.
+  2. **Printed discriminant swaps $\eta_n \leftrightarrow \eta_{n+1}$ and equals $-\Delta$ for EVERY odd $n \ge 3$:** By `Exercise 14.1` and $\alpha_j \mathrm{D}f(\alpha_j) = -(n - 1)p\alpha_j - nq$ with $\prod_{j=1}^n \alpha_j = (-1)^n q$, the **true** discriminant of $f = x^n + px + q$ for all $n \ge 2$ is
+     $$\Delta = \eta_n n^n q^{n-1} - \eta_{n+1} (n - 1)^{n-1} p^n.$$
+     Because $\eta_{n+1} = (-1)^n \eta_n$, Garling's printed formula $\Delta_{\text{printed}} = \eta_{n+1} n^n q^{n-1} - \eta_n (n - 1)^{n-1} p^n = (-1)^n \Delta$ agrees with $\Delta$ for even $n \ge 2$, but equals **$-\Delta$** for every odd $n \ge 3$ — e.g. at $n = 3$ on $f = x^3 + 1 \in \mathbb{Q}[x]$ ($p = 0, q = 1$), $\Delta = -27$ (matching p. 112's cubic formula), whereas $\Delta_{\text{printed}} = +27 \ne -27$. (Note: in Chapter 20 §20.3 on printed p. 161, Garling applies `Exercise 14.3` at odd $n = 5$ to $x^5 + 20x + 16$ and writes $+2^{16} 5^6 = \Delta_{\text{true}}$, confirming the swapped indices on p. 113 are a typographical error.)
+- **Kernel-proved declarations in `Garling/Chapter14.lean`:**
+  - `Garling.Chapter14.exercise_14_3_n2_powerSum_counterexample`: refutes both $\lambda_n = -nq$ and $\lambda_{2n-2} = (n - 1)p^2$ at $n = 2$ on $f = X^2 + X + 1 \in \mathbb{Q}[X]$ (`garlingPowerSum α 2 = -1`, `-2 * q = -2`, `(2 - 1) * p^2 = 1`).
+  - `Garling.Chapter14.exercise_14_3_odd_counterexample`: refutes the printed discriminant formula at $n = 3$ on $f = X^3 + 1 \in \mathbb{Q}[X]$ (`garlingDiscriminant (X^3 + 1) = -27`, printed RHS `= 27`, `-27 ≠ 27`), and proves more generally that for every odd $n \ge 3$ and every $f = X^n + C p * X + C q$ over $\operatorname{char} K \ne 2$ with $\Delta \ne 0$, $\Delta_{\text{printed}} = -\Delta \ne \Delta$.
+  - `Garling.Chapter14.exercise_14_3_powerSums`: proves all five power-sum identities ($\lambda_1 = \dots = \lambda_{n-2} = 0$, $\lambda_{n-1} = -(n-1)p$, $\lambda_n = -nq$, $\lambda_{n+1} = \dots = \lambda_{2n-3} = 0$, $\lambda_{2n-2} = (n-1)p^2$) for **all $n \ge 3$** over any field $K$.
+  - `Garling.Chapter14.exercise_14_3_discriminant`: proves the **true** discriminant formula $\Delta = \eta_n n^n q^{n-1} - \eta_{n+1} (n - 1)^{n-1} p^n$ for **all $n \ge 2$** over **arbitrary** fields $K$ (characteristic-free, covering $q = 0$, $q \ne 0$, and $p = 0$ without non-vanishing side conditions).
+  - `Garling.Chapter14.exercise_14_3_printed_eq_neg_one_pow_mul_disc`: proves $\Delta_{\text{printed}} = (-1)^n \Delta$ for all $n \ge 2$, hence $\Delta_{\text{printed}} = \Delta$ for all even $n \ge 2$ and $\Delta_{\text{printed}} = -\Delta$ for all odd $n \ge 3$.
+- **Status:** Held in `QUEUE.md` as a textbook mathematical-error fidelity hold; both counterexamples (`n = 2` power sum and `n = 3` / odd `n ≥ 3` discriminant) and all repaired theorems (`n ≥ 3` power sums and `n ≥ 2` true discriminant) are kernel-proved.
+
+---
+
+## Ch. 14, Exercise 14.5 (§14.3, printed p. 115 / PDF p. 123) — Genuine textbook typo `h = 27x^6 + 27q^3 - p^3` (for `27x^6 + 27qx^3 - p^3`) + `β = 0` root edge case when `p = 0` (fidelity hold)
+
+- **Printed statement (p. 115):** *"Suppose that $\operatorname{char} K$ is not $2$ or $3$, and that $f = x^3 + px + q \in K[x]$. Let $\alpha$ be a root of $f$ in a splitting field, let $g = 3x^2 - 3\alpha x - p$, and let $\beta$ be a root of $g$ in a splitting field for $g$ over $K(\alpha)$. Express $\alpha$ in terms of $\beta$ and show that $\beta$ is a root of $h = 27x^6 + 27q^3 - p^3 \in K[x]$. Conclude that $\alpha = \beta - p/3\beta$, where $\beta^3 = -q/2 + \delta$ and $\delta^2 = q^2/4 + p^3/27$: the cubic $f$ can be solved by extracting a square root and a cube root."*
+- **Exact blockers:**
+  1. **Printed polynomial $h = 27x^6 + 27q^3 - p^3 \in K[x]$ is mathematically false (missing $x^3$ in $27qx^3$):** Substituting $\alpha = \beta - p/(3\beta)$ ($\beta \ne 0$) into $\alpha^3 + p\alpha + q = 0$ yields $\beta^3 + q - p^3/(27\beta^3) = 0$, i.e. **$27\beta^6 + 27q\beta^3 - p^3 = 0$** (`h_repaired = 27x^6 + 27qx^3 - p^3`), NOT $27\beta^6 + 27q^3 - p^3 = 0$. For $K = \mathbb{Q}$, $p = 0, q = -8$ ($f = x^3 - 8$, $\alpha = 2$, $g = 3x(x - 2)$), $h_{\text{printed}}(2) = -12096 \ne 0$ and $h_{\text{printed}}(0) = -13824 \ne 0$; and for $p = -3, q = 2$ ($f = x^3 - 3x + 2$, $\alpha = 1$, $g = 3x^2 - 3x + 3$, where $\beta \ne 0$ and $\beta^3 = -1$), $h_{\text{printed}}(\beta) = 270 \ne 0$.
+  2. **$\beta = 0$ root of $g$ when $p = 0$ and $q \ne 0$ (plus constructive `"Express..."` prompt):** When $p = 0$ and $q \ne 0$ (so $\alpha \ne 0$), $g = 3x^2 - 3\alpha x = 3x(x - \alpha)$ has two roots in $K(\alpha)$: $\beta = \alpha \ne 0$ and $\beta = 0$. For the root choice $\beta = 0$, $3\beta = 0$ is non-invertible and $\beta - p/(3\beta) = 0 \ne \alpha$ cannot recover $\alpha$.
+- **Kernel-proved declarations in `Garling/Chapter14.lean`:**
+  - `Garling.Chapter14.exercise_14_5_counterexamples`: kernel-proves both refutations of $h_{\text{printed}}(\beta) = 0$ over $\mathbb{Q}$ ($p = 0, q = -8, \alpha = 2$ for **all** roots $\beta \in \{0, 2\}$ of $g$, and $p = -3, q = 2, \alpha = 1$ with $p \ne 0$ for **all** roots $\beta$ of $g = 3X^2 - 3X + 3$), as well as the $\beta = 0$ root failure $\beta - p/(3\beta) = 0 \ne 2 = \alpha$ on $p = 0, q = -8$.
+  - `Garling.Chapter14.exercise_14_5_repaired`: proves for every field $K$ with $\operatorname{char} K \ne 2, 3$, every $p, q \in K$, every root $\alpha$ of $f = X^3 + C p * X + C q$, and every root $\beta$ of $g = 3X^2 - 3\alpha X - p$:
+    1. $\beta$ is unconditionally a root of $h_{\text{repaired}} = 27X^6 + 27q X^3 - p^3 \in K[X]$ (even when $\beta = 0$!);
+    2. Whenever $\beta \ne 0$ (which holds automatically for every root of $g$ when $p \ne 0$, and holds for at least one root of $g$ whenever $(p, q) \ne (0, 0)$), $3\beta \ne 0$, $\alpha = \beta - p/(3\beta)$, and $\delta := \beta^3 + q/2$ satisfies $\beta^3 = -q/2 + \delta$ and $\delta^2 = q^2/4 + p^3/27$;
+    3. `IsGarlingSolvableByRadicals (X^3 + C p * X + C q)` (via `cubic_solvable_by_radicals`).
+- **Status:** Held in `QUEUE.md` as a textbook misprint (`27q^3` for `27qx^3`) + `β = 0` edge-case fidelity hold; counterexamples and repaired theorem are both kernel-proved.
+
+---
+
+## Ch. 14, Exercise 14.7 (§14.4, printed p. 117 / PDF p. 125) — Mathematically impossible `Splits over K` condition in Rows 4 and 5 of the printed classification table (fidelity hold)
+
+- **Printed statement (p. 117):** *"Suppose that $f$ is an irreducible quartic in $K[x]$ (where $\operatorname{char} K$ is not $2$ or $3$) and that $L:K$ is a splitting field extension for $f$. Let $g$ be the cubic resolvent for $f$, and let $M$ be a splitting field for $g$ in $L$. Verify that the following table includes all possibilities and that it determines the Galois group of $f$ in each case."*
+  - Row 1: `No square root in K` | `Irreducible over K` | *(blank)* | `Σ_4`
+  - Row 2: `Has square root in K` | `Irreducible over K` | *(blank)* | `A_4`
+  - Row 3: `Has square root in K` | `Splits over K` | *(blank)* | `Viergruppe`
+  - Row 4: `No square root in K` | **`Splits over K`** | `Factorizes in M[x]` | `Cyclic of order 4`
+  - Row 5: `No square root in K` | **`Splits over K`** | `Irreducible over M` | `Of order 8`
+- **Exact blocker:** Rows 4 and 5 as printed are **mathematically impossible**, and the printed table **fails to include all possibilities**:
+  - For any irreducible quartic $f \in K[x]$ ($\operatorname{char} K \ne 2$), $\Delta(g) = \Delta(f)$ (`garlingDiscriminant_quarticCubicResolvent`). If $g$ **splits over $K$**, then its roots $\beta^2, \gamma^2, \delta^2$ lie in $K$, so $\Delta(f) = \Delta(g) = ((\gamma^2 - \beta^2)(\delta^2 - \beta^2)(\delta^2 - \gamma^2))^2$ **already has a square root in $K$** — directly contradicting `No square root in K` in both Row 4 and Row 5! (Moreover, if $g$ splits over $K$, then $M = K$, so Row 4's `Factorizes in M[x]` contradicts irreducibility of $f$ in $K[x]$.)
+  - Conversely, when $\Gamma_K(f) \cong C_4$ (e.g. `Exercise 14.8(iv)` $\Phi_5 \in \mathbb{Q}[x]$) or $\Gamma_K(f) \cong D_8$ (e.g. `Exercise 14.8(v)` $x^4 - 2 \in \mathbb{Q}[x]$, with $g = x^3 + 8x = x(x^2 + 8)$ and $\Delta = -2048$), $g$ is **reducible without splitting over $K$** ($[M : K] = 2$), matching none of the 5 printed rows.
+- **Kernel-proved declarations in `Garling/Chapter14.lean`:**
+  - `Garling.Chapter14.exercise_14_7_printed_rows_4_5_impossible`:
+    1. Proves for **every** field $K$ ($\operatorname{char} K \ne 2$), **every** irreducible quartic $f \in K[x]$ (`f.natDegree = 4`), **every** splitting field $L:K$ of $f$, and **every** splitting field $M \subseteq L$ of $g = \text{quarticCubicResolvent } f$ that `GarlingSplitsOver K K g → (∃ d : K, d ^ 2 = Δ) ∧ M = ⊥ ∧ Irreducible (f.map (algebraMap K M))`, refuting both printed Row 4 and printed Row 5 universally;
+    2. Proves on $K = \mathbb{Q}$, $f = X^4 - 2$ (`Irreducible f`, `f.natDegree = 4`, `g = X^3 + 8X`, `Δ = -2048`) that `¬ ∃ d : ℚ, d ^ 2 = Δ`, `¬ Irreducible g`, and `¬ GarlingSplitsOver ℚ ℚ g`, refuting exhaustiveness of the printed table.
+  - `Garling.Chapter14.exercise_14_7_repaired`: replaces `Splits over K` in Rows 4 and 5 by `¬ Irreducible g ∧ ¬ GarlingSplitsOver K K g`, proves `Module.finrank K M = 2 ↔ ¬ Irreducible g ∧ ¬ GarlingSplitsOver K K g`, and proves across **all** fields $K$ ($\operatorname{char} K \ne 2, 3$), **all** irreducible quartics $f \in K[x]$, **all** splitting fields $L:K$ of $f$, and **all** splitting fields $M \subseteq L$ of $g$ that the five repaired conditions `C₁`–`C₅` are **exhaustive**, **pairwise mutually exclusive**, and **bidirectionally equivalent (`↔`)** to the five transitive subgroup classes of `Exercise 14.6`, determining `GarlingPolyGaloisGroup K L f` up to isomorphism (`SigmaN 4`, `alternatingGroup (Fin 4)`, `viergruppe`, `Multiplicative (ZMod 4)`, `DihedralGroup 4`) in every case.
+- **Status:** Held in `QUEUE.md` as a textbook table-error fidelity hold; general impossibility of printed Rows 4–5, concrete refutation on $x^4 - 2$, and the complete repaired 5-way classification are all kernel-proved.
+
+---
+
+## Ch. 14, Exercise 14.8 (§14.4, printed p. 117 / PDF p. 125) — *"Determine the Galois groups..."* open-ended identification prompt across five quartics over `ℚ` (fidelity hold)
+
+- **Printed statement (p. 117):** *"Determine the Galois groups of the following quartics in $\mathbb{Q}[x]$: (i) $x^4 + 4x + 2$; (ii) $x^4 + 8x - 12$; (iii) $x^4 + 1$; (iv) $x^4 + x^3 + x^2 + x + 1$; (v) $x^4 - 2$."*
+- **Exact blocker:** Open-ended *"Determine the Galois groups..."* identification prompt across five concrete polynomials (matching the repo hold convention of `Exercises 7.6–7.8, 7.10, 11.5–11.8` in `QUEUE.md`). *(Note on `(ii)`: the literal printed polynomial $x^4 + 8x - 12$ is irreducible with irreducible resolvent $x^3 + 48x - 64$ and $\Delta = -552960 < 0$, so its Galois group over $\mathbb{Q}$ is unambiguously $\Sigma_4$, whereas $x^4 + 8x + 12$ has $\Delta = 331776 = 576^2$ and Galois group $A_4$; both are kernel-proved.)*
+- **Kernel-proved declarations in `Garling/Chapter14.lean`:**
+  - `Garling.Chapter14.exercise_14_8_i`: proves for $f_1 = X^4 + 4X + 2 \in \mathbb{Q}[X]$ irreducibility of $f_1$ and its resolvent $X^3 - 8X - 16$, $\Delta(f_1) = -4864$, and for **every** splitting field $L:\mathbb{Q}$ of $f_1$, $|\Gamma_{\mathbb{Q}}(f_1)| = 24$ and $\Gamma_{\mathbb{Q}}(f_1) \simeq^* \Sigma_4$.
+  - `Garling.Chapter14.exercise_14_8_ii` (plus `Garling.Chapter14.exercise_14_8_ii_plus_twelve_remark`): proves for the literal printed $f_2 = X^4 + 8X - 12 \in \mathbb{Q}[X]$ irreducibility of $f_2$ and its resolvent $X^3 + 48X - 64$, $\Delta(f_2) = -552960$, and $|\Gamma_{\mathbb{Q}}(f_2)| = 24$, $\Gamma_{\mathbb{Q}}(f_2) \simeq^* \Sigma_4$ across all splitting fields (and proves for $X^4 + 8X + 12$ irreducibility, $\Delta = 331776 = 576^2$, $|\Gamma_{\mathbb{Q}}| = 12$, and $\Gamma_{\mathbb{Q}} \simeq^* A_4$).
+  - `Garling.Chapter14.exercise_14_8_iii`: proves for $f_3 = X^4 + 1 \in \mathbb{Q}[X]$ irreducibility, splitting of its resolvent $X^3 - 4X = X(X - 2)(X + 2)$ over $\mathbb{Q}$, $\Delta(f_3) = 256 = 16^2$, and $|\Gamma_{\mathbb{Q}}(f_3)| = 4$, $\Gamma_{\mathbb{Q}}(f_3) \simeq^* \text{viergruppe} \simeq^* \text{Multiplicative }(\mathbb{Z}_2) \times \text{Multiplicative }(\mathbb{Z}_2)$ across all splitting fields.
+  - `Garling.Chapter14.exercise_14_8_iv`: proves for $f_4 = X^4 + X^3 + X^2 + X + 1 \in \mathbb{Q}[X]$ irreducibility (`Exercise 5.11`), $\Delta(f_4) = 125$, and `IsCyclic`, $|\Gamma_{\mathbb{Q}}(f_4)| = 4$, $\Gamma_{\mathbb{Q}}(f_4) \simeq^* \text{Multiplicative }(\mathbb{Z}_4)$ ($C_4$) across all splitting fields.
+  - `Garling.Chapter14.exercise_14_8_v`: proves for $f_5 = X^4 - 2 \in \mathbb{Q}[X]$ irreducibility, $\Delta(f_5) = -2048$, $[L:\mathbb{Q}] = |\Gamma_{\mathbb{Q}}(f_5)| = 8$, and $\Gamma_{\mathbb{Q}}(f_5) \simeq^* \text{DihedralGroup } 4$ ($D_8$) across all splitting fields.
+  - `Garling.Chapter14.exercise_14_8`: bundles all five universal Galois-group determinations `(i)`–`(v)`.
+- **Status:** Held pending coordinator ruling on whether `exercise_14_8` closes Exercise 14.8.
