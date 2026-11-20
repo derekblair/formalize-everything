@@ -748,3 +748,119 @@ Chapter 7 (*Splitting fields*) contains **10** main-text theorem/corollary items
   - `Garling.Chapter14.exercise_14_8_v`: proves for $f_5 = X^4 - 2 \in \mathbb{Q}[X]$ irreducibility, $\Delta(f_5) = -2048$, $[L:\mathbb{Q}] = |\Gamma_{\mathbb{Q}}(f_5)| = 8$, and $\Gamma_{\mathbb{Q}}(f_5) \simeq^* \text{DihedralGroup } 4$ ($D_8$) across all splitting fields.
   - `Garling.Chapter14.exercise_14_8`: bundles all five universal Galois-group determinations `(i)`–`(v)`.
 - **Status:** Held pending coordinator ruling on whether `exercise_14_8` closes Exercise 14.8.
+
+---
+
+# Chapter 15 — Fidelity Holds (Printed pp. 118–122 / PDF pp. 126–130)
+
+All **5 / 5** main-text theorem/lemma/corollary items in Chapter 15 (`Theorem 15.1`, `Lemma 15.2` — the sole numbered `Lemma` in the book — `Theorem 15.3`, `Theorem 15.4`, and the unnumbered `Corollary` [to `Theorem 15.4`]) are proved literally as printed (under p. 118's explicit chapter-wide standing hypothesis $\operatorname{char} K \nmid m$, which automatically enforces $1 \le m$ since $\operatorname{char} K \mid 0$) with zero holds. Among the **10** numbered Chapter 15 exercises (`15.1`–`15.10`), **2 / 10** (`Exercise 15.1` and `Exercise 15.10`) are proved literally as printed, while **8 / 10** are held below as source-fidelity holds: **5** (`Exercises 15.2, 15.3, 15.7, 15.8, 15.9`) because the literal printed statement is false at a boundary case or carries a textbook wording error (`n = 1` in `15.2`; `n = 0` in `15.3`; `t = 0` and `u = 0` in `15.7`; `"distinct prime powers"` in `15.8`; `m = 1, 2` under `t ≥ 1` and `m = 0` in `15.9`), and **3** (`Exercises 15.4, 15.5, 15.6`) per the repo's open-ended `"find / identify / When is…?"` prompt convention (matching `Exercises 7.6–7.8, 7.10, 11.5–11.8, 12.4, 14.8`). For every held item, `Garling/Chapter15.lean` kernel-proves both the counterexample(s) (where the literal printed statement fails) and the complete repaired/determination theorem(s); none is silently weakened or counted as literally closed prior to coordinator ruling.
+
+---
+
+## Ch. 15, Exercise 15.2 (§15.1, printed p. 120 / PDF p. 128) — Printed statement FALSE at odd `n = 1` (fidelity hold)
+
+- **Printed statement (p. 120):** *"Show that if $n$ is odd then $\Phi_{2n}(x) = \Phi_n(-x)$."*
+- **Exact blocker:** $n = 1$ is an odd positive integer, yet on printed p. 119 Garling computes $\Phi_1(x) = x - 1$ and $\Phi_2(x) = x + 1$, giving
+  $$\Phi_{2 \cdot 1}(x) = \Phi_2(x) = x + 1 \ne -x - 1 = \Phi_1(-x) = -\Phi_2(x)$$
+  over $\mathbb{Z}$, $\mathbb{Q}$, and every field $K$ satisfying p. 118's chapter-wide hypothesis $\operatorname{char} K \nmid 2n$ ($\operatorname{char} K \ne 2$). In general, for every odd $n \ge 1$, the bijection $\varepsilon \mapsto -\varepsilon$ between primitive $n$th and primitive $2n$th roots of unity yields $\Phi_n(-x) = (-1)^{\varphi(n)} \Phi_{2n}(x)$; for odd $n \ge 3$, $\varphi(n)$ is even so $\Phi_{2n}(x) = \Phi_n(-x)$ holds, whereas at $n = 1$, $\varphi(1) = 1$ is odd.
+- **Kernel-proved declarations in `Garling/Chapter15.lean`:**
+  - `Garling.Chapter15.exercise_15_2_n1_counterexample`: refutes the literal $n = 1$ case over `ℤ`, `ℚ`, and every splitting field extension `L : K` of `X ^ (2 * 1) - 1` under `¬ (ringChar K ∣ 2 * 1)` (`Odd 1`, `Φ_2 = X + 1`, `Φ_1(-X) = -X - 1`, `Φ_2 ≠ Φ_1(-X)`).
+  - `Garling.Chapter15.exercise_15_2_general_odd`: proves `(Polynomial.cyclotomic n R).comp (-Polynomial.X) = (-1) ^ Nat.totient n * Polynomial.cyclotomic (2 * n) R` for every odd `n` over any `CommRing R`.
+  - `Garling.Chapter15.exercise_15_2_cyclotomic` and `Garling.Chapter15.exercise_15_2`: prove the repaired `3 ≤ n` theorem both for `Polynomial.cyclotomic` over any `CommRing R` and for Garling's §15.1 root-product `garlingCyclotomicPoly` over any splitting field `L : K` under `¬ (ringChar K ∣ 2 * n)`.
+  - `Garling.Chapter15.exercise_15_2_iff`: proves that over any `CommRing R` with `(2 : R) ≠ 0` and any odd `n`, `Φ_{2n}(x) = Φ_n(-x) ↔ 3 ≤ n`.
+- **Status:** Held in `QUEUE.md` as a textbook boundary-error (`n = 1` false case) fidelity hold; counterexample, general `(-1)^{φ(n)}` identity, repaired `3 ≤ n` theorem, and exact `↔ 3 ≤ n` characterization are all kernel-proved.
+
+---
+
+## Ch. 15, Exercise 15.3 (§15.1, printed p. 120 / PDF p. 128) — Omitted `n ≥ 1` hypothesis (`n = 0` boundary failure) (fidelity hold)
+
+- **Printed statement (p. 120):** *"Show that if $p$ is a prime then $\Phi_{p^n}(x) = 1 + x^{p^{n-1}} + x^{2p^{n-1}} + \dots + x^{(p-1)p^{n-1}}$."*
+- **Exact blocker:** The statement omits $n \ge 1$. At $n = 0$, the LHS is $\Phi_{p^0}(x) = \Phi_1(x) = x - 1$, whereas $n - 1 = -1$ is negative in $\mathbb{Z}$ and under `ℕ` truncated subtraction `0 - 1 = 0`, the RHS evaluates to $\sum_{j=0}^{p-1} x^j = \Phi_p(x) \ne x - 1$ (evaluating at $x = 1$ gives $p \ne 0$).
+- **Kernel-proved declarations in `Garling/Chapter15.lean`:**
+  - `Garling.Chapter15.exercise_15_3_n0_counterexample`: proves for every prime `p` that `cyclotomic (p ^ 0) ℤ = X - 1`, `∑_{j < p} X^{j * p^(0 - 1)} = cyclotomic p ℤ`, and `cyclotomic (p ^ 0) ℤ ≠ ∑_{j < p} X^{j * p^(0 - 1)}`.
+  - `Garling.Chapter15.exercise_15_3_cyclotomic` and `Garling.Chapter15.exercise_15_3`: prove the printed formula for every prime `p` and every `1 ≤ n`, both over arbitrary `CommRing R` via `Polynomial.cyclotomic` and for Garling's §15.1 root-product `garlingCyclotomicPoly` over any splitting field `L : K` with `¬ (ringChar K ∣ p ^ n)`.
+  - `Garling.Chapter15.exercise_15_3_iff`: proves for every prime `p` and `n : ℕ` that `cyclotomic (p ^ n) ℤ = ∑_{j < p} X^{j * p^(n - 1)} ↔ 1 ≤ n`.
+- **Status:** Held in `QUEUE.md` as an omitted-`1 ≤ n` fidelity hold; `n = 0` counterexample, repaired `1 ≤ n` theorem, and exact `↔ 1 ≤ n` characterization are all kernel-proved.
+
+---
+
+## Ch. 15, Exercise 15.4 (§15.2, printed p. 121 / PDF p. 129) — Open-ended *"find the minimal polynomial … and identify the Galois group"* prompt (fidelity hold)
+
+- **Printed statement (p. 121):** *"Suppose that $\varepsilon$ is a primitive $m$th root of unity over $\mathbb{Q}$, where $m > 2$. Let $\eta = \varepsilon + \varepsilon^{-1}$. Show that $[\mathbb{Q}(\varepsilon):\mathbb{Q}(\eta)] = 2$, find the minimal polynomial for $\varepsilon$ over $\mathbb{Q}(\eta)$ and identify the Galois group $\Gamma[\mathbb{Q}(\varepsilon):\mathbb{Q}(\eta)]$."*
+- **Exact blocker:** Alongside the propositional claim $[\mathbb{Q}(\varepsilon):\mathbb{Q}(\eta)] = 2$, the exercise asks two open-ended identification prompts (*"find the minimal polynomial … and identify the Galois group"*), held per repo convention (`Exercises 7.6–7.8, 11.5–11.8, 14.8`).
+- **Kernel-proved declarations in `Garling/Chapter15.lean`:**
+  - `Garling.Chapter15.exercise_15_4`: proves universally for every extension `L : ℚ`, every `m > 2`, and every primitive `m`th root of unity `ε ∈ L` (`IsGarlingPrimitiveRoot m ε`), with `E = ℚ(ε)`, `F = ℚ(η) ⊆ L`, and `M = ℚ(η₀) ⊆ E`:
+    1. `Nonempty (M ≃ₐ[ℚ] F)`, `Module.finrank M E = 2`, `extDegree M E = 2`, `Module.finrank ℚ E = Nat.totient m`, and `Module.finrank ℚ F = Nat.totient m / 2`;
+    2. `minpoly M ε₀ = X ^ 2 - C ηM * X + 1` and `Irreducible (X ^ 2 - C ηM * X + 1 : M[X])`;
+    3. `IsGarlingGaloisExtension M E`, `IsCyclic (GarlingGaloisGroup M E)`, `Nat.card (GarlingGaloisGroup M E) = 2`, `setOrder = 2`, `Nonempty (GarlingGaloisGroup M E ≃* Multiplicative (ZMod 2))`, and existence of `τ ≠ 1` with `τ ^ 2 = 1`, `τ ε₀ = ε₀⁻¹`, and `Set.univ = {1, τ}`.
+- **Status:** Held pending coordinator ruling on whether `exercise_15_4` closes Exercise 15.4.
+
+---
+
+## Ch. 15, Exercise 15.5 (§15.3, printed p. 122 / PDF p. 130) — *"Find the Galois groups…"* open-ended identification prompt (fidelity hold)
+
+- **Printed statement (p. 122):** *"Find the Galois groups of $x^4 + 1$ and $x^5 + 1$ over $\mathbb{Q}$."*
+- **Exact blocker:** Open-ended *"Find the Galois groups…"* identification prompt (matching `Exercises 11.6–11.7` and `Exercise 14.8` in `QUEUE.md`).
+- **Kernel-proved declarations in `Garling/Chapter15.lean`:**
+  - `Garling.Chapter15.exercise_15_5`: proves universally across **all** splitting field extensions `L : ℚ`:
+    1. `X ^ 4 + 1 = Polynomial.cyclotomic 8 ℚ` is irreducible over `ℚ`, and `Γ_ℚ(X ^ 4 + 1)` has order `4`, is non-cyclic, and is isomorphic (`≃*`) to `U_8`, `Multiplicative (ZMod 2) × Multiplicative (ZMod 2)`, and `viergruppe`;
+    2. `X ^ 5 + 1 = (X + 1) * Polynomial.cyclotomic 10 ℚ` (`Φ_{10} = X^4 - X^3 + X^2 - X + 1` irreducible over `ℚ`) has the same splitting fields over `ℚ` as `Φ_{10}`, and `Γ_ℚ(X ^ 5 + 1)` is cyclic of order `4` and isomorphic (`≃*`) to `U_{10}` and `Multiplicative (ZMod 4)`.
+- **Status:** Held pending coordinator ruling on whether `exercise_15_5` closes Exercise 15.5.
+
+---
+
+## Ch. 15, Exercise 15.6 (§15.3, printed p. 122 / PDF p. 130) — Open-ended *"When is `Φ_4` / `Φ_8` irreducible over `ℤ_p`?"* characterization prompts (fidelity hold)
+
+- **Printed statement (p. 122):** *"Suppose that $p$ is a prime which does not divide $m$, and let $\varepsilon$ be a primitive $m$th root of unity over $\mathbb{Z}_p$. Show that $[\mathbb{Z}_p(\varepsilon):\mathbb{Z}_p] = k$, where $k$ is the order of $\bar{p}$ in the multiplicative group $U_m$ of units in $\mathbb{Z}_m$. Show that $\Phi_m$ is irreducible over $\mathbb{Z}_p$ if and only if $U_m$ is a cyclic group generated by $\bar{p}$. When is $\Phi_4$ irreducible over $\mathbb{Z}_p$? When is $\Phi_8$ irreducible over $\mathbb{Z}_p$?"*
+- **Exact blocker:** Alongside the two propositional *"Show that…"* claims, the exercise concludes with two open-ended *"When is…?"* characterization questions (`Φ_4` and `Φ_8` over `ℤ_p`), held per repo convention.
+- **Kernel-proved declarations in `Garling/Chapter15.lean`:**
+  - `Garling.Chapter15.exercise_15_6`: proves all four parts across arbitrary primes `p` (with `Φ_4` and `Φ_8` proved across **all** primes `p`, including `p = 2`):
+    1. `[ℤ_p(ε) : ℤ_p] = orderOf p̄` in `U_m` (both `Module.finrank` and `extDegree`) whenever `p ∤ m`;
+    2. `Irreducible (Polynomial.cyclotomic m (ZMod p)) ↔ Subgroup.zpowers p̄ = ⊤ ↔ IsCyclic U_m ∧ Subgroup.zpowers p̄ = ⊤` whenever `p ∤ m`;
+    3. `Irreducible (Polynomial.cyclotomic 4 (ZMod p)) ↔ p % 4 = 3` for every prime `p`;
+    4. `¬ Irreducible (Polynomial.cyclotomic 8 (ZMod p))` for every prime `p`.
+- **Status:** Held pending coordinator ruling on whether `exercise_15_6` closes Exercise 15.6.
+
+---
+
+## Ch. 15, Exercise 15.7 (§15.3, printed p. 122 / PDF p. 130) — Omitted `t ≥ 1` in setup and omitted `u ≥ 1` (`u = 0` counterexample) in `(iii)` (fidelity hold)
+
+- **Printed statement (p. 122):** *"Suppose that $m = q^t$, where $q$ is an odd prime. (i) Show that $|U_m| = (q - 1)q^{t-1}$. (ii) Use the fact that $U_q$ is cyclic of order $q - 1$ to show that there is an element of order $q - 1$ in $U_m$. (iii) Show that if $q$ does not divide $a$ then $(1 + aq^u)^q = 1 + bq^{u+1}$, where $q$ does not divide $b$. (iv) Show that $\overline{1 + q}$ has order $q^{t-1}$ in $U_m$. (v) Combine (ii) and (iv) to show that $U_m$ is cyclic."*
+- **Exact blockers:**
+  1. **Setup omits $t \ge 1$:** At $t = 0$ ($m = q^0 = 1$), $|U_1| = 1 \ne (q - 1)q^{0-1}$ (negative exponent $-1$ in $\mathbb{Q}$, or $(q - 1) \ge 2 \ne 1$ under `ℕ` truncated subtraction), and the trivial group $U_1$ contains no element of order $q - 1 \ge 2$.
+  2. **Part `(iii)` omits $u \ge 1$ and is FALSE for every $a$ with $q \nmid a$ at $u = 0$:** At $u = 0$, by Fermat's Little Theorem $(1 + a)^q - 1 \equiv a \not\equiv 0 \pmod q$, so **no** integer $b$ satisfies $(1 + aq^0)^q = 1 + bq^{0+1}$ (e.g. $q = 3, u = 0, a = 2 \implies 27 \ne 1 + 3b$ for all $b \in \mathbb{Z}$).
+- **Kernel-proved declarations in `Garling/Chapter15.lean`:**
+  - `Garling.Chapter15.exercise_15_7_counterexamples`: refutes `t = 0` in `(i)` and `(ii)` for every odd prime `q`, refutes `u = 0` in `(iii)` universally for every prime `q` and every `a : ℤ` with `¬ (q : ℤ) ∣ a`, and records the concrete witness `q = 3, u = 0, a = 2` (`(1 + 2 * 3^0)^3 = 27 ≠ 1 + b * 3^(0 + 1)`).
+  - `Garling.Chapter15.exercise_15_7`: proves all five parts `(i)`–`(v)` under `1 ≤ t` (and `1 ≤ u` in `(iii)`), constructing `g` of order `q - 1` by lifting a generator of `U_q` (`corollary_1_to_theorem_12_3`) and proving `g * (1 + q)` generates `U_{q^t}`.
+- **Status:** Held in `QUEUE.md` as an omitted-`1 ≤ t` / omitted-`1 ≤ u` (`u = 0` false case) fidelity hold; counterexamples and repaired five-part theorem are all kernel-proved.
+
+---
+
+## Ch. 15, Exercise 15.8 (§15.3, printed p. 122 / PDF p. 130) — Genuine textbook wording error `"distinct prime powers"` (for powers of distinct primes) (fidelity hold)
+
+- **Printed statement (p. 122):** *"Suppose that $m = m_1 \dots m_r$, where $m_1, \dots, m_r$ are distinct prime powers. Show that $U_m \cong U_{m_1} \times \dots \times U_{m_r}$."*
+- **Exact blocker:** Distinct powers of the **same** prime (`m_1 ≠ m_2`, both prime powers) are not relatively prime, and the isomorphism fails:
+  - $m_1 = 2 = 2^1$, $m_2 = 4 = 2^2$, $m = 8$: $|U_8| = 4 \ne 2 = |U_2 \times U_4|$;
+  - $m_1 = 3 = 3^1$, $m_2 = 9 = 3^2$, $m = 27$: $|U_{27}| = 18 \ne 12 = |U_3 \times U_9|$.
+  The intended hypothesis is that $m_1, \dots, m_r$ are powers of **distinct primes** (equivalently pairwise relatively prime).
+- **Kernel-proved declarations in `Garling/Chapter15.lean`:**
+  - `Garling.Chapter15.exercise_15_8_same_prime_counterexamples`: proves `IsPrimePow 2 ∧ IsPrimePow 4 ∧ 2 ≠ 4 ∧ IsEmpty (U_8 ≃* U_2 × U_4)` (`4 ≠ 2`) and `IsPrimePow 3 ∧ IsPrimePow 9 ∧ 3 ≠ 9 ∧ IsEmpty (U_{27} ≃* U_3 × U_9)` (`18 ≠ 12`).
+  - `Garling.Chapter15.garlingUnitsZModProdEquiv`: constructs the explicit `MulEquiv` `U_{∏ μ i} ≃* (∀ i, U_{μ i})` for any pairwise coprime tuple `μ : Fin r → ℕ`.
+  - `Garling.Chapter15.exercise_15_8`: proves (1) the general pairwise-coprime CRT unit decomposition, (2) the powers-of-distinct-primes form (`∀ i, Nat.Prime (p i)` and `Function.Injective p`), and (3) the exact `iff` for arbitrary prime-power tuples `∀ i, IsPrimePow (μ i)`: `Nonempty (U_{∏ μ i} ≃* ∀ i, U_{μ i}) ↔ Pairwise (Nat.Coprime (μ ·) (μ ·))`.
+- **Status:** Held in `QUEUE.md` as a textbook wording-error (`"distinct prime powers"` vs. powers of distinct primes) fidelity hold; counterexamples, explicit isomorphism, and exact prime-power `iff` characterization are all kernel-proved.
+
+---
+
+## Ch. 15, Exercise 15.9 (§15.3, printed p. 122 / PDF p. 130) — Omitted `m = 2` (and `m = 1`) under `t ≥ 1`, plus `m = 0` domain boundary (fidelity hold)
+
+- **Printed statement (p. 122):** *"Show that $U_m$ is cyclic if and only if $m = q^t$ or $2q^t$ (where $q$ is an odd prime) or $4$."*
+- **Exact blockers:**
+  1. Under the standard positive-exponent convention $t \ge 1$ (matching `15.7` and `15.8`), $\{4\} \cup \{q^t, 2q^t : q \text{ odd prime}, t \ge 1\}$ **omits $m = 2$ (and $m = 1$)**, even though $\mathbb{Z}_2$ is a field ($1 \ne 0$) with cyclic unit group $U_2 = \{\bar{1}\}$ of order $1$ (and $U_1$ is trivial, hence cyclic).
+  2. In Mathlib (`ZMod 0 = ℤ`), `(ZMod 0)ˣ = {1, -1}` is cyclic of order $2$ while $m = 0$ lies outside $\{4, q^t, 2q^t\}$ even when $t = 0$ is permitted, so `1 ≤ m` is required.
+- **Kernel-proved declarations in `Garling/Chapter15.lean`:**
+  - `Garling.Chapter15.exercise_15_9_counterexamples`: proves `Nontrivial (ZMod 2) ∧ IsCyclic U_2` (excluded under `1 ≤ t`), `IsCyclic U_1` (excluded under `1 ≤ t`), and `IsCyclic U_0` (excluded even for `t : ℕ`).
+  - `Garling.Chapter15.exercise_15_9`: proves all three exact characterizations:
+    1. For `1 ≤ m` with `1 ≤ t`: `IsCyclic U_m ↔ m ∈ {1, 2, 4} ∪ {q^t, 2 q^t : q odd prime, 1 ≤ t}`;
+    2. For `3 ≤ m` with `1 ≤ t`: `IsCyclic U_m ↔ m = 4 ∨ ∃ q t, q.Prime ∧ Odd q ∧ 1 ≤ t ∧ (m = q^t ∨ m = 2 * q^t)`;
+    3. For `1 ≤ m` allowing `t : ℕ` (`t ≥ 0`): the literal printed formula `m = 4 ∨ ∃ q t, q.Prime ∧ Odd q ∧ (m = q^t ∨ m = 2 * q^t)`.
+- **Status:** Held in `QUEUE.md` as a boundary-omission (`m = 1, 2` under `1 ≤ t`, `m = 0`) fidelity hold; counterexamples and all three repaired characterizations are kernel-proved.
