@@ -415,6 +415,36 @@ All definitions and worked examples in Chapter 15 (2-paragraph unnumbered chapte
 
 Supporting preamble and §§15.1–15.3 prose definitions, derivations, and worked examples (not counted in the `15` numbered scope-of-record items above): `preamble_char_prime_pow_reduction`, `pos_and_natCast_ne_zero_of_not_ringChar_dvd`, `preamble_deriv_X_pow_sub_one_ne_zero` (preamble, p. 118), `garlingRootsOfUnitySubgroup`, `mem_garlingRootsOfUnitySubgroup_iff`, `section_15_1_roots_group_cyclic`, `GeneratesGarlingRootsOfUnity`, `IsGarlingPrimitiveRoot`, `isGarlingPrimitiveRoot_iff_isPrimitiveRoot`, `generatesGarlingRootsOfUnity_iff_isGarlingPrimitiveRoot`, `section_15_1_complex_prim_roots_examples`, `section_15_1_simple_extension_of_prim_root`, `garlingPrimRootsFinset`, `mem_garlingPrimRootsFinset_iff`, `garlingCyclotomicPoly`, `garlingCyclotomicPoly_eq_cyclotomic'`, `garlingCyclotomicPoly_monic`, `exists_isGarlingPrimitiveRoot_of_splittingField`, `section_15_1_X_pow_sub_one_eq_prod_cyclotomic`, `section_15_1_complex_cyclotomic_examples` (§15.1, pp. 118–119), `section_15_2_phi3_zmod5_zmod7`, `theorem_15_3_root_pow_prime`, `cyclotomic_zero_not_irreducible_remark` (§15.2, p. 120), and `GarlingUnitsZMod`, `section_15_3_units_zmod_coprime`, `section_15_3_splittingField_cyclotomic_iff`, `garlingCyclotomicGalHom`, `garlingCyclotomicGalHom_spec_and_injective`, `section_15_3_u12_example` (§15.3, p. 121).
 
+## Chapter 16 Scope of Record (Enumerated from 1986 Scan, Printed pp. 123–130 / PDF pp. 131–138)
+
+All definitions and structural derivations in Chapter 16 (3-line unnumbered chapter preamble + §16.1 *A necessary condition* on pp. 123–124; §16.2 *Abel's theorem* on pp. 124–125; §16.3 *A sufficient condition* on pp. 125–128; §16.4 *Kummer extensions* on pp. 128–130) — namely §16.1's root factorization $x^n - \theta = \prod_{k=0}^{n-1}(x - \omega^k \alpha_1)$ (p. 123), *($K$-valued) character* on a group $G$ (§16.3, p. 125), restriction of a field automorphism $\tau \in \operatorname{Aut} K$ to $K^*$ as a $K$-valued character (§16.3, p. 126), *cyclic* extension $L:K$ (§16.3, p. 126), *trace* $\operatorname{tr} : L \to K$ (`Exercise 16.10`, pp. 127–128), *norm* $N : L \to K$ (`Exercise 16.12`, p. 128), and *Kummer extension of exponent $d$* (§16.4, p. 129) — are unnumbered inline prose in the 1986 CUP edition (and are formalized in `Garling/Chapter16.lean` to anchor the chapter's vocabulary; note that Chapter 15 is formalized on a separate in-flight lane and not imported here). The chapter contains **7 main-text theorem/corollary results** (**6 numbered theorems** `Theorem 16.1`–`Theorem 16.6` + **1 unnumbered corollary**: `Corollary` [to `Theorem 16.3`]; `0` numbered lemmas, `0` numbered definitions, `0` other unnumbered headed blocks) and **16 numbered exercises** (`16.1`–`16.16`), listed below in exact source order (**23** items total):
+
+| # | Printed Label | Section | Printed p. | Kind | Lean Declaration(s) in `Garling/Chapter16.lean` | Status |
+|---:|---|---|---:|---|---|---|
+| 1 | **Theorem 16.1** | §16.1 | 123 | Main-text theorem | *(in progress)* | Pending |
+| 2 | Exercise 16.1 | §16.1 | 124 | Exercise | *(in progress)* | Pending |
+| 3 | Exercise 16.2 | §16.1 | 124 | Exercise | *(in progress)* | Pending |
+| 4 | Exercise 16.3 | §16.1 | 124 | Exercise | *(in progress)* | Pending |
+| 5 | **Theorem 16.2 (Abel's theorem)** | §16.2 | 124 | Main-text theorem | *(in progress)* | Pending |
+| 6 | Exercise 16.4 | §16.2 | 125 | Exercise | *(in progress)* | Pending |
+| 7 | Exercise 16.5 | §16.2 | 125 | Exercise | *(in progress)* | Pending |
+| 8 | **Theorem 16.3** | §16.3 | 125 | Main-text theorem | *(in progress)* | Pending |
+| 9 | **Corollary** [to Theorem 16.3] | §16.3 | 126 | Main-text corollary | *(in progress)* | Pending |
+| 10 | **Theorem 16.4** | §16.3 | 126 | Main-text theorem | *(in progress)* | Pending |
+| 11 | Exercise 16.6 | §16.3 | 127 | Exercise | *(in progress)* | Pending |
+| 12 | Exercise 16.7 | §16.3 | 127 | Exercise | *(in progress)* | Pending |
+| 13 | Exercise 16.8 | §16.3 | 127 | Exercise | *(in progress)* | Pending |
+| 14 | Exercise 16.9 | §16.3 | 127 | Exercise | *(in progress)* | Pending |
+| 15 | Exercise 16.10 | §16.3 | 127–128 | Exercise | *(in progress)* | Pending |
+| 16 | Exercise 16.11 | §16.3 | 128 | Exercise | *(in progress)* | Pending |
+| 17 | Exercise 16.12 | §16.3 | 128 | Exercise | *(in progress)* | Pending |
+| 18 | Exercise 16.13 (Hilbert's theorem 90) | §16.3 | 128 | Exercise | *(in progress)* | Pending |
+| 19 | Exercise 16.14 | §16.3 | 128 | Exercise | *(in progress)* | Pending |
+| 20 | **Theorem 16.5** | §16.4 | 128 | Main-text theorem | *(in progress)* | Pending |
+| 21 | **Theorem 16.6** | §16.4 | 129 | Main-text theorem | *(in progress)* | Pending |
+| 22 | Exercise 16.15 | §16.4 | 130 | Exercise | *(in progress)* | Pending |
+| 23 | Exercise 16.16 | §16.4 | 130 | Exercise | *(in progress)* | Pending |
+
 ## Explicit Formulation Notes (No Silent Deviations)
 
 1. **Order / cardinality without junk values (`setOrder`):** Garling (§1.1, p. 4) defines the order $|S|$ of a set $S$ to be the number of elements in $S$, taking values in $\mathbb{N} \cup \{+\infty\}$. To avoid `Nat.card` / `Set.ncard`'s junk value `0` on infinite sets, `Garling.Chapter01.setOrder` is defined as `ENat.card S : ℕ∞`, and right cosets `RightCoset H g = {h * g | h ∈ H}` and `RightCosets H` are defined literally as on p. 4 (used in `lagrange_theorem`, `exercise_1_3`, `exercise_1_4`, `theorem_1_2`, `theorem_1_3`, `corollary_to_theorem_1_2`, and `corollary_1_to_theorem_1_4`).
