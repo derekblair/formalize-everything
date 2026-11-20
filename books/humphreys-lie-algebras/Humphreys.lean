@@ -1,5 +1,6 @@
 import Humphreys.Ch4.ChevalleyInvolution14_3
 import Humphreys.Ch7.ChevalleyBasis25_2
+import Humphreys.Ch7.SquareIdentity25_2c
 import Humphreys.Ch7.KostantTheorem26_4
 import Humphreys.Ch7.AdmissibleLattice27_1
 import Humphreys.Ch7.StabilizerLattice27_2
