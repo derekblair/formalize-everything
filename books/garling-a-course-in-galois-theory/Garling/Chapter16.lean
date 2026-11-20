@@ -7133,4 +7133,3 @@ theorem exercise_16_16_pos_r {K : Type u} {L : Type v} [Field K] [Field L] [Alge
     ring
 
 end Garling.Chapter16
-
