@@ -1048,3 +1048,90 @@ Chapter 16 (*Cyclic extensions*) contains **7** main-text theorem/corollary item
   - `Garling.Chapter16.exercise_16_16`: proves unconditionally for **all** $n$ (deducing $1 \le n$ from irreducibility) that `∃ (r : ℕ) (c : K), Nat.Coprime r n ∧ algebraMap K L c = β * (α ^ r)⁻¹ ∧ b = a ^ r * c ^ n`.
   - `Garling.Chapter16.exercise_16_16_pos_r`: proves for **all `2 ≤ n`** the strengthened positive-`r` form `∃ (r : ℕ) (c : K), 1 ≤ r ∧ r < n ∧ Nat.Coprime r n ∧ algebraMap K L c = β * (α ^ r)⁻¹ ∧ b = a ^ r * c ^ n`.
 - **Status:** Held in `QUEUE.md` for the `n = 1, a = 0` positive-`r` boundary convention; counterexample, unconditional `r : ℕ` theorem, and `2 ≤ n` positive-`r` companion are all kernel-proved.
+
+
+---
+
+# Chapter 17 — Fidelity Holds (Printed pp. 131–138 / PDF pp. 139–146)
+
+Chapter 17 (*Solution by radicals*) contains **7** main-text theorem/corollary items (`Theorem 17.1`–`Theorem 17.6` + unnumbered `Corollary` [to `Theorem 17.2`]; `0` numbered definitions, `0` numbered lemmas) and **7** numbered exercises (`Exercise 17.1`–`Exercise 17.7`), for **14** scope-of-record items total (plus 4 inline prose definitions — *soluble* group, *simple* group, *nilpotent* group, *centre* $Z$ — and supporting prose results including §17.1's soluble examples, §17.1's unnumbered prose theorem that $A_n$ is simple and not soluble for $n \ge 5$, §17.3's sufficient characteristic remark, §17.4's characteristic-preservation remark, and §17.4's prose insolvability theorem for $x^5 - 4x + 2 \in \mathbb{Q}[x]$). Among these **14** items, **9 / 14** (`6 / 7` main-text: `Theorem 17.2`, `Corollary` [to `Theorem 17.2`], `Theorem 17.3`, `Theorem 17.4`, `Theorem 17.5`, `Theorem 17.6`; + `3 / 7` exercises: `Exercise 17.4`, `Exercise 17.5`, `Exercise 17.6`) are proved literally as printed, while **5 / 14** (`1 / 7` main-text: `Theorem 17.1`; + `4 / 7` exercises: `Exercise 17.1`, `Exercise 17.2`, `Exercise 17.3`, `Exercise 17.7`) are held below as source-fidelity holds covering genuine textbook mathematical errors (`Theorem 17.1` `HA/A` misprint, `Exercise 17.1` fatal *nilpotent* definition error, `Exercise 17.2` omitted `1 ≤ n`) and non-propositional *"Find... / Give an example..."* prompts (`Exercise 17.1`, `Exercise 17.3`, `Exercise 17.7`). Every held item has its full counterexample(s) (wherever the printed statement fails), repaired theorem(s), and explicit determinations/witnesses kernel-proved in `Garling/Chapter17.lean`; none is silently weakened or counted as literally closed prior to coordinator ruling.
+
+---
+
+## Ch. 17, Theorem 17.1 (§17.2, printed p. 132 / PDF p. 140) — Genuine textbook misprint `HA/A` for `HA/H` in `(i)` (fidelity hold)
+
+- **Printed statement (p. 132, verified on 160 DPI scan; proof spans pp. 132–133):** *"Suppose that $G$ is a group, that $H \lhd G$, and that $A$ is a subgroup of $G$. (i) $H \cap A \lhd A$, and $A/(H \cap A) \cong HA/A$. (ii) If $H \subseteq A$ and $A \lhd G$, then $H \lhd A$, $A/H \lhd G/H$ and $(G/H)/(A/H) \cong G/A$."* *(Note: proof line 1 on p. 133 also prints `"The qj"` for `"Then qj"`, and proves the right-coset isomorphism $A/(H \cap A) \cong HA/H$.)*
+- **Exact blocker:** Printing $HA/A$ instead of $HA/H$ in `(i)` fails in **two** independent ways:
+  1. $A$ need not even be a normal subgroup of $HA$ (e.g. $G = \Sigma_3$, $H = A_3 \lhd \Sigma_3$, $A = \langle (12) \rangle$, where $HA = \Sigma_3$ and $A$ is not normal in $HA$, so $HA/A$ is not even a group).
+  2. Even when $A \lhd HA$ (for instance in an abelian group $G = \mathbb{Z}_2$ with $H = \{0\}$ of order $1$ and $A = \mathbb{Z}_2$ of order $2$, where $HA = G$ and $H \cap A = \{0\}$), $|A/(H \cap A)| = 2 \ne 1 = |HA/A|$, so $A/(H \cap A) \not\cong HA/A$!
+  By contrast, part `(ii)` (Third Isomorphism Theorem) holds literally as printed with zero repairs.
+- **Kernel-proved declarations in `Garling/Chapter17.lean`:**
+  - `Garling.Chapter17.theorem_17_1_i_not_normal_counterexample`: proves on $G = \Sigma_3 = \operatorname{Perm}(\operatorname{Fin} 3)$ with $H = A_3 \lhd \Sigma_3$ and $A = \langle (01) \rangle$ that $HA = \top$ while $A$ is not normal in $HA$.
+  - `Garling.Chapter17.theorem_17_1_i_normal_card_counterexample`: proves on $G = \operatorname{Multiplicative}(\mathbb{Z}_2)$ (`Multiplicative (ZMod 2)`) with $H = \bot$ ($|H| = 1$) and $A = \top$ ($|A| = 2$) that $H \lhd G$, $A \lhd G$, $|A/(H \cap A)| = 2$, $|HA/A| = 1$, and `IsEmpty ((↥A ⧸ (H ⊓ A).subgroupOf A) ≃* (↥(H ⊔ A) ⧸ A.subgroupOf (H ⊔ A)))`.
+  - `Garling.Chapter17.theorem_17_1_i_part1`, `Garling.Chapter17.theorem_17_1_i_equiv`, `Garling.Chapter17.theorem_17_1_i_repaired`: prove $H \cap A \lhd A$ literally and the repaired Second Isomorphism Theorem $A/(H \cap A) \cong HA/H$.
+  - `Garling.Chapter17.theorem_17_1_ii_equiv`, `Garling.Chapter17.theorem_17_1_ii`: prove part `(ii)` literally as printed (`H ⊴ A`, `A/H ⊴ G/H`, and `(G/H)/(A/H) ≃* G/A`).
+  - `Garling.Chapter17.theorem_17_1`: bundles repaired `(i)` and literal `(ii)`.
+- **Status:** Held in `QUEUE.md` as a genuine textbook misprint (`HA/A` for `HA/H` in `(i)`); both counterexamples, repaired `(i)`, and literal `(ii)` are all kernel-proved.
+
+---
+
+## Ch. 17, Exercise 17.1 (§17.2, printed p. 134 / PDF p. 142) — Fatal textbook error in printed inline definition of *nilpotent* + example-request prompt (fidelity hold)
+
+- **Printed statement (p. 134, verified on 160 DPI scan):** *"A group $G$ is* nilpotent *if there is a finite series of subgroups $\{e\} = G_n \subseteq G_{n-1} \subseteq \dots \subseteq G_0 = G$ and that* `[sic]` *each $G_i$ is normal in $G$ and $G_i/G_{i+1}$ is abelian for $0 \leqslant i < n$. Show that a finite nilpotent group is soluble and give an example of a finite soluble group which is not nilpotent."*
+- **Exact blockers:**
+  1. **Fatal mathematical error in Garling's printed definition of *nilpotent*:** Requiring `G_i ⊴ G` and `G_i / G_{i+1}` abelian (`IsGarlingPrintedNilpotent G`) instead of the central-series condition `G_i / G_{i+1} ⊆ Z(G / G_{i+1})` (`IsGarlingCentralNilpotent G`, proved equivalent to Mathlib's `Group.IsNilpotent G` in `isGarlingCentralNilpotent_iff_isNilpotent`) makes **every** solvable group satisfy the printed predicate via its derived series $G^{(k)}$ (since each derived subgroup is characteristic, hence normal in $G$, and $G^{(k)}/G^{(k+1)}$ is abelian)! On finite groups, `IsGarlingPrintedNilpotent G ↔ IsGarlingSoluble G` (`exercise_17_1_printed_equiv_soluble_of_finite`), rendering the second prompt (*"give an example of a finite soluble group which is not nilpotent"*) **logically unsatisfiable as printed** (`exercise_17_1_printed_part2_unsatisfiable`).
+  2. **Non-propositional example-request prompt:** *"and give an example of a finite soluble group which is not nilpotent"*.
+- **Kernel-proved declarations in `Garling/Chapter17.lean`:**
+  - `Garling.Chapter17.IsGarlingPrintedNilpotent`, `Garling.Chapter17.IsGarlingCentralNilpotent`, `Garling.Chapter17.isGarlingCentralNilpotent_iff_isNilpotent`.
+  - `Garling.Chapter17.exercise_17_1_printed_equiv_soluble_of_finite`: proves `IsGarlingPrintedNilpotent G ↔ IsGarlingSoluble G` for every finite group `G`.
+  - `Garling.Chapter17.exercise_17_1_printed_part2_unsatisfiable`: proves `¬ ∃ (G : Type u) (_ : Group G) (_ : Finite G), IsGarlingSoluble G ∧ ¬ IsGarlingPrintedNilpotent G`.
+  - `Garling.Chapter17.exercise_17_1_part1_printed`: proves Part 1 literally under Garling's printed definition (`IsGarlingPrintedNilpotent G → IsGarlingSoluble G` for finite `G`).
+  - `Garling.Chapter17.exercise_17_1_repaired`: proves under the repaired central-series definition (`IsGarlingCentralNilpotent` / `Group.IsNilpotent`) both Part 1 (`∀ G [Group G] [Finite G], IsGarlingCentralNilpotent G → IsGarlingSoluble G`) and Part 2 witnessed by `SigmaN 3` (`IsGarlingSoluble (SigmaN 3) ∧ ¬ IsGarlingCentralNilpotent (SigmaN 3) ∧ ¬ Group.IsNilpotent (SigmaN 3)`).
+- **Status:** Held in `QUEUE.md` as a genuine textbook definition error + example-request prompt; literal equivalence, unsatisfiability of printed Part 2, literal Part 1, and repaired Parts 1–2 are all kernel-proved.
+
+---
+
+## Ch. 17, Exercise 17.2 (§17.2, printed p. 134 / PDF p. 142) — Omitted `n ≥ 1` hypothesis in Part 1 + dependence on `17.1`'s nilpotency definition (fidelity hold)
+
+- **Printed statement (p. 134, verified on 160 DPI scan; OCR `garling1986_pages.txt` l. 4984 corrupts `p^n` to `pn`):** *"Suppose that $G$ is a group of order $p^n$ (where $p$ is a prime). Show that the centre $Z = \{z : gz = zg \text{ for all } g \text{ in } G\}$ has at least $p$ elements, and show that $G$ is nilpotent."*
+- **Exact blockers:**
+  1. **Omitted `1 ≤ n` hypothesis in Part 1:** At $n = 0$, the trivial group `Multiplicative Unit` has order $p^0 = 1$, and its centre $Z = \{e\}$ has cardinality $1 < p$ for every prime $p$ (`exercise_17_2_n0_counterexample`).
+  2. **Nilpotency definition from `Exercise 17.1`:** Part 2 holds unconditionally for all `n : ℕ` (including `n = 0`) under **both** Garling's printed definition (`IsGarlingPrintedNilpotent`) and the repaired central-series / Mathlib definition (`IsGarlingCentralNilpotent` / `Group.IsNilpotent`) (`exercise_17_2_part2_unconditional`).
+- **Kernel-proved declarations in `Garling/Chapter17.lean`:**
+  - `Garling.Chapter17.garlingCentre`, `Garling.Chapter17.garlingCentre_eq_center`: literal prose definition of $Z = \{z : gz = zg \text{ for all } g \in G\}$ bridged to `Subgroup.center G`.
+  - `Garling.Chapter17.exercise_17_2_n0_counterexample`: refutes `p ≤ Nat.card (garlingCentre (Multiplicative Unit))` at $n = 0$ for every prime $p$.
+  - `Garling.Chapter17.exercise_17_2_part2_unconditional`: proves for all `n : ℕ` (`0` included) that any finite group of order $p^n$ satisfies `IsGarlingCentralNilpotent G`, `Group.IsNilpotent G`, and `IsGarlingPrintedNilpotent G`.
+  - `Garling.Chapter17.exercise_17_2_repaired`: proves for all `1 ≤ n` that `p ≤ Nat.card (garlingCentre G)` and `(p : ℕ∞) ≤ setOrder (garlingCentre G)` together with all three nilpotency predicates.
+  - `Garling.Chapter17.exercise_17_2_centre_iff`: proves the exact biconditional `p ≤ Nat.card (garlingCentre G) ↔ 1 ≤ n`.
+- **Status:** Held in `QUEUE.md` as an omitted-`1 ≤ n` boundary error + `17.1`-definition fidelity hold; `n = 0` counterexample, unconditional Part 2, repaired `1 ≤ n` theorem, and exact iff characterization are all kernel-proved.
+
+---
+
+## Ch. 17, Exercise 17.3 (§17.4, printed p. 138 / PDF p. 146) — Non-propositional *"Find the minimal polynomial ... and find its Galois group"* prompts (fidelity hold)
+
+- **Printed statement (p. 138, verified on 160 DPI scan; OCR `garling1986_pages.txt` ll. 5133–5136 corrupts $3^{1/2}$, $(3^{1/2}+1)^{1/2}$, and $\mathbb{Q}$ to `3 112`, `(3 112 + 1)112`, and `0`):** *"Let $L_0 = \mathbb{Q}$, $L_1 = \mathbb{Q}(3^{1/2})$, $L_2 = \mathbb{Q}((3^{1/2} + 1)^{1/2})$. Show that $L_1 : L_0$ and $L_2 : L_1$ are both normal extensions but that $L_2 : L_0$ is not normal. Find the minimal polynomial of $(3^{1/2} + 1)^{1/2}$ over $\mathbb{Q}$, and find its Galois group."*
+- **Exact blockers:**
+  1. Non-propositional *"Find the minimal polynomial ... and find its Galois group"* identification prompts.
+  2. Minor antecedent ambiguity in *"its Galois group"* (referring primarily to the Galois group $\Gamma_{\mathbb{Q}}(x^4 - 2x^2 - 2) \cong D_4$ of the minimal polynomial over $\mathbb{Q}$, while also potentially read as the automorphism group $\Gamma(L_2 : \mathbb{Q}) \cong C_2$ of the non-normal extension $L_2 : \mathbb{Q}$).
+- **Kernel-proved declarations in `Garling/Chapter17.lean`:**
+  - `Garling.Chapter17.ex173Sqrt3`, `Garling.Chapter17.ex173Alpha`, `Garling.Chapter17.ex173L1`, `Garling.Chapter17.ex173L2`, `Garling.Chapter17.ex173L2OverL1`, `Garling.Chapter17.ex173Poly` ($x^4 - 2x^2 - 2$).
+  - `Garling.Chapter17.exercise_17_3`: proves every clause simultaneously:
+    1. `(ex173L2OverL1 : Set ℝ) = (ex173L2 : Set ℝ)` ($L_1 \le L_2 = L_1(\alpha) = \mathbb{Q}(\alpha)$);
+    2. `IsGarlingNormal ℚ ex173L1` and `IsGarlingNormal ex173L1 ex173L2OverL1`;
+    3. `¬ IsGarlingNormal ℚ ex173L2` ($x^4 - 2x^2 - 2$ has only two real roots $\pm\alpha$);
+    4. `minpoly ℚ ex173Alpha = ex173Poly` and `Irreducible ex173Poly` (Eisenstein at $p = 2$ via `theorem_5_2`);
+    5. Universally across **every** splitting field $E$ of $x^4 - 2x^2 - 2$ over $\mathbb{Q}$ (via explicit degree-$8$ splitting field $\mathbb{Q}(\alpha, i\sqrt{2}) \subseteq \mathbb{C}$ and `Chapter11.quartic_galoisGroup_d4_of_splittingField_finrank_eight`): `[E : ℚ] = 8`, `|Γ_ℚ(x^4 - 2x^2 - 2)| = 8`, and `Γ_ℚ(x^4 - 2x^2 - 2) ≃* DihedralGroup 4` ($D_4$);
+    6. Also `|Γ(L_2 : ℚ)| = 2` and `Γ(L_2 : ℚ) ≃* Multiplicative (ZMod 2)` ($C_2$), covering both readings of *"its Galois group"*.
+- **Status:** Held pending coordinator ruling on whether `exercise_17_3` closes Exercise 17.3.
+
+---
+
+## Ch. 17, Exercise 17.7 (§17.4, printed p. 138 / PDF p. 146) — Non-propositional *"Give an example of..."* prompt (fidelity hold)
+
+- **Printed statement (p. 138, verified on 160 DPI scan; OCR `garling1986_pages.txt` l. 5146 corrupts `ℚ[x]` to `O[x]`):** *"Give an example of a polynomial in $\mathbb{Q}[x]$ which is solvable by radicals, but whose splitting field is not an extension by radicals."*
+- **Exact blocker:** Non-propositional *"Give an example of..."* prompt (does not fix a specific witness polynomial; also depends on `1 ≤ n` in §14.1's definition of *radical*, which `Garling.Chapter14.IsGarlingExtensionByRadicals` already enforces).
+- **Kernel-proved declarations in `Garling/Chapter17.lean`:**
+  - `Garling.Chapter17.ex177Poly`: $x^3 - 3x - 1 \in \mathbb{Q}[x]$.
+  - `Garling.Chapter17.exercise_17_7_witness`: proves that `ex177Poly` has degree $3$, is irreducible over $\mathbb{Q}$ (via shift $x \mapsto x + 1$ to $x^3 + 3x^2 - 3$, Eisenstein at $p = 3$), has discriminant $81 > 0$ and three real roots (by `Exercise 17.4`), is solvable by radicals (`IsGarlingSolvableByRadicals ex177Poly` via Chapter 14's `cubic_solvable_by_radicals`), and yet for **every** splitting field `L` of `ex177Poly` over $\mathbb{Q}$ (in any universe `u`), `¬ IsGarlingExtensionByRadicals ℚ L` (by transporting into the real splitting field inside $\mathbb{R}$ and applying `Exercise 17.6`).
+  - `Garling.Chapter17.exercise_17_7`: packages the existential statement `∃ f : ℚ[X], IsGarlingSolvableByRadicals f ∧ ∀ (L : Type u) [Field L] [Algebra ℚ L], IsGarlingSplittingFieldExtension ℚ L f → ¬ IsGarlingExtensionByRadicals ℚ L`.
+- **Status:** Held pending coordinator ruling on whether `exercise_17_7` + `exercise_17_7_witness` close Exercise 17.7.
