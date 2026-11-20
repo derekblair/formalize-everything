@@ -1063,11 +1063,11 @@ Chapter 17 (*Solution by radicals*) contains **7** main-text theorem/corollary i
 - **Printed statement (p. 132, verified on 160 DPI scan; proof spans pp. 132–133):** *"Suppose that $G$ is a group, that $H \lhd G$, and that $A$ is a subgroup of $G$. (i) $H \cap A \lhd A$, and $A/(H \cap A) \cong HA/A$. (ii) If $H \subseteq A$ and $A \lhd G$, then $H \lhd A$, $A/H \lhd G/H$ and $(G/H)/(A/H) \cong G/A$."* *(Note: proof line 1 on p. 133 also prints `"The qj"` for `"Then qj"`, and proves the right-coset isomorphism $A/(H \cap A) \cong HA/H$.)*
 - **Exact blocker:** Printing $HA/A$ instead of $HA/H$ in `(i)` fails in **two** independent ways:
   1. $A$ need not even be a normal subgroup of $HA$ (e.g. $G = \Sigma_3$, $H = A_3 \lhd \Sigma_3$, $A = \langle (12) \rangle$, where $HA = \Sigma_3$ and $A$ is not normal in $HA$, so $HA/A$ is not even a group).
-  2. Even when $A \lhd HA$ (for instance in an abelian group $G = \mathbb{Z}_6$ with $H = \{0, 2, 4\}$ of order $3$ and $A = \{0, 3\}$ of order $2$, where $HA = G$ and $H \cap A = \{0\}$), $|A/(H \cap A)| = 2 \ne 3 = |HA/A|$, so $A/(H \cap A) \not\cong HA/A$!
+  2. Even when $A \lhd HA$ (for instance in an abelian group $G = \mathbb{Z}_2$ with $H = \{0\}$ of order $1$ and $A = \mathbb{Z}_2$ of order $2$, where $HA = G$ and $H \cap A = \{0\}$), $|A/(H \cap A)| = 2 \ne 1 = |HA/A|$, so $A/(H \cap A) \not\cong HA/A$!
   By contrast, part `(ii)` (Third Isomorphism Theorem) holds literally as printed with zero repairs.
 - **Kernel-proved declarations in `Garling/Chapter17.lean`:**
   - `Garling.Chapter17.theorem_17_1_i_not_normal_counterexample`: proves on $G = \Sigma_3 = \operatorname{Perm}(\operatorname{Fin} 3)$ with $H = A_3 \lhd \Sigma_3$ and $A = \langle (01) \rangle$ that $HA = \top$ while $A$ is not normal in $HA$.
-  - `Garling.Chapter17.theorem_17_1_i_normal_card_counterexample`: proves on $G = \operatorname{Multiplicative}(\mathbb{Z}_6)$ with $|H| = 3$, $|A| = 2$, $H \lhd G$, $A \lhd G$, $HA = \top$ that $|A/(H \cap A)| = 2$, $|HA/A| = 3$, and `IsEmpty ((A ⧸ (H.subgroupOf A)) ≃* (↥(H ⊔ A) ⧸ A.subgroupOf (H ⊔ A)))`.
+  - `Garling.Chapter17.theorem_17_1_i_normal_card_counterexample`: proves on $G = \operatorname{Multiplicative}(\mathbb{Z}_2)$ (`Multiplicative (ZMod 2)`) with $H = \bot$ ($|H| = 1$) and $A = \top$ ($|A| = 2$) that $H \lhd G$, $A \lhd G$, $|A/(H \cap A)| = 2$, $|HA/A| = 1$, and `IsEmpty ((↥A ⧸ (H ⊓ A).subgroupOf A) ≃* (↥(H ⊔ A) ⧸ A.subgroupOf (H ⊔ A)))`.
   - `Garling.Chapter17.theorem_17_1_i_part1`, `Garling.Chapter17.theorem_17_1_i_equiv`, `Garling.Chapter17.theorem_17_1_i_repaired`: prove $H \cap A \lhd A$ literally and the repaired Second Isomorphism Theorem $A/(H \cap A) \cong HA/H$.
   - `Garling.Chapter17.theorem_17_1_ii_equiv`, `Garling.Chapter17.theorem_17_1_ii`: prove part `(ii)` literally as printed (`H ⊴ A`, `A/H ⊴ G/H`, and `(G/H)/(A/H) ≃* G/A`).
   - `Garling.Chapter17.theorem_17_1`: bundles repaired `(i)` and literal `(ii)`.
@@ -1095,13 +1095,13 @@ Chapter 17 (*Solution by radicals*) contains **7** main-text theorem/corollary i
 
 - **Printed statement (p. 134, verified on 160 DPI scan; OCR `garling1986_pages.txt` l. 4984 corrupts `p^n` to `pn`):** *"Suppose that $G$ is a group of order $p^n$ (where $p$ is a prime). Show that the centre $Z = \{z : gz = zg \text{ for all } g \text{ in } G\}$ has at least $p$ elements, and show that $G$ is nilpotent."*
 - **Exact blockers:**
-  1. **Omitted `1 ≤ n` hypothesis in Part 1:** At $n = 0$, the trivial group `PUnit` has order $p^0 = 1$, and its centre $Z = \{e\}$ has cardinality $1 < p$ for every prime $p$ (`exercise_17_2_n0_counterexample`).
+  1. **Omitted `1 ≤ n` hypothesis in Part 1:** At $n = 0$, the trivial group `Multiplicative Unit` has order $p^0 = 1$, and its centre $Z = \{e\}$ has cardinality $1 < p$ for every prime $p$ (`exercise_17_2_n0_counterexample`).
   2. **Nilpotency definition from `Exercise 17.1`:** Part 2 holds unconditionally for all `n : ℕ` (including `n = 0`) under **both** Garling's printed definition (`IsGarlingPrintedNilpotent`) and the repaired central-series / Mathlib definition (`IsGarlingCentralNilpotent` / `Group.IsNilpotent`) (`exercise_17_2_part2_unconditional`).
 - **Kernel-proved declarations in `Garling/Chapter17.lean`:**
   - `Garling.Chapter17.garlingCentre`, `Garling.Chapter17.garlingCentre_eq_center`: literal prose definition of $Z = \{z : gz = zg \text{ for all } g \in G\}$ bridged to `Subgroup.center G`.
-  - `Garling.Chapter17.exercise_17_2_n0_counterexample`: refutes `p ≤ Nat.card (garlingCentre PUnit)` at $n = 0$ for every prime $p$.
+  - `Garling.Chapter17.exercise_17_2_n0_counterexample`: refutes `p ≤ Nat.card (garlingCentre (Multiplicative Unit))` at $n = 0$ for every prime $p$.
   - `Garling.Chapter17.exercise_17_2_part2_unconditional`: proves for all `n : ℕ` (`0` included) that any finite group of order $p^n$ satisfies `IsGarlingCentralNilpotent G`, `Group.IsNilpotent G`, and `IsGarlingPrintedNilpotent G`.
-  - `Garling.Chapter17.exercise_17_2_repaired`: proves for all `1 ≤ n` that `p ≤ Nat.card (garlingCentre G)` (in fact `p ∣ Nat.card (garlingCentre G)`) together with all three nilpotency predicates.
+  - `Garling.Chapter17.exercise_17_2_repaired`: proves for all `1 ≤ n` that `p ≤ Nat.card (garlingCentre G)` and `(p : ℕ∞) ≤ setOrder (garlingCentre G)` together with all three nilpotency predicates.
   - `Garling.Chapter17.exercise_17_2_centre_iff`: proves the exact biconditional `p ≤ Nat.card (garlingCentre G) ↔ 1 ≤ n`.
 - **Status:** Held in `QUEUE.md` as an omitted-`1 ≤ n` boundary error + `17.1`-definition fidelity hold; `n = 0` counterexample, unconditional Part 2, repaired `1 ≤ n` theorem, and exact iff characterization are all kernel-proved.
 

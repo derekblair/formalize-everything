@@ -5019,4 +5019,3 @@ theorem exercise_17_7 :
   ⟨ex177Poly, exercise_17_7_witness.{u}.2.2.2.2.1, exercise_17_7_witness.{u}.2.2.2.2.2⟩
 
 end Garling.Chapter17
-
