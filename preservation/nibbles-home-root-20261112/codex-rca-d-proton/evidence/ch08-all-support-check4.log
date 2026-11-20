@@ -1,0 +1,170 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:223:36: warning: `if_pos` has been deprecated: Use `ite_eq_left` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:224:6: warning: `Set.setOf_true` has been deprecated: Use `Set.ofPred_true` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:242:29: warning: `if_neg` has been deprecated: Use `ite_eq_right` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:223:36: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [extendedNonnegative, ENNReal.ofReal_lt_top, setOf_true, indicator_univ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:385:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:596:20: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:598:20: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:649:38: warning: `Set.setOf_true` has been deprecated: Use `Set.ofPred_true` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:745:8: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:745:22: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:758:74: error: unsolved goals
+X : Type u_1
+inst✝¹ : MeasurableSpace X
+μ : Measure X
+inst✝ : SFinite μ
+f : X → ℝ≥0∞
+hf : Measurable f
+p : ℝ
+hp : 1 < p
+w : ℝ → ℝ≥0∞ := fun t => ENNReal.ofReal (t ^ (p - 2))
+hw : Measurable w
+F : X × ℝ → ℝ≥0∞ := {z | ENNReal.ofReal (z.2 / 2) < f z.1}.indicator fun z => f z.1 * w z.2
+hs : MeasurableSet {z | ENNReal.ofReal (z.2 / 2) < f z.1}
+hF : Measurable F
+hinner : ∀ (t : ℝ), ∫⁻ (x : X), F (x, t) ∂μ = w t * ∫⁻ (x : X) in {x | ENNReal.ofReal (t / 2) < f x}, f x ∂μ
+hcut : ∀ (a : ℝ≥0∞), {t | ENNReal.ofReal (t / 2) < a} = {t | ENNReal.ofReal t < 2 * a}
+x : X
+he : (fun t => F (x, t)) = fun t => f x * {t | ENNReal.ofReal (t / 2) < f x}.indicator w t
+hmeas : Measurable ({t | ENNReal.ofReal (t / 2) < f x}.indicator w)
+t : ℝ
+⊢ w t = ENNReal.ofReal (t ^ (-2 + p))
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:824:17: warning: This simp argument is unused:
+  C
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [mul_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:893:8: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫⁻ (a : E), (g ^ p) a ∂μ
+in the target expression
+  ∫⁻ (x : E), g x ^ p ∂μ < ∞
+
+E : Type u_1
+inst✝⁵ : NormedAddCommGroup E
+inst✝⁴ : NormedSpace ℝ E
+inst✝³ : FiniteDimensional ℝ E
+inst✝² : MeasurableSpace E
+inst✝¹ : BorelSpace E
+μ : Measure E
+inst✝ : μ.IsAddHaarMeasure
+f : E → ℂ
+p : ℝ
+hp : 1 < p
+hf : MemLp f (ENNReal.ofReal p) μ
+hp0 : 0 < p
+g : E → ℝ≥0∞ := fun x => ‖AEStronglyMeasurable.mk f ⋯ x‖ₑ
+hg : Measurable g
+hfg : (fun x => ‖f x‖ₑ) =ᵐ[μ] g
+hfi : ∫⁻ (a : E), ‖f a‖ₑ ^ p ∂μ < ∞
+⊢ ∫⁻ (x : E), g x ^ p ∂μ < ∞
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:936:8: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:936:22: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:948:74: error: unsolved goals
+X : Type u_1
+inst✝¹ : MeasurableSpace X
+μ : Measure X
+inst✝ : SFinite μ
+f : X → ℝ≥0∞
+hf : Measurable f
+p : ℝ
+hp : 1 < p
+d : ℝ
+hd : 0 < d
+w : ℝ → ℝ≥0∞ := fun t => ENNReal.ofReal (t ^ (p - 2))
+hw : Measurable w
+F : X × ℝ → ℝ≥0∞ := {z | ENNReal.ofReal (z.2 / d) < f z.1}.indicator fun z => f z.1 * w z.2
+hs : MeasurableSet {z | ENNReal.ofReal (z.2 / d) < f z.1}
+hF : Measurable F
+hinner : ∀ (t : ℝ), ∫⁻ (x : X), F (x, t) ∂μ = w t * ∫⁻ (x : X) in {x | ENNReal.ofReal (t / d) < f x}, f x ∂μ
+hcut : ∀ (a : ℝ≥0∞), {t | ENNReal.ofReal (t / d) < a} = {t | ENNReal.ofReal t < ENNReal.ofReal d * a}
+x : X
+he : (fun t => F (x, t)) = fun t => f x * {t | ENNReal.ofReal (t / d) < f x}.indicator w t
+hmeas : Measurable ({t | ENNReal.ofReal (t / d) < f x}.indicator w)
+t : ℝ
+⊢ w t = ENNReal.ofReal (t ^ (-2 + p))
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:996:20: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:998:20: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:1068:17: warning: This simp argument is unused:
+  C
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [b, mul_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:1068:20: warning: This simp argument is unused:
+  b
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [C, mul_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:1142:12: error: Ambiguous term
+  tendsto_atTop.mpr
+Possible interpretations:
+  Metric.tendsto_atTop.mpr : (∀ ε > 0, ∃ N, ∀ n ≥ N, dist (?m.92 n) ?m.93 < ε) → Tendsto ?m.92 atTop (𝓝 ?m.93)
+  
+  Filter.tendsto_atTop.mpr : (∀ (b : ?m.88), ∀ᶠ (a : ?m.87) in ?m.91, b ≤ ?m.90 a) → Tendsto ?m.90 ?m.91 atTop
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:1143:12: error: No goals to be solved
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:1159:39: error(lean.unknownIdentifier): Unknown constant `Real.tendsto_rpow_div`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:1188:4: error: Type mismatch: After simplification, term
+  Tendsto.div tendsto_const_nhds hid one_ne_zero
+ has type
+  Tendsto ((fun x => 1) / fun p => p) (𝓝[>] 1) (𝓝 1)
+but is expected to have type
+  Tendsto (fun p => p⁻¹) (𝓝[>] 1) (𝓝 1)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:1235:10: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫⁻ (a : E), ((fun x => ‖f x‖ₑ) ^ p) a ∂μ
+in the target expression
+  ∫⁻ (x : E), centeredMaximal μ g x ^ p ∂μ ≤
+    ENNReal.ofReal p * (ENNReal.ofReal (1 / (1 - 1 / d)) * ENNReal.ofReal (5 ^ Module.finrank ℝ E)) *
+        (ENNReal.ofReal d ^ (p - 1) / ENNReal.ofReal (p - 1)) *
+      ∫⁻ (x : E), ‖f x‖ₑ ^ p ∂μ
+
+E : Type u_1
+inst✝⁵ : NormedAddCommGroup E
+inst✝⁴ : NormedSpace ℝ E
+inst✝³ : FiniteDimensional ℝ E
+inst✝² : MeasurableSpace E
+inst✝¹ : BorelSpace E
+μ : Measure E
+inst✝ : μ.IsAddHaarMeasure
+f : E → ℂ
+hf : AEStronglyMeasurable f μ
+p d : ℝ
+hp : 1 < p
+hd : 1 < d
+g : E → ℝ≥0∞ := fun x => ‖AEStronglyMeasurable.mk f hf x‖ₑ
+hg : Measurable g
+hfg : (fun x => ‖f x‖ₑ) =ᵐ[μ] g
+he : maximalFunction μ f = centeredMaximal μ g
+⊢ ∫⁻ (x : E), centeredMaximal μ g x ^ p ∂μ ≤
+    ENNReal.ofReal p * (ENNReal.ofReal (1 / (1 - 1 / d)) * ENNReal.ofReal (5 ^ Module.finrank ℝ E)) *
+        (ENNReal.ofReal d ^ (p - 1) / ENNReal.ofReal (p - 1)) *
+      ∫⁻ (x : E), ‖f x‖ₑ ^ p ∂μ

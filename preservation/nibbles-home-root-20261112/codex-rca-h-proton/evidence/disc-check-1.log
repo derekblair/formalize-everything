@@ -1,0 +1,121 @@
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:34:2: error: Type mismatch: After simplification, term
+  ContinuousMap.continuous f
+ has type
+  Continuous ⇑f
+but is expected to have type
+  Continuous ((closedBall 0 1).domRestrict (discExtend f))
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:114:38: error: unsolved goals
+f : DiscAlgebra
+c : ℂ
+⊢ (∃ z, 0 = c - ↑f z) ↔ ∃ z, c = ↑f z
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:119:13: warning: This simp argument is unused:
+  sub_eq_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [eq_comm]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:202:2: warning: Try `simp at hz` instead of `simpa using hz`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:238:65: error: expected token
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:236:11: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  LE Type
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:236:13: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  OfNat Type 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  Type
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:237:11: error(lean.unknownIdentifier): Unknown constant `Complex.cauchyPowerSeries`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:225:58: error: unsolved goals
+f : DiscAlgebra
+ε : ℝ
+hε : 0 < ε
+hthird : 0 < ε / 3
+δ : ℝ
+hδ : δ > 0
+huc : ∀ {x y : DiscClosed}, dist x y < δ → dist (↑f x) (↑f y) < ε / 3
+r : ℝ
+hr : max (1 - δ) 0 < r
+hr1 : r < 1
+hr0 : 0 < r
+hnear : 1 - r < δ
+s : ℝ
+hrs : r < s
+hs1 : s < 1
+hs0 : 0 ≤ s
+s' : sorry := sorry
+⊢ ∃ c n, ‖f - discPolynomial c n‖ < ε
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:279:8: error: Tactic `rewrite` failed: motive is not type correct:
+  fun _a => h discCoordinate ∈ _a
+Error: Application type mismatch: The argument
+  instTopologicalSpaceSubtype
+has type
+  TopologicalSpace { x // x ∈ _a }
+but is expected to have type
+  TopologicalSpace DiscClosed
+in the application
+  @ContinuousMap DiscClosed ℂ instTopologicalSpaceSubtype
+
+Explanation: The rewrite tactic rewrites an expression 'e' using an equality 'a = b' by the following process. First, it looks for all 'a' in 'e'. Second, it tries to abstract these occurrences of 'a' to create a function 'm := fun _a => ...', called the *motive*, with the property that 'm a' is definitionally equal to 'e'. Third, we observe that 'congrArg' implies that 'm a = m b', which can be used with lemmas such as 'Eq.mpr' to change the goal. However, if 'e' depends on specific properties of 'a', then the motive 'm' might not typecheck.
+
+Possible solutions: use rewrite's 'occs' configuration option to limit which occurrences are rewritten, or use 'simp' or 'conv' mode, which have strategies for certain kinds of dependencies (these tactics can handle proofs and 'Decidable' instances whose types depend on the rewritten term, and 'simp' can apply user-defined '@[congr]' theorems as well).
+
+h : DiscAlgebra →ₐ[ℂ] ℂ
+⊢ h discCoordinate ∈ closedBall 0 1
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:290:45: error: failed to synthesize
+  NormOneClass DiscAlgebra
+(deterministic) timeout at `isDefEq`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:290:45: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:275:0: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:307:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:311:10: error: Application type mismatch: The argument
+  Ideal.Quotient.mkₐ ℂ I
+has type
+  @AlgHom ℂ DiscAlgebra (DiscAlgebra ⧸ I) Complex.instCommSemiring discSubalgebra.toRing.toSemiring
+    (@Ring.toSemiring (DiscAlgebra ⧸ I) (Ideal.Quotient.ring I)) discSubalgebra.algebra (Ideal.Quotient.algebra ℂ)
+but is expected to have type
+  @AlgHom ℂ DiscAlgebra ?m.103 Complex.instCommSemiring discSubalgebra.toSemiring
+    (@Ring.toSemiring ?m.103 NormedRing.toRing) discSubalgebra.algebra NormedAlgebra.toAlgebra
+in the application
+  (↑(NormedRing.algEquivComplexOfComplete ⋯).symm).comp (Ideal.Quotient.mkₐ ℂ I)
+'RudinRCA.Chapter18.discSubalgebra_isClosed' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.disc_isUnit_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.disc_spectrum_eq_range' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discCoordinate_spectrum' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discBoundary_norm' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discBoundarySubalgebra_isClosed' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discBoundaryCoordinate_subalgebra_spectrum' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter18.discBoundaryCoordinate_spectrum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discCoordinate_spectra_differ' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.disc_polynomial_approx' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.disc_character_evaluation' does not depend on any axioms
+'RudinRCA.Chapter18.disc_bezout' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

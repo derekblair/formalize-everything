@@ -1,0 +1,10 @@
+{
+  "source": "work/Chapter18Ideals.lean",
+  "sha256": "4f7e7cefc52320cc38c353e28f8ce6bf892e4be681edaebb09f2cc473f69b8d5",
+  "evidence": "evidence/ch18-ideals-check-04.log",
+  "exit_code": 0,
+  "audited_declarations": 35,
+  "unexpected_axioms": {},
+  "errors": 0,
+  "scope": "fragment validation only; no chapter build gate"
+}

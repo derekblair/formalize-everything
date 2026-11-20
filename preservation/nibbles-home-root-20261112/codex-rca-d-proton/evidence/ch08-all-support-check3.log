@@ -1,0 +1,81 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:218:36: warning: `if_pos` has been deprecated: Use `ite_eq_left` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:219:6: warning: `Set.setOf_true` has been deprecated: Use `Set.ofPred_true` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:237:29: warning: `if_neg` has been deprecated: Use `ite_eq_right` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:218:36: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [extendedNonnegative, ENNReal.ofReal_lt_top, setOf_true, indicator_univ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:380:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:591:20: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:593:20: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:664:48: error: Application type mismatch: The argument
+  Or.inr (LT.lt.ne' (ENNReal.ofReal_pos.mpr hp))
+has type
+  ?m.288 ∨ ENNReal.ofReal p ≠ 0
+of sort `Prop` but is expected to have type
+  ℝ≥0∞
+of sort `Type` in the application
+  Tendsto.div_const (Tendsto.comp (Continuous.tendsto ENNReal.continuous_rpow_const ∞) ENNReal.tendsto_nat_nhds_top)
+    (Or.inr (LT.lt.ne' (ENNReal.ofReal_pos.mpr hp)))
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:663:6: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  SeparatelyContinuousMul ℝ≥0∞
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:690:11: error: `simp` made no progress
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:739:8: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:739:22: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:748:12: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫⁻ (a : ℝ), ?m.510 * {a | (ENNReal.ofReal ∘ fun x => id x / 2) a < ?m.553}.indicator w a ∂?m.509
+in the target expression
+  ∫⁻ (t : ℝ) in Ioi 0, f x * {t | ENNReal.ofReal (t / 2) < f x}.indicator w t =
+    2 ^ (p - 1) / ENNReal.ofReal (p - 1) * f x ^ p
+
+X : Type u_1
+inst✝¹ : MeasurableSpace X
+μ : Measure X
+inst✝ : SFinite μ
+f : X → ℝ≥0∞
+hf : Measurable f
+p : ℝ
+hp : 1 < p
+w : ℝ → ℝ≥0∞ := fun t => ENNReal.ofReal (t ^ (p - 2))
+hw : Measurable w
+F : X × ℝ → ℝ≥0∞ := {z | ENNReal.ofReal (z.2 / 2) < f z.1}.indicator fun z => f z.1 * w z.2
+hs : MeasurableSet {z | ENNReal.ofReal (z.2 / 2) < f z.1}
+hF : Measurable F
+hinner : ∀ (t : ℝ), ∫⁻ (x : X), F (x, t) ∂μ = w t * ∫⁻ (x : X) in {x | ENNReal.ofReal (t / 2) < f x}, f x ∂μ
+hcut : ∀ (a : ℝ≥0∞), {t | ENNReal.ofReal (t / 2) < a} = {t | ENNReal.ofReal t < 2 * a}
+x : X
+he : (fun t => F (x, t)) = fun t => f x * {t | ENNReal.ofReal (t / 2) < f x}.indicator w t
+⊢ ∫⁻ (t : ℝ) in Ioi 0, f x * {t | ENNReal.ofReal (t / 2) < f x}.indicator w t =
+    2 ^ (p - 1) / ENNReal.ofReal (p - 1) * f x ^ p
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:815:36: error: unsolved goals
+E : Type u_1
+inst✝⁵ : NormedAddCommGroup E
+inst✝⁴ : NormedSpace ℝ E
+inst✝³ : FiniteDimensional ℝ E
+inst✝² : MeasurableSpace E
+inst✝¹ : BorelSpace E
+μ : Measure E
+inst✝ : μ.IsAddHaarMeasure
+f : E → ℝ≥0∞
+hf : Measurable f
+p : ℝ
+hp : 1 < p
+C : ℝ≥0∞ := ENNReal.ofReal (5 ^ Module.finrank ℝ E)
+htbound :
+  ∀ (t : ℝ),
+    0 < t →
+      μ {x | ENNReal.ofReal t < centeredMaximal μ f x} * ENNReal.ofReal (t ^ (p - 1)) ≤
+        2 * C * (ENNReal.ofReal (t ^ (p - 2)) * ∫⁻ (x : E) in {x | ENNReal.ofReal (t / 2) < f x}, f x ∂μ)
+⊢ ¬2 * 5 ^ Module.finrank ℝ E = ∞

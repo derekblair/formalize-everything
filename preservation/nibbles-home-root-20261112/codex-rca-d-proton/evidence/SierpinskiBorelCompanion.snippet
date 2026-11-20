@@ -1,0 +1,28 @@
+/-- The sections in Sierpinski's construction are Borel sets in the literal unit
+interval, which is stronger than measurability in its Lebesgue completion. This
+companion retains the Borel statement explicitly alongside the completed endpoint. -/
+theorem unit_square_sierpinski_borel_sections_under_CH
+    (hCH : Cardinal.continuum = (Cardinal.aleph 1 : Cardinal.{0})) :
+    ∃ Q : Set (SierpinskiInterval × SierpinskiInterval),
+      (∀ x : SierpinskiInterval,
+        @MeasurableSet SierpinskiInterval (borel SierpinskiInterval) {y | (x, y) ∈ Q} ∧
+          sierpinskiIntervalMeasure {y | (x, y) ∈ Q} = 1) ∧
+      (∀ y : SierpinskiInterval,
+        @MeasurableSet SierpinskiInterval (borel SierpinskiInterval) {x | (x, y) ∈ Q} ∧
+          sierpinskiIntervalMeasure {x | (x, y) ∈ Q} = 0) ∧
+      (∫⁻ x, sierpinskiIntervalMeasure {y | (x, y) ∈ Q} ∂sierpinskiIntervalMeasure) = 1 ∧
+      (∫⁻ y, sierpinskiIntervalMeasure {x | (x, y) ∈ Q} ∂sierpinskiIntervalMeasure) = 0 ∧
+      ¬ MeasurableSet Q := by
+  obtain ⟨⟨j⟩, hw, hc⟩ := ch_unitInterval_wellOrder hCH
+  have H := sierpinski_counterexample sierpinskiIntervalMeasure j hw hc
+  have hb : (inferInstance : MeasurableSpace SierpinskiInterval) = borel SierpinskiInterval :=
+    BorelSpace.measurable_eq
+  refine ⟨sierpinskiSet j, ?_, ?_, H.2.2.1, H.2.2.2.1, H.2.2.2.2⟩
+  · intro x
+    refine ⟨?_, (H.1 x).2⟩
+    rw [← hb]
+    exact (H.1 x).1
+  · intro y
+    refine ⟨?_, (H.2.1 y).2⟩
+    rw [← hb]
+    exact (H.2.1 y).1

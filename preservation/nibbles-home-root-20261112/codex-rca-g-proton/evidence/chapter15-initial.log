@@ -1,0 +1,11 @@
+RudinRCA/Chapter15.lean:31:8: error(lean.unknownIdentifier): Unknown constant `Finset.prod_const_zero`
+RudinRCA/Chapter15.lean:64:46: error(lean.invalidField): Invalid field `hasSequentialProduct`: The environment does not contain `Function.hasSequentialProduct`, so it is not possible to project the field `hasSequentialProduct` from an expression
+  Multipliable.hasProd hmul
+of type
+  ∀ ⦃U : Set ℝ⦄,
+    U ∈ 𝓝 (∏' (b : ℕ), (1 - u b)) →
+      U ∈ Filter.map (fun s => ∏ b ∈ s, (fun i => 1 - u i) b) (SummationFilter.unconditional ℕ).filter
+'RudinRCA.Chapter15.sequentialProduct_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.HasProd.hasSequentialProduct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.positive_product_one_sub_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+Initial check completed with the errors above before the attempted interruption reached it (kill reported no such process). No successful verification claimed from this run. Subsequent checks use -j1.

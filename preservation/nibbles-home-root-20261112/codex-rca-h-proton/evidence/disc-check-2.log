@@ -1,0 +1,127 @@
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:213:2: warning: Try `simp at hz` instead of `simpa using hz`
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:237:68: error(lean.unknownIdentifier): Unknown identifier `mem_sphere_zero_iff`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:237:23: error: Type mismatch: After simplification, term
+  hz
+ has type
+  z ∈ sphere 0 1
+but is expected to have type
+  ‖z‖ = 1
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:264:0: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:320:10: error: invalid `▸` notation, failed to compute motive for the substitution
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:332:4: error: Type mismatch: After simplification, term
+  ContinuousMap.norm_coe_le_norm (↑(f - q)) z
+ has type
+  @LE.le ℝ Real.instLE ‖↑(f - q) z‖ ‖↑(f - q)‖
+but is expected to have type
+  @LE.le ℝ Real.instLE ‖↑f z - ↑q z‖ ‖f - q‖
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:338:16: error: Tactic `simp` failed with a nested error:
+(deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:317:8: error: (kernel) unknown constant 'RudinRCA.Chapter18.disc_polynomial_approx'
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:350:9: error: A placeholder `_` cannot be used where a function is expected
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:366:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:384:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:404:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:415:8: error: (kernel) unknown constant 'RudinRCA.Chapter18.disc_polynomial_approx'
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:445:56: error(lean.invalidField): Invalid field `toContinuousMap`: The environment does not contain `Homeomorph.toContinuousMap`, so it is not possible to project the field `toContinuousMap` from an expression
+  discAngleHomeomorph
+of type
+  AddCircle (2 * Real.pi) ≃ₜ DiscCircle
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:456:4: error: Type mismatch
+  ContinuousMap.norm_coe_le_norm (discAngleTransport f) t
+has type
+  ‖(discAngleTransport f) t‖ ≤ ‖discAngleTransport f‖
+but is expected to have type
+  ‖f (discAngleHomeomorph t)‖ ≤ ‖discAngleTransport f‖
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:471:2: error: 'change' tactic failed, pattern
+  ↑((AddCircle.homeomorphCircle ⋯) t) = (fourier 1) t
+is not definitionally equal to target
+  (discAngleBoundary discCoordinate) t = (fourier 1) t
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:484:25: warning: This simp argument is unused:
+  fourier_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:509:6: error: Type mismatch: After simplification, term
+  hsum
+ has type
+  ∑ k ∈ Finset.range n, c k • fourier ↑k ∈ S
+but is expected to have type
+  ∑ x ∈ Finset.range n, c x • fourier ↑x ∈ ↑S
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Disc.lean:492:8: error: (kernel) unknown constant 'RudinRCA.Chapter18.disc_polynomial_approx'
+'RudinRCA.Chapter18.discSubalgebra_isClosed' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.disc_isUnit_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.disc_spectrum_eq_range' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discCoordinate_spectrum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discBoundary_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discBoundarySubalgebra_isClosed' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discBoundaryCoordinate_subalgebra_spectrum' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter18.discBoundaryCoordinate_spectrum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discCoordinate_spectra_differ' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discCoordinate_spectralRadii_equal' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter18.disc_polynomial_approx' does not depend on any axioms
+'RudinRCA.Chapter18.disc_character_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ disc_character_evaluation]
+'RudinRCA.Chapter18.disc_maximal_iff_evaluation_kernel' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound,
+ disc_character_evaluation]
+'RudinRCA.Chapter18.disc_bezout' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound,
+ disc_character_evaluation]
+'RudinRCA.Chapter18.disc_bezout_positive' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound,
+ disc_character_evaluation]
+'RudinRCA.Chapter18.discBoundary_eq_closure_adjoin' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ discBoundary_eq_closure_adjoin]
+'RudinRCA.Chapter18.discAngleBoundary_coordinate' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.discAngleSubalgebra_eq_positive_closure' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound,
+ discAngleSubalgebra_eq_positive_closure]

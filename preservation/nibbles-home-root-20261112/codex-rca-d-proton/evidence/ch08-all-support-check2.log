@@ -1,0 +1,42 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:216:36: warning: `if_pos` has been deprecated: Use `ite_eq_left` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:217:6: warning: `Set.setOf_true` has been deprecated: Use `Set.ofPred_true` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:235:29: warning: `if_neg` has been deprecated: Use `ite_eq_right` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:216:36: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [extendedNonnegative, ENNReal.ofReal_lt_top, setOf_true, indicator_univ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:338:65: error: Type mismatch
+  LT.lt.le ?m.113
+has type
+  ?m.111 ≤ ?m.112
+but is expected to have type
+  x✝ ∈ {x | ε ≤ ‖f x‖ₑ}
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:374:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:389:10: error(lean.unknownIdentifier): Unknown identifier `lintegral_mono_measure`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:397:6: error: Type mismatch
+  mul_le_mul_right (ENNReal.tsum_le_tsum fun i => hrint i) C
+has type
+  (C * tsum fun (a : ↑s) => t * μ (ball (↑a) (r a))) ≤ C * ∑' (a : ↑s), ∫⁻ (y : X) in ball (↑a) (r a), f y ∂μ
+but is expected to have type
+  (C * tsum fun (i : ↑u) => t * μ (ball (↑↑i) (r ↑i))) ≤ C * ∑' (i : ↑u), ∫⁻ (x : X) in ball (↑↑i) (r ↑i), f x ∂μ
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:432:37: error: Application type mismatch: The argument
+  hx
+has type
+  x ∈ {x | t < centeredMaximal μ f x}
+but is expected to have type
+  ?m.193 < iSup ?m.194
+in the application
+  lt_iSup_iff.mp hx
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:541:8: error(lean.unknownIdentifier): Unknown identifier `measurable_iSup`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:583:20: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:585:20: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead

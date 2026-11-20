@@ -1,0 +1,14 @@
+{
+  "command": [
+    "lake",
+    "env",
+    "lean",
+    "-j1",
+    "HolomorphicProductWork.lean"
+  ],
+  "cwd": "/home/derekblair/lane-work/codex-rca-g-proton/formalize-everything/books/rudin-real-and-complex-analysis",
+  "started_utc": "2026-10-29T17:43:56.285693+00:00",
+  "ended_utc": "2026-10-29T17:46:24.981117+00:00",
+  "source_sha256": "b96a8619c160d15ca4e4d9c5462c07a12e85ba80f22fd34e3e55b80036d8d398",
+  "exit_code": 1
+}

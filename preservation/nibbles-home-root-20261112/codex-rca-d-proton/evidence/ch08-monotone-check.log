@@ -1,0 +1,63 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:26:0: warning: Definition `RudinRCA.Chapter08.rectangleProductSpace` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:93:15: error: Type mismatch
+  compl_mem hC
+has type
+  MonotoneClosure C ?m.15 → MonotoneClosure C ?m.15ᶜ
+but is expected to have type
+  ∀ ⦃s : Set α⦄, s ∈ {s | MonotoneClosure C s} → sᶜ ∈ {s | MonotoneClosure C s}
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:99:0: warning: Definition `RudinRCA.Chapter08.MonotoneClosure.measurableSpace` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:124:46: error: type class instance expected
+  ?m.3
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:130:59: error: Function expected at
+  empty_prod
+but this term has type
+  ∅ ×ˢ ?m.27 = ∅
+
+Note: Expected a function because this term is being applied to the argument
+  ∅
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:174:42: error(lean.unknownIdentifier): Unknown identifier `univ_diff`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:174:96: error: Application type mismatch: The argument
+  hs
+has type
+  Set (α × β)
+of sort `Type (max u_1 u_2)` but is expected to have type
+  ?m.64 ∈ supClosure measurableRectangles
+of sort `Prop` in the application
+  (IsSetSemiring.isSetRing_supClosure hR).sdiff_mem hu hs
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:191:70: error: type class instance expected
+  ?m.4
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:204:27: error: Type mismatch
+  MeasurableSet.iUnion ?m.36
+has type
+  MeasurableSet (⋃ b, ?m.34 b)
+but is expected to have type
+  ⋃ n, x✝¹ n ∈ {E | MeasurableSet E}
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:205:22: error: Type mismatch
+  MeasurableSet.iInter ?m.46
+has type
+  MeasurableSet (⋂ b, ?m.44 b)
+but is expected to have type
+  ⋂ n, x✝¹ n ∈ {E | MeasurableSet E}
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:205:43: error: Application type mismatch: The argument
+  hs
+has type
+  ∀ (n : ℕ), x✝¹ n ∈ {E | MeasurableSet E}
+but is expected to have type
+  ∀ (b : ?m.41), MeasurableSet (?m.44 b)
+in the application
+  MeasurableSet.iInter hs
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Monotone.lean:210:4: error: Tactic `assumption` failed
+
+case right
+α : Type u_1
+β : Type u_2
+inst✝¹ : MeasurableSpace α
+inst✝ : MeasurableSpace β
+M : Set (Set (α × β))
+hM : IsMonotoneClass M
+hE : elementarySets ⊆ M
+E : Set (α × β)
+h : E ∈ {E | MeasurableSet E}
+⊢ MeasurableSet E

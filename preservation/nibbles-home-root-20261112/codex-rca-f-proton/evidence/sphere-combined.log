@@ -1,0 +1,163 @@
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:76:8: error: Ambiguous term
+  mem_closure_iff.mpr
+Possible interpretations:
+  _root_.mem_closure_iff.mpr : (∀ (o : Set ?m.28), IsOpen[?m.29] o → ?m.30 ∈ o → (o ∩ ?m.31).Nonempty) →
+    ?m.30 ∈ closure[?m.29] ?m.31
+  
+  Metric.mem_closure_iff.mpr : (∀ ε > 0, ∃ b ∈ ?m.30, dist ?m.31 b < ε) →
+    ?m.31 ∈ closure[PseudoMetricSpace.toUniformSpace.toTopologicalSpace] ?m.30
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:77:8: error: No goals to be solved
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:104:47: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:122:38: error(lean.invalidField): Invalid field `isLinearMap`: The environment does not contain `LinearMap.isLinearMap`, so it is not possible to project the field `isLinearMap` from an expression
+  Complex.imLm
+of type `ℂ →ₗ[ℝ] ℝ`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:124:38: error(lean.invalidField): Invalid field `isLinearMap`: The environment does not contain `LinearMap.isLinearMap`, so it is not possible to project the field `isLinearMap` from an expression
+  Complex.imLm
+of type `ℂ →ₗ[ℝ] ℝ`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:128:4: error: Type mismatch: After simplification, term
+  lt_add_one r
+ has type
+  True
+but is expected to have type
+  r < ‖↑r + 1‖
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:141:12: error: unsolved goals
+case coe
+L : Set ℂ := {z | z.im ≤ 0}
+H : Set ℂ := {z | 1 ≤ z.im}
+hL : IsConnected L
+hH : IsConnected H
+huL : ∀ r > 0, ∃ z ∈ L, r < ‖z‖
+huH : ∀ r > 0, ∃ z ∈ H, r < ‖z‖
+z : ℂ
+⊢ 0 < z.im → 1 ≤ z.im ↔ z.im ≤ 0 ∨ 1 ≤ z.im
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:122:78: warning: This simp argument is unused:
+  L
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:124:86: warning: This simp argument is unused:
+  H
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:141:44: warning: This simp argument is unused:
+  not_and_or
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [horizontalStrip, L, H, not_lt]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'RudinRCA.Chapter13.infinity_mem_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.coe_mem_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.infinityDisc_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.isOpen_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.finite_chart_open_embedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.riemannSphereHomeomorph' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.riemannSphere_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.mem_nhds_infinity_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.infinity_mem_closure_of_unbounded' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.isConnected_insert_infinity' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.horizontalStrip_isOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.horizontalStrip_planar_complement_not_preconnected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.horizontalStrip_spherical_complement_connected' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:187:35: warning: Unused tactic linter: `ring` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:187:35: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:212:65: error: unsolved goals
+z : ℂ
+⊢ ‖!₂[z.re * 2, z.im * 2, 0]‖ ^ 2 = z.re ^ 2 * 4 + z.im ^ 2 * 4
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:214:27: warning: This simp argument is unused:
+  PiLp.inner_apply
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [complexPlaneEquiv, Fin.sum_univ_succ, Complex.sq_norm, Complex.normSq_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:214:45: warning: This simp argument is unused:
+  Fin.sum_univ_succ
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [complexPlaneEquiv, PiLp.inner_apply, Complex.sq_norm, Complex.normSq_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+Try this:
+  [apply] ring_nf
+  
+  The `ring` tactic failed to close the goal. Use `ring_nf` to obtain a normal form.
+    
+  Note that `ring` works primarily in *commutative* rings. If you have a noncommutative ring, abelian group or module, consider using `noncomm_ring`, `abel` or `module` instead.
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/SphereCombined.lean:222:42: error: unsolved goals
+case «0»
+z : ℂ
+hpos : 0 < ‖z‖ ^ 2 + 1
+hpos' : 0 < 4 * ‖z‖ ^ 2 + 4
+⊢ (↑({ toFun := fun z => ⟨!₂[z.re * 2, z.im * 2, 0], ⋯⟩, map_add' := ⋯, map_smul' := ⋯,
+              invFun := fun w => ↑((↑w).ofLp 0) * (1 / 2) + ↑((↑w).ofLp 1) * Complex.I * (1 / 2), left_inv := ⋯,
+              right_inv := ⋯ }
+            z)).ofLp
+      0 =
+    z.re * 2
+
+case «1»
+z : ℂ
+hpos : 0 < ‖z‖ ^ 2 + 1
+hpos' : 0 < 4 * ‖z‖ ^ 2 + 4
+⊢ (↑({ toFun := fun z => ⟨!₂[z.re * 2, z.im * 2, 0], ⋯⟩, map_add' := ⋯, map_smul' := ⋯,
+              invFun := fun w => ↑((↑w).ofLp 0) * (1 / 2) + ↑((↑w).ofLp 1) * Complex.I * (1 / 2), left_inv := ⋯,
+              right_inv := ⋯ }
+            z)).ofLp
+      1 =
+    z.im * 2
+
+case «2»
+z : ℂ
+hpos : 0 < ‖z‖ ^ 2 + 1
+hpos' : 0 < 4 * ‖z‖ ^ 2 + 4
+⊢ -1 +
+        (↑({ toFun := fun z => ⟨!₂[z.re * 2, z.im * 2, 0], ⋯⟩, map_add' := ⋯, map_smul' := ⋯,
+                  invFun := fun w => ↑((↑w).ofLp 0) * (1 / 2) + ↑((↑w).ofLp 1) * Complex.I * (1 / 2), left_inv := ⋯,
+                  right_inv := ⋯ }
+                z)).ofLp
+          2 +
+      ‖z‖ ^ 2 =
+    -1 + ‖z‖ ^ 2
+'RudinRCA.Chapter13.norm_northPole' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.mem_north_orthogonal_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.complexPlaneEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.bookSphereHomeomorph' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.bookSphereHomeomorph_infty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.norm_complexPlaneEquiv_sq' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.bookSphereHomeomorph_coe' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

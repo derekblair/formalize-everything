@@ -1,0 +1,20 @@
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/LogModulus.lean:11:4: error: Function expected at
+  HarmonicOnNhd
+but this term has type
+  ?m.1
+
+Note: Expected a function because this term is being applied to the argument
+  (fun z => Real.log ‖f z‖)
+
+Hint: The identifier `HarmonicOnNhd` is unknown, and Lean's `autoImplicit` option causes an unknown identifier to be treated as an implicitly bound variable with an unknown type. However, the unknown type cannot be a function, and a function is what Lean expects here. This is often the result of a typo or a missing `import` or `open` statement.
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/LogModulus.lean:12:8: error: Tactic `introN` failed: There are no additional binders or `let` bindings in the goal to introduce
+
+x✝ : Sort u_1
+HarmonicOnNhd : x✝
+Ω : Set ℂ
+hΩ : IsOpen Ω
+f : ℂ → ℂ
+hf : DifferentiableOn ℂ f Ω
+hzero : ∀ z ∈ Ω, f z ≠ 0
+⊢ sorry
+'RudinRCA.Chapter13.harmonic_log_norm' does not depend on any axioms

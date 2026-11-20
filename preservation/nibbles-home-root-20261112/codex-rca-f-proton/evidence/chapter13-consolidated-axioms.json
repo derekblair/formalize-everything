@@ -1,0 +1,396 @@
+{
+  "log": "evidence/chapter13-consolidated-build.log",
+  "audited_declarations": 48,
+  "allowed_axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "unexpected_axioms": [],
+  "audits": [
+    {
+      "declaration": "RudinRCA.Chapter13.RiemannSphere",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.exteriorDisc",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.infinityDisc",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.infinity_mem_infinityDisc",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.coe_mem_infinityDisc",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.infinityDisc_eq",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.isOpen_infinityDisc",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.mem_nhds_infinity_iff",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.finite_chart_open_embedding",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.riemannSphereHomeomorph",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.riemannSphere_compact",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.infinity_mem_closure_of_unbounded",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.isConnected_insert_infinity",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.horizontalStrip",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.horizontalStrip_isOpen",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.horizontalStrip_planar_complement_not_preconnected",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.horizontalStrip_spherical_complement_connected",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.SphereAmbient",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.northPole",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.norm_northPole",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.mem_north_orthogonal_iff",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.complexPlaneEquiv",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.complexPlaneEquiv_coe",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.bookSphereHomeomorph",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.bookSphereHomeomorph_infty",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.norm_complexPlaneEquiv_sq",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.bookSphereHomeomorph_coe",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.removable_at_infinity_of_bounded",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.inversePrincipalPolynomial",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.inversePrincipalPolynomial_natDegree",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.inversePrincipalPolynomial_coeff_zero",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.inversePrincipalPolynomial_eval",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.polynomial_principal_part_at_infinity",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.polynomial_principal_part_at_infinity_with_limit",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.iteratedDeriv_zero_of_exterior_growth",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.exists_polynomial_of_exterior_growth",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.exterior_growth_of_meromorphicAt_inversion",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.exists_polynomial_of_entire_meromorphicAt_inversion",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.not_meromorphicAt_inversion_of_entire_nonpolynomial",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.harmonic_log_norm",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.HasIsolatedSingularityAtInfinity",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.HasRemovableSingularityAtInfinity",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.HasPoleAtInfinity",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.HasEssentialSingularityAtInfinity",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.entire_hasIsolatedSingularityAtInfinity",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.bounded_hasRemovableSingularityAtInfinity",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.entire_nonpolynomial_hasEssentialSingularityAtInfinity",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    },
+    {
+      "declaration": "RudinRCA.Chapter13.pole_at_infinity_has_principal_part",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ]
+    }
+  ]
+}

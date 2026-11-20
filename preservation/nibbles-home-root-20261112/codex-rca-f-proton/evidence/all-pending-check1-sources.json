@@ -1,0 +1,68 @@
+[
+  {
+    "source": "InfinityBridge.lean",
+    "sha256": "2caaeb93c16071dc5032b1449f8a01607c074659ced07eff0efa316fdc242fef",
+    "body_first_line": 44,
+    "section_last_line": 83
+  },
+  {
+    "source": "RationalPartialFractions.lean",
+    "sha256": "0a135732f17de70e3449a114169e1b7ea24b7f9f0a4f1d6d84c094795002090f",
+    "body_first_line": 86,
+    "section_last_line": 411
+  },
+  {
+    "source": "StripComponents.lean",
+    "sha256": "993daef6774981fdb1181cfc4c9a9d299fcb5986afc670d805e911d62404c3a6",
+    "body_first_line": 414,
+    "section_last_line": 486
+  },
+  {
+    "source": "BalancedCycles.lean",
+    "sha256": "914be3da192730330941e2d4dad404ebc5e17b90f5d072cf5b3c85c4d9ed6d58",
+    "body_first_line": 489,
+    "section_last_line": 616
+  },
+  {
+    "source": "Exhaustion.lean",
+    "sha256": "49cc0e161d25c874f41f6abf6a944cc51aedf9261e2218a3464aeda555136aa2",
+    "body_first_line": 619,
+    "section_last_line": 816
+  },
+  {
+    "source": "PolynomialObstruction.lean",
+    "sha256": "6308001033d6664bec9176f2dac7b8c8eab0df6d0efe18d40f341c43b56e39ed",
+    "body_first_line": 819,
+    "section_last_line": 1007
+  },
+  {
+    "source": "SquareKernel.lean",
+    "sha256": "e5eb0ec54f68709302531674bcfb77e15c2d260938e0a38bd0dd0267cb1f8f5b",
+    "body_first_line": 1010,
+    "section_last_line": 1454
+  },
+  {
+    "source": "HolomorphicLog.lean",
+    "sha256": "8ea41d46afd4173858ff42a9361ef20bf95227bbea6be788ff91ee7312659c97",
+    "body_first_line": 1457,
+    "section_last_line": 1542
+  },
+  {
+    "source": "PrimitiveLog.lean",
+    "sha256": "69c4c8a0d1b3b0ca910300f08f79201a7469ed8be75b455a53639a8ab1e2f479",
+    "body_first_line": 1545,
+    "section_last_line": 1600
+  },
+  {
+    "source": "RungeFunctional.lean",
+    "sha256": "e5ed834744656ca132327866c974e66b130b981c0de2a2d274312be3dfced34f",
+    "body_first_line": 1603,
+    "section_last_line": 1779
+  },
+  {
+    "source": "GridBoundary.lean",
+    "sha256": "faad9b84cca72c09f874c74c1b7b8924095b49a05cb8ddac243b55dd823b2ead",
+    "body_first_line": 1782,
+    "section_last_line": 1902
+  }
+]

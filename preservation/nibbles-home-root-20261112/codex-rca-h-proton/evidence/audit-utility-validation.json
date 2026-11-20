@@ -1,0 +1,16 @@
+{
+  "utility": "work/audit_chapter.py",
+  "utility_sha256": "70dd331d4ed8388823b60315702ad7773505a9cbce251063f7dddde2512180dd",
+  "tests": "work/test_audit_chapter.py",
+  "tests_sha256": "7695248421ea908f98f755785b79d5bf5fdae3e226eea669e6b0f79e618bbdc2",
+  "test_command": "python3 work/test_audit_chapter.py",
+  "test_exit_code": 0,
+  "test_count": 13,
+  "test_elapsed_seconds": 0.023,
+  "test_result": "OK",
+  "actual_cli_sample": "evidence/ideals-utility-audit.json",
+  "actual_cli_sample_passed": true,
+  "actual_cli_sample_family_count": 35,
+  "lean_process_started_by_utility": false,
+  "scope": "Utility validation only; not a new Lean chapter validation"
+}

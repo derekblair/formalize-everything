@@ -1,0 +1,165 @@
+[
+  {
+    "component": "work/Chapter18Core.lean",
+    "errors": 2,
+    "warnings": 15,
+    "diagnostics": 71,
+    "unexpected_axioms": {
+      "RudinRCA.Chapter18.scalarized_resolvent": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.bookSpectralRadius_eq": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.spectral_radius_formula": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.ambient_spectralRadius_eq": [
+        "sorryAx"
+      ]
+    },
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0001.all-02.Chapter18Core.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18Ideals.lean",
+    "errors": 0,
+    "warnings": 15,
+    "diagnostics": 86,
+    "unexpected_axioms": {},
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0001.all-02.Chapter18Ideals.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18Disc.lean",
+    "errors": 5,
+    "warnings": 5,
+    "diagnostics": 63,
+    "unexpected_axioms": {
+      "RudinRCA.Chapter18.disc_character_evaluation": [
+        "disc_character_evaluation"
+      ],
+      "RudinRCA.Chapter18.disc_maximal_iff_evaluation_kernel": [
+        "disc_character_evaluation"
+      ],
+      "RudinRCA.Chapter18.disc_bezout": [
+        "disc_character_evaluation"
+      ],
+      "RudinRCA.Chapter18.disc_bezout_positive": [
+        "disc_character_evaluation"
+      ],
+      "RudinRCA.Chapter18.discBoundary_eq_closure_adjoin": [
+        "discBoundary_eq_closure_adjoin"
+      ],
+      "RudinRCA.Chapter18.discAngleSubalgebra_eq_positive_closure": [
+        "discAngleSubalgebra_eq_positive_closure"
+      ]
+    },
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0001.all-02.Chapter18Disc.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18Fejer.lean",
+    "errors": 13,
+    "warnings": 19,
+    "diagnostics": 58,
+    "unexpected_axioms": {
+      "RudinRCA.Chapter18.Fejer.square_sum": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.Fejer.operator_square": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.Fejer.kernel_square": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.Fejer.operator_integral": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.Fejer.operator_one": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.Fejer.operator_norm_le": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.Fejer.dirichlet_fourier_tendsto": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.Fejer.operator_fourier_tendsto": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.Fejer.operator_tendsto": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.Fejer.mem_positiveClosure_of_coefficient_zero": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.Fejer.fourier_negative_vanish_iff_mem_positive_closure": [
+        "sorryAx"
+      ]
+    },
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0001.all-02.Chapter18Fejer.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18Maximality.lean",
+    "errors": 7,
+    "warnings": 8,
+    "diagnostics": 29,
+    "unexpected_axioms": {
+      "RudinRCA.Chapter18.theorem18_20_dense_adjoin": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.theorem18_20_polynomial_approximation": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.theorem18_20": [
+        "sorryAx"
+      ]
+    },
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0001.all-02.Chapter18Maximality.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18BoundaryCharacterization.lean",
+    "errors": 5,
+    "warnings": 2,
+    "diagnostics": 19,
+    "unexpected_axioms": {
+      "RudinRCA.Chapter18.theorem18_19_fourier_iff": [
+        "RudinRCA.Chapter18.discAngleSubalgebra_eq_positive_closure",
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.theorem18_19_circle_coefficient_integral": [
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.theorem18_19_circle_fourier_iff": [
+        "RudinRCA.Chapter18.discAngleSubalgebra_eq_positive_closure",
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.theorem18_19_proper": [
+        "RudinRCA.Chapter18.discAngleSubalgebra_eq_positive_closure",
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.theorem18_19_circle_proper": [
+        "RudinRCA.Chapter18.discAngleSubalgebra_eq_positive_closure",
+        "sorryAx"
+      ],
+      "RudinRCA.Chapter18.theorem18_20_circle": [
+        "sorryAx"
+      ]
+    },
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0001.all-02.Chapter18BoundaryCharacterization.diagnostics.txt"
+  },
+  {
+    "component": "work/Chapter18Wiener.lean",
+    "errors": 0,
+    "warnings": 0,
+    "diagnostics": 34,
+    "unexpected_axioms": {},
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0001.all-02.Chapter18Wiener.diagnostics.txt"
+  },
+  {
+    "component": "imports",
+    "errors": 0,
+    "warnings": 0,
+    "diagnostics": 0,
+    "unexpected_axioms": {},
+    "output": "evidence/lean-lsp-20261029T183138Z-3834474.v0001.all-02.imports.diagnostics.txt"
+  }
+]

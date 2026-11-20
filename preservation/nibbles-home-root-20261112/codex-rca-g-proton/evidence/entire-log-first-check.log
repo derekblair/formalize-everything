@@ -1,0 +1,72 @@
+EntireLogWork.lean:53:4: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+EntireLogWork.lean:63:25: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  Decidable (a n = z)
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+EntireLogWork.lean:101:41: error: don't know how to synthesize placeholder for argument `m`
+context:
+f : ℂ → ℂ
+a : ℕ → ℂ
+hf : Differentiable ℂ f
+h0 : f 0 ≠ 0
+ha : ∀ (n : ℕ), f (a n) = 0
+hcount : ∀ (z : ℂ), HasSum (fun n => if a n = z then 1 else 0) (analyticOrderNatAt f z)
+z : ℂ
+⊢ ℕ
+EntireLogWork.lean:98:60: error: unsolved goals
+f : ℂ → ℂ
+a : ℕ → ℂ
+hf : Differentiable ℂ f
+h0 : f 0 ≠ 0
+ha : ∀ (n : ℕ), f (a n) = 0
+hcount : ∀ (z : ℂ), HasSum (fun n => if a n = z then 1 else 0) (analyticOrderNatAt f z)
+z : ℂ
+⊢ (a ⁻¹' {z}).Finite
+EntireLogWork.lean:139:4: error(lean.unknownIdentifier): Unknown constant `Membership.mem.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE`
+
+Note: Inferred this name from the expected resulting type of `.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE`:
+  ?m.464 ∈ 𝓝 ((q * P) ?m.463)
+EntireLogWork.lean:139:4: error(lean.unknownIdentifier): Unknown constant `Membership.mem.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE`
+
+Note: Inferred this name from the expected resulting type of `.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE`:
+  ?m.464 ∈ 𝓝 ((q * P) ?m.463)
+EntireLogWork.lean:139:4: error(lean.unknownIdentifier): Unknown constant `Set.Mem.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE`
+
+Note: Inferred this name from the expected resulting type of `.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE`:
+  ?m.464 ∈ 𝓝 ((q * P) ?m.463)
+EntireLogWork.lean:139:4: error(lean.unknownIdentifier): Unknown constant `Filter.sets.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE`
+
+Note: Inferred this name from the expected resulting type of `.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE`:
+  ?m.464 ∈ 𝓝 ((q * P) ?m.463)
+EntireLogWork.lean:139:4: error(lean.invalidDottedIdent): Invalid dotted identifier notation: The expected type of `.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE`
+  ?m.464 ∈ 𝓝 ((q * P) ?m.463)
+is not of the form `C ...` or `... → C ...` where C is a constant
+'RudinRCA.Chapter15.differentiableOn_of_continuous_log' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.exists_holomorphic_log' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.exists_entire_log' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.finite_fiber_of_hasSum_count' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.zero_sequence_norm_tendsto_atTop' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.zero_enumeration_norm_tendsto_atTop' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.exists_entire_nonvanishing_quotient_of_order_eq' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.exists_entire_exponential_factor_of_order_eq' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.analyticOrderAt_ne_top_of_entire_nonzero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.exists_entire_exponential_factor_of_nat_order_eq' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]

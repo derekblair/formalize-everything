@@ -1,0 +1,56 @@
+⚠ [2836/2838] Built RudinRCA.Chapter13 (71s)
+warning: RudinRCA/Chapter13.lean:112:47: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter13.lean:149:87: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter13.lean:130:90: This simp argument is unused:
+  L
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter13.lean:132:98: This simp argument is unused:
+  H
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+info: RudinRCA/Chapter13.lean:161:0: 'RudinRCA.Chapter13.infinity_mem_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:162:0: 'RudinRCA.Chapter13.coe_mem_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:163:0: 'RudinRCA.Chapter13.infinityDisc_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:164:0: 'RudinRCA.Chapter13.isOpen_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:165:0: 'RudinRCA.Chapter13.finite_chart_open_embedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:166:0: 'RudinRCA.Chapter13.riemannSphereHomeomorph' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:167:0: 'RudinRCA.Chapter13.riemannSphere_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:168:0: 'RudinRCA.Chapter13.mem_nhds_infinity_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:169:0: 'RudinRCA.Chapter13.infinity_mem_closure_of_unbounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:170:0: 'RudinRCA.Chapter13.isConnected_insert_infinity' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:171:0: 'RudinRCA.Chapter13.horizontalStrip_isOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:172:0: 'RudinRCA.Chapter13.horizontalStrip_planar_complement_not_preconnected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter13.lean:173:0: 'RudinRCA.Chapter13.horizontalStrip_spherical_complement_connected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+warning: RudinRCA/Chapter13.lean:202:35: Unused tactic linter: `ring` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: RudinRCA/Chapter13.lean:202:35: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: RudinRCA/Chapter13.lean:246:51: Unused tactic linter: `ring` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: RudinRCA/Chapter13.lean:246:51: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+info: RudinRCA/Chapter13.lean:248:0: 'RudinRCA.Chapter13.norm_northPole' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:249:0: 'RudinRCA.Chapter13.mem_north_orthogonal_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:250:0: 'RudinRCA.Chapter13.complexPlaneEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:251:0: 'RudinRCA.Chapter13.bookSphereHomeomorph' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:252:0: 'RudinRCA.Chapter13.bookSphereHomeomorph_infty' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:253:0: 'RudinRCA.Chapter13.norm_complexPlaneEquiv_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:254:0: 'RudinRCA.Chapter13.bookSphereHomeomorph_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:298:0: 'RudinRCA.Chapter13.removable_at_infinity_of_bounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+✔ [2837/2838] Built RudinRCA (47s)
+Build completed successfully (2838 jobs).

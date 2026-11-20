@@ -1,0 +1,36 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08BumpExample.lean:17:4: error(lean.dependsOnNoncomputable): failed to compile definition, consider marking it as 'noncomputable' because it depends on 'Real.instDivInvMonoid', which is 'noncomputable'
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08BumpExample.lean:38:2: error: Type mismatch: After simplification, term
+  h
+ has type
+  Tendsto (fun n => 1 - (2 ^ n)⁻¹) atTop (𝓝 1)
+but is expected to have type
+  Tendsto bumpDivision atTop (𝓝 1)
+
+Note: The following definitions were not unfolded because their definition is not exposed:
+  Real.instAdd ↦ 4
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08BumpExample.lean:190:13: error: `simp` made no progress
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08BumpExample.lean:223:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ∫ (a : ℝ), ∑ i ∈ ?m.29, (rudinBumpFunction i - rudinBumpFunction (i + 1)) a * ?m.56 i ∂bumpIntervalMeasure
+in the target expression
+  ∫ (x : ℝ),
+      ∑ n ∈ Finset.range N,
+        (rudinBumpFunction n x - rudinBumpFunction (n + 1) x) * rudinBumpFunction n y ∂bumpIntervalMeasure =
+    0
+
+y : ℝ
+N : ℕ
+hN :
+  ∀ (x : ℝ),
+    rudinBumpSeries x y =
+      ∑ n ∈ Finset.range N, (rudinBumpFunction n x - rudinBumpFunction (n + 1) x) * rudinBumpFunction n y
+⊢ ∫ (x : ℝ),
+      ∑ n ∈ Finset.range N,
+        (rudinBumpFunction n x - rudinBumpFunction (n + 1) x) * rudinBumpFunction n y ∂bumpIntervalMeasure =
+    0
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08BumpExample.lean:233:4: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```

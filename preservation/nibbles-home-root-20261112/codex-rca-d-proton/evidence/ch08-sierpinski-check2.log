@@ -1,0 +1,3 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08Sierpinski.lean:110:4: warning: Unused tactic linter: `change volume (Set.Icc (0 : ℝ) 1) = 1` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`

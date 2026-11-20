@@ -1,0 +1,64 @@
+{
+  "schema": "lean-chapter-command-receipt-v1",
+  "started_at": "2026-10-29T18:17:14.043019+00:00",
+  "command": [
+    "python3",
+    "-c",
+    "print(\"Capture wrapper test only; this is not Lean build evidence.\")"
+  ],
+  "cwd": "/home/derekblair/lane-work/codex-rca-d-proton/formalize-everything/books/rudin-real-and-complex-analysis",
+  "source_before": {
+    "path": "/home/derekblair/lane-work/codex-rca-d-proton/evidence/test_chapter_gate.py",
+    "sha256": "72a7dbc038325ae1a1346321c7f7db4f5d8bedede03499f01806d16375de28d0",
+    "bytes": 4717
+  },
+  "inputs_before": [],
+  "pins_before": {
+    "lean_toolchain": "leanprover/lean4:v4.34.1",
+    "mathlib_manifest_rev": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+    "mathlib_checkout_rev": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+    "repository_head": "e1ba718834930c62c75331aa4cd8c6626ce3c141",
+    "toolchain_file": {
+      "path": "/home/derekblair/lane-work/codex-rca-d-proton/formalize-everything/books/rudin-real-and-complex-analysis/lean-toolchain",
+      "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+      "bytes": 25
+    },
+    "manifest_file": {
+      "path": "/home/derekblair/lane-work/codex-rca-d-proton/formalize-everything/books/rudin-real-and-complex-analysis/lake-manifest.json",
+      "sha256": "3d3476c312fb2220e92334726052c3b23080ad1f97c3db6cfceedc9a90466d1b",
+      "bytes": 3172
+    }
+  },
+  "required_absent": [],
+  "precondition_errors": [],
+  "command_exit_status": 0,
+  "log": {
+    "path": "/home/derekblair/lane-work/codex-rca-d-proton/evidence/chapter-gate-capture-test.log",
+    "sha256": "e475bcb44c6ddf1c3e988eb2f06ec9599cf2a5823fcfbb8c6f3241af355fefe3",
+    "bytes": 60
+  },
+  "source_after": {
+    "path": "/home/derekblair/lane-work/codex-rca-d-proton/evidence/test_chapter_gate.py",
+    "sha256": "72a7dbc038325ae1a1346321c7f7db4f5d8bedede03499f01806d16375de28d0",
+    "bytes": 4717
+  },
+  "inputs_after": [],
+  "pins_after": {
+    "lean_toolchain": "leanprover/lean4:v4.34.1",
+    "mathlib_manifest_rev": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+    "mathlib_checkout_rev": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+    "repository_head": "e1ba718834930c62c75331aa4cd8c6626ce3c141",
+    "toolchain_file": {
+      "path": "/home/derekblair/lane-work/codex-rca-d-proton/formalize-everything/books/rudin-real-and-complex-analysis/lean-toolchain",
+      "sha256": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b",
+      "bytes": 25
+    },
+    "manifest_file": {
+      "path": "/home/derekblair/lane-work/codex-rca-d-proton/formalize-everything/books/rudin-real-and-complex-analysis/lake-manifest.json",
+      "sha256": "3d3476c312fb2220e92334726052c3b23080ad1f97c3db6cfceedc9a90466d1b",
+      "bytes": 3172
+    }
+  },
+  "capture_ok": true,
+  "finished_at": "2026-10-29T18:17:14.115032+00:00"
+}

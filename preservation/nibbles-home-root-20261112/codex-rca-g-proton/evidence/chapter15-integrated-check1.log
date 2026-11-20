@@ -1,0 +1,62 @@
+RudinRCA/Chapter15.lean:613:40: error: unsolved goals
+p : ℕ
+z : ℂ
+⊢ 0 = 1 - z ∨ 0 = Complex.exp (elementaryExponent p z) ↔ z = 1
+RudinRCA/Chapter15.lean:614:26: warning: This simp argument is unused:
+  Complex.exp_ne_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [elementaryFactor, sub_eq_zero, eq_comm]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+RudinRCA/Chapter15.lean:614:47: warning: This simp argument is unused:
+  sub_eq_zero
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [elementaryFactor, Complex.exp_ne_zero, eq_comm]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+'RudinRCA.Chapter15.holomorphic_of_locally_uniform_products' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.uniform_series_tail' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.analyticOrderAt_finset_product' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.analyticOrderAt_product_with_nonzero_tail' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.analyticOrderAt_ne_top_of_component_nonzero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.analyticOrderAt_infinite_product_finite_prefix' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.finite_multiplicity_of_prefix_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.multiplicity_tsum_of_finite_prefix' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.holomorphic_product_of_uniform_norm_series_using_15_4' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.holomorphic_product_multiplicity_using_15_4' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.holomorphic_product_multiplicity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.analyticOrderAt_scaled_elementaryFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.uniform_product_of_uniform_norm_series' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.uniform_productOn_of_uniform_norm_series' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.product_eq_zero_iff_of_uniform_norm_series' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.uniform_norm_series_reindex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.uniform_product_reindex_of_uniform_norm_series' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter15.product_reindex' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.analyticOrderAt_elementaryFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.finite_product_majorant_le_exp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.norm_finite_product_sub_one_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.finite_product_estimates' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.zeros_have_no_accumulation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.elementaryFactor_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.elementaryFactor_eq_zero_iff' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.differentiable_elementaryFactor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.sequentialProduct_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.HasProd.hasSequentialProduct' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.product_one_sub_converges' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter15.positive_product_one_sub_iff' depends on axioms: [propext, Classical.choice, Quot.sound]

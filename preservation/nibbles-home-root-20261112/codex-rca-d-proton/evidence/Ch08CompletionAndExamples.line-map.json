@@ -1,0 +1,44 @@
+[
+  {
+    "file": "Ch08Completion.lean",
+    "combined_first_line": 25,
+    "source_first_line": 9,
+    "body_length": 169
+  },
+  {
+    "file": "Ch08FubiniCompletion.lean",
+    "combined_first_line": 198,
+    "source_first_line": 8,
+    "body_length": 101
+  },
+  {
+    "file": "Ch08CounterexampleCount.lean",
+    "combined_first_line": 303,
+    "source_first_line": 9,
+    "body_length": 61
+  },
+  {
+    "file": "Ch08ProductExample.lean",
+    "combined_first_line": 368,
+    "source_first_line": 8,
+    "body_length": 60
+  },
+  {
+    "file": "Ch08Vitali.lean",
+    "combined_first_line": 432,
+    "source_first_line": 10,
+    "body_length": 121
+  },
+  {
+    "file": "Ch08Sierpinski.lean",
+    "combined_first_line": 558,
+    "source_first_line": 10,
+    "body_length": 145
+  },
+  {
+    "file": "Ch08PowersetCount.lean",
+    "combined_first_line": 707,
+    "source_first_line": 6,
+    "body_length": 73
+  }
+]

@@ -1,0 +1,95 @@
+⚠ [2854/2856] Built RudinRCA.Chapter13 (526s)
+warning: RudinRCA/Chapter13.lean:131:47: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter13.lean:168:87: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+warning: RudinRCA/Chapter13.lean:149:90: This simp argument is unused:
+  L
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter13.lean:151:98: This simp argument is unused:
+  H
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: RudinRCA/Chapter13.lean:205:35: Unused tactic linter: `ring` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: RudinRCA/Chapter13.lean:205:35: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: RudinRCA/Chapter13.lean:249:51: Unused tactic linter: `ring` does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: RudinRCA/Chapter13.lean:249:51: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+info: RudinRCA/Chapter13.lean:544:0: 'RudinRCA.Chapter13.RiemannSphere' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:545:0: 'RudinRCA.Chapter13.exteriorDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:546:0: 'RudinRCA.Chapter13.infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:547:0: 'RudinRCA.Chapter13.infinity_mem_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:548:0: 'RudinRCA.Chapter13.coe_mem_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:549:0: 'RudinRCA.Chapter13.infinityDisc_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:550:0: 'RudinRCA.Chapter13.isOpen_infinityDisc' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:551:0: 'RudinRCA.Chapter13.mem_nhds_infinity_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:552:0: 'RudinRCA.Chapter13.finite_chart_open_embedding' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:553:0: 'RudinRCA.Chapter13.riemannSphereHomeomorph' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:554:0: 'RudinRCA.Chapter13.riemannSphere_compact' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:555:0: 'RudinRCA.Chapter13.infinity_mem_closure_of_unbounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:556:0: 'RudinRCA.Chapter13.isConnected_insert_infinity' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:557:0: 'RudinRCA.Chapter13.horizontalStrip' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:558:0: 'RudinRCA.Chapter13.horizontalStrip_isOpen' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:559:0: 'RudinRCA.Chapter13.horizontalStrip_planar_complement_not_preconnected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter13.lean:560:0: 'RudinRCA.Chapter13.horizontalStrip_spherical_complement_connected' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter13.lean:561:0: 'RudinRCA.Chapter13.SphereAmbient' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:562:0: 'RudinRCA.Chapter13.northPole' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:563:0: 'RudinRCA.Chapter13.norm_northPole' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:564:0: 'RudinRCA.Chapter13.mem_north_orthogonal_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:565:0: 'RudinRCA.Chapter13.complexPlaneEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:566:0: 'RudinRCA.Chapter13.complexPlaneEquiv_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:567:0: 'RudinRCA.Chapter13.bookSphereHomeomorph' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:568:0: 'RudinRCA.Chapter13.bookSphereHomeomorph_infty' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:569:0: 'RudinRCA.Chapter13.norm_complexPlaneEquiv_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:570:0: 'RudinRCA.Chapter13.bookSphereHomeomorph_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:571:0: 'RudinRCA.Chapter13.removable_at_infinity_of_bounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:572:0: 'RudinRCA.Chapter13.inversePrincipalPolynomial' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:573:0: 'RudinRCA.Chapter13.inversePrincipalPolynomial_natDegree' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:574:0: 'RudinRCA.Chapter13.inversePrincipalPolynomial_coeff_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:575:0: 'RudinRCA.Chapter13.inversePrincipalPolynomial_eval' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:576:0: 'RudinRCA.Chapter13.polynomial_principal_part_at_infinity' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:577:0: 'RudinRCA.Chapter13.polynomial_principal_part_at_infinity_with_limit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter13.lean:578:0: 'RudinRCA.Chapter13.iteratedDeriv_zero_of_exterior_growth' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:579:0: 'RudinRCA.Chapter13.exists_polynomial_of_exterior_growth' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:580:0: 'RudinRCA.Chapter13.exterior_growth_of_meromorphicAt_inversion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter13.lean:581:0: 'RudinRCA.Chapter13.exists_polynomial_of_entire_meromorphicAt_inversion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter13.lean:582:0: 'RudinRCA.Chapter13.not_meromorphicAt_inversion_of_entire_nonpolynomial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter13.lean:583:0: 'RudinRCA.Chapter13.harmonic_log_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:584:0: 'RudinRCA.Chapter13.HasIsolatedSingularityAtInfinity' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:585:0: 'RudinRCA.Chapter13.HasRemovableSingularityAtInfinity' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:586:0: 'RudinRCA.Chapter13.HasPoleAtInfinity' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:587:0: 'RudinRCA.Chapter13.HasEssentialSingularityAtInfinity' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:588:0: 'RudinRCA.Chapter13.entire_hasIsolatedSingularityAtInfinity' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: RudinRCA/Chapter13.lean:589:0: 'RudinRCA.Chapter13.bounded_hasRemovableSingularityAtInfinity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter13.lean:590:0: 'RudinRCA.Chapter13.entire_nonpolynomial_hasEssentialSingularityAtInfinity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+info: RudinRCA/Chapter13.lean:591:0: 'RudinRCA.Chapter13.pole_at_infinity_has_principal_part' depends on axioms: [propext, Classical.choice, Quot.sound]
+✔ [2855/2856] Built RudinRCA (551s)
+Build completed successfully (2856 jobs).

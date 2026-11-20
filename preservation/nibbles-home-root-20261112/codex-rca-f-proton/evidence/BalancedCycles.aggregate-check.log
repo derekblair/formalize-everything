@@ -1,0 +1,7 @@
+'RudinRCA.Chapter13Scratch.balanced_exists_successor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.mem_permutationOrbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.permutationOrbit_nonempty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.permutationOrbit_eq_of_sameCycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.isCycleOn_permutationOrbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.enumerate_permutationOrbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.balanced_closed_cycle_partition' depends on axioms: [propext, Classical.choice, Quot.sound]

@@ -1,0 +1,51 @@
+'RudinRCA.Chapter13.hasIsolatedSingularityAtInfinity_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.pole_hasIsolatedSingularityAtInfinity' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_reduced_representation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_partial_fractions_coefficients' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_partial_fractions_polynomials' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.linear_partial_fractions_in_algebra' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_partial_fractions_with_evaluation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.rational_principal_part_remainder' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_quotient_evaluation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.polynomial_meromorphic_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_pole_order' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_tendsto_cobounded_at_pole' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.rational_differentiableAt_of_denom_ne_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'_private._stdin.0.RudinRCA.Chapter13.strip_component_avoids_half' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.strip_component_lower' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.strip_component_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.horizontalStrip_components' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.balanced_exists_successor' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.mem_permutationOrbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.permutationOrbit_nonempty' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.permutationOrbit_eq_of_sameCycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.isCycleOn_permutationOrbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.enumerate_permutationOrbit' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.balanced_closed_cycle_partition' depends on axioms: [propext, Classical.choice, Quot.sound]
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:781:6: warning: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+/home/derekblair/lane-work/codex-rca-f-proton/evidence/AllPending.lean:809:6: warning: `push_neg` has been deprecated. Prefer using `push Not` instead.
+If you'd rather continue using `push_neg` in your project, you can implement it as follows:
+```
+open Lean.Parser.Tactic in
+macro "push_neg" cfg:optConfig loc:(location)? : tactic =>
+  `(tactic| push $cfg:optConfig Not $[$loc]?)
+```
+'RudinRCA.Chapter13.compact_exhaustion_with_spherical_complement_components' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.sphericalComplementComponents' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.countable_spherical_complement_components' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.exists_bounded_complement_component' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.frontier_complement_component_subset' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.reciprocal_approximation_obstruction' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13.polynomial_approximation_obstru

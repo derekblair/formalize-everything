@@ -1,0 +1,113 @@
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:24:16: error(lean.invalidField): Invalid field `memℓp`: The environment does not contain `Subtype.memℓp`, so it is not possible to project the field `memℓp` from an expression
+  a
+of type `↥Coefficients`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:31:0: error: (deterministic) timeout at `whnf`, maximum number of heartbeats (200000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:58:6: error: Type mismatch: After simplification, term
+  norm_tsum_le_tsum_norm (summable_eval_norm a z)
+ has type
+  @LE.le ℝ Real.instLE ‖∑' (i : ℤ), ↑a i * ↑z ^ i‖ (∑' (i : ℤ), ‖↑a i‖)
+but is expected to have type
+  @LE.le ℝ Real.instLE ‖{ toFun := fun a => ∑' (n : ℤ), ↑a n * ↑z ^ n, map_add' := ⋯, map_smul' := ⋯ } a‖
+    (∑' (n : ℤ), ‖↑a n‖)
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:70:18: warning: This simp argument is unused:
+  lp.single_apply_ne
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [single, hk]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:72:6: error: (kernel) unknown constant 'RudinRCA.Chapter18.Wiener.norm_single'
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:84:6: error: (kernel) unknown constant 'RudinRCA.Chapter18.Wiener.norm_single'
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:122:20: warning: This simp argument is unused:
+  lp.single_apply_ne
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [single, h]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:123:20: warning: This simp argument is unused:
+  lp.single_apply_ne
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [single, h]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:150:19: error: Type mismatch: After simplification, term
+  norm_convolution_le a b
+ has type
+  @LE.le ℝ Real.instLE ‖convolution a b‖ (‖a‖ * ‖b‖)
+but is expected to have type
+  @LE.le ℝ Real.instLE
+    ‖((LinearMap.mk₂ ℂ convolution convolution_add_left convolution_smul_left convolution_add_right
+            convolution_smul_right)
+          a)
+        b‖
+    (‖a‖ * ‖b‖)
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:160:8: warning: `ext` did not consume the patterns `c`
+
+Note: This linter can be disabled with `set_option linter.unusedRCasesPattern false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:161:14: error(lean.unknownIdentifier): Unknown identifier `c`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:214:25: error: unsolved goals
+a : ↥Coefficients
+⊢ convolution a 0 = 0
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:231:9: error: (kernel) unknown constant 'RudinRCA.Chapter18.Wiener.norm_single'
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:242:35: error: Application type mismatch: The argument
+  1
+has type
+  ℂ
+but is expected to have type
+  ?m.11 i
+in the application
+  lp.single_smul 1 i c 1
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:253:8: error: Invalid rewrite argument: Expected an equality or iff proof or definition name, but `v` is a value of type
+  ℂ
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:261:27: error: Type mismatch: After simplification, term
+  hnorm
+ has type
+  ‖v‖ = 1
+but is expected to have type
+  v ∈ Submonoid.unitSphere ℂ
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:275:17: error: Type mismatch: After simplification, term
+  hnat n
+ has type
+  @Eq ℂ (φ (single (↑n) 1)) (v ^ n)
+but is expected to have type
+  @Eq ℂ (φ (single (Int.ofNat n) 1)) (v ^ Int.ofNat n)
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:284:6: error: Type mismatch: After simplification, term
+  heq
+ has type
+  @Eq ℂ (φ (single (-↑(n + 1)) 1)) (v ^ (n + 1))⁻¹
+but is expected to have type
+  @Eq ℂ (φ (single (-(↑n + 1)) 1)) (v ^ (↑n + 1))⁻¹
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:245:8: error: (kernel) unknown constant 'RudinRCA.Chapter18.Wiener.norm_single'
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Wiener.lean:317:6: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (eval z) a * (eval z) b
+in the target expression
+  (∑' (n : ℤ), c n * ↑z ^ n) * (eval z) b = (∑' (n : ℤ), c n * ↑z ^ n) * ((eval z) a)⁻¹
+
+c : ℤ → ℂ
+hc : Summable fun n => ‖c n‖
+hf : ∀ (z : Circle), ∑' (n : ℤ), c n * ↑z ^ n ≠ 0
+a : ↥Coefficients := ⋯
+b : ↥Coefficients
+hab : a * b = 1
+z : Circle
+hmul : (eval z) a * (eval z) b = 1
+⊢ (∑' (n : ℤ), c n * ↑z ^ n) * (eval z) b = (∑' (n : ℤ), c n * ↑z ^ n) * ((eval z) a)⁻¹
+
+Note: The target expression is not type-correct under the `implicit` transparency level, which may have triggered the failure. This is usually caused by unfolding of semireducible definitions in prior tactic steps. Use `set_option linter.tacticCheckInstances true` to investigate the source of the issue.
+Full error:
+  Application type mismatch: The argument
+    z
+  has type
+    Circle
+  but is expected to have type
+    ↥(Submonoid.unitSphere ℂ)
+  in the application
+    ↑z
+'RudinRCA.Chapter18.Wiener.reciprocal' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_21' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]

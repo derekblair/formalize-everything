@@ -1,0 +1,207 @@
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:33:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.definition18_12_no_unit_in_proper_ideal`:
+  [Algebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Algebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:41:14: error: unsolved goals
+A : Type u_1
+B : Type u_2
+inst✝³ : CommRing A
+inst✝² : Algebra ℂ A
+inst✝¹ : CommRing B
+inst✝ : Algebra ℂ B
+φ : RudinHom A B
+x y : A
+hx : x ∈ {x | φ x = 0}
+hy : y ∈ {x | φ x = 0}
+⊢ φ x + φ y = 0
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:45:15: error: unsolved goals
+A : Type u_1
+B : Type u_2
+inst✝³ : CommRing A
+inst✝² : Algebra ℂ A
+inst✝¹ : CommRing B
+inst✝ : Algebra ℂ B
+φ : RudinHom A B
+a x : A
+hx : x ∈ {x | φ x = 0}
+⊢ φ a * φ x = 0
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:44:19: warning: This simp argument is unused:
+  hx
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [map_add, hy]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:44:23: warning: This simp argument is unused:
+  hy
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [map_add, hx]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:48:19: warning: This simp argument is unused:
+  hx
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [map_mul]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:54:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_13_maximal_containment`:
+  [Algebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Algebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:76:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_14_quotient_isField_iff`:
+  [Algebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [Algebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+Try this:
+  [apply] abel_nf
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:117:37: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:119:37: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:129:34: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:171:0: warning: Definition `RudinRCA.Chapter18.definition18_15_quotientNormedGroup` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:175:0: warning: Definition `RudinRCA.Chapter18.definition18_15_quotientNormedSpace` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:191:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:189:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_13_maximal_closed`:
+  [NormedAlgebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:194:0: warning: Definition `RudinRCA.Chapter18.definition18_15_quotientNormedRing` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:198:0: warning: Definition `RudinRCA.Chapter18.definition18_15_quotientNormedAlgebra` of class type is semireducible. Most type class instances should be instance-reducible, so consider marking this
+definition with `@[instance_reducible]`. If it is intentionally semireducible, this warning can be disabled with `set_option warn.classDefReducibility false`.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:201:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_15_ideal_quotient_complete`:
+  [NormedAlgebra ℂ A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:204:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_15_quotient_norm_mul`:
+  [NormedAlgebra ℂ A]
+  [CompleteSpace A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] [CompleteSpace A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:210:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:208:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_15_quotient_norm_one`:
+  [NormedAlgebra ℂ A]
+  [CompleteSpace A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [NormedAlgebra ℂ A] [CompleteSpace A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:254:4: error: Type mismatch: After simplification, term
+  hh
+ has type
+  (NonUnitalAlgHomClass.toNonUnitalAlgHom h) 1 = 0
+but is expected to have type
+  False
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:291:9: error: A placeholder `_` cannot be used where a function is expected
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:297:2: warning: Try this: 
+  letI̵
+
+The goal is a proposition, so `let` is preferred over `letI`.
+The difference between `let` and `letI` is that `letI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:342:0: warning: automatically included section variable(s) unused in theorem `RudinRCA.Chapter18.theorem18_17_d`:
+  [CompleteSpace A]
+consider restructuring your `variable` declarations so that the variables are not in scope or explicitly omit them:
+  omit [CompleteSpace A] in theorem ...
+
+Note: This linter can be disabled with `set_option linter.unusedSectionVars false`
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:350:48: error: expected token
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:350:45: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  LE Type
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:350:47: error(lean.synthInstanceFailed): failed to synthesize instance of type class
+  OfNat Type 0
+numerals are polymorphic in Lean, but the numeral `0` cannot be used in a context where the expected type is
+  Type
+due to the absence of the instance above
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:350:7: error: Missing cases:
+/home/derekblair/lane-work/codex-rca-h-proton/work/Chapter18Ideals.lean:349:43: error: unsolved goals
+A : Type u_1
+inst✝³ : NormedCommRing A
+inst✝² : NormedAlgebra ℂ A
+inst✝¹ : CompleteSpace A
+inst✝ : NormOneClass A
+h : RudinCharacter A
+a : A
+hupper : spectralRadius ℂ a ≤ sorry
+⊢ ‖↑h a‖ ≤ (spectralRadius ℂ a).toReal ∧ (spectralRadius ℂ a).toReal ≤ ‖a‖
+'RudinRCA.Chapter18.definition18_12_no_unit_in_proper_ideal' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.definition18_12_mem_kernel' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_13_maximal_containment' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_13_maximal_closed' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_coset_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_cosets_disjoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_quotient_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_quotient_isField_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_norm_inf' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_norm_distance' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_norm_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.definition18_16_character_map_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.definition18_16_character_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.definition18_16_nonzero_iff_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_a' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_quotientCharacter_zero' depends on axioms: [propext,
+ sorryAx,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_nonunit_character' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_b' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_c' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_d' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_e' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_character_continuous' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_17_character_norm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_quotient_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_quotient_operations' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_mem_coset' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_zero_coset' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_quotient_eq_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_linear_quotient_surjective' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_linear_quotient_operations' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_14_linear_quotient_kernel' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_ideal_quotient_complete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_norm_mul' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter18.theorem18_15_quotient_norm_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+
+LEAN_EXIT_CODE=1

@@ -1,0 +1,6 @@
+'RudinRCA.Chapter13.exists_polynomial_of_entire_meromorphicAt_inversion' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13.not_meromorphicAt_inversion_of_entire_nonpolynomial' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

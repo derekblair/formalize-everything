@@ -1,0 +1,184 @@
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:115:2: error: unsolved goals
+case pos
+a : ℝ≥0∞
+ha : a = ∞
+⊢ volume {t | 0 < t} = ∞
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:115:14: warning: This simp argument is unused:
+  Real.volume_Ioi
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [ha]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:140:4: error: No applicable extensionality theorem found for type
+  ℝ≥0∞
+
+Note: Extensionality theorems can be registered by marking them with the `[ext]` attribute
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:178:31: error: Application type mismatch: The argument
+  Measurable.aemeasurable hF
+has type
+  AEMeasurable F ?m.180
+but is expected to have type
+  AEMeasurable (Function.uncurry ?m.174) (Measure.prod ?m.170 ?m.171)
+in the application
+  lintegral_lintegral_swap (Measurable.aemeasurable hF)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:171:61: error: unsolved goals
+X : Type u_1
+inst✝¹ : MeasurableSpace X
+μ : Measure X
+inst✝ : SFinite μ
+f : X → ℝ≥0∞
+hf : Measurable f
+g : ℝ → ℝ≥0∞
+hg : Measurable g
+F : X × ℝ → ℝ≥0∞ := {q | ENNReal.ofReal q.2 < f q.1}.indicator fun q => g q.2
+hset : MeasurableSet {q | ENNReal.ofReal q.2 < f q.1}
+hF : Measurable F
+⊢ ∫⁻ (x : X), ∫⁻ (t : ℝ) in Ioi 0, F (x, t) ∂μ = ∫⁻ (t : ℝ) in Ioi 0, μ {x | ENNReal.ofReal t < f x} * g t
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:207:36: warning: `if_pos` has been deprecated: Use `ite_eq_left` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:208:6: warning: `Set.setOf_true` has been deprecated: Use `Set.ofPred_true` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:225:10: error: Type mismatch: After simplification, term
+  Tendsto.comp hlim tendsto_natCast_atTop_atTop
+ has type
+  Tendsto ((fun t => ENNReal.ofReal (φ t)) ∘ Nat.cast) atTop (𝓝 φInfinity)
+but is expected to have type
+  Tendsto (fun i => ∫⁻ (x : ℝ) in Iio ↑i, (ENNReal.ofReal ∘ deriv φ) x ∂ν) atTop (𝓝 φInfinity)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:226:29: warning: `if_neg` has been deprecated: Use `ite_eq_right` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:207:36: warning: This simp argument is unused:
+  if_pos rfl
+
+Hint: Omit it from the simp argument list.
+  [apply] simp only [extendedNonnegative, ENNReal.ofReal_lt_top, setOf_true, indicator_univ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:274:4: error: unsolved goals
+case neg
+X : Type u_1
+inst✝¹ : MeasurableSpace X
+μ : Measure X
+inst✝ : SigmaFinite μ
+f : X → ℝ≥0∞
+hf : Measurable f
+Φ : ℝ≥0∞ → ℝ≥0∞
+hm : Monotone Φ
+h0 : Φ 0 = 0
+hfinite : ∀ (t : ℝ), Φ (ENNReal.ofReal t) ≠ ∞
+hac : ∀ (T : ℝ), 0 ≤ T → AbsolutelyContinuousOnInterval (fun t => (Φ (ENNReal.ofReal t)).toReal) 0 T
+hlim : Tendsto (fun t => Φ (ENNReal.ofReal t)) atTop (𝓝 (Φ ∞))
+φ : ℝ → ℝ := fun t => (Φ (ENNReal.ofReal t)).toReal
+hm' : Monotone φ
+h0' : φ 0 = 0
+hlim' : Tendsto (fun t => ENNReal.ofReal (φ t)) atTop (𝓝 (Φ ∞))
+a : ℝ≥0∞
+ha : ¬a = ∞
+⊢ ¬Φ a = ∞
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:274:40: warning: This simp argument is unused:
+  ENNReal.ofReal_toReal (hfinite _)
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [extendedNonnegative, ha, φ, ENNReal.ofReal_toReal ha]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:315:13: error(lean.unknownIdentifier): Unknown identifier `mul_le_mul_left'`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:328:4: error: Type mismatch
+  LE.le.trans_lt (measure_mono fun x hx => le_of_lt hx) ?m.141
+has type
+  (?m.108 fun x => Preorder.toLT.1 (?m.123 x) (?m.124 x)) < ?m.129
+but is expected to have type
+  μ {x | ε < ‖f x‖ₑ} < ∞
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:348:5: error: invalid binder annotation, type is not a class instance
+  ?m.2
+
+Note: Use the command `set_option checkBinderAnnotations false` to disable the check
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:404:5: error: invalid binder annotation, type is not a class instance
+  ?m.2
+
+Note: Use the command `set_option checkBinderAnnotations false` to disable the check
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:439:8: error(lean.unknownIdentifier): Unknown identifier `centeredMaximal_weak_bound`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:440:2: error: No goals to be solved
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:466:48: error: Application type mismatch: The argument
+  hy
+has type
+  y ∈ ball x r
+but is expected to have type
+  ?m.140 < ?m.141
+in the application
+  exists_rat_btwn hy
+
+Note: The following definitions were not unfolded because their definition is not exposed:
+  Real.instLT ↦ 3
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:489:8: error(lean.unknownIdentifier): Unknown identifier `mul_le_mul_left'`
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:500:54: error: unsolved goals
+case convert_2
+X : Type u_1
+inst✝⁴ : PseudoMetricSpace X
+inst✝³ : SecondCountableTopology X
+inst✝² : MeasurableSpace X
+inst✝¹ : BorelSpace X
+μ : Measure X
+inst✝ : SFinite μ
+f : X → ℝ≥0∞
+hf : Measurable f
+r : ℝ
+F : X × X → ℝ≥0∞ := ⋯
+hF : Measurable F
+⊢ SFinite μ
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:521:11: error: `simp` made no progress
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:538:6: error: Type mismatch
+  ENNReal.div_le_div_right (lintegral_mono h)
+has type
+  ∀ (c_1 : ℝ≥0∞), (∫⁻ (a : X), f a ∂?m.92) / c_1 ≤ (∫⁻ (a : X), g a + c ∂?m.92) / c_1
+but is expected to have type
+  (∫⁻ (y : X) in ball x r, f y ∂μ) / μ (ball x r) ≤ (∫⁻ (y : X) in ball x r, g y + c ∂μ) / μ (ball x r)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:541:37: error: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (?a + ?b) / ?c
+in the target expression
+  (∫⁻ (a : X) in ball x r, g a ∂μ + c * μ (ball x r)) / μ (ball x r) =
+    (∫⁻ (y : X) in ball x r, g y ∂μ) / μ (ball x r) + c
+
+X : Type u_1
+inst✝¹ : PseudoMetricSpace X
+inst✝ : MeasurableSpace X
+μ : Measure X
+f g : X → ℝ≥0∞
+c : ℝ≥0∞
+h : ∀ (x : X), f x ≤ g x + c
+hballs : ∀ (x : X) (r : ℝ), 0 < r → μ (ball x r) ≠ 0 ∧ μ (ball x r) ≠ ∞
+x : X
+r : ℝ
+hr : 0 < r
+⊢ (∫⁻ (a : X) in ball x r, g a ∂μ + c * μ (ball x r)) / μ (ball x r) =
+    (∫⁻ (y : X) in ball x r, g y ∂μ) / μ (ball x r) + c
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:544:6: error: Type mismatch
+  add_le_add_right (le_iSup_of_le r ?m.148) c
+has type
+  c + ?m.139 ≤ c + iSup ?m.138
+but is expected to have type
+  (∫⁻ (y : X) in ball x r, g y ∂μ) / μ (ball x r) + c ≤ centeredMaximal μ g x + c
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:557:43: error: unsolved goals
+E : Type u_1
+inst✝⁵ : NormedAddCommGroup E
+inst✝⁴ : NormedSpace ℝ E
+inst✝³ : FiniteDimensional ℝ E
+inst✝² : MeasurableSpace E
+inst✝¹ : BorelSpace E
+μ : Measure E
+inst✝ : μ.IsAddHaarMeasure
+f : E → ℝ≥0∞
+hf : Measurable f
+t : ℝ
+ht : 0 < t
+q : ℝ≥0∞ := ENNReal.ofReal (t / 2)
+g : E → ℝ≥0∞ := {x | q < f x}.indicator f
+⊢ 0 ≤ t / 2
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:563:20: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:565:20: warning: `Set.mem_setOf_eq` has been deprecated: Use `Set.mem_ofPred_eq` instead
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:574:29: error: Application type mismatch: The argument
+  add_le_add_right (le_of_not_gt hnot) q
+has type
+  q + centeredMaximal μ g x ≤ q + q
+but is expected to have type
+  centeredMaximal μ g x + q ≤ ?m.231
+in the application
+  LE.le.trans (hM x) (add_le_add_right (le_of_not_gt hnot) q)
+/home/derekblair/lane-work/codex-rca-d-proton/evidence/Ch08AllSupport.lean:579:49: error(lean.unknownIdentifier): Unknown identifier `mul_le_mul_left'`

@@ -1,0 +1,28 @@
+{
+  "validation_kind": "Completed Lean LSP fragment check; not a CLI clean build",
+  "source": "work/Chapter18Wiener.lean",
+  "source_sha256": "c8c449022065aa5792c44407e4e33a8e53a6317a21a4b61be0f7c9dddf2ded1e",
+  "summary": "evidence/lean-lsp-20261029T183138Z-3834474.v0001.all-02.summary.json",
+  "combined_source_sha256": "9dce40a3c7b75f99848c68036f3461e843d4d369f1a5905a354fd790ee398f28",
+  "combined_status": "errors",
+  "completion_barrier": true,
+  "component_errors": 0,
+  "component_warnings": 0,
+  "principal_family_count": 2,
+  "principal_axiom_reports": {
+    "RudinRCA.Chapter18.Wiener.reciprocal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "RudinRCA.Chapter18.theorem18_21": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "unexpected_axioms": {},
+  "prohibited_source_tokens": [],
+  "lexical_errors": [],
+  "final_cli_gate_pending": true
+}

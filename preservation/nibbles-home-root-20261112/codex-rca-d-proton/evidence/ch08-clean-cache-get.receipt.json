@@ -1,0 +1,12 @@
+{
+  "command": [
+    "lake",
+    "exe",
+    "cache",
+    "get"
+  ],
+  "cwd": "/home/derekblair/lane-work/codex-rca-d-proton/formalize-everything/books/rudin-real-and-complex-analysis",
+  "exit_status": 0,
+  "finished_at": "2026-10-29T18:38:01.195356+00:00",
+  "log_sha256": "ff41d9f0206c5482b298eb63e620c704eba1a2faad9704a86768b6a1373d9cc4"
+}

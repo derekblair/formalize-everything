@@ -1,0 +1,13 @@
+'RudinRCA.Chapter13Scratch.inversePrincipalPolynomial_natDegree' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13Scratch.inversePrincipalPolynomial_coeff_zero' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13Scratch.inversePrincipalPolynomial_eval' depends on axioms: [propext, Classical.choice, Quot.sound]
+'RudinRCA.Chapter13Scratch.polynomial_principal_part_at_infinity' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'RudinRCA.Chapter13Scratch.polynomial_principal_part_at_infinity_with_limit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]

@@ -1,0 +1,152 @@
+[
+  {
+    "source": "InfinityBridge.lean",
+    "sha256": "2caaeb93c16071dc5032b1449f8a01607c074659ced07eff0efa316fdc242fef",
+    "body_first_line": 71,
+    "section_last_line": 110
+  },
+  {
+    "source": "RationalPartialFractions.lean",
+    "sha256": "0a135732f17de70e3449a114169e1b7ea24b7f9f0a4f1d6d84c094795002090f",
+    "body_first_line": 113,
+    "section_last_line": 438
+  },
+  {
+    "source": "StripComponents.lean",
+    "sha256": "993daef6774981fdb1181cfc4c9a9d299fcb5986afc670d805e911d62404c3a6",
+    "body_first_line": 441,
+    "section_last_line": 513
+  },
+  {
+    "source": "BalancedCycles.lean",
+    "sha256": "914be3da192730330941e2d4dad404ebc5e17b90f5d072cf5b3c85c4d9ed6d58",
+    "body_first_line": 516,
+    "section_last_line": 643
+  },
+  {
+    "source": "Exhaustion.lean",
+    "sha256": "49cc0e161d25c874f41f6abf6a944cc51aedf9261e2218a3464aeda555136aa2",
+    "body_first_line": 646,
+    "section_last_line": 843
+  },
+  {
+    "source": "PolynomialObstruction.lean",
+    "sha256": "a0bd1ed123ff71f69e324d4db1f5e6fb1a93e0e8a286e93171a158ad5c6e82ee",
+    "body_first_line": 846,
+    "section_last_line": 1037
+  },
+  {
+    "source": "SquareKernel.lean",
+    "sha256": "b0f3d2c4a226fd98f6798ae1e6d1b105ed7462a10d05e54959d3dcc2ed7ba4e3",
+    "body_first_line": 1040,
+    "section_last_line": 1495
+  },
+  {
+    "source": "HolomorphicLog.lean",
+    "sha256": "8ea41d46afd4173858ff42a9361ef20bf95227bbea6be788ff91ee7312659c97",
+    "body_first_line": 1498,
+    "section_last_line": 1583
+  },
+  {
+    "source": "PrimitiveLog.lean",
+    "sha256": "48b3318f82302d0ba124f6e50cefc8703b3e157a2ebb06f7ca2e1e166198fd39",
+    "body_first_line": 1586,
+    "section_last_line": 1642
+  },
+  {
+    "source": "RungeFunctional.lean",
+    "sha256": "5f9798ea4eb16198414e4353f49440b3ba33f8b686cd9ee403b3e0e43140159c",
+    "body_first_line": 1645,
+    "section_last_line": 1821
+  },
+  {
+    "source": "GridBoundary.lean",
+    "sha256": "0507bc5e3bd7fe54e944f7b5b3e7197442ddf8a1be672b391e942fafd6306e7b",
+    "body_first_line": 1824,
+    "section_last_line": 1946
+  },
+  {
+    "source": "ContourContinuity.lean",
+    "sha256": "67e50aa492bc66506e96b74cf4175b263f405a6f0453e85e5eb502745b82b4bd",
+    "body_first_line": 1949,
+    "section_last_line": 2024
+  },
+  {
+    "source": "SegmentIntegralBridge.lean",
+    "sha256": "869a076cd5cb7551e03176695236b5682f08b32ad85ba903c6214a4c3f3865ee",
+    "body_first_line": 2027,
+    "section_last_line": 2112
+  },
+  {
+    "source": "PolygonalConcat.lean",
+    "sha256": "62fa9d89ccc55eb639df2cdfb63860cfb6b8cf6393bab8756ebf3d0ca507b2ce",
+    "body_first_line": 2115,
+    "section_last_line": 2182
+  },
+  {
+    "source": "CyclicVertices.lean",
+    "sha256": "4418d868c6bc962c0d3e3f5e41389fb339bd747286556ef395e108604cc80dd4",
+    "body_first_line": 2185,
+    "section_last_line": 2272
+  },
+  {
+    "source": "SimplyConnectedImplications.lean",
+    "sha256": "648451b9501d25c54e4da46e4d62de5aed61574e67aebba43b9638acc5d88354",
+    "body_first_line": 2275,
+    "section_last_line": 2308
+  },
+  {
+    "source": "PrimitiveCurveIntegral.lean",
+    "sha256": "2fff9e618e7c622255fa83f2af6bd901adabc2e9ab435701d606016701730576",
+    "body_first_line": 2311,
+    "section_last_line": 2420
+  },
+  {
+    "source": "CauchyTransformSphere.lean",
+    "sha256": "085d9c8abe17f16f629737427d909e90ce598ee94ea0c04d3efb496cf878ea22",
+    "body_first_line": 2423,
+    "section_last_line": 2591
+  },
+  {
+    "source": "ContourAnnihilator.lean",
+    "sha256": "45194e18ac780ac67a2946e76152e5ca9757790d11ec3dff3287f17eb7746d80",
+    "body_first_line": 2594,
+    "section_last_line": 2693
+  },
+  {
+    "source": "RungeRationalWitness.lean",
+    "sha256": "033c29f0cabeb2487f3070a4e49b2fd5fd2d5138aa813e93906fa68b14324a26",
+    "body_first_line": 2696,
+    "section_last_line": 2912
+  },
+  {
+    "source": "RungePolynomialWitness.lean",
+    "sha256": "bf8d0e9da86c2ad14abafd8aaa881c8e8b639d74e399deb147970f01d1f3b7ac",
+    "body_first_line": 2915,
+    "section_last_line": 2958
+  },
+  {
+    "source": "RungeAssembly.lean",
+    "sha256": "8787a742609a68f3d91469bb8e598b0a0306d295cb2e015ab953093ca638c24b",
+    "body_first_line": 2961,
+    "section_last_line": 3077
+  },
+  {
+    "source": "RungeUniformSequences.lean",
+    "sha256": "d37c10318f686d4b7d04baf42c680ae091513c49b11f448adb7896929bd42c4b",
+    "body_first_line": 3080,
+    "section_last_line": 3179
+  },
+  {
+    "source": "GridGeometry.lean",
+    "sha256": "d43b31701412d91e90ddbc2c0d340ad32feb1ae955effd626aeff230e2bb8460",
+    "body_first_line": 3182,
+    "section_last_line": 3295
+  },
+  {
+    "source": "GridSupport.lean",
+    "sha256": "4c71334c0ad1eb79bd4476917949a2014cdcfa56733f08bfab762e94883341ad",
+    "body_first_line": 3298,
+    "section_last_line": 3377
+  }
+]

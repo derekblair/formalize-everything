@@ -1,0 +1,272 @@
+{
+  "started": "2026-10-29T18:21:53.308897+00:00",
+  "command": [
+    "lake",
+    "build",
+    "RudinRCA"
+  ],
+  "mathlib": "d13f23b723b8a846827a245b89c10fc7d3f11612",
+  "source_sha256": "60c54ad5ea7387757b58aafc3829f02cddb897ea0b653fa811914118997ee9a3",
+  "exit_code": 1,
+  "clean_slate": false,
+  "finished": "2026-10-29T18:32:45.249682+00:00",
+  "audited_families": {
+    "RudinRCA.Chapter15.holomorphic_of_locally_uniform_products": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.uniform_series_tail": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.analyticOrderAt_finset_product": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.analyticOrderAt_product_with_nonzero_tail": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.analyticOrderAt_ne_top_of_component_nonzero": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.analyticOrderAt_infinite_product_finite_prefix": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.finite_multiplicity_of_prefix_order": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.multiplicity_tsum_of_finite_prefix": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.holomorphic_product_of_uniform_norm_series_using_15_4": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.holomorphic_product_multiplicity_using_15_4": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.holomorphic_product_multiplicity": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.analyticOrderAt_scaled_elementaryFactor": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.uniform_product_of_uniform_norm_series": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.uniform_productOn_of_uniform_norm_series": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.product_eq_zero_iff_of_uniform_norm_series": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.uniform_norm_series_reindex": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.uniform_product_reindex_of_uniform_norm_series": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.product_reindex": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.analyticOrderAt_elementaryFactor": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.finite_product_majorant_le_exp": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.norm_finite_product_sub_one_le": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.finite_product_estimates": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.zeros_have_no_accumulation": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.elementaryFactor_zero": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.elementaryFactor_eq_zero_iff": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.differentiable_elementaryFactor": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.sequentialProduct_zero": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.HasProd.hasSequentialProduct": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.product_one_sub_converges": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.positive_product_one_sub_iff": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.hasDerivAt_elementaryExponent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.hasDerivAt_realElementaryExponent": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.hasDerivAt_elementaryFactor": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.hasDerivAt_realElementaryFactor": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.elementary_weight_integral": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.norm_elementaryExponent_line_le": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.hasDerivAt_elementaryFactor_line": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.norm_elementaryFactor_line_deriv_le": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.norm_one_sub_elementaryFactor_le": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.differentiableOn_of_continuous_log": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.exists_holomorphic_log": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.exists_entire_log": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.finite_fiber_of_hasSum_count": [
+      "propext",
+      "sorryAx",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.zero_sequence_norm_tendsto_atTop": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.zero_enumeration_norm_tendsto_atTop": [
+      "propext",
+      "sorryAx",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.exists_entire_nonvanishing_quotient_of_order_eq": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.exists_entire_exponential_factor_of_order_eq": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.analyticOrderAt_ne_top_of_entire_nonzero": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "RudinRCA.Chapter15.exists_entire_exponential_factor_of_nat_order_eq": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "unexpected_axioms": {
+    "RudinRCA.Chapter15.finite_fiber_of_hasSum_count": [
+      "sorryAx"
+    ],
+    "RudinRCA.Chapter15.zero_enumeration_norm_tendsto_atTop": [
+      "sorryAx"
+    ]
+  },
+  "missing_audits": [],
+  "source_unchanged": true
+}

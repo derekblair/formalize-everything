@@ -1,0 +1,46 @@
+{
+  "utc": "2026-10-29T18:18:04.074737+00:00",
+  "preserved_holder": 3780214,
+  "waiters": [
+    {
+      "pid": 3784199,
+      "result": "queued waiter stopped for aggregate check"
+    },
+    {
+      "pid": 3790890,
+      "result": "queued waiter stopped for aggregate check"
+    },
+    {
+      "pid": 3792528,
+      "result": "queued waiter stopped for aggregate check"
+    },
+    {
+      "pid": 3801157,
+      "result": "queued waiter stopped for aggregate check"
+    },
+    {
+      "pid": 3801552,
+      "result": "queued waiter stopped for aggregate check"
+    },
+    {
+      "pid": 3804299,
+      "result": "queued waiter stopped for aggregate check"
+    },
+    {
+      "pid": 3809162,
+      "result": "queued waiter stopped for aggregate check"
+    },
+    {
+      "pid": 3810868,
+      "result": "queued waiter stopped for aggregate check"
+    },
+    {
+      "pid": 3812932,
+      "result": "queued waiter stopped for aggregate check"
+    },
+    {
+      "pid": 3816249,
+      "result": "queued waiter stopped for aggregate check"
+    }
+  ]
+}
