@@ -1,0 +1,8 @@
+$ git log --reverse --format=%H %P %s b7593a8..f3190878
+EXIT 0
+e261949f0c9d9a1613aec1a98648a6631aca5d47 b7593a842e03c909f50dda6388697a23cda18766 RCA A: inventory chapters 1–3 and map pinned Mathlib claims
+c4cb4d15416b352602812a04c5ce3500cc616005 e261949f0c9d9a1613aec1a98648a6631aca5d47 RCA A checkpoint: green chapter modules and enforced transitive axiom audit
+f62c6cd6985a5189c457187fd3ee4a2456026e11 c4cb4d15416b352602812a04c5ce3500cc616005 RCA A: recover complete Chapter 1 proofs and audit regression harness
+cc8e279dd889711296ce182c9d88f515f9a47bfe f62c6cd6985a5189c457187fd3ee4a2456026e11 RCA A: complete Chapter 2 foundations and verify fresh builds
+f4c45e85d636dfea778ee3787dd45679fd888cd2 cc8e279dd889711296ce182c9d88f515f9a47bfe RCA A: extend audit to rebased chapters 4-5
+f319087865f3d19e64c107eb1edae937973c7adf f4c45e85d636dfea778ee3787dd45679fd888cd2 RCA A: trim AuditA trailing blank line

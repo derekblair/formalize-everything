@@ -1,0 +1,79 @@
+$ git diff 765d70f9 f3190878 -- books/rudin-real-and-complex-analysis/.gitignore books/rudin-real-and-complex-analysis/lakefile.toml books/rudin-real-and-complex-analysis/PROGRESS.md books/rudin-real-and-complex-analysis/RudinRCA.lean
+EXIT 0
+diff --git a/books/rudin-real-and-complex-analysis/PROGRESS.md b/books/rudin-real-and-complex-analysis/PROGRESS.md
+index b670e6c..7375f17 100644
+--- a/books/rudin-real-and-complex-analysis/PROGRESS.md
++++ b/books/rudin-real-and-complex-analysis/PROGRESS.md
+@@ -9,8 +9,8 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
+ | 1 | Abstract Integration | 41 | 0 |
+ | 2 | Positive Borel Measures | 25 | 0 |
+ | 3 | Lp-Spaces | 17 | 0 |
+-| 4 | Elementary Hilbert Space Theory | TBD | 0 |
+-| 5 | Examples of Banach Space Techniques | TBD | 0 |
++| 4 | Elementary Hilbert Space Theory | 26 | 0 |
++| 5 | Examples of Banach Space Techniques | 25 | 0 |
+ | 6 | Complex Measures | TBD | 0 |
+ | 7 | Differentiation | TBD | 0 |
+ | 8 | Integration on Product Spaces | TBD | 0 |
+@@ -27,6 +27,35 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
+ | 19 | Entire Functions | TBD | 0 |
+ | 20 | Boundary Behavior of Bounded Analytic Functions | TBD | 0 |
+ 
++Cluster B's counts come from a fresh printed-text enumeration in
++[INVENTORY-B.md](INVENTORY-B.md): 4.1–4.26 and 5.1–5.25, including numbered
++definitions and narrative/proof passages. See [SCOPING-B.md](SCOPING-B.md)
++for conventions, corrected statements, and the closed-graph exercise scope
++discrepancy. Stage 2 implementation and clean build/axiom gates for both cluster B chapters have passed on branch `rca-b-stage2-proton`;
++the `Done` column continues to mean independently reviewed and landed on main.
++
++## Cluster B branch gates
++
++Both chapters passed their required clean-slate builds and axiom audits on
++2026-11-01. The separate Chapter 4 gate passed before Chapter 5 compilation;
++the final gate rebuilt and reaudited both modules from a fresh `.lake`.
++
++| Module | Numbered nodes implemented | Theorem/lemma declarations | Audit records | Clean build / audit |
++| --- | ---: | ---: | ---: | --- |
++| `RudinRCA/Chapter04.lean` | 26/26 | 172 | 172 | PASS; [evidence](BUILD-CHAPTER04.md) |
++| `RudinRCA/Chapter05.lean` | 25/25, including the printed strict 5.11 bound | 182 | 184 (includes two instances) | PASS; [F1 follow-up evidence](evidence/f1-gates.md) |
++
++Each cache fetch, ordinary full build, and axiom checker exited 0. Both modules
++have zero proof placeholders and only `propext`, `Classical.choice`, and
++`Quot.sound` in their audited axiom unions. See the
++[Chapter 4 coverage](CHAPTER04-COVERAGE.md),
++[Chapter 5 coverage](CHAPTER05-COVERAGE.md), and
++[statement disclosures](SCOPING-B.md).
++
++PR: [#48](https://github.com/derekblair/formalize-everything/pull/48).
++Coordinator-appointed crossed review is still required. The main table above
++continues to count only independently reviewed work landed on main.
++
+ ## Cluster A inventory (branch `books/rca-foundations`)
+ 
+ The complete verified ranges are 1.1–1.41, 2.1–2.25, and 3.1–3.17: **83
+diff --git a/books/rudin-real-and-complex-analysis/RudinRCA.lean b/books/rudin-real-and-complex-analysis/RudinRCA.lean
+index 3674828..24e09e7 100644
+--- a/books/rudin-real-and-complex-analysis/RudinRCA.lean
++++ b/books/rudin-real-and-complex-analysis/RudinRCA.lean
+@@ -1,6 +1,8 @@
+ import RudinRCA.Chapter01
+ import RudinRCA.Chapter02
+ import RudinRCA.Chapter03
++import RudinRCA.Chapter04
++import RudinRCA.Chapter05
+ 
+ /-!
+ Rudin, Real and Complex Analysis (third edition, 1987).
+diff --git a/books/rudin-real-and-complex-analysis/lakefile.toml b/books/rudin-real-and-complex-analysis/lakefile.toml
+index 9b2ee1e..0ee56b9 100644
+--- a/books/rudin-real-and-complex-analysis/lakefile.toml
++++ b/books/rudin-real-and-complex-analysis/lakefile.toml
+@@ -1,6 +1,8 @@
+ name = "rudinRCA"
+ version = "0.1.0"
+ defaultTargets = ["RudinRCA", "RudinRCA.AuditA"]
++# Keep chapter elaboration serialized on shared build machines.
++weakLeanArgs = ["-j1"]
+ 
+ [[lean_lib]]
+ name = "RudinRCA"

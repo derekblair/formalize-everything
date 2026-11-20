@@ -1,0 +1,12 @@
+$ git fsck --strict --no-reflogs
+EXIT 0
+dangling commit ef60412759da0d1285b5d32c874a507aa04ea332
+dangling commit f3e8ff99e43cbb0d390ff895858a72a98c5448e6
+dangling commit 308209e7fdd2b89013d984497b4ce0597eb7c2d7
+dangling commit a0538ea8a84843ad36bd1eb96cc9453ee723b7a1
+dangling commit a02c94541b191853eb0c048f26eb478752c3738a
+dangling commit 5b5dfa6ca05e938adc7781cbdbaa5a243abbeff3
+dangling commit 765d70f9aa7c11e52fe8b5a9da3f0118392f4d8c
+dangling commit 781d827202f8559b3aa51fa90e8759248ace0ebd
+dangling commit 55df44736576a898ece4a828fd946d6e6432333b
+dangling commit 78d71ccb2538b00e0219a90fb8b54f5937aaaae0

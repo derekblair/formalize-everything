@@ -1,0 +1,37 @@
+{
+  "modules": [
+    "RudinRCA.AuditA",
+    "RudinRCA.Chapter01",
+    "RudinRCA.Chapter02",
+    "RudinRCA.Chapter03",
+    "RudinRCA.Chapter04",
+    "RudinRCA.Chapter05",
+    "RudinRCA"
+  ],
+  "book_inventory": [
+    {
+      "chapter": 1,
+      "nodes": 41,
+      "range": [
+        "1.1",
+        "1.41"
+      ]
+    },
+    {
+      "chapter": 2,
+      "nodes": 25,
+      "range": [
+        "2.1",
+        "2.25"
+      ]
+    },
+    {
+      "chapter": 3,
+      "nodes": 17,
+      "range": [
+        "3.1",
+        "3.17"
+      ]
+    }
+  ]
+}

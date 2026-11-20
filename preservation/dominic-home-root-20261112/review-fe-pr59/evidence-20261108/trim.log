@@ -1,0 +1,22 @@
+$ git show --format=fuller --stat --patch f3190878
+EXIT 0
+commit f319087865f3d19e64c107eb1edae937973c7adf
+Author:     Derek Blair <derekblair@protonmail.com>
+AuthorDate: Sat Nov 7 21:05:41 2026 -0800
+Commit:     Derek Blair <derekblair@protonmail.com>
+CommitDate: Sat Nov 7 21:05:41 2026 -0800
+
+    RCA A: trim AuditA trailing blank line
+---
+ books/rudin-real-and-complex-analysis/RudinRCA/AuditA.lean | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/books/rudin-real-and-complex-analysis/RudinRCA/AuditA.lean b/books/rudin-real-and-complex-analysis/RudinRCA/AuditA.lean
+index 314be26..288bd99 100644
+--- a/books/rudin-real-and-complex-analysis/RudinRCA/AuditA.lean
++++ b/books/rudin-real-and-complex-analysis/RudinRCA/AuditA.lean
+@@ -199,4 +199,3 @@ run_cmd do
+         logInfo m!"AUDIT {name}: {axioms}"
+       count := count + 1
+   logInfo m!"Axiom audit passed for {count} project declarations (including private/generated) across {audited.size} audited project modules; the package source tree holds {discovered.size} project modules, all imported into the audited graph and all present in the expected inventory; used: {used.qsort Name.lt}."
+-

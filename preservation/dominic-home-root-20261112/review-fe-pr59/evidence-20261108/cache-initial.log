@@ -1,0 +1,7 @@
+$ lake exe cache get
+EXIT 1
+info: mathlib: cloning https://github.com/leanprover-community/mathlib4
+info: stderr:
+Cloning into '/root/review-fe-pr59-codex/independent-clone-20261108/books/rudin-real-and-complex-analysis/.lake/packages/mathlib'...
+fatal: unable to access 'https://github.com/leanprover-community/mathlib4/': Could not resolve host: github.com
+error: external command 'git' exited with code 128
