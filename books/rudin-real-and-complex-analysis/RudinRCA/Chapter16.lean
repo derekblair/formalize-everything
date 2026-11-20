@@ -11101,4 +11101,1957 @@ theorem theorem16_21_entire_omitting_one_infinite_fibers {f : ℂ → ℂ} {w₀
 
 end Chapter16PartD
 
+
+/-!
+## 16.21: Unconditional Proof of Big Picard's Theorem via `modularLambda` and Monodromy
+-/
+
+section BigPicard1621
+open Set Filter Metric Complex Topology
+open scoped Interval Real MatrixGroups
+
+/-! ### Part 1: Uniform Cusp Divergence and `S₃`-Equivariance of `modularLambda` -/
+
+private theorem zRed_mem_fundamentalSetQ {z : ℂ} (him : stripHeightY0 < z.im) :
+    let k : ℤ := Int.floor ((z.re + 1) / 2)
+    z - 2 * (k : ℂ) ∈ FundamentalSetQ := by
+  intro k
+  let zRed : ℂ := z - 2 * (k : ℂ)
+  have him1 : 1 < z.im := lt_of_le_of_lt one_le_stripHeightY0 him
+  have hzRed_im : zRed.im = z.im := by simp [zRed]
+  have hfl_le : (k : ℝ) ≤ (z.re + 1) / 2 := Int.floor_le _
+  have hfl_lt : (z.re + 1) / 2 < (k : ℝ) + 1 := Int.lt_floor_add_one _
+  have hzRed_re_ge : -1 ≤ zRed.re := by simp [zRed]; linarith
+  have hzRed_re_lt : zRed.re < 1 := by simp [zRed]; linarith
+  refine ⟨by linarith, hzRed_re_ge, hzRed_re_lt, ?_, ?_⟩
+  · rw [one_le_norm_two_mul_add_one_iff]
+    nlinarith [sq_nonneg zRed.re]
+  · rw [one_lt_norm_two_mul_sub_one_iff]
+    nlinarith [sq_nonneg zRed.re]
+
+private theorem modularLambda_eq_moebiusPhi_psiStrip {z : ℂ} (him : stripHeightY0 < z.im) :
+    modularLambda z = moebiusPhi (psiStrip z / cuspAlphaInf) ∧
+      psiStrip z / cuspAlphaInf ≠ 1 := by
+  let k : ℤ := Int.floor ((z.re + 1) / 2)
+  let zRed : ℂ := z - 2 * (k : ℂ)
+  have hzRed_Q : zRed ∈ FundamentalSetQ := zRed_mem_fundamentalSetQ him
+  have hzRed_im : zRed.im = z.im := by simp [zRed]
+  have hzRed_im_gt : stripHeightY0 < zRed.im := hzRed_im ▸ him
+  have hz_eq_tau :
+      ((⟨modularTau ^ k, Subgroup.zpow_mem GammaSubgroup modularTau_mem_gamma k⟩ :
+        GammaSubgroup).1.1 ⟨zRed, hzRed_Q.1⟩).1 = z := by
+    change ((modularTau ^ k).1 ⟨zRed, hzRed_Q.1⟩).1 = z
+    rw [modularTau_zpow_apply]
+    dsimp [zRed]
+    ring
+  have hlam_eq : modularLambda z = lambdaOnQ zRed := by
+    rw [← hz_eq_tau,
+      modularLambda_gamma_invariant (@existsUnique_gamma_fundamentalSetQ)
+        ⟨modularTau ^ k, Subgroup.zpow_mem GammaSubgroup modularTau_mem_gamma k⟩ ⟨zRed, hzRed_Q.1⟩,
+      modularLambda_eq_lambdaOnQ (@existsUnique_gamma_fundamentalSetQ) hzRed_Q]
+  have hpsi_eq : psiStrip z = psiStrip zRed := by
+    have := psiStrip_periodic_two zRed k
+    have hz_add : zRed + 2 * (k : ℂ) = z := by dsimp [zRed]; ring
+    rw [hz_add] at this
+    exact this
+  rw [hlam_eq, hpsi_eq]
+  have hfl0 : Int.floor ((zRed.re + 1) / 2) = 0 :=
+    Int.floor_eq_iff.mpr ⟨by linarith [hzRed_Q.2.1], by norm_num; linarith [hzRed_Q.2.2.1]⟩
+  by_cases h_neg1 : zRed.re = -1
+  · have hlamQ : lambdaOnQ zRed = moebiusM3 (lambdaRight (-1 / (zRed + 1))) := by
+      simp [lambdaOnQ, h_neg1]
+    have hpsi_red : psiStrip zRed = omegaCube * psiExtL1 (-1 / (zRed + 1)) := by
+      unfold psiStrip
+      dsimp only
+      rw [hfl0]
+      simp only [Int.cast_zero, mul_zero, sub_zero, h_neg1, ↓reduceIte]
+      have harg : (1 : ℂ) / (1 - (zRed + 2)) = -1 / (zRed + 1) := by
+        have h1 : (1 : ℂ) - (zRed + 2) = -(zRed + 1) := by ring
+        rw [h1, div_neg, neg_div]
+      rw [harg]
+    let p : ℂ := -1 / (zRed + 1)
+    have hp_L1 : p ∈ BoundaryL1 := by
+      have hz1 : zRed + 1 = (zRed.im : ℂ) * Complex.I :=
+        Complex.ext (by simp [h_neg1]) (by simp)
+      have him_ne : (zRed.im : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hzRed_Q.1.ne'
+      have hp_val : p = ((1 / zRed.im : ℝ) : ℂ) * Complex.I := by
+        dsimp [p]
+        rw [hz1, Complex.ofReal_div, Complex.ofReal_one]
+        field_simp [him_ne, Complex.I_ne_zero]; ring_nf; simp [Complex.I_sq]
+      rw [hp_val]
+      exact ⟨by simp, by simp [hzRed_Q.1]⟩
+    have hlamR : lambdaRight p = moebiusPhi (psiExtL1 p / cuspAlphaInf) :=
+      lambdaRight_of_re_nonneg (by linarith [hp_L1.1])
+    let u : ℂ := psiExtL1 p / cuspAlphaInf
+    have hu1 : u ≠ 1 := fun h1 =>
+      (psiExtL1_boundaryL1_notMem_cusps hp_L1).1 ((div_eq_one_iff_eq cuspAlphaInf_ne_zero).mp h1)
+    have husq : u ≠ omegaCube ^ 2 := fun h2 =>
+      (psiExtL1_boundaryL1_notMem_cusps hp_L1).2.2 ((div_eq_iff cuspAlphaInf_ne_zero).mp h2)
+    have hpsi_ne1 : psiStrip zRed / cuspAlphaInf ≠ 1 := by
+      rw [hpsi_red, mul_div_assoc]
+      intro h1
+      apply husq
+      have hmul := congrArg (omegaCube ^ 2 * ·) h1
+      rw [mul_one, ← mul_assoc, ← pow_succ, omegaCube_pow_three, one_mul] at hmul
+      exact hmul
+    refine ⟨?_, hpsi_ne1⟩
+    rw [hlamQ, hpsi_red, mul_div_assoc]
+    change moebiusM3 (lambdaRight p) = moebiusPhi (omegaCube * u)
+    rw [hlamR, moebiusPhi_mul_omegaCube hu1 husq]
+  · have hre_gt : -1 < zRed.re := lt_of_le_of_ne hzRed_Q.2.1 (Ne.symm h_neg1)
+    have hmem := mem_omegaL1_of_im_gt_Y0 hzRed_im_gt hre_gt hzRed_Q.2.2.1
+    have hmem_sdiff : zRed ∈ OmegaL1 \ {-starRingEnd ℂ z0Center} :=
+      ⟨hmem.1, fun h => hmem.2 (Or.inr h)⟩
+    have hlamQ : lambdaOnQ zRed = moebiusPhi (psiExtL1 zRed / cuspAlphaInf) := by
+      rw [lambdaOnQ_eq_lambdaRight hmem.1, lambdaRight_eq_moebiusPhi_psiExtL1 hmem_sdiff]
+    have hpsi_red : psiStrip zRed = psiExtL1 zRed := psiStrip_eq_psiExtL1 hre_gt hzRed_Q.2.2.1
+    rw [hlamQ, hpsi_red]
+    exact ⟨rfl, psiExtL1_div_cuspAlphaInf_ne_one hmem_sdiff⟩
+
+private theorem tendsto_norm_modularLambda_im_atTop :
+    Tendsto (fun z : ℂ => ‖modularLambda z‖)
+      (Filter.comap Complex.im Filter.atTop) Filter.atTop := by
+  have hu_tend : Tendsto (fun z : ℂ => psiStrip z / cuspAlphaInf)
+      (Filter.comap Complex.im Filter.atTop) (𝓝 1) := by
+    have hstrip : Tendsto psiStrip (Filter.comap Complex.im Filter.atTop) (𝓝 cuspAlphaInf) := by
+      rw [cuspAlphaInf_eq_cuspFnF_zero]
+      exact tendsto_psiStrip_im_atTop
+    simpa [div_self cuspAlphaInf_ne_zero] using hstrip.div_const cuspAlphaInf
+  rw [Filter.tendsto_atTop]
+  intro M
+  let numLim : ℂ := -omegaCube ^ 2 * (1 - omegaCube ^ 2)
+  have hnum_eq : numLim = omegaCube - omegaCube ^ 2 := by
+    dsimp [numLim]; rw [mul_sub, mul_one]; ring_nf; rw [omegaCube_pow_four]; ring
+  have hnum_pos : 0 < ‖numLim‖ := norm_pos_iff.mpr (hnum_eq ▸ omegaCube_sub_sq_ne_zero)
+  have hnum_tend : Tendsto (fun z : ℂ =>
+        ‖-omegaCube ^ 2 * (psiStrip z / cuspAlphaInf - omegaCube ^ 2)‖)
+      (Filter.comap Complex.im Filter.atTop) (𝓝 ‖numLim‖) :=
+    (((hu_tend.sub_const (omegaCube ^ 2)).const_mul (-omegaCube ^ 2)).norm)
+  have hden_tend : Tendsto (fun z : ℂ => ‖psiStrip z / cuspAlphaInf - 1‖)
+      (Filter.comap Complex.im Filter.atTop) (𝓝 0) := by
+    simpa using (hu_tend.sub_const (1 : ℂ)).norm
+  let B : ℝ := max M 1
+  have hB_pos : 0 < B := lt_of_lt_of_le zero_lt_one (le_max_right M 1)
+  have hev_im : ∀ᶠ z : ℂ in Filter.comap Complex.im Filter.atTop, stripHeightY0 < z.im :=
+    ⟨Set.Ioi stripHeightY0, Filter.Ioi_mem_atTop stripHeightY0, Subset.rfl⟩
+  have hev_num : ∀ᶠ z : ℂ in Filter.comap Complex.im Filter.atTop,
+      ‖numLim‖ / 2 < ‖-omegaCube ^ 2 * (psiStrip z / cuspAlphaInf - omegaCube ^ 2)‖ :=
+    hnum_tend.eventually (Ioi_mem_nhds (half_lt_self hnum_pos))
+  have hev_den : ∀ᶠ z : ℂ in Filter.comap Complex.im Filter.atTop,
+      ‖psiStrip z / cuspAlphaInf - 1‖ < (‖numLim‖ / 2) / B :=
+    hden_tend.eventually (Iio_mem_nhds (div_pos (half_pos hnum_pos) hB_pos))
+  filter_upwards [hev_im, hev_num, hev_den] with z hz_im hnum_gt hden_lt
+  obtain ⟨hlam_eq, hne1⟩ := modularLambda_eq_moebiusPhi_psiStrip hz_im
+  have hden_pos : 0 < ‖psiStrip z / cuspAlphaInf - 1‖ :=
+    norm_pos_iff.mpr (sub_ne_zero.mpr hne1)
+  rw [hlam_eq]
+  unfold moebiusPhi
+  rw [norm_div]
+  have hB_le : B ≤ ‖-omegaCube ^ 2 * (psiStrip z / cuspAlphaInf - omegaCube ^ 2)‖ /
+      ‖psiStrip z / cuspAlphaInf - 1‖ := by
+    rw [le_div_iff₀ hden_pos]
+    have : B * ‖psiStrip z / cuspAlphaInf - 1‖ < ‖numLim‖ / 2 :=
+      (lt_div_iff₀' hB_pos).mp hden_lt
+    linarith
+  exact le_trans (le_max_left M 1) hB_le
+
+private theorem one_sub_conj_mem_openTriangleQ0 {z : ℂ} (hz : z ∈ OpenTriangleQ0) :
+    1 - starRingEnd ℂ z ∈ OpenTriangleQ0 := by
+  have hnorm_eq : ‖2 * (1 - starRingEnd ℂ z) - 1‖ = ‖2 * z - 1‖ := by
+    have h1 : 2 * (1 - starRingEnd ℂ z) - 1 = -starRingEnd ℂ (2 * z - 1) := by
+      apply Complex.ext <;> (simp; try ring)
+    rw [h1, norm_neg, Complex.norm_conj]
+  refine ⟨by simp [hz.1], by simp; linarith [hz.2.2.1], by simp; linarith [hz.2.1], ?_⟩
+  rw [hnorm_eq]
+  exact hz.2.2.2
+
+private theorem riemannPsi_one_sub_conj {z : ℂ} (hz : z ∈ OpenTriangleQ0) :
+    riemannPsi (1 - starRingEnd ℂ z) = -starRingEnd ℂ (riemannPsi z) := by
+  let f : ℂ → ℂ := fun w => -starRingEnd ℂ (riemannPsi (1 - starRingEnd ℂ w))
+  have hf_eq_comp : f = fun w => -(starRingEnd ℂ (riemannPsi (-starRingEnd ℂ (w - 1)))) := by
+    funext w
+    have h1 : -starRingEnd ℂ (w - 1) = 1 - starRingEnd ℂ w := by
+      simp only [map_sub, map_one]; ring
+    rw [h1]
+  have hf_holo : RudinRCA.Chapter10.HolomorphicOn f OpenTriangleQ0 := by
+    intro w hw
+    have h1 : -starRingEnd ℂ (w - 1) = 1 - starRingEnd ℂ w := by
+      simp only [map_sub, map_one]; ring
+    have hd_psi : DifferentiableAt ℂ riemannPsi (-starRingEnd ℂ (w - 1)) := by
+      rw [h1]; exact riemannPsi_holo _ (one_sub_conj_mem_openTriangleQ0 hw)
+    have hd_refl := differentiableAt_conj_comp_neg_conj hd_psi
+    have hd_comp : DifferentiableAt ℂ
+        (fun u => -(starRingEnd ℂ (riemannPsi (-starRingEnd ℂ (u - 1))))) w :=
+      (hd_refl.comp w (differentiableAt_id.sub (differentiableAt_const (1 : ℂ)))).neg
+    rwa [← hf_eq_comp] at hd_comp
+  have hf_maps : Set.MapsTo f OpenTriangleQ0 (Metric.ball (0 : ℂ) 1) := by
+    intro w hw
+    dsimp [f]
+    rw [Metric.mem_ball, dist_zero_right, norm_neg, Complex.norm_conj]
+    simpa [Metric.mem_ball] using riemannPsi_bij.mapsTo (one_sub_conj_mem_openTriangleQ0 hw)
+  have hz0_fix : -starRingEnd ℂ (z0Center - 1) = z0Center := by
+    apply Complex.ext <;> (simp [z0Center_re, z0Center_im]; try norm_num)
+  have hd_psi0 : HasDerivAt riemannPsi (deriv riemannPsi z0Center) (-starRingEnd ℂ (z0Center - 1)) := by
+    rw [hz0_fix]
+    exact (riemannPsi_holo z0Center z0Center_mem_openTriangleQ0).hasDerivAt
+  have hd_refl0 := hasDerivAt_conj_comp_neg_conj hd_psi0
+  have hd_sub0 : HasDerivAt (fun u : ℂ => u - 1) 1 z0Center := by
+    simpa using (hasDerivAt_id z0Center).sub_const (1 : ℂ)
+  have hd_f0 : HasDerivAt f (starRingEnd ℂ (deriv riemannPsi z0Center)) z0Center := by
+    have hd_neg : HasDerivAt (fun z => -starRingEnd ℂ (riemannPsi (-starRingEnd ℂ z)))
+        (starRingEnd ℂ (deriv riemannPsi z0Center)) (z0Center - 1) := by
+      simpa using hd_refl0.fun_neg
+    have hc : HasDerivAt ((fun z => -starRingEnd ℂ (riemannPsi (-starRingEnd ℂ z))) ∘
+        fun u : ℂ => u - 1) (starRingEnd ℂ (deriv riemannPsi z0Center) * 1) z0Center :=
+      hd_neg.comp z0Center hd_sub0
+    rw [mul_one] at hc
+    refine hc.congr_of_eventuallyEq (Filter.Eventually.of_forall fun w => ?_)
+    have h1 : -starRingEnd ℂ (w - 1) = 1 - starRingEnd ℂ w := by
+      simp only [map_sub, map_one]; ring
+    simp only [f, Function.comp, h1]
+  have hstar_deriv : starRingEnd ℂ (deriv riemannPsi z0Center) = deriv riemannPsi z0Center := by
+    apply Complex.ext
+    · simp
+    · simp [riemannPsi_spec.2.2.2.2.1]
+  have hd_f0' : HasDerivAt f (deriv riemannPsi z0Center) z0Center := by
+    rwa [hstar_deriv] at hd_f0
+  have hnorm_eq : ‖deriv f z0Center‖ = ‖deriv riemannPsi z0Center‖ := by
+    rw [hd_f0'.deriv]
+  obtain ⟨c, _, hc_eq⟩ := (riemannPsi_spec.2.2.2.2.2 f hf_holo hf_maps).2.mp hnorm_eq
+  have hev : f =ᶠ[𝓝 z0Center] fun w => c * riemannPsi w := by
+    filter_upwards [isOpen_openTriangleQ0.mem_nhds z0Center_mem_openTriangleQ0] with w hw
+    exact hc_eq w hw
+  have hd_rhs : HasDerivAt (fun w => c * riemannPsi w) (c * deriv riemannPsi z0Center) z0Center :=
+    (riemannPsi_holo z0Center z0Center_mem_openTriangleQ0).hasDerivAt.const_mul c
+  have hderiv_eq : deriv riemannPsi z0Center = c * deriv riemannPsi z0Center :=
+    calc deriv riemannPsi z0Center = deriv f z0Center := hd_f0'.deriv.symm
+      _ = deriv (fun w => c * riemannPsi w) z0Center := hev.deriv_eq
+      _ = c * deriv riemannPsi z0Center := hd_rhs.deriv
+  have hc1 : c = 1 := by
+    apply mul_right_cancel₀ riemannPsi_deriv_z0Center_ne_zero
+    rw [one_mul, ← hderiv_eq]
+  have hfz : f z = riemannPsi z := by rw [hc_eq z hz, hc1, one_mul]
+  have hcon := congrArg (fun w => -starRingEnd ℂ w) hfz
+  dsimp [f] at hcon
+  simpa using hcon
+
+private theorem cuspAlphaInf_eq_neg_conj :
+    cuspAlphaInf = -starRingEnd ℂ cuspAlphaInf := by
+  let γ : ℝ → ℂ := fun y => (1 / 2 : ℂ) + (y : ℂ) * Complex.I
+  have hγ_fix : ∀ y : ℝ, 1 - starRingEnd ℂ (γ y) = γ y := by
+    intro y
+    apply Complex.ext <;> (simp [γ]; try norm_num)
+  have hγ_tend : Tendsto (fun y : ℝ => riemannPsi (γ y)) Filter.atTop (𝓝 cuspAlphaInf) := by
+    rw [cuspAlphaInf_eq_cuspFnF_zero]
+    have hstrip : Tendsto (psiStrip ∘ γ) Filter.atTop (𝓝 (cuspFnF 0)) := by
+      refine tendsto_psiStrip_im_atTop.comp ?_
+      rw [Filter.tendsto_comap_iff]
+      have : Complex.im ∘ γ = id := by funext y; simp [γ]
+      rw [this]; exact tendsto_id
+    refine hstrip.congr' ?_
+    filter_upwards [Filter.Ioi_mem_atTop (1 : ℝ)] with y hy
+    exact psiStrip_eq_riemannPsi (half_add_im_mem_openTriangleQ0 hy.le)
+  have hγ_tend2 : Tendsto (fun y : ℝ => -starRingEnd ℂ (riemannPsi (γ y)))
+      Filter.atTop (𝓝 (-starRingEnd ℂ cuspAlphaInf)) :=
+    (Complex.continuous_conj.tendsto cuspAlphaInf).neg.comp hγ_tend
+  have hcongr : (fun y : ℝ => riemannPsi (γ y)) =ᶠ[Filter.atTop]
+      (fun y : ℝ => -starRingEnd ℂ (riemannPsi (γ y))) := by
+    filter_upwards [Filter.Ioi_mem_atTop (1 : ℝ)] with y hy
+    have hQ := half_add_im_mem_openTriangleQ0 hy.le
+    have hsym := riemannPsi_one_sub_conj hQ
+    rw [hγ_fix y] at hsym
+    exact hsym
+  exact tendsto_nhds_unique hγ_tend (hγ_tend2.congr' hcongr.symm)
+
+private theorem moebiusPhi_conj {u : ℂ} (hu : u ≠ 1) :
+    moebiusPhi (starRingEnd ℂ u) = 1 - starRingEnd ℂ (moebiusPhi u) := by
+  have hc1 : starRingEnd ℂ u - 1 ≠ 0 := by
+    intro h0
+    apply hu
+    have := congrArg (starRingEnd ℂ) (sub_eq_zero.mp h0)
+    simpa using this
+  have hstar_sq : starRingEnd ℂ (omegaCube ^ 2) = omegaCube := by
+    rw [map_pow, star_omegaCube, ← pow_mul, show 2 * 2 = 4 by rfl, omegaCube_pow_four]
+  have hsum : moebiusPhi (starRingEnd ℂ u) + starRingEnd ℂ (moebiusPhi u) = 1 := by
+    unfold moebiusPhi
+    simp only [map_div₀, map_mul, map_neg, map_sub, map_one, hstar_sq]
+    rw [← add_div, div_eq_one_iff_eq hc1]
+    have h1 := sum_omegaCube
+    have h4 := omegaCube_pow_four
+    linear_combination (-(starRingEnd ℂ u) + 1) * h1 + h4
+  linear_combination hsum
+
+private theorem modularLambda_sub_one {z : ℂ} (hz : z ∈ UpperHalfPlaneSet) :
+    modularLambda (z - 1) = 1 - modularLambda z := by
+  have hQ : ∀ w ∈ OpenTriangleQ0, modularLambda (w - 1) = 1 - modularLambda w := by
+    intro w hw
+    have hw_sub_R : w - 1 ∈ ReflectedQ0 := by
+      have hnorm_eq : ‖2 * (w - 1) + 1‖ = ‖2 * w - 1‖ := by
+        congr 1; ring
+      exact ⟨by simpa using hw.1, by simp; linarith [hw.2.1], by simp; linarith [hw.2.2.1],
+        hnorm_eq ▸ hw.2.2.2⟩
+    have hw_om : w ∈ OmegaL1 := openTriangleQ0_subset_omegaL1 hw
+    have hw1_om : w - 1 ∈ OmegaL1 := reflectedQ0_subset_omegaL1 hw_sub_R
+    rw [modularLambda_eq_lambdaOnQ (@existsUnique_gamma_fundamentalSetQ)
+          (omegaL1_subset_fundamentalSetQ hw1_om),
+        modularLambda_eq_lambdaOnQ (@existsUnique_gamma_fundamentalSetQ)
+          (omegaL1_subset_fundamentalSetQ hw_om),
+        lambdaOnQ_eq_lambdaRight hw1_om, lambdaOnQ_eq_lambdaRight hw_om,
+        lambdaRight_of_re_neg hw_sub_R.2.2.1]
+    have hneg_conj : -starRingEnd ℂ (w - 1) = 1 - starRingEnd ℂ w := by
+      simp only [map_sub, map_one]; ring
+    rw [hneg_conj, lambdaRight_of_re_pos (one_sub_conj_mem_openTriangleQ0 hw).2.1,
+        lambdaRight_of_re_pos hw.2.1, riemannPsi_one_sub_conj hw]
+    have hdiv_conj : -starRingEnd ℂ (riemannPsi w) / cuspAlphaInf =
+        starRingEnd ℂ (riemannPsi w / cuspAlphaInf) := by
+      rw [map_div₀]
+      conv_lhs => rw [cuspAlphaInf_eq_neg_conj]
+      rw [neg_div_neg_eq]
+    rw [hdiv_conj]
+    have hu_lt : ‖riemannPsi w / cuspAlphaInf‖ < 1 := by
+      rw [norm_div, norm_cuspAlphaInf, div_one]
+      simpa [Metric.mem_ball] using riemannPsi_bij.mapsTo hw
+    have hu1 : riemannPsi w / cuspAlphaInf ≠ 1 := fun h => by
+      rw [h, norm_one] at hu_lt; exact lt_irrefl 1 hu_lt
+    rw [moebiusPhi_conj hu1, map_sub, map_one, Complex.conj_conj]
+  have hdiff_lhs : DifferentiableOn ℂ (fun w => modularLambda (w - 1)) UpperHalfPlaneSet := by
+    have hholo := modularLambda_holomorphicOn (@existsUnique_gamma_fundamentalSetQ)
+    intro w hw
+    have hw1 : w - 1 ∈ UpperHalfPlaneSet := by simpa using hw
+    exact ((hholo _ hw1).comp w (differentiableAt_id.sub (differentiableAt_const 1))).differentiableWithinAt
+  have hdiff_rhs : DifferentiableOn ℂ (fun w => 1 - modularLambda w) UpperHalfPlaneSet := by
+    have hholo := modularLambda_holomorphicOn (@existsUnique_gamma_fundamentalSetQ)
+    intro w hw
+    exact ((differentiableAt_const (1 : ℂ)).sub (hholo w hw)).differentiableWithinAt
+  have hev : (fun w => modularLambda (w - 1)) =ᶠ[𝓝 z0Center] (fun w => 1 - modularLambda w) := by
+    filter_upwards [isOpen_openTriangleQ0.mem_nhds z0Center_mem_openTriangleQ0] with w hw
+    exact hQ w hw
+  exact (hdiff_lhs.analyticOnNhd isOpen_upperHalfPlaneSet).eqOn_of_preconnected_of_eventuallyEq
+    (hdiff_rhs.analyticOnNhd isOpen_upperHalfPlaneSet)
+    convex_upperHalfPlaneSet.isPreconnected
+    (openTriangleQ0_subset_upperHalfPlaneSet z0Center_mem_openTriangleQ0) hev hz
+
+private theorem modularLambda_add_one {z : ℂ} (hz : z ∈ UpperHalfPlaneSet) :
+    modularLambda (z + 1) = 1 - modularLambda z := by
+  have hz1 : z + 1 ∈ UpperHalfPlaneSet := by simpa using hz
+  have h := modularLambda_sub_one hz1
+  rw [add_sub_cancel_right] at h
+  linear_combination h
+
+private theorem modularLambda_ne_zero_one {z : ℂ} (hz : z ∈ UpperHalfPlaneSet) :
+    modularLambda z ≠ 0 ∧ modularLambda z ≠ 1 := by
+  have hmem : modularLambda z ∈ modularLambda '' UpperHalfPlaneSet := ⟨z, hz, rfl⟩
+  rw [modularLambda_image_upperHalfPlaneSet (@existsUnique_gamma_fundamentalSetQ)] at hmem
+  exact ⟨fun h0 => hmem.2 (Or.inl h0), fun h1 => hmem.2 (Or.inr h1)⟩
+
+private theorem modularLambda_moebiusM3 {z : ℂ} (hz : z ∈ UpperHalfPlaneSet) :
+    modularLambda (1 - 1 / z) = 1 - 1 / modularLambda z := by
+  have hQ : ∀ w ∈ OpenTriangleQ0, modularLambda (1 - 1 / w) = 1 - 1 / modularLambda w := by
+    intro w hw
+    have hmQ : moebiusM3 w ∈ OpenTriangleQ0 := moebiusM3_mapsTo_openTriangleQ0 hw
+    have hw_om : w ∈ OmegaL1 := openTriangleQ0_subset_omegaL1 hw
+    have hm_om : moebiusM3 w ∈ OmegaL1 := openTriangleQ0_subset_omegaL1 hmQ
+    change modularLambda (moebiusM3 w) = moebiusM3 (modularLambda w)
+    rw [modularLambda_eq_lambdaOnQ (@existsUnique_gamma_fundamentalSetQ)
+          (omegaL1_subset_fundamentalSetQ hm_om),
+        modularLambda_eq_lambdaOnQ (@existsUnique_gamma_fundamentalSetQ)
+          (omegaL1_subset_fundamentalSetQ hw_om),
+        lambdaOnQ_eq_lambdaRight hm_om, lambdaOnQ_eq_lambdaRight hw_om,
+        lambdaRight_moebiusM3 hw]
+  have hdiff_lhs : DifferentiableOn ℂ (fun w => modularLambda (1 - 1 / w)) UpperHalfPlaneSet := by
+    have hholo := modularLambda_holomorphicOn (@existsUnique_gamma_fundamentalSetQ)
+    intro w hw
+    have hw0 : w ≠ 0 := fun h => by rw [h, mem_upperHalfPlaneSet, Complex.zero_im] at hw; exact lt_irrefl 0 hw
+    have hm_up : 1 - 1 / w ∈ UpperHalfPlaneSet := by
+      have hm := moebiusM3_re_im w
+      change 0 < (moebiusM3 w).im
+      rw [hm.2]
+      exact div_pos hw (Complex.normSq_pos.mpr hw0)
+    have hd_m : DifferentiableAt ℂ (fun u : ℂ => 1 - 1 / u) w :=
+      (hasDerivAt_moebiusM3 hw0).differentiableAt
+    exact ((hholo _ hm_up).comp w hd_m).differentiableWithinAt
+  have hdiff_rhs : DifferentiableOn ℂ (fun w => 1 - 1 / modularLambda w) UpperHalfPlaneSet := by
+    have hholo := modularLambda_holomorphicOn (@existsUnique_gamma_fundamentalSetQ)
+    intro w hw
+    exact ((differentiableAt_const (1 : ℂ)).sub
+      ((differentiableAt_const (1 : ℂ)).div (hholo w hw)
+        (modularLambda_ne_zero_one hw).1)).differentiableWithinAt
+  have hev : (fun w => modularLambda (1 - 1 / w)) =ᶠ[𝓝 z0Center]
+      (fun w => 1 - 1 / modularLambda w) := by
+    filter_upwards [isOpen_openTriangleQ0.mem_nhds z0Center_mem_openTriangleQ0] with w hw
+    exact hQ w hw
+  exact (hdiff_lhs.analyticOnNhd isOpen_upperHalfPlaneSet).eqOn_of_preconnected_of_eventuallyEq
+    (hdiff_rhs.analyticOnNhd isOpen_upperHalfPlaneSet)
+    convex_upperHalfPlaneSet.isPreconnected
+    (openTriangleQ0_subset_upperHalfPlaneSet z0Center_mem_openTriangleQ0) hev hz
+
+private theorem modularLambda_neg_inv {z : ℂ} (hz : z ∈ UpperHalfPlaneSet) :
+    modularLambda (-1 / z) = 1 / modularLambda z := by
+  have hS_up : -1 / z ∈ UpperHalfPlaneSet := by
+    have := (modularS.1 ⟨z, hz⟩).2
+    rwa [modularS_apply] at this
+  have h1 := modularLambda_add_one hS_up
+  have harg : -1 / z + 1 = 1 - 1 / z := by ring
+  rw [harg, modularLambda_moebiusM3 hz] at h1
+  linear_combination h1
+
+private inductive S3Mobius
+  | id
+  | sub1
+  | inv
+  | oneSubInv
+  | invOneSub
+  | divSub
+
+private def S3Mobius.eval : S3Mobius → ℂ → ℂ
+  | .id, w => w
+  | .sub1, w => 1 - w
+  | .inv, w => 1 / w
+  | .oneSubInv, w => 1 - 1 / w
+  | .invOneSub, w => 1 / (1 - w)
+  | .divSub, w => w / (w - 1)
+
+private def S3Mobius.compT : S3Mobius → S3Mobius
+  | .id => .sub1
+  | .sub1 => .id
+  | .inv => .oneSubInv
+  | .oneSubInv => .inv
+  | .invOneSub => .divSub
+  | .divSub => .invOneSub
+
+private def S3Mobius.compS : S3Mobius → S3Mobius
+  | .id => .inv
+  | .sub1 => .invOneSub
+  | .inv => .id
+  | .oneSubInv => .divSub
+  | .invOneSub => .sub1
+  | .divSub => .oneSubInv
+
+private def S3Mobius.comp : S3Mobius → S3Mobius → S3Mobius
+  | .id, τ => τ
+  | .sub1, τ => τ.compT
+  | .inv, τ => τ.compS
+  | .oneSubInv, τ => (τ.compS).compT
+  | .invOneSub, τ => (τ.compT).compS
+  | .divSub, τ => ((τ.compS).compT).compS
+
+private def S3Mobius.invElem : S3Mobius → S3Mobius
+  | .id => .id
+  | .sub1 => .sub1
+  | .inv => .inv
+  | .oneSubInv => .invOneSub
+  | .invOneSub => .oneSubInv
+  | .divSub => .divSub
+
+private theorem S3Mobius.eval_compT (σ : S3Mobius) {w : ℂ} (hw0 : w ≠ 0) (hw1 : w ≠ 1) :
+    (σ.compT).eval w = 1 - σ.eval w := by
+  have h1w : 1 - w ≠ 0 := sub_ne_zero.mpr hw1.symm
+  have hw1' : w - 1 ≠ 0 := sub_ne_zero.mpr hw1
+  cases σ <;> simp only [compT, eval] <;> field_simp [hw0, h1w, hw1'] <;> ring
+
+private theorem S3Mobius.eval_compS (σ : S3Mobius) {w : ℂ} (hw0 : w ≠ 0) (hw1 : w ≠ 1) :
+    (σ.compS).eval w = 1 / σ.eval w := by
+  have h1w : 1 - w ≠ 0 := sub_ne_zero.mpr hw1.symm
+  have hw1' : w - 1 ≠ 0 := sub_ne_zero.mpr hw1
+  cases σ <;> simp only [compS, eval] <;> (field_simp [hw0, h1w, hw1']; try ring)
+
+private theorem S3Mobius.eval_ne_zero_one (σ : S3Mobius) {w : ℂ} (hw0 : w ≠ 0) (hw1 : w ≠ 1) :
+    σ.eval w ≠ 0 ∧ σ.eval w ≠ 1 := by
+  have h1w : 1 - w ≠ 0 := sub_ne_zero.mpr hw1.symm
+  have hw1' : w - 1 ≠ 0 := sub_ne_zero.mpr hw1
+  cases σ <;> simp only [eval]
+  · exact ⟨hw0, hw1⟩
+  · exact ⟨h1w, fun h => hw0 (by linear_combination -h)⟩
+  · exact ⟨one_div_ne_zero hw0, fun h => hw1 ((div_eq_one_iff_eq hw0).mp h).symm⟩
+  · exact ⟨moebiusM3_ne_zero hw0 hw1, moebiusM3_ne_one hw0⟩
+  · exact ⟨one_div_ne_zero h1w, fun h => hw0 (by
+      have h' := (div_eq_one_iff_eq h1w).mp h; linear_combination h')⟩
+  · exact ⟨div_ne_zero hw0 hw1', fun h => by
+      have h' := (div_eq_one_iff_eq hw1').mp h
+      have h01 : (0 : ℂ) = -1 := by linear_combination h'
+      norm_num at h01⟩
+
+private theorem S3Mobius.eval_comp (σ₁ σ₂ : S3Mobius) {w : ℂ} (hw0 : w ≠ 0) (hw1 : w ≠ 1) :
+    (σ₁.comp σ₂).eval w = σ₁.eval (σ₂.eval w) := by
+  obtain ⟨h20, h21⟩ := σ₂.eval_ne_zero_one hw0 hw1
+  have h21' : σ₂.eval w - 1 ≠ 0 := sub_ne_zero.mpr h21
+  cases σ₁
+  · rfl
+  · change σ₂.compT.eval w = 1 - σ₂.eval w
+    exact σ₂.eval_compT hw0 hw1
+  · change σ₂.compS.eval w = 1 / σ₂.eval w
+    exact σ₂.eval_compS hw0 hw1
+  · change σ₂.compS.compT.eval w = 1 - 1 / σ₂.eval w
+    rw [S3Mobius.eval_compT _ hw0 hw1, σ₂.eval_compS hw0 hw1]
+  · change σ₂.compT.compS.eval w = 1 / (1 - σ₂.eval w)
+    rw [S3Mobius.eval_compS _ hw0 hw1, σ₂.eval_compT hw0 hw1]
+  · change σ₂.compS.compT.compS.eval w = σ₂.eval w / (σ₂.eval w - 1)
+    rw [S3Mobius.eval_compS _ hw0 hw1, S3Mobius.eval_compT _ hw0 hw1, σ₂.eval_compS hw0 hw1]
+    field_simp [h20, h21']
+
+private theorem S3Mobius.eval_invElem (σ : S3Mobius) {w : ℂ} (hw0 : w ≠ 0) (hw1 : w ≠ 1) :
+    σ.invElem.eval (σ.eval w) = w := by
+  have h1w : 1 - w ≠ 0 := sub_ne_zero.mpr hw1.symm
+  have hw1' : w - 1 ≠ 0 := sub_ne_zero.mpr hw1
+  cases σ <;> simp only [invElem, eval] <;> field_simp [hw0, h1w, hw1'] <;> ring
+
+private theorem modularLambda_modularMoebiusGroup (M : ModularMoebiusGroup) :
+    ∃ σ : S3Mobius, ∀ z : UpperHalfPlaneSet,
+      modularLambda (M.1 z).1 = σ.eval (modularLambda z.1) := by
+  have hmem : M ∈ Subgroup.closure ({modularS, modularT} : Set ModularMoebiusGroup) := by
+    rw [modularMoebiusGroup_closure_S_T]
+    exact Subgroup.mem_top M
+  refine Subgroup.closure_induction (p := fun g _ =>
+      ∃ σ : S3Mobius, ∀ z : UpperHalfPlaneSet,
+        modularLambda (g.1 z).1 = σ.eval (modularLambda z.1))
+    ?_ ?_ ?_ ?_ hmem
+  · intro x hx
+    rcases hx with rfl | rfl
+    · refine ⟨.inv, fun z => ?_⟩
+      rw [modularS_apply]
+      exact modularLambda_neg_inv z.2
+    · refine ⟨.sub1, fun z => ?_⟩
+      rw [modularT_apply]
+      exact modularLambda_add_one z.2
+  · exact ⟨.id, fun _ => rfl⟩
+  · rintro x y _ _ ⟨σx, hx⟩ ⟨σy, hy⟩
+    refine ⟨σx.comp σy, fun z => ?_⟩
+    rw [ModularMoebiusGroup.mul_apply, hx (y.1 z), hy z]
+    obtain ⟨h0, h1⟩ := modularLambda_ne_zero_one z.2
+    exact (σx.eval_comp σy h0 h1).symm
+  · rintro x _ ⟨σx, hx⟩
+    refine ⟨σx.invElem, fun z => ?_⟩
+    have h1 := hx (x⁻¹.1 z)
+    have hcancel : (x.1 (x⁻¹.1 z)).1 = z.1 := by
+      change ((x * x⁻¹).1 z).1 = z.1
+      rw [mul_inv_cancel]; rfl
+    rw [hcancel] at h1
+    obtain ⟨h0, h1'⟩ := modularLambda_ne_zero_one (x⁻¹.1 z).2
+    rw [h1, σx.eval_invElem h0 h1']
+
+private theorem S3Mobius.tendsto_atTop_or_nhds (σ : S3Mobius) :
+    Tendsto (fun w : ℂ => ‖σ.eval w‖) (Filter.comap norm Filter.atTop) Filter.atTop ∨
+    ∃ L : ℂ, Tendsto σ.eval (Filter.comap norm Filter.atTop) (𝓝 L) := by
+  have hnorm_top : Tendsto (fun w : ℂ => ‖w‖) (Filter.comap norm Filter.atTop) Filter.atTop :=
+    tendsto_comap
+  have hinv_zero : Tendsto (fun w : ℂ => 1 / w) (Filter.comap norm Filter.atTop) (𝓝 0) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    have h1 : (fun w : ℂ => ‖1 / w‖) = (fun r : ℝ => r⁻¹) ∘ norm := by
+      funext w; simp [one_div]
+    rw [h1]
+    exact tendsto_inv_atTop_zero.comp hnorm_top
+  cases σ
+  · left; exact hnorm_top
+  · left
+    rw [Filter.tendsto_atTop]
+    intro M
+    filter_upwards [Filter.tendsto_atTop.mp hnorm_top (M + 1)] with w hw
+    have htri : ‖w‖ ≤ ‖(1 : ℂ) - w‖ + ‖(1 : ℂ)‖ := by
+      calc ‖w‖ = ‖(1 : ℂ) - ((1 : ℂ) - w)‖ := by ring_nf
+        _ ≤ ‖(1 : ℂ)‖ + ‖(1 : ℂ) - w‖ := norm_sub_le _ _
+        _ = ‖(1 : ℂ) - w‖ + ‖(1 : ℂ)‖ := add_comm _ _
+    simp only [S3Mobius.eval, norm_one] at htri ⊢
+    linarith
+  · right; exact ⟨0, hinv_zero⟩
+  · right
+    refine ⟨1, ?_⟩
+    have hsub : Tendsto (fun w : ℂ => (1 : ℂ) - 1 / w)
+        (Filter.comap norm Filter.atTop) (𝓝 ((1 : ℂ) - 0)) :=
+      tendsto_const_nhds.sub hinv_zero
+    rw [sub_zero] at hsub
+    exact hsub
+  · right
+    refine ⟨0, ?_⟩
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    have hsub_top : Tendsto (fun w : ℂ => ‖(1 : ℂ) - w‖)
+        (Filter.comap norm Filter.atTop) Filter.atTop := by
+      rw [Filter.tendsto_atTop]
+      intro M
+      filter_upwards [Filter.tendsto_atTop.mp hnorm_top (M + 1)] with w hw
+      have htri : ‖w‖ ≤ ‖(1 : ℂ) - w‖ + 1 := by
+        calc ‖w‖ = ‖(1 : ℂ) - ((1 : ℂ) - w)‖ := by ring_nf
+          _ ≤ ‖(1 : ℂ)‖ + ‖(1 : ℂ) - w‖ := norm_sub_le _ _
+          _ = ‖(1 : ℂ) - w‖ + 1 := by rw [norm_one, add_comm]
+      linarith
+    have h1 : (fun w : ℂ => ‖S3Mobius.invOneSub.eval w‖) =
+        (fun r : ℝ => r⁻¹) ∘ (fun w : ℂ => ‖(1 : ℂ) - w‖) := by
+      funext w; simp [S3Mobius.eval, one_div]
+    rw [h1]
+    exact tendsto_inv_atTop_zero.comp hsub_top
+  · right
+    refine ⟨1, ?_⟩
+    have hden : Tendsto (fun w : ℂ => (1 : ℂ) - 1 / w) (Filter.comap norm Filter.atTop) (𝓝 1) := by
+      have hsub : Tendsto (fun w : ℂ => (1 : ℂ) - 1 / w)
+          (Filter.comap norm Filter.atTop) (𝓝 ((1 : ℂ) - 0)) :=
+        tendsto_const_nhds.sub hinv_zero
+      simpa using hsub
+    have hquot : Tendsto (fun w : ℂ => (1 : ℂ) / (1 - 1 / w))
+        (Filter.comap norm Filter.atTop) (𝓝 1) := by
+      have hdiv : Tendsto (fun w : ℂ => (1 : ℂ) / (1 - 1 / w))
+          (Filter.comap norm Filter.atTop) (𝓝 ((1 : ℂ) / 1)) :=
+        tendsto_const_nhds.div hden one_ne_zero
+      simpa using hdiv
+    refine hquot.congr' ?_
+    filter_upwards [Filter.tendsto_atTop.mp hnorm_top (2 : ℝ)] with w hw
+    have hw0 : w ≠ 0 := by intro h0; rw [h0, norm_zero] at hw; linarith
+    have hw1 : w - 1 ≠ 0 := by
+      intro h0
+      have hweq : w = 1 := sub_eq_zero.mp h0
+      rw [hweq, norm_one] at hw
+      linarith
+    simp only [S3Mobius.eval]
+    field_simp [hw0, hw1]
+
+private theorem modularLambda_intMoebius_im_atTop
+    {a b c d : ℤ} (hdet : a * d - b * c = 1) :
+    Tendsto (fun z : ℂ => ‖modularLambda (intMoebius a b c d z)‖)
+      (Filter.comap Complex.im Filter.atTop) Filter.atTop ∨
+    ∃ L : ℂ, Tendsto (fun z : ℂ => modularLambda (intMoebius a b c d z))
+      (Filter.comap Complex.im Filter.atTop) (𝓝 L) := by
+  let M : ModularMoebiusGroup := ⟨intMoebiusPerm a b c d hdet, a, b, c, d, hdet, rfl⟩
+  obtain ⟨σ, hσ⟩ := modularLambda_modularMoebiusGroup M
+  have hlam_top : Tendsto modularLambda (Filter.comap Complex.im Filter.atTop)
+      (Filter.comap norm Filter.atTop) := by
+    rw [Filter.tendsto_comap_iff]
+    exact tendsto_norm_modularLambda_im_atTop
+  have hev_up : ∀ᶠ z : ℂ in Filter.comap Complex.im Filter.atTop, z ∈ UpperHalfPlaneSet :=
+    ⟨Set.Ioi 0, Filter.Ioi_mem_atTop 0, Subset.rfl⟩
+  have hcongr : (fun z : ℂ => modularLambda (intMoebius a b c d z)) =ᶠ[Filter.comap Complex.im Filter.atTop]
+      (fun z : ℂ => σ.eval (modularLambda z)) := by
+    filter_upwards [hev_up] with z hz
+    exact hσ ⟨z, hz⟩
+  rcases σ.tendsto_atTop_or_nhds with htop | ⟨L, hL⟩
+  · left
+    exact (htop.comp hlam_top).congr' (hcongr.symm.mono fun z hz => congrArg norm hz)
+  · right
+    exact ⟨L, (hL.comp hlam_top).congr' hcongr.symm⟩
+
+/-! ### Part 2: Global `modularLambda`-Lift on `UpperHalfPlaneSet` via Monodromy (`16.15`) -/
+
+private theorem exists_lift_ball_at_point_uhp
+    {F : ℂ → ℂ} (hF : DifferentiableOn ℂ F UpperHalfPlaneSet)
+    (homit : ∀ z ∈ UpperHalfPlaneSet, F z ≠ 0 ∧ F z ≠ 1)
+    {c : ℂ} (hc : c ∈ UpperHalfPlaneSet) :
+    ∃ δ > 0, Metric.ball c δ ⊆ UpperHalfPlaneSet ∧
+      ∀ p ∈ Metric.ball c δ, ∀ z_p ∈ UpperHalfPlaneSet,
+        modularLambda z_p = F p →
+          ∃ g : ℂ → ℂ,
+            DifferentiableOn ℂ g (Metric.ball c δ) ∧
+            (∀ z ∈ Metric.ball c δ, g z ∈ UpperHalfPlaneSet ∧ modularLambda (g z) = F z) ∧
+            g p = z_p := by
+  obtain ⟨r₀, g₀, hr₀_pos, hg₀_diff, hg₀_prop⟩ :=
+    exists_local_right_inverse_modularLambda (@existsUnique_gamma_fundamentalSetQ) (homit c hc).1 (homit c hc).2
+  obtain ⟨δ₁, hδ₁_pos, hδ₁_sub⟩ := Metric.isOpen_iff.mp isOpen_upperHalfPlaneSet c hc
+  have hF_cont : ContinuousAt F c :=
+    (hF.differentiableAt (isOpen_upperHalfPlaneSet.mem_nhds hc)).continuousAt
+  obtain ⟨δ₂, hδ₂_pos, hδ₂_maps⟩ := Metric.continuousAt_iff.mp hF_cont r₀ hr₀_pos
+  let δ : ℝ := min δ₁ δ₂
+  have hδ_pos : 0 < δ := lt_min hδ₁_pos hδ₂_pos
+  have hδ_sub : Metric.ball c δ ⊆ UpperHalfPlaneSet :=
+    (Metric.ball_subset_ball (min_le_left _ _)).trans hδ₁_sub
+  refine ⟨δ, hδ_pos, hδ_sub, fun p hp z_p hz_p hzp_lam => ?_⟩
+  let ψ₀ : ℂ → ℂ := fun z => g₀ (F z)
+  have hmaps_F : Set.MapsTo F (Metric.ball c δ) (Metric.ball (F c) r₀) :=
+    fun z hz => hδ₂_maps (Metric.ball_subset_ball (min_le_right _ _) hz)
+  have hψ₀_diff : DifferentiableOn ℂ ψ₀ (Metric.ball c δ) :=
+    hg₀_diff.comp (hF.mono hδ_sub) hmaps_F
+  have hψ₀_up : ∀ z ∈ Metric.ball c δ, ψ₀ z ∈ UpperHalfPlaneSet :=
+    fun z hz => (hg₀_prop (F z) (hmaps_F hz)).1
+  have hψ₀_lam : ∀ z ∈ Metric.ball c δ, modularLambda (ψ₀ z) = F z :=
+    fun z hz => (hg₀_prop (F z) (hmaps_F hz)).2
+  have hlam_eq : modularLambda z_p = modularLambda (ψ₀ p) :=
+    hzp_lam.trans (hψ₀_lam p hp).symm
+  obtain ⟨γ, hγ_eq⟩ :=
+    (modularLambda_eq_iff_gamma_orbit (@existsUnique_gamma_fundamentalSetQ) hz_p (hψ₀_up p hp)).mp
+      hlam_eq
+  obtain ⟨a, b, c', d, hdet, hγ_perm⟩ := γ.1.2
+  let g : ℂ → ℂ := fun z => intMoebius a b c' d (ψ₀ z)
+  have hg_diff : DifferentiableOn ℂ g (Metric.ball c δ) :=
+    (intMoebius_differentiableOn hdet).comp hψ₀_diff hψ₀_up
+  have hg_apply_perm : ∀ (z : ℂ) (hz : z ∈ Metric.ball c δ),
+      g z = (γ.1.1 ⟨ψ₀ z, hψ₀_up z hz⟩).1 := by
+    intro z hz
+    change intMoebius a b c' d (ψ₀ z) = (γ.1.1 ⟨ψ₀ z, hψ₀_up z hz⟩).1
+    rw [hγ_perm, intMoebiusPerm_apply]
+  refine ⟨g, hg_diff, ?_, ?_⟩
+  · intro z hz
+    rw [hg_apply_perm z hz]
+    exact ⟨(γ.1.1 ⟨ψ₀ z, hψ₀_up z hz⟩).2,
+      (modularLambda_gamma_invariant (@existsUnique_gamma_fundamentalSetQ) γ
+        ⟨ψ₀ z, hψ₀_up z hz⟩).trans (hψ₀_lam z hz)⟩
+  · rw [hg_apply_perm p hp]
+    exact hγ_eq
+
+private theorem exists_uniform_lift_radius_along_curve_uhp
+    {F : ℂ → ℂ} (hF : DifferentiableOn ℂ F UpperHalfPlaneSet)
+    (homit : ∀ z ∈ UpperHalfPlaneSet, F z ≠ 0 ∧ F z ≠ 1)
+    {γ : ℝ → ℂ} (hγ : ContinuousOn γ (Set.Icc 0 1))
+    (hγ_sub : γ '' Set.Icc 0 1 ⊆ UpperHalfPlaneSet) :
+    ∃ ρ > 0, ∀ t ∈ Set.Icc (0 : ℝ) 1,
+      Metric.ball (γ t) ρ ⊆ UpperHalfPlaneSet ∧
+      ∀ p ∈ Metric.ball (γ t) ρ,
+        ∀ z_p ∈ UpperHalfPlaneSet, modularLambda z_p = F p →
+          ∃ g : ℂ → ℂ,
+            DifferentiableOn ℂ g (Metric.ball (γ t) ρ) ∧
+            (∀ z ∈ Metric.ball (γ t) ρ, g z ∈ UpperHalfPlaneSet ∧ modularLambda (g z) = F z) ∧
+            g p = z_p := by
+  let K : Set ℂ := γ '' Set.Icc 0 1
+  have hK_comp : IsCompact K := isCompact_Icc.image_of_continuousOn hγ
+  have hpt : ∀ x : K, ∃ δ > 0, Metric.ball x.1 δ ⊆ UpperHalfPlaneSet ∧
+      ∀ p ∈ Metric.ball x.1 δ, ∀ z_p ∈ UpperHalfPlaneSet,
+        modularLambda z_p = F p →
+          ∃ g : ℂ → ℂ,
+            DifferentiableOn ℂ g (Metric.ball x.1 δ) ∧
+            (∀ z ∈ Metric.ball x.1 δ, g z ∈ UpperHalfPlaneSet ∧ modularLambda (g z) = F z) ∧
+            g p = z_p :=
+    fun x => exists_lift_ball_at_point_uhp hF homit (hγ_sub x.2)
+  choose r_x hr_pos hr_sub hr_lift using hpt
+  obtain ⟨Ffin, hF_cov⟩ := hK_comp.elim_finite_subcover
+    (fun x : K => Metric.ball x.1 (r_x x / 2))
+    (fun _ => isOpen_ball)
+    (fun w hw => Set.mem_iUnion.mpr ⟨⟨w, hw⟩, Metric.mem_ball_self (half_pos (hr_pos ⟨w, hw⟩))⟩)
+  have h0_mem : γ 0 ∈ K := ⟨0, ⟨le_rfl, zero_le_one⟩, rfl⟩
+  have hF_ne : Ffin.Nonempty := by
+    obtain ⟨x, hxF, _⟩ := Set.mem_iUnion₂.mp (hF_cov h0_mem)
+    exact ⟨x, hxF⟩
+  let ρ : ℝ := Ffin.inf' hF_ne (fun x => r_x x / 2)
+  have hρ_pos : 0 < ρ :=
+    (Finset.lt_inf'_iff hF_ne).mpr (fun x _ => half_pos (hr_pos x))
+  refine ⟨ρ, hρ_pos, fun t ht => ?_⟩
+  obtain ⟨x, hxF, hγt_x⟩ := Set.mem_iUnion₂.mp (hF_cov ⟨t, ht, rfl⟩)
+  have hρ_le : ρ ≤ r_x x / 2 := Finset.inf'_le (fun u => r_x u / 2) hxF
+  have hball_sub : Metric.ball (γ t) ρ ⊆ Metric.ball x.1 (r_x x) := by
+    intro w hw
+    rw [Metric.mem_ball] at hw hγt_x ⊢
+    calc dist w x.1 ≤ dist w (γ t) + dist (γ t) x.1 := dist_triangle w (γ t) x.1
+      _ < ρ + r_x x / 2 := add_lt_add hw hγt_x
+      _ ≤ r_x x / 2 + r_x x / 2 := by linarith
+      _ = r_x x := add_halves (r_x x)
+  refine ⟨hball_sub.trans (hr_sub x), fun p hp z_p hz_p hzp_lam => ?_⟩
+  obtain ⟨g, hg_diff, hg_prop, hgp⟩ := hr_lift x p (hball_sub hp) z_p hz_p hzp_lam
+  exact ⟨g, hg_diff.mono hball_sub, fun z hz => hg_prop z (hball_sub hz), hgp⟩
+
+private theorem exists_lift_continuation_along_curve_uhp
+    {F : ℂ → ℂ} (hF : DifferentiableOn ℂ F UpperHalfPlaneSet)
+    (homit : ∀ z ∈ UpperHalfPlaneSet, F z ≠ 0 ∧ F z ≠ 1)
+    {φ₀ : FunctionElement}
+    (hφ₀_lift : ∀ z ∈ φ₀.disc, φ₀.fn z ∈ UpperHalfPlaneSet ∧ modularLambda (φ₀.fn z) = F z)
+    {γ : ℝ → ℂ} (hγ : ContinuousOn γ (Set.Icc 0 1)) (hγ0 : γ 0 = φ₀.center)
+    (hγ_sub : γ '' Set.Icc 0 1 ⊆ UpperHalfPlaneSet) :
+    ∃ φ₁ : FunctionElement,
+      ContinuedAlongCurve φ₀ γ φ₁ ∧
+      φ₁.center = γ 1 ∧
+      φ₁.fn (γ 1) ∈ UpperHalfPlaneSet ∧
+      modularLambda (φ₁.fn (γ 1)) = F (γ 1) := by
+  obtain ⟨ρ, hρ_pos, hρ_lift⟩ :=
+    exists_uniform_lift_radius_along_curve_uhp hF homit hγ hγ_sub
+  let ρ₁ : ℝ := min φ₀.radius ρ
+  have hρ₁_pos : 0 < ρ₁ := lt_min φ₀.radius_pos hρ_pos
+  have hρ₁_le_ρ : ρ₁ ≤ ρ := min_le_right _ _
+  have hρ₁_lift : ∀ t ∈ Set.Icc (0 : ℝ) 1, ∀ p ∈ Metric.ball (γ t) ρ₁,
+      ∀ z_p ∈ UpperHalfPlaneSet, modularLambda z_p = F p →
+        ∃ g : ℂ → ℂ,
+          DifferentiableOn ℂ g (Metric.ball (γ t) ρ₁) ∧
+          (∀ z ∈ Metric.ball (γ t) ρ₁, g z ∈ UpperHalfPlaneSet ∧ modularLambda (g z) = F z) ∧
+          g p = z_p := by
+    intro t ht p hp z_p hz_p hzp_lam
+    have hsub : Metric.ball (γ t) ρ₁ ⊆ Metric.ball (γ t) ρ := Metric.ball_subset_ball hρ₁_le_ρ
+    obtain ⟨g, hg_diff, hg_prop, hgp⟩ := (hρ_lift t ht).2 p (hsub hp) z_p hz_p hzp_lam
+    exact ⟨g, hg_diff.mono hsub, fun z hz => hg_prop z (hsub hz), hgp⟩
+  have hunif : UniformContinuousOn γ (Set.Icc 0 1) :=
+    isCompact_Icc.uniformContinuousOn_of_continuous hγ
+  obtain ⟨δ, hδ_pos, hδ⟩ := Metric.uniformContinuousOn_iff.mp hunif ρ₁ hρ₁_pos
+  obtain ⟨K_nat, hK_nat⟩ := exists_nat_gt (1 / δ)
+  let M : ℕ := K_nat + 1
+  have hM_pos : 0 < (M : ℝ) := by exact_mod_cast Nat.succ_pos K_nat
+  have hinv_M_lt : (1 : ℝ) / (M : ℝ) < δ := by
+    have hgt : 1 / δ < (M : ℝ) := by
+      calc 1 / δ < (K_nat : ℝ) := hK_nat
+        _ ≤ (K_nat : ℝ) + 1 := by linarith
+        _ = (M : ℝ) := by push_cast [M]; ring
+    rw [div_lt_iff₀ hM_pos]
+    have h1 := (div_lt_iff₀ hδ_pos).mp hgt
+    linarith
+  let tau : ℕ → ℝ := fun k => min ((k : ℝ) / (M : ℝ)) 1
+  have htau_mem : ∀ k : ℕ, tau k ∈ Set.Icc (0 : ℝ) 1 := fun k =>
+    ⟨le_min (div_nonneg (Nat.cast_nonneg k) hM_pos.le) zero_le_one, min_le_right _ _⟩
+  have htau_0 : tau 0 = 0 := by
+    dsimp [tau]; rw [Nat.cast_zero, zero_div, min_eq_left zero_le_one]
+  have htau_M : tau M = 1 := by
+    dsimp [tau]; rw [div_self hM_pos.ne', min_self]
+  have htau_mono : Monotone tau := by
+    intro k₁ k₂ hk
+    apply min_le_min_right
+    exact div_le_div_of_nonneg_right (Nat.cast_le.mpr hk) hM_pos.le
+  have htau_step : ∀ k : ℕ, tau (k + 1) - tau k ≤ 1 / (M : ℝ) := by
+    intro k
+    dsimp [tau]
+    have h1 : min (((k + 1 : ℕ) : ℝ) / (M : ℝ)) 1 ≤ ((k : ℝ) / (M : ℝ)) + 1 / (M : ℝ) := by
+      refine (min_le_left _ _).trans ?_
+      push_cast; ring_nf; exact le_rfl
+    rcases le_total ((k : ℝ) / (M : ℝ)) 1 with hle1 | hge1
+    · rw [min_eq_left hle1]; linarith
+    · rw [min_eq_right hge1]
+      have hle_one : min (((k + 1 : ℕ) : ℝ) / (M : ℝ)) 1 ≤ 1 := min_le_right _ _
+      have hpos_inv : 0 ≤ 1 / (M : ℝ) := by positivity
+      linarith
+  let ElemInv (k : ℕ) :=
+    { φ : FunctionElement //
+      φ.center = γ (tau k) ∧
+      (∀ z ∈ φ.disc, φ.fn z ∈ UpperHalfPlaneSet ∧ modularLambda (φ.fn z) = F z) ∧
+      (0 < k → φ.radius = ρ₁) }
+  let seq : ∀ k : ℕ, ElemInv k :=
+    Nat.rec
+      ⟨φ₀, by rw [htau_0]; exact hγ0.symm, hφ₀_lift, fun h => (lt_irrefl 0 h).elim⟩
+      (fun k prev =>
+        let pk : ℂ := γ (tau k)
+        let ck1 : ℂ := γ (tau (k + 1))
+        have hpk_in : pk ∈ Metric.ball ck1 ρ₁ := by
+          rw [Metric.mem_ball]
+          apply hδ (tau k) (htau_mem k) (tau (k + 1)) (htau_mem (k + 1))
+          rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr (htau_mono (Nat.le_succ k))), neg_sub]
+          exact (htau_step k).trans_lt hinv_M_lt
+        have hpk_prev : pk ∈ prev.1.disc := by
+          rw [FunctionElement.disc, prev.2.1]
+          exact Metric.mem_ball_self prev.1.radius_pos
+        have hprev_pk := prev.2.2.1 pk hpk_prev
+        let g_ex := hρ₁_lift (tau (k + 1)) (htau_mem (k + 1)) pk hpk_in
+          (prev.1.fn pk) hprev_pk.1 hprev_pk.2
+        let g := Classical.choose g_ex
+        have hg := Classical.choose_spec g_ex
+        ⟨{ center := ck1
+           radius := ρ₁
+           radius_pos := hρ₁_pos
+           fn := g
+           holo := hg.1 },
+         rfl, hg.2.1, fun _ => rfl⟩)
+  have hseq_dc : ∀ k : ℕ, DirectContinuation (seq k).1 (seq (k + 1)).1 := by
+    intro k
+    let pk : ℂ := γ (tau k)
+    let ck1 : ℂ := γ (tau (k + 1))
+    have hpk_in : pk ∈ Metric.ball ck1 ρ₁ := by
+      rw [Metric.mem_ball]
+      apply hδ (tau k) (htau_mem k) (tau (k + 1)) (htau_mem (k + 1))
+      rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr (htau_mono (Nat.le_succ k))), neg_sub]
+      exact (htau_step k).trans_lt hinv_M_lt
+    have hpk_prev : pk ∈ (seq k).1.disc := by
+      rw [FunctionElement.disc, (seq k).2.1]
+      exact Metric.mem_ball_self (seq k).1.radius_pos
+    have hpk_next : pk ∈ (seq (k + 1)).1.disc := hpk_in
+    have hprev_pk := (seq k).2.2.1 pk hpk_prev
+    have hval_eq : (seq (k + 1)).1.fn pk = (seq k).1.fn pk :=
+      (Classical.choose_spec
+        (hρ₁_lift (tau (k + 1)) (htau_mem (k + 1)) pk hpk_in
+          ((seq k).1.fn pk) hprev_pk.1 hprev_pk.2)).2.2
+    refine ⟨⟨pk, hpk_prev, hpk_next⟩, ?_⟩
+    exact eqOn_lifts_of_modularLambda (@existsUnique_gamma_fundamentalSetQ)
+      ((seq k).1.isOpen_disc.inter (seq (k + 1)).1.isOpen_disc)
+      ((seq k).1.convex_disc.inter (seq (k + 1)).1.convex_disc).isPreconnected
+      ((seq k).1.holo.mono Set.inter_subset_left)
+      ((seq (k + 1)).1.holo.mono Set.inter_subset_right)
+      (fun z hz => ((seq k).2.2.1 z hz.1).1)
+      (fun z hz => (((seq k).2.2.1 z hz.1).2).trans (((seq (k + 1)).2.2.1 z hz.2).2).symm)
+      ⟨hpk_prev, hpk_next⟩
+      hval_eq.symm
+  let Φ : Fin (M + 1) → FunctionElement := fun i => (seq i.val).1
+  let s : Fin (M + 2) → ℝ := fun k => if k.val = 0 then 0 else tau (k.val - 1)
+  have hs0 : s 0 = 0 := rfl
+  have hsn : s (Fin.last (M + 1)) = 1 := by dsimp [s]; exact htau_M
+  have hs_mono : Monotone s := by
+    intro i₁ i₂ hi
+    have hval : i₁.val ≤ i₂.val := hi
+    dsimp [s]
+    split_ifs with h1 h2 h2
+    · exact le_rfl
+    · exact (htau_mem _).1
+    · omega
+    · exact htau_mono (by omega)
+  have hcenter_end : (Φ (Fin.last M)).center = γ 1 :=
+    (seq M).2.1.trans (congrArg γ htau_M)
+  have hcont_curve : ContinuedAlongCurve φ₀ γ (Φ (Fin.last M)) := by
+    refine ⟨M, Φ, rfl, rfl, fun k => hseq_dc k.val, zero_le_one, hγ, hγ0.symm,
+      hcenter_end, s, hs0, hsn, hs_mono, ?_⟩
+    intro i
+    refine Fin.cases ?_ (fun k => ?_) i
+    · rintro _ ⟨t, ht, rfl⟩
+      have hs_left : s (0 : Fin (M + 1)).castSucc = 0 := rfl
+      have hs_right : s (0 : Fin (M + 1)).succ = 0 := by dsimp [s]; simpa using htau_0
+      have ht0 : t = 0 := by linarith [ht.1, ht.2, hs_left, hs_right]
+      subst ht0
+      change γ 0 ∈ φ₀.disc
+      rw [hγ0]
+      exact φ₀.center_mem_disc
+    · rintro _ ⟨t, ht, rfl⟩
+      have hs_left : s k.succ.castSucc = tau k.val := rfl
+      have hs_right : s k.succ.succ = tau (k.val + 1) := rfl
+      have ht01 : t ∈ Set.Icc (0 : ℝ) 1 :=
+        ⟨(htau_mem k.val).1.trans (hs_left ▸ ht.1),
+         (hs_right ▸ ht.2).trans (htau_mem (k.val + 1)).2⟩
+      have hdist_t : dist t (tau (k.val + 1)) < δ := by
+        rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr (hs_right ▸ ht.2)), neg_sub]
+        calc tau (k.val + 1) - t ≤ tau (k.val + 1) - tau k.val := by linarith [ht.1, hs_left]
+          _ ≤ 1 / (M : ℝ) := htau_step k.val
+          _ < δ := hinv_M_lt
+      have hdist_γ : dist (γ t) (γ (tau (k.val + 1))) < ρ₁ :=
+        hδ t ht01 (tau (k.val + 1)) (htau_mem (k.val + 1)) hdist_t
+      dsimp [Φ]
+      rw [FunctionElement.disc, (seq (k.val + 1)).2.1,
+        (seq (k.val + 1)).2.2.2 (Nat.succ_pos k.val), Metric.mem_ball]
+      exact hdist_γ
+  have hγ1_in_end : γ 1 ∈ (Φ (Fin.last M)).disc := by
+    rw [FunctionElement.disc, hcenter_end]
+    exact Metric.mem_ball_self (Φ (Fin.last M)).radius_pos
+  have hend_lift := (seq M).2.2.1 (γ 1) hγ1_in_end
+  exact ⟨Φ (Fin.last M), hcont_curve, hcenter_end, hend_lift.1, hend_lift.2⟩
+
+private theorem exists_global_lift_uhp
+    {F : ℂ → ℂ} (hF : DifferentiableOn ℂ F UpperHalfPlaneSet)
+    (homit : ∀ z ∈ UpperHalfPlaneSet, F z ≠ 0 ∧ F z ≠ 1) :
+    ∃ g : ℂ → ℂ,
+      DifferentiableOn ℂ g UpperHalfPlaneSet ∧
+      ∀ τ ∈ UpperHalfPlaneSet, g τ ∈ UpperHalfPlaneSet ∧ modularLambda (g τ) = F τ := by
+  obtain ⟨δ₀, hδ₀_pos, hδ₀_sub, hlift₀⟩ :=
+    exists_lift_ball_at_point_uhp hF homit I_mem_upperHalfPlaneSet
+  have hFI_mem : F Complex.I ∈ modularLambda '' UpperHalfPlaneSet := by
+    rw [modularLambda_image_upperHalfPlaneSet (@existsUnique_gamma_fundamentalSetQ)]
+    exact ⟨Set.mem_univ _, fun h => by
+      rcases h with h0 | h1
+      · exact (homit Complex.I I_mem_upperHalfPlaneSet).1 h0
+      · exact (homit Complex.I I_mem_upperHalfPlaneSet).2 h1⟩
+  obtain ⟨z_base, hz_base_up, hz_base_lam⟩ := hFI_mem
+  obtain ⟨g_base, hg_base_diff, hg_base_prop, _⟩ :=
+    hlift₀ Complex.I (Metric.mem_ball_self hδ₀_pos) z_base hz_base_up hz_base_lam
+  let φ₀ : FunctionElement :=
+    { center := Complex.I
+      radius := δ₀
+      radius_pos := hδ₀_pos
+      fn := g_base
+      holo := hg_base_diff }
+  have hφ₀_lift : ∀ z ∈ φ₀.disc, φ₀.fn z ∈ UpperHalfPlaneSet ∧ modularLambda (φ₀.fn z) = F z :=
+    hg_base_prop
+  have hcan : CanContinueInRegion UpperHalfPlaneSet φ₀ :=
+    ⟨hδ₀_sub, fun γ hγ hγ0 hγ_sub =>
+      let ⟨φ₁, hcont, _, _, _⟩ :=
+        exists_lift_continuation_along_curve_uhp hF homit hφ₀_lift hγ hγ0 hγ_sub
+      ⟨φ₁, hcont⟩⟩
+  have hsc_uhp : RudinRCA.Chapter10.BookSimplyConnected UpperHalfPlaneSet :=
+    RudinRCA.Chapter10.theorem10_38 isRegion_upperHalfPlaneSet convex_upperHalfPlaneSet
+  obtain ⟨g, hg_diff, _, _, hg_endpt, _⟩ := theorem16_15 hsc_uhp hcan
+  refine ⟨g, hg_diff, fun τ hτ => ?_⟩
+  let γ_τ : ℝ → ℂ := fun t => ((1 - t : ℝ) : ℂ) * Complex.I + (t : ℂ) * τ
+  have hγ_cont : ContinuousOn γ_τ (Set.Icc 0 1) :=
+    ((Complex.continuous_ofReal.comp (continuous_const.sub continuous_id)).mul continuous_const |>.add
+      (Complex.continuous_ofReal.mul continuous_const)).continuousOn
+  have hγ0 : γ_τ 0 = φ₀.center := by simp [γ_τ, φ₀]
+  have hγ1 : γ_τ 1 = τ := by simp [γ_τ]
+  have hγ_sub : γ_τ '' Set.Icc 0 1 ⊆ UpperHalfPlaneSet := by
+    rintro _ ⟨t, ⟨ht0, ht1⟩, rfl⟩
+    have hmem := convex_upperHalfPlaneSet I_mem_upperHalfPlaneSet hτ
+      (sub_nonneg.mpr ht1) ht0 (by ring)
+    simpa [γ_τ, Complex.real_smul] using hmem
+  obtain ⟨φ₁, hcont₁, _, hφ₁_up, hφ₁_lam⟩ :=
+    exists_lift_continuation_along_curve_uhp hF homit hφ₀_lift hγ_cont hγ0 hγ_sub
+  have hval_eq : g (γ_τ 1) = φ₁.fn (γ_τ 1) :=
+    (hg_endpt γ_τ φ₁ hγ_cont hγ0 hγ_sub hcont₁).2
+  rw [hγ1] at hval_eq hφ₁_up hφ₁_lam
+  rw [hval_eq]
+  exact ⟨hφ₁_up, hφ₁_lam⟩
+
+/-! ### Part 3: Hyperbolic Schwarz–Pick on `Π⁺`, `Γ(2)` Trace Classification, and Parabolic Conjugation -/
+
+private def unitBallToUpperHalfPlane (w : ℂ) : ℂ :=
+  Complex.I * (1 + w) / (1 - w)
+
+private theorem unitBallToUpperHalfPlane_mem_uhp {w : ℂ} (hw : w ∈ Metric.ball (0 : ℂ) 1) :
+    unitBallToUpperHalfPlane w ∈ UpperHalfPlaneSet := by
+  have hw_lt : ‖w‖ < 1 := mem_ball_zero_iff.mp hw
+  have h1w : 1 - w ≠ 0 := by
+    intro h0; have heq : w = 1 := by linear_combination -h0
+    rw [heq, norm_one] at hw_lt; exact lt_irrefl 1 hw_lt
+  have hpos : 0 < 1 - ‖w‖ ^ 2 := by nlinarith [norm_nonneg w]
+  have him_eq : (unitBallToUpperHalfPlane w).im = (1 - ‖w‖ ^ 2) / ‖1 - w‖ ^ 2 := by
+    unfold unitBallToUpperHalfPlane
+    rw [Complex.div_im, ← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq]
+    simp only [Complex.normSq_apply, Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
+      Complex.add_re, Complex.add_im, Complex.sub_re, Complex.sub_im,
+      Complex.one_re, Complex.one_im]
+    ring
+  rw [mem_upperHalfPlaneSet, him_eq]
+  exact div_pos hpos (sq_pos_of_pos (norm_pos_iff.mpr h1w))
+
+private theorem upperHalfPlaneToUnitBall_left_inv {z : ℂ} (hz : z ∈ UpperHalfPlaneSet) :
+    unitBallToUpperHalfPlane (RudinRCA.Chapter14.upperHalfPlaneToUnitBall z) = z := by
+  have hden : z + Complex.I ≠ 0 := by
+    intro h0; have := congrArg Complex.im h0; simp at this; linarith [mem_upperHalfPlaneSet.mp hz]
+  unfold unitBallToUpperHalfPlane RudinRCA.Chapter14.upperHalfPlaneToUnitBall
+  have h1sub : 1 - (z - Complex.I) / (z + Complex.I) ≠ 0 := by
+    rw [one_sub_div hden]
+    have hnum : z + Complex.I - (z - Complex.I) = 2 * Complex.I := by ring
+    rw [hnum]
+    exact div_ne_zero (mul_ne_zero two_ne_zero Complex.I_ne_zero) hden
+  field_simp [hden, h1sub]
+  ring
+
+private theorem phi_ratio_cayley {u v : ℂ} (hu : u ∈ UpperHalfPlaneSet) (hv : v ∈ UpperHalfPlaneSet) :
+    let a := RudinRCA.Chapter14.upperHalfPlaneToUnitBall u
+    let b := RudinRCA.Chapter14.upperHalfPlaneToUnitBall v
+    ‖RudinRCA.Chapter12.phi a b‖ ^ 2 / (1 - ‖RudinRCA.Chapter12.phi a b‖ ^ 2) =
+      ‖v - u‖ ^ 2 / (4 * u.im * v.im) := by
+  intro a b
+  have ha_ball : a ∈ Metric.ball (0 : ℂ) 1 :=
+    RudinRCA.Chapter14.upperHalfPlaneToUnitBall_props.2.1.mapsTo hu
+  have hb_ball : b ∈ Metric.ball (0 : ℂ) 1 :=
+    RudinRCA.Chapter14.upperHalfPlaneToUnitBall_props.2.1.mapsTo hv
+  have hden_phi : 1 - star a * b ≠ 0 :=
+    RudinRCA.Chapter12.phi_denom_ne_zero ha_ball (Metric.ball_subset_closedBall hb_ball)
+  have huI : u + Complex.I ≠ 0 := by
+    intro h0; have := congrArg Complex.im h0; simp at this; linarith [mem_upperHalfPlaneSet.mp hu]
+  have hvI : v + Complex.I ≠ 0 := by
+    intro h0; have := congrArg Complex.im h0; simp at this; linarith [mem_upperHalfPlaneSet.mp hv]
+  have h1a : 1 - ‖a‖ ^ 2 = 4 * u.im / ‖u + Complex.I‖ ^ 2 := by
+    dsimp [a, RudinRCA.Chapter14.upperHalfPlaneToUnitBall]
+    rw [norm_div, div_pow, one_sub_div (sq_pos_of_pos (norm_pos_iff.mpr huI)).ne']
+    congr 1
+    simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply,
+      Complex.add_re, Complex.add_im, Complex.sub_re, Complex.sub_im,
+      Complex.I_re, Complex.I_im]
+    ring
+  have h1b : 1 - ‖b‖ ^ 2 = 4 * v.im / ‖v + Complex.I‖ ^ 2 := by
+    dsimp [b, RudinRCA.Chapter14.upperHalfPlaneToUnitBall]
+    rw [norm_div, div_pow, one_sub_div (sq_pos_of_pos (norm_pos_iff.mpr hvI)).ne']
+    congr 1
+    simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply,
+      Complex.add_re, Complex.add_im, Complex.sub_re, Complex.sub_im,
+      Complex.I_re, Complex.I_im]
+    ring
+  have hba : b - a = 2 * Complex.I * (v - u) / ((v + Complex.I) * (u + Complex.I)) := by
+    dsimp [a, b, RudinRCA.Chapter14.upperHalfPlaneToUnitBall]
+    field_simp [huI, hvI]
+    ring
+  have hba_norm : ‖b - a‖ ^ 2 = 4 * ‖v - u‖ ^ 2 / (‖v + Complex.I‖ ^ 2 * ‖u + Complex.I‖ ^ 2) := by
+    rw [hba, norm_div, norm_mul, norm_mul, norm_mul, Complex.norm_ofNat, Complex.norm_I, mul_one]
+    ring
+  rw [RudinRCA.Chapter12.one_sub_norm_phi_sq hden_phi, RudinRCA.Chapter12.phi, norm_div, div_pow,
+    div_div_div_cancel_right₀ (sq_pos_of_pos (norm_pos_iff.mpr hden_phi)).ne',
+    hba_norm, h1a, h1b]
+  have hu_im : (u.im : ℝ) ≠ 0 := (mem_upperHalfPlaneSet.mp hu).ne'
+  have hv_im : (v.im : ℝ) ≠ 0 := (mem_upperHalfPlaneSet.mp hv).ne'
+  have huI_n : ‖u + Complex.I‖ ≠ 0 := norm_ne_zero_iff.mpr huI
+  have hvI_n : ‖v + Complex.I‖ ≠ 0 := norm_ne_zero_iff.mpr hvI
+  field_simp [hu_im, hv_im, huI_n, hvI_n]
+
+private theorem uhp_schwarz_pick
+    {g : ℂ → ℂ} (hg : DifferentiableOn ℂ g UpperHalfPlaneSet)
+    (hmaps : ∀ τ ∈ UpperHalfPlaneSet, g τ ∈ UpperHalfPlaneSet)
+    {τ₁ τ₂ : ℂ} (hτ₁ : τ₁ ∈ UpperHalfPlaneSet) (hτ₂ : τ₂ ∈ UpperHalfPlaneSet) :
+    ‖g τ₂ - g τ₁‖ ^ 2 / ((g τ₁).im * (g τ₂).im) ≤ ‖τ₂ - τ₁‖ ^ 2 / (τ₁.im * τ₂.im) := by
+  let ψ := RudinRCA.Chapter14.upperHalfPlaneToUnitBall
+  let G : ℂ → ℂ := fun w => ψ (g (unitBallToUpperHalfPlane w))
+  have hG_diff : DifferentiableOn ℂ G (Metric.ball (0 : ℂ) 1) := by
+    intro w hw
+    have hw_lt : ‖w‖ < 1 := mem_ball_zero_iff.mp hw
+    have h1w : 1 - w ≠ 0 := by
+      intro h0; have heq : w = 1 := by linear_combination -h0
+      rw [heq, norm_one] at hw_lt; exact lt_irrefl 1 hw_lt
+    have hd_inv : DifferentiableAt ℂ unitBallToUpperHalfPlane w :=
+      (((differentiableAt_const (1 : ℂ)).add differentiableAt_id).const_mul Complex.I).div
+        ((differentiableAt_const (1 : ℂ)).sub differentiableAt_id) h1w
+    have hw_up := unitBallToUpperHalfPlane_mem_uhp hw
+    have hd_g : DifferentiableAt ℂ g (unitBallToUpperHalfPlane w) :=
+      hg.differentiableAt (isOpen_upperHalfPlaneSet.mem_nhds hw_up)
+    have hgw_ne : g (unitBallToUpperHalfPlane w) ≠ -Complex.I := by
+      intro h0
+      have := hmaps _ hw_up
+      rw [mem_upperHalfPlaneSet, h0, Complex.neg_im, Complex.I_im] at this
+      linarith
+    have hd_ψ : DifferentiableAt ℂ ψ (g (unitBallToUpperHalfPlane w)) :=
+      RudinRCA.Chapter14.upperHalfPlaneToUnitBall_props.1 _ hgw_ne
+    exact (hd_ψ.comp w (hd_g.comp w hd_inv)).differentiableWithinAt
+  have hG_maps : Set.MapsTo G (Metric.ball (0 : ℂ) 1) (Metric.ball (0 : ℂ) 1) :=
+    fun w hw => RudinRCA.Chapter14.upperHalfPlaneToUnitBall_props.2.1.mapsTo
+      (hmaps _ (unitBallToUpperHalfPlane_mem_uhp hw))
+  have ha₁ : ψ τ₁ ∈ Metric.ball (0 : ℂ) 1 :=
+    RudinRCA.Chapter14.upperHalfPlaneToUnitBall_props.2.1.mapsTo hτ₁
+  have ha₂ : ψ τ₂ ∈ Metric.ball (0 : ℂ) 1 :=
+    RudinRCA.Chapter14.upperHalfPlaneToUnitBall_props.2.1.mapsTo hτ₂
+  have hsp := (RudinRCA.Chapter12.theorem12_5 hG_diff hG_maps ha₁).1 (ψ τ₂) ha₂
+  have hG₁ : G (ψ τ₁) = ψ (g τ₁) := by dsimp [G]; rw [upperHalfPlaneToUnitBall_left_inv hτ₁]
+  have hG₂ : G (ψ τ₂) = ψ (g τ₂) := by dsimp [G]; rw [upperHalfPlaneToUnitBall_left_inv hτ₂]
+  rw [hG₁, hG₂] at hsp
+  set r₁ := ‖RudinRCA.Chapter12.phi (ψ (g τ₁)) (ψ (g τ₂))‖
+  set r₂ := ‖RudinRCA.Chapter12.phi (ψ τ₁) (ψ τ₂)‖
+  have hr₂_lt1 : r₂ < 1 := by
+    have := RudinRCA.Chapter12.mapsTo_phi_ball ha₁ ha₂
+    simpa [r₂, mem_ball_zero_iff] using this
+  have hr₁_nn : 0 ≤ r₁ := norm_nonneg _
+  have hr₂_nn : 0 ≤ r₂ := norm_nonneg _
+  have hr₁_sq_le : r₁ ^ 2 ≤ r₂ ^ 2 := by nlinarith
+  have h1r₂_pos : 0 < 1 - r₂ ^ 2 := by nlinarith
+  have h1r₁_pos : 0 < 1 - r₁ ^ 2 := by linarith
+  have hratio_le : r₁ ^ 2 / (1 - r₁ ^ 2) ≤ r₂ ^ 2 / (1 - r₂ ^ 2) := by
+    rw [div_le_div_iff₀ h1r₁_pos h1r₂_pos]
+    nlinarith
+  have h1 := phi_ratio_cayley (hmaps τ₁ hτ₁) (hmaps τ₂ hτ₂)
+  have h2 := phi_ratio_cayley hτ₁ hτ₂
+  change r₁ ^ 2 / (1 - r₁ ^ 2) = ‖g τ₂ - g τ₁‖ ^ 2 / (4 * (g τ₁).im * (g τ₂).im) at h1
+  change r₂ ^ 2 / (1 - r₂ ^ 2) = ‖τ₂ - τ₁‖ ^ 2 / (4 * τ₁.im * τ₂.im) at h2
+  rw [h1, h2] at hratio_le
+  have hmul4 :
+      4 * (‖g τ₂ - g τ₁‖ ^ 2 / (4 * (g τ₁).im * (g τ₂).im)) ≤
+        4 * (‖τ₂ - τ₁‖ ^ 2 / (4 * τ₁.im * τ₂.im)) := by linarith
+  have hl : 4 * (‖g τ₂ - g τ₁‖ ^ 2 / (4 * (g τ₁).im * (g τ₂).im)) =
+      ‖g τ₂ - g τ₁‖ ^ 2 / ((g τ₁).im * (g τ₂).im) := by ring
+  have hr : 4 * (‖τ₂ - τ₁‖ ^ 2 / (4 * τ₁.im * τ₂.im)) =
+      ‖τ₂ - τ₁‖ ^ 2 / (τ₁.im * τ₂.im) := by ring
+  linarith
+
+private theorem intMoebius_hyperbolic_lower_bound
+    {a b c d : ℤ} (hdet : a * d - b * c = 1) {w : ℂ} (hw : w ∈ UpperHalfPlaneSet) :
+    (((a + d : ℤ) : ℝ) ^ 2 - 4) ≤
+      ‖intMoebius a b c d w - w‖ ^ 2 / (w.im * (intMoebius a b c d w).im) := by
+  have hden : (c : ℂ) * w + (d : ℂ) ≠ 0 := intMoebius_denom_ne_zero hdet hw
+  have hden_pos : 0 < ‖(c : ℂ) * w + (d : ℂ)‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hden)
+  have hw_im_pos : 0 < w.im := hw
+  have hdiff : intMoebius a b c d w - w =
+      -(((c : ℂ) * w ^ 2 + ((d - a : ℤ) : ℂ) * w - (b : ℂ)) / ((c : ℂ) * w + (d : ℂ))) := by
+    unfold intMoebius
+    rw [div_sub' hden]
+    push_cast
+    ring
+  have hnorm_diff : ‖intMoebius a b c d w - w‖ ^ 2 =
+      ‖(c : ℂ) * w ^ 2 + ((d - a : ℤ) : ℂ) * w - (b : ℂ)‖ ^ 2 / ‖(c : ℂ) * w + (d : ℂ)‖ ^ 2 := by
+    rw [hdiff, norm_neg, norm_div, div_pow]
+  have hquot : ‖intMoebius a b c d w - w‖ ^ 2 / (w.im * (intMoebius a b c d w).im) =
+      ‖(c : ℂ) * w ^ 2 + ((d - a : ℤ) : ℂ) * w - (b : ℂ)‖ ^ 2 / w.im ^ 2 := by
+    rw [hnorm_diff, intMoebius_im hdet w]
+    field_simp [hden_pos.ne', hw_im_pos.ne']
+  rw [hquot, le_div_iff₀ (sq_pos_of_pos hw_im_pos)]
+  have hdetR : (a : ℝ) * (d : ℝ) - (b : ℝ) * (c : ℝ) = 1 := by exact_mod_cast hdet
+  have halg : ‖(c : ℂ) * w ^ 2 + ((d - a : ℤ) : ℂ) * w - (b : ℂ)‖ ^ 2 =
+      ((c : ℝ) * (w.re ^ 2 + w.im ^ 2) + ((d : ℝ) - (a : ℝ)) * w.re - (b : ℝ)) ^ 2 +
+        (((a + d : ℤ) : ℝ) ^ 2 - 4) * w.im ^ 2 := by
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+    simp only [sq, Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
+      Complex.mul_re, Complex.mul_im, Complex.intCast_re, Complex.intCast_im,
+      Int.cast_sub, Int.cast_add]
+    linear_combination (-4 * w.im ^ 2) * hdetR
+  nlinarith [sq_nonneg ((c : ℝ) * (w.re ^ 2 + w.im ^ 2) + ((d : ℝ) - (a : ℝ)) * w.re - (b : ℝ))]
+
+private theorem gammaSubgroup_trace_cases
+    {a b c d : ℤ} (hdet : a * d - b * c = 1)
+    (ha : Odd a) (hd : Odd d) (hb : Even b) (hc : Even c) :
+    a + d = 2 ∨ a + d = -2 ∨ (12 : ℝ) ≤ (((a + d : ℤ) : ℝ) ^ 2 - 4) := by
+  rcases ha with ⟨k, rfl⟩
+  rcases hd with ⟨l, rfl⟩
+  rcases hb with ⟨m, rfl⟩
+  rcases hc with ⟨n, rfl⟩
+  have hkl : k + l = 2 * (m * n - k * l) := by linarith
+  have hsum : (2 * k + 1) + (2 * l + 1) = 2 + 4 * (m * n - k * l) := by linarith
+  set q : ℤ := m * n - k * l
+  have hsum_q : (2 * k + 1) + (2 * l + 1) = 2 + 4 * q := hsum
+  rcases eq_or_ne q 0 with hq0 | hq0
+  · left; omega
+  · rcases eq_or_ne q (-1) with hq1 | hq1
+    · right; left; omega
+    · right; right
+      have hq_cases : 1 ≤ q ∨ q ≤ -2 := by omega
+      have hsqZ : (16 : ℤ) ≤ ((2 * k + 1) + (2 * l + 1)) ^ 2 := by
+        rcases hq_cases with hq1 | hqm2 <;> nlinarith
+      have hsqR : (16 : ℝ) ≤ (((2 * k + 1 + (2 * l + 1) : ℤ) : ℝ) ^ 2) := by
+        exact_mod_cast hsqZ
+      linarith
+
+private theorem parabolic_sl2z_conjugation
+    {a b c d : ℤ} (hdet : a * d - b * c = 1) (htr : a + d = 2)
+    (hne : ¬ (a = 1 ∧ b = 0 ∧ c = 0 ∧ d = 1)) :
+    ∃ (p q r s k : ℤ), p * s - q * r = 1 ∧ k ≠ 0 ∧
+      ∀ w ∈ UpperHalfPlaneSet,
+        intMoebius p q r s (intMoebius a b c d w) = intMoebius p q r s w + (k : ℂ) := by
+  have hbc : (a - 1) ^ 2 + b * c = 0 := by
+    have hd : d = 2 - a := by linarith
+    subst hd; linear_combination -hdet
+  by_cases hc : c = 0
+  · subst hc
+    have ha1 : a = 1 := by nlinarith
+    have hd1 : d = 1 := by linarith
+    subst ha1; subst hd1
+    have hb0 : b ≠ 0 := fun hb => hne ⟨rfl, hb, rfl, rfl⟩
+    refine ⟨1, 0, 0, 1, b, by norm_num, hb0, fun w _ => ?_⟩
+    simp [intMoebius]
+  · let g : ℤ := (Int.gcd c (a - 1) : ℤ)
+    have hg_pos : 0 < g := by
+      dsimp [g]
+      exact_mod_cast Nat.gcd_pos_of_pos_left (a - 1).natAbs (Int.natAbs_pos.mpr hc)
+    have hg_dvd_c : g ∣ c := Int.gcd_dvd_left c (a - 1)
+    have hg_dvd_a1 : g ∣ (a - 1) := Int.gcd_dvd_right c (a - 1)
+    let r : ℤ := c / g
+    let s : ℤ := -(a - 1) / g
+    have hr_mul : g * r = c := Int.mul_ediv_cancel' hg_dvd_c
+    have hs_mul : g * s = -(a - 1) := Int.mul_ediv_cancel' (dvd_neg.mpr hg_dvd_a1)
+    have hcop : Int.gcd r s = 1 := by
+      have hgcd_mul : Int.gcd (g * r) (g * s) = g.natAbs * Int.gcd r s := by
+        simpa [Int.gcd, Int.natAbs_mul] using Nat.gcd_mul_left g.natAbs r.natAbs s.natAbs
+      have hg_nat : g.natAbs = Int.gcd c (a - 1) := Int.natAbs_natCast _
+      have hlhs : Int.gcd (g * r) (g * s) = Int.gcd c (a - 1) := by
+        rw [hr_mul, hs_mul, Int.gcd, Int.natAbs_neg]
+        rfl
+      rw [hlhs, hg_nat] at hgcd_mul
+      have hpos_nat : 0 < Int.gcd c (a - 1) :=
+        Nat.gcd_pos_of_pos_left _ (Int.natAbs_pos.mpr hc)
+      exact Nat.eq_of_mul_eq_mul_left hpos_nat (by simpa using hgcd_mul.symm)
+    let p : ℤ := Int.gcdB r s
+    let q : ℤ := -Int.gcdA r s
+    have hdetM : p * s - q * r = 1 := by
+      have hbez := Int.gcd_eq_gcd_ab r s
+      rw [hcop] at hbez
+      dsimp [p, q]
+      linear_combination -hbez
+    have hrow1 : r * a + s * c = r := by
+      apply mul_left_cancel₀ hg_pos.ne'
+      calc g * (r * a + s * c) = (g * r) * a + (g * s) * c := by ring
+        _ = c * a + (-(a - 1)) * c := by rw [hr_mul, hs_mul]
+        _ = c := by ring
+        _ = g * r := hr_mul.symm
+    have hrow2 : r * b + s * d = s := by
+      have hd_eq : d = 2 - a := by linarith
+      apply mul_left_cancel₀ hc
+      have h1 : c * (r * b + s * (2 - a) - s) = r * (b * c) - (s * c) * (a - 1) := by ring
+      have hsc : s * c = -r * (a - 1) := by linarith [hrow1]
+      have hzero : c * (r * b + s * d - s) = 0 := by
+        rw [hd_eq, h1, hsc]
+        linear_combination r * hbc
+      linarith
+    let a' := (p * a + q * c) * s + (p * b + q * d) * (-r)
+    let k := (p * a + q * c) * (-q) + (p * b + q * d) * p
+    let c' := (r * a + s * c) * s + (r * b + s * d) * (-r)
+    let d' := (r * a + s * c) * (-q) + (r * b + s * d) * p
+    have hc'0 : c' = 0 := by dsimp [c']; rw [hrow1, hrow2]; ring
+    have hd'1 : d' = 1 := by dsimp [d']; rw [hrow1, hrow2]; linear_combination hdetM
+    have hdetB : a' * d' - k * c' = 1 := by
+      have hcalc : a' * d' - k * c' = (p * s - q * r) * (a * d - b * c) * (p * s - q * r) := by
+        dsimp [a', k, c', d']; ring
+      rw [hcalc, hdetM, hdet]; ring
+    have ha'1 : a' = 1 := by rw [hc'0, hd'1] at hdetB; linarith
+    have hk0 : k ≠ 0 := by
+      intro hk
+      -- If `M A M⁻¹ = I`, then `M A = M`, so `A = I`, contradicting `c ≠ 0`
+      have h11 : p * a + q * c = p := by
+        have := congrArg (· * p) ha'1
+        have hrel : a' * p + k * r = (p * a + q * c) * (p * s - q * r) := by dsimp [a', k]; ring
+        rw [ha'1, hk, hdetM] at hrel; linarith
+      have h12 : p * b + q * d = q := by
+        have hrel : a' * q + k * s = (p * b + q * d) * (p * s - q * r) := by dsimp [a', k]; ring
+        rw [ha'1, hk, hdetM] at hrel; linarith
+      have hc_zero : c = 0 := by
+        have hrel : (-r) * (p * a + q * c - p) + p * (r * a + s * c - r) = (p * s - q * r) * c := by ring
+        rw [h11, hrow1, hdetM] at hrel; linarith
+      exact hc hc_zero
+    refine ⟨p, q, r, s, k, hdetM, hk0, fun w hw => ?_⟩
+    have hdetM_inv : s * p - (-q) * (-r) = 1 := by linear_combination hdetM
+    have hMw_up : intMoebius p q r s w ∈ UpperHalfPlaneSet :=
+      intMoebius_mem_upperHalfPlaneSet hdetM hw
+    have hcomp1 : intMoebius p q r s (intMoebius a b c d w) =
+        intMoebius p q r s (intMoebius a b c d (intMoebius s (-q) (-r) p (intMoebius p q r s w))) := by
+      rw [intMoebius_inv_left hdetM hw]
+    rw [hcomp1, intMoebius_comp hdet hdetM_inv hMw_up,
+      intMoebius_comp hdetM (by
+        calc (a * s + b * -r) * (c * -q + d * p) - (a * -q + b * p) * (c * s + d * -r)
+            = (a * d - b * c) * (s * p - (-q) * (-r)) := by ring
+          _ = 1 := by rw [hdet, hdetM_inv]; ring) hMw_up]
+    have e1 : p * (a * s + b * -r) + q * (c * s + d * -r) = 1 := by
+      have : p * (a * s + b * -r) + q * (c * s + d * -r) = a' := by dsimp [a']; ring
+      rw [this, ha'1]
+    have e2 : p * (a * -q + b * p) + q * (c * -q + d * p) = k := by dsimp [k]; ring
+    have e3 : r * (a * s + b * -r) + s * (c * s + d * -r) = 0 := by
+      have : r * (a * s + b * -r) + s * (c * s + d * -r) = c' := by dsimp [c']; ring
+      rw [this, hc'0]
+    have e4 : r * (a * -q + b * p) + s * (c * -q + d * p) = 1 := by
+      have : r * (a * -q + b * p) + s * (c * -q + d * p) = d' := by dsimp [d']; ring
+      rw [this, hd'1]
+    rw [e1, e2, e3, e4]
+    simp [intMoebius]
+
+/-! ### Part 4: Periodic Descent and Punctured-Disc Dichotomy -/
+
+private def zToTau (z : ℂ) : ℂ :=
+  Complex.log z / (2 * (Real.pi : ℂ) * Complex.I)
+
+private theorem two_pi_I_ne_zero : (2 * (Real.pi : ℂ) * Complex.I) ≠ 0 :=
+  mul_ne_zero (mul_ne_zero two_ne_zero (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero))
+    Complex.I_ne_zero
+
+private theorem exp_two_pi_I_mul_zToTau {z : ℂ} (hz : z ≠ 0) :
+    Complex.exp (2 * (Real.pi : ℂ) * Complex.I * zToTau z) = z := by
+  dsimp [zToTau]
+  rw [mul_div_cancel₀ _ two_pi_I_ne_zero, Complex.exp_log hz]
+
+private theorem zToTau_im (z : ℂ) :
+    (zToTau z).im = -Real.log ‖z‖ / (2 * Real.pi) := by
+  dsimp [zToTau]
+  have h1 : Complex.log z / (2 * (Real.pi : ℂ) * Complex.I) =
+      (-Complex.I * Complex.log z) * (((2 * Real.pi)⁻¹ : ℝ) : ℂ) := by
+    have h2pi : (2 * (Real.pi : ℂ)) ≠ 0 :=
+      mul_ne_zero two_ne_zero (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero)
+    rw [Complex.ofReal_inv, Complex.ofReal_mul, Complex.ofReal_ofNat]
+    field_simp [h2pi, Complex.I_ne_zero]
+    ring_nf; simp [Complex.I_sq]
+  rw [h1]
+  simp only [Complex.mul_im, Complex.neg_re, Complex.neg_im, Complex.I_re, Complex.I_im,
+    Complex.ofReal_re, Complex.ofReal_im, Complex.log_re, Complex.log_im,
+    neg_zero, zero_mul, mul_zero]
+  ring
+
+private theorem zToTau_mem_uhp {z : ℂ} (hz0 : z ≠ 0) (hz1 : ‖z‖ < 1) :
+    zToTau z ∈ UpperHalfPlaneSet := by
+  rw [mem_upperHalfPlaneSet, zToTau_im]
+  have hlog_neg : Real.log ‖z‖ < 0 := Real.log_neg (norm_pos_iff.mpr hz0) hz1
+  exact div_pos (by linarith) (by positivity)
+
+private theorem periodic_int_uhp
+    {φ : ℂ → ℂ} (hper : ∀ τ ∈ UpperHalfPlaneSet, φ (τ + 1) = φ τ)
+    {τ : ℂ} (hτ : τ ∈ UpperHalfPlaneSet) (n : ℤ) :
+    φ (τ + (n : ℂ)) = φ τ := by
+  induction n using Int.induction_on with
+  | zero => simp
+  | succ k ih =>
+    have hk : τ + (k : ℂ) ∈ UpperHalfPlaneSet := by simpa using hτ
+    have h1 : τ + ((k + 1 : ℤ) : ℂ) = (τ + (k : ℂ)) + 1 := by push_cast; ring
+    rw [h1, hper _ hk]
+    simpa using ih
+  | pred k ih =>
+    have hk : τ + ((-k - 1 : ℤ) : ℂ) ∈ UpperHalfPlaneSet := by simpa using hτ
+    have h1 : (τ + ((-k - 1 : ℤ) : ℂ)) + 1 = τ + ((-k : ℤ) : ℂ) := by push_cast; ring
+    rw [← ih, ← h1, hper _ hk]
+
+private theorem periodic_descent_unitBall
+    {φ : ℂ → ℂ} (hφ : DifferentiableOn ℂ φ UpperHalfPlaneSet)
+    (hper : ∀ τ ∈ UpperHalfPlaneSet, φ (τ + 1) = φ τ) :
+    let ψ : ℂ → ℂ := fun z => φ (zToTau z)
+    RudinRCA.Chapter10.HolomorphicOn ψ (Metric.ball (0 : ℂ) 1 \ {0}) ∧
+    ∀ τ ∈ UpperHalfPlaneSet, ψ (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * τ)) = φ τ := by
+  intro ψ
+  have hdesc : ∀ τ ∈ UpperHalfPlaneSet,
+      ψ (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * τ)) = φ τ := by
+    intro τ hτ
+    let q : ℂ := Complex.exp (2 * (Real.pi : ℂ) * Complex.I * τ)
+    have hq0 : q ≠ 0 := Complex.exp_ne_zero _
+    have hexp_eq : Complex.exp (2 * (Real.pi : ℂ) * Complex.I * zToTau q) =
+        Complex.exp (2 * (Real.pi : ℂ) * Complex.I * τ) := exp_two_pi_I_mul_zToTau hq0
+    obtain ⟨k, hk⟩ := Complex.exp_eq_exp_iff_exists_int.mp hexp_eq
+    have htau_eq : zToTau q = τ + (k : ℂ) := by
+      apply mul_left_cancel₀ two_pi_I_ne_zero
+      linear_combination hk
+    dsimp [ψ]
+    rw [htau_eq, periodic_int_uhp hper hτ k]
+  refine ⟨?_, hdesc⟩
+  rintro q₀ ⟨hq₀_ball, hq₀_ne⟩
+  have hq₀_norm : ‖q₀‖ < 1 := by simpa [Metric.mem_ball] using hq₀_ball
+  by_cases hslit : q₀ ∈ Complex.slitPlane
+  · have hzToTau_diff : DifferentiableAt ℂ zToTau q₀ :=
+      (Complex.differentiableAt_log hslit).div_const _
+    exact (hφ.differentiableAt (isOpen_upperHalfPlaneSet.mem_nhds
+      (zToTau_mem_uhp hq₀_ne hq₀_norm))).comp q₀ hzToTau_diff
+  · have hneg_slit : -q₀ ∈ Complex.slitPlane := by
+      rw [Complex.mem_slitPlane_iff] at hslit ⊢
+      push Not at hslit
+      left
+      simp only [Complex.neg_re, neg_pos]
+      refine lt_of_le_of_ne hslit.1 fun hre0 => hq₀_ne ?_
+      exact Complex.ext hre0 hslit.2
+    let τAlt : ℂ → ℂ := fun q => zToTau (-q) + (1 / 2 : ℂ)
+    have hτAlt_im : ∀ q : ℂ, (τAlt q).im = (zToTau q).im := by
+      intro q; simp [τAlt, zToTau_im]
+    have hτAlt_diff : DifferentiableAt ℂ τAlt q₀ :=
+      (((Complex.differentiableAt_log hneg_slit).comp q₀ differentiableAt_id.neg).div_const _).add
+        (differentiableAt_const _)
+    have hτAlt_up : τAlt q₀ ∈ UpperHalfPlaneSet := by
+      rw [mem_upperHalfPlaneSet, hτAlt_im]
+      exact zToTau_mem_uhp hq₀_ne hq₀_norm
+    have hcomp : DifferentiableAt ℂ (fun q => φ (τAlt q)) q₀ :=
+      (hφ.differentiableAt (isOpen_upperHalfPlaneSet.mem_nhds hτAlt_up)).comp q₀ hτAlt_diff
+    have hopen_neg : IsOpen {q : ℂ | q ∈ Metric.ball (0 : ℂ) 1 ∧ -q ∈ Complex.slitPlane} :=
+      Metric.isOpen_ball.inter (Complex.isOpen_slitPlane.preimage continuous_neg)
+    refine hcomp.congr_of_eventuallyEq ?_
+    filter_upwards [hopen_neg.mem_nhds ⟨hq₀_ball, hneg_slit⟩] with q ⟨hq_ball, hq_neg_slit⟩
+    have hq_nz : q ≠ 0 := by
+      intro h0; rw [h0, neg_zero] at hq_neg_slit
+      exact Complex.slitPlane_ne_zero hq_neg_slit rfl
+    have hq_norm : ‖q‖ < 1 := by simpa [Metric.mem_ball] using hq_ball
+    have hexp_alt : Complex.exp (2 * (Real.pi : ℂ) * Complex.I * τAlt q) = q := by
+      dsimp [τAlt]
+      have hmul : 2 * (Real.pi : ℂ) * Complex.I * (zToTau (-q) + 1 / 2) =
+          2 * (Real.pi : ℂ) * Complex.I * zToTau (-q) + (Real.pi : ℂ) * Complex.I := by ring
+      rw [hmul, Complex.exp_add, exp_two_pi_I_mul_zToTau (neg_ne_zero.mpr hq_nz),
+        Complex.exp_pi_mul_I]
+      ring
+    have hτq_up : τAlt q ∈ UpperHalfPlaneSet := by
+      rw [mem_upperHalfPlaneSet, hτAlt_im]
+      exact zToTau_mem_uhp hq_nz hq_norm
+    have h := hdesc (τAlt q) hτq_up
+    rwa [hexp_alt] at h
+
+private theorem parabolic_case_tendsto
+    {f₁ g : ℂ → ℂ} {p q r s k : ℤ}
+    (hdetM : p * s - q * r = 1) (hk0 : k ≠ 0)
+    (hg_diff : DifferentiableOn ℂ g UpperHalfPlaneSet)
+    (hg_prop : ∀ τ ∈ UpperHalfPlaneSet,
+      g τ ∈ UpperHalfPlaneSet ∧
+        modularLambda (g τ) = f₁ (Complex.exp (2 * (Real.pi : ℂ) * Complex.I * τ)))
+    (hshift : ∀ τ ∈ UpperHalfPlaneSet,
+      intMoebius p q r s (g (τ + 1)) = intMoebius p q r s (g τ) + (k : ℂ)) :
+    (∃ L : ℂ, Tendsto f₁ (𝓝[≠] (0 : ℂ)) (𝓝 L)) ∨
+      Tendsto (fun z : ℂ => ‖f₁ z‖) (𝓝[≠] (0 : ℂ)) Filter.atTop := by
+  let E2π : ℂ → ℂ := fun τ => Complex.exp (2 * (Real.pi : ℂ) * Complex.I * τ)
+  let h : ℂ → ℂ := fun τ => intMoebius p q r s (g τ)
+  have hh_diff : DifferentiableOn ℂ h UpperHalfPlaneSet :=
+    (intMoebius_differentiableOn hdetM).comp hg_diff (fun τ hτ => (hg_prop τ hτ).1)
+  have hh_up : ∀ τ ∈ UpperHalfPlaneSet, h τ ∈ UpperHalfPlaneSet :=
+    fun τ hτ => intMoebius_mem_upperHalfPlaneSet hdetM (hg_prop τ hτ).1
+  have hh_shift : ∀ τ ∈ UpperHalfPlaneSet, h (τ + 1) = h τ + (k : ℂ) := hshift
+  let m : ℕ := k.natAbs
+  have hm_pos : 0 < (m : ℝ) := by exact_mod_cast Int.natAbs_pos.mpr hk0
+  have hm_neC : (m : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hm_pos.ne'
+  let tildeE : ℂ → ℂ := fun τ =>
+    Complex.exp (2 * (Real.pi : ℂ) * Complex.I * h τ / (m : ℂ))
+  have htildeE_diff : DifferentiableOn ℂ tildeE UpperHalfPlaneSet := by
+    intro τ hτ
+    exact ((((hh_diff.differentiableAt (isOpen_upperHalfPlaneSet.mem_nhds hτ)).const_mul _).div_const _).cexp).differentiableWithinAt
+  have htildeE_per : ∀ τ ∈ UpperHalfPlaneSet, tildeE (τ + 1) = tildeE τ := by
+    intro τ hτ
+    dsimp [tildeE]
+    rw [hh_shift τ hτ, mul_add, add_div, Complex.exp_add]
+    let sgn : ℤ := if 0 ≤ k then 1 else -1
+    have hk_div : (k : ℂ) / (m : ℂ) = (sgn : ℂ) := by
+      dsimp [m, sgn]
+      split_ifs with hk_nonneg
+      · have h1 : (k.natAbs : ℤ) = k := Int.natAbs_of_nonneg hk_nonneg
+        have hC : ((k.natAbs : ℕ) : ℂ) = (k : ℂ) := by rw [← Int.cast_natCast, h1]
+        rw [hC, div_self (Int.cast_ne_zero.mpr hk0)]; simp
+      · have h1 : (k.natAbs : ℤ) = -k := Int.ofNat_natAbs_of_nonpos (le_of_not_ge hk_nonneg)
+        have hC : ((k.natAbs : ℕ) : ℂ) = -(k : ℂ) := by rw [← Int.cast_natCast, h1, Int.cast_neg]
+        rw [hC, div_neg, div_self (Int.cast_ne_zero.mpr hk0)]; simp
+    have harg : 2 * (Real.pi : ℂ) * Complex.I * (k : ℂ) / (m : ℂ) =
+        (sgn : ℂ) * (2 * (Real.pi : ℂ) * Complex.I) := by
+      rw [mul_div_assoc, hk_div, mul_comm]
+    rw [harg, Complex.exp_int_mul_two_pi_mul_I sgn, mul_one]
+  have htildeE_norm : ∀ τ : ℂ, ‖tildeE τ‖ = Real.exp (-(2 * Real.pi / (m : ℝ)) * (h τ).im) := by
+    intro τ
+    dsimp [tildeE]
+    rw [Complex.norm_exp]
+    congr 1
+    have hsplit : 2 * (Real.pi : ℂ) * Complex.I * h τ / (m : ℂ) =
+        (((2 * Real.pi / (m : ℝ)) : ℝ) : ℂ) * (Complex.I * h τ) := by
+      push_cast; ring
+    rw [hsplit]
+    simp [Complex.mul_re]
+  obtain ⟨hE0_holo, hE0_desc⟩ := periodic_descent_unitBall htildeE_diff htildeE_per
+  let E₀ : ℂ → ℂ := fun z => tildeE (zToTau z)
+  have hE0_iso : RudinRCA.Chapter10.HasIsolatedSingularity E₀ (Metric.ball (0 : ℂ) 1) 0 :=
+    ⟨Metric.isOpen_ball, Metric.mem_ball_self zero_lt_one, hE0_holo⟩
+  have hE0_lt1 : ∀ z ∈ Metric.ball (0 : ℂ) 1 \ {0}, ‖E₀ z‖ < 1 := by
+    rintro z ⟨hz_ball, hz_ne⟩
+    have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz_ball
+    dsimp [E₀]
+    rw [htildeE_norm]
+    have him_pos := hh_up _ (zToTau_mem_uhp hz_ne hz_lt)
+    rw [mem_upperHalfPlaneSet] at him_pos
+    exact Real.exp_lt_one_iff.mpr (mul_neg_of_neg_of_pos (neg_lt_zero.mpr (by positivity)) him_pos)
+  obtain ⟨E, hE_holo, hE_eq⟩ := RudinRCA.Chapter10.removable_of_bounded hE0_iso zero_lt_one
+    ⟨1, fun z hz => (hE0_lt1 z hz).le⟩
+  have hE_zero : E 0 = 0 := by
+    by_contra hE0_ne
+    have hquot_cont : ContinuousAt (fun z => E z / E 0) 0 :=
+      (hE_holo 0 (Metric.mem_ball_self zero_lt_one)).continuousAt.div_const (E 0)
+    have h1_slit : (1 : ℂ) ∈ Complex.slitPlane := by simp [Complex.mem_slitPlane_iff]
+    have hev_slit : ∀ᶠ z : ℂ in 𝓝 0, E z / E 0 ∈ Complex.slitPlane :=
+      hquot_cont.eventually (by dsimp only; rw [div_self hE0_ne]; exact Complex.isOpen_slitPlane.mem_nhds h1_slit)
+    obtain ⟨δ₁, hδ₁_pos, hδ₁_slit⟩ := Metric.eventually_nhds_iff.mp hev_slit
+    let δ : ℝ := min δ₁ 1
+    have hδ_pos : 0 < δ := lt_min hδ₁_pos zero_lt_one
+    let L : ℂ → ℂ := fun z => Complex.log (E z / E 0) + Complex.log (E 0)
+    have hL_diff : DifferentiableOn ℂ L (Metric.ball (0 : ℂ) δ) := by
+      intro z hz
+      have hz_ball1 : z ∈ Metric.ball (0 : ℂ) 1 :=
+        Metric.ball_subset_ball (min_le_right _ _) hz
+      have hz_slit : E z / E 0 ∈ Complex.slitPlane :=
+        hδ₁_slit (lt_of_lt_of_le (Metric.mem_ball.mp hz) (min_le_left _ _))
+      exact (((Complex.differentiableAt_log hz_slit).comp z
+        ((hE_holo z hz_ball1).div_const (E 0))).add (differentiableAt_const _)).differentiableWithinAt
+    have hL_exp : ∀ z ∈ Metric.ball (0 : ℂ) δ, Complex.exp (L z) = E z := by
+      intro z hz
+      have hz_slit : E z / E 0 ∈ Complex.slitPlane :=
+        hδ₁_slit (lt_of_lt_of_le (Metric.mem_ball.mp hz) (min_le_left _ _))
+      dsimp [L]
+      rw [Complex.exp_add, Complex.exp_log (Complex.slitPlane_ne_zero hz_slit),
+        Complex.exp_log hE0_ne, div_mul_cancel₀ _ hE0_ne]
+    let Y : ℝ := max 1 (-Real.log δ / (2 * Real.pi) + 1)
+    have hY_pos : 0 < Y := lt_of_lt_of_le zero_lt_one (le_max_left _ _)
+    let HY : Set ℂ := {τ : ℂ | Y < τ.im}
+    have hHY_open : IsOpen HY := isOpen_lt continuous_const Complex.continuous_im
+    have hHY_conv : Convex ℝ HY := convex_halfSpace_gt Complex.imLm.isLinear Y
+    have hHY_sub_uhp : HY ⊆ UpperHalfPlaneSet := fun τ hτ => lt_trans hY_pos hτ
+    have hE2π_HY : ∀ τ ∈ HY, E2π τ ∈ Metric.ball (0 : ℂ) δ \ {0} := by
+      intro τ hτ
+      refine ⟨?_, Complex.exp_ne_zero _⟩
+      rw [Metric.mem_ball, dist_zero_right]
+      dsimp [E2π]
+      rw [Complex.norm_exp]
+      have hre : (2 * (Real.pi : ℂ) * Complex.I * τ).re = -(2 * Real.pi * τ.im) := by
+        simp [Complex.mul_re, Complex.mul_im]
+      rw [hre]
+      have hτ_gt : Y < τ.im := hτ
+      have hY_ge : -Real.log δ / (2 * Real.pi) + 1 ≤ Y := le_max_right _ _
+      have hlog_lt : -(2 * Real.pi * τ.im) < Real.log δ := by
+        have h1 : -Real.log δ / (2 * Real.pi) < τ.im := by linarith
+        have h2 := (div_lt_iff₀ (by positivity : (0 : ℝ) < 2 * Real.pi)).mp h1
+        linarith
+      calc Real.exp (-(2 * Real.pi * τ.im)) < Real.exp (Real.log δ) := Real.exp_lt_exp.mpr hlog_lt
+        _ = δ := Real.exp_log hδ_pos
+    let φ : ℂ → ℂ := fun τ => 2 * (Real.pi : ℂ) * Complex.I * h τ / (m : ℂ) - L (E2π τ)
+    have hφ_diff : DifferentiableOn ℂ φ HY := by
+      intro τ hτ
+      have hd1 : DifferentiableAt ℂ (fun u => 2 * (Real.pi : ℂ) * Complex.I * h u / (m : ℂ)) τ :=
+        ((hh_diff.differentiableAt (isOpen_upperHalfPlaneSet.mem_nhds (hHY_sub_uhp hτ))).const_mul _).div_const _
+      have hd2 : DifferentiableAt ℂ (fun u => L (E2π u)) τ :=
+        (hL_diff.differentiableAt (Metric.isOpen_ball.mem_nhds (hE2π_HY τ hτ).1)).comp τ
+          ((differentiableAt_id.const_mul _).cexp)
+      exact (hd1.sub hd2).differentiableWithinAt
+    have hφ_exp : ∀ τ ∈ HY, Complex.exp (φ τ) = 1 := by
+      intro τ hτ
+      have hτ_up := hHY_sub_uhp hτ
+      have hE2π_mem_δ := hE2π_HY τ hτ
+      have hE2π_mem_1 : E2π τ ∈ Metric.ball (0 : ℂ) 1 \ {0} :=
+        ⟨Metric.ball_subset_ball (min_le_right _ _) hE2π_mem_δ.1, hE2π_mem_δ.2⟩
+      dsimp [φ]
+      rw [Complex.exp_sub, hL_exp _ hE2π_mem_δ.1, hE_eq hE2π_mem_1]
+      have hd := hE0_desc τ hτ_up
+      change tildeE (zToTau (E2π τ)) = tildeE τ at hd
+      change tildeE τ / E₀ (E2π τ) = 1
+      dsimp [E₀]
+      rw [hd, div_self (Complex.exp_ne_zero _)]
+    have hφ_deriv0 : ∀ τ ∈ HY, deriv φ τ = 0 := by
+      intro τ hτ
+      have hd_φ : HasDerivAt φ (deriv φ τ) τ :=
+        (hφ_diff.differentiableAt (hHY_open.mem_nhds hτ)).hasDerivAt
+      have hd_exp1 : HasDerivAt (fun u => Complex.exp (φ u)) (Complex.exp (φ τ) * deriv φ τ) τ :=
+        hd_φ.cexp
+      have hev1 : (fun u => Complex.exp (φ u)) =ᶠ[𝓝 τ] (fun _ => (1 : ℂ)) := by
+        filter_upwards [hHY_open.mem_nhds hτ] with u hu
+        exact hφ_exp u hu
+      have hd_exp2 : HasDerivAt (fun u => Complex.exp (φ u)) 0 τ :=
+        (hasDerivAt_const τ (1 : ℂ)).congr_of_eventuallyEq hev1
+      have hprod : Complex.exp (φ τ) * deriv φ τ = 0 := hd_exp1.unique hd_exp2
+      exact (mul_eq_zero.mp hprod).resolve_left (Complex.exp_ne_zero _)
+    let τ₀ : ℂ := ((Y + 1 : ℝ) : ℂ) * Complex.I
+    have hτ₀_HY : τ₀ ∈ HY := by simp [HY, τ₀]
+    have hτ₀1_HY : τ₀ + 1 ∈ HY := by simp [HY, τ₀]
+    have hconst := hHY_open.is_const_of_deriv_eq_zero hHY_conv.isPreconnected
+      hφ_diff hφ_deriv0 hτ₀1_HY hτ₀_HY
+    have hE2π_per : E2π (τ₀ + 1) = E2π τ₀ := by
+      dsimp [E2π]
+      have hadd : 2 * (Real.pi : ℂ) * Complex.I * (τ₀ + 1) =
+          2 * (Real.pi : ℂ) * Complex.I * τ₀ + 2 * (Real.pi : ℂ) * Complex.I := by ring
+      rw [hadd, Complex.exp_add, Complex.exp_two_pi_mul_I, mul_one]
+    dsimp [φ] at hconst
+    rw [hE2π_per] at hconst
+    have hmul_eq : 2 * (Real.pi : ℂ) * Complex.I * h (τ₀ + 1) / (m : ℂ) =
+        2 * (Real.pi : ℂ) * Complex.I * h τ₀ / (m : ℂ) := sub_left_inj.mp hconst
+    have hh_eq : h (τ₀ + 1) = h τ₀ := by
+      have h1 := congrArg (· * (m : ℂ)) hmul_eq
+      rw [div_mul_cancel₀ _ hm_neC, div_mul_cancel₀ _ hm_neC] at h1
+      exact mul_left_cancel₀ two_pi_I_ne_zero h1
+    rw [hh_shift τ₀ (hHY_sub_uhp hτ₀_HY)] at hh_eq
+    have hkC0 : (k : ℂ) = 0 := by linear_combination hh_eq
+    exact hk0 (Int.cast_eq_zero.mp hkC0)
+  -- From `E 0 = 0`, deduce `Im(h(zToTau z)) → +∞` as `z → 0, z ≠ 0`
+  have hE0_tend0 : Tendsto (fun z => ‖E₀ z‖) (𝓝[≠] (0 : ℂ)) (𝓝 0) := by
+    have hEc : Tendsto (fun z => ‖E z‖) (𝓝[≠] (0 : ℂ)) (𝓝 0) := by
+      simpa [hE_zero] using
+        (hE_holo 0 (Metric.mem_ball_self zero_lt_one)).continuousAt.norm.tendsto.mono_left
+          nhdsWithin_le_nhds
+    refine hEc.congr' ?_
+    filter_upwards [self_mem_nhdsWithin,
+      nhdsWithin_le_nhds (Metric.ball_mem_nhds (0 : ℂ) zero_lt_one)] with z hz_ne hz_ball
+    rw [hE_eq ⟨hz_ball, hz_ne⟩]
+  have him_atTop : Tendsto (fun z : ℂ => (h (zToTau z)).im) (𝓝[≠] (0 : ℂ)) Filter.atTop := by
+    rw [Filter.tendsto_atTop]
+    intro B
+    let ε : ℝ := Real.exp (-(2 * Real.pi / (m : ℝ)) * B)
+    have hε_pos : 0 < ε := Real.exp_pos _
+    filter_upwards [hE0_tend0.eventually (Iio_mem_nhds hε_pos)] with z hz_lt
+    dsimp [E₀] at hz_lt
+    rw [htildeE_norm] at hz_lt
+    have h1 := Real.exp_lt_exp.mp hz_lt
+    have hc_pos : 0 < 2 * Real.pi / (m : ℝ) := by positivity
+    nlinarith
+  have hdetM_inv : s * p - (-q) * (-r) = 1 := by linear_combination hdetM
+  have hf1_eq : f₁ =ᶠ[𝓝[≠] (0 : ℂ)]
+      fun z => modularLambda (intMoebius s (-q) (-r) p (h (zToTau z))) := by
+    filter_upwards [self_mem_nhdsWithin,
+      nhdsWithin_le_nhds (Metric.ball_mem_nhds (0 : ℂ) zero_lt_one)] with z hz_ne hz_ball
+    have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz_ball
+    have hτ := zToTau_mem_uhp hz_ne hz_lt
+    dsimp [h]
+    rw [intMoebius_inv_left hdetM (hg_prop _ hτ).1, (hg_prop _ hτ).2,
+      exp_two_pi_I_mul_zToTau hz_ne]
+  have hcomp_im : Tendsto (fun z : ℂ => h (zToTau z)) (𝓝[≠] (0 : ℂ))
+      (Filter.comap Complex.im Filter.atTop) := by
+    rw [Filter.tendsto_comap_iff]
+    exact him_atTop
+  rcases modularLambda_intMoebius_im_atTop hdetM_inv with htop | ⟨L, hL⟩
+  · right
+    exact (htop.comp hcomp_im).congr' (hf1_eq.symm.mono fun z hz => congrArg norm hz)
+  · left
+    exact ⟨L, (hL.comp hcomp_im).congr' hf1_eq.symm⟩
+
+private theorem punctured_unitBall_omitting_zero_one_tendsto
+    {f₁ : ℂ → ℂ}
+    (hf₁ : RudinRCA.Chapter10.HolomorphicOn f₁ (Metric.ball (0 : ℂ) 1 \ {0}))
+    (homit : ∀ z ∈ Metric.ball (0 : ℂ) 1 \ {0}, f₁ z ≠ 0 ∧ f₁ z ≠ 1) :
+    (∃ L : ℂ, Tendsto f₁ (𝓝[≠] (0 : ℂ)) (𝓝 L)) ∨
+      Tendsto (fun z : ℂ => ‖f₁ z‖) (𝓝[≠] (0 : ℂ)) Filter.atTop := by
+  -- Step 1: Pull back `f₁` via `τ ↦ exp(2π i τ)` to `UpperHalfPlaneSet`
+  let E2π : ℂ → ℂ := fun τ => Complex.exp (2 * (Real.pi : ℂ) * Complex.I * τ)
+  have hE2π_mem : ∀ τ ∈ UpperHalfPlaneSet, E2π τ ∈ Metric.ball (0 : ℂ) 1 \ {0} := by
+    intro τ hτ
+    refine ⟨?_, Complex.exp_ne_zero _⟩
+    rw [Metric.mem_ball, dist_zero_right]
+    dsimp [E2π]
+    rw [Complex.norm_exp]
+    have hre : (2 * (Real.pi : ℂ) * Complex.I * τ).re = -(2 * Real.pi * τ.im) := by
+      simp [Complex.mul_re, Complex.mul_im]
+    rw [hre]
+    exact Real.exp_lt_one_iff.mpr (by nlinarith [Real.pi_pos, mem_upperHalfPlaneSet.mp hτ])
+  let F : ℂ → ℂ := fun τ => f₁ (E2π τ)
+  have hF_diff : DifferentiableOn ℂ F UpperHalfPlaneSet := by
+    intro τ hτ
+    have hd_e : DifferentiableAt ℂ E2π τ :=
+      (differentiableAt_id.const_mul _).cexp
+    exact ((hf₁ (E2π τ) (hE2π_mem τ hτ)).comp τ hd_e).differentiableWithinAt
+  have hF_omit : ∀ τ ∈ UpperHalfPlaneSet, F τ ≠ 0 ∧ F τ ≠ 1 :=
+    fun τ hτ => homit (E2π τ) (hE2π_mem τ hτ)
+  have hF_per : ∀ τ : ℂ, F (τ + 1) = F τ := by
+    intro τ
+    dsimp [F, E2π]
+    have hadd : 2 * (Real.pi : ℂ) * Complex.I * (τ + 1) =
+        2 * (Real.pi : ℂ) * Complex.I * τ + 2 * (Real.pi : ℂ) * Complex.I := by ring
+    rw [hadd, Complex.exp_add, Complex.exp_two_pi_mul_I, mul_one]
+  -- Step 2: Lift `F` through `modularLambda` to holomorphic `g : Π⁺ → Π⁺`
+  obtain ⟨g, hg_diff, hg_prop⟩ := exists_global_lift_uhp hF_diff hF_omit
+  -- Step 3: Extract single deck transformation `γ ∈ GammaSubgroup` with `g(τ + 1) = γ(g τ)`
+  have hI1 : Complex.I + 1 ∈ UpperHalfPlaneSet := by simp [UpperHalfPlaneSet]
+  have hlam_I : modularLambda (g (Complex.I + 1)) = modularLambda (g Complex.I) := by
+    rw [(hg_prop _ hI1).2, (hg_prop _ I_mem_upperHalfPlaneSet).2, hF_per]
+  obtain ⟨γ, hγ_I⟩ :=
+    (modularLambda_eq_iff_gamma_orbit (@existsUnique_gamma_fundamentalSetQ)
+      (hg_prop _ hI1).1 (hg_prop _ I_mem_upperHalfPlaneSet).1).mp hlam_I
+  obtain ⟨a, b, c, d, hdet, hγ_perm⟩ := γ.1.2
+  have hg_deck : ∀ τ ∈ UpperHalfPlaneSet, g (τ + 1) = intMoebius a b c d (g τ) := by
+    have hdiff1 : DifferentiableOn ℂ (fun τ => g (τ + 1)) UpperHalfPlaneSet := by
+      intro τ hτ
+      exact ((hg_diff.differentiableAt (isOpen_upperHalfPlaneSet.mem_nhds
+        (by simpa using hτ))).comp τ (differentiableAt_id.add (differentiableAt_const 1))).differentiableWithinAt
+    have hdiff2 : DifferentiableOn ℂ (fun τ => intMoebius a b c d (g τ)) UpperHalfPlaneSet :=
+      (intMoebius_differentiableOn hdet).comp hg_diff (fun τ hτ => (hg_prop τ hτ).1)
+    have hlam_eq : ∀ τ ∈ UpperHalfPlaneSet,
+        modularLambda (g (τ + 1)) = modularLambda (intMoebius a b c d (g τ)) := by
+      intro τ hτ
+      have hτ1 : τ + 1 ∈ UpperHalfPlaneSet := by simpa using hτ
+      rw [(hg_prop _ hτ1).2, hF_per, ← (hg_prop τ hτ).2]
+      have hγ_app : intMoebius a b c d (g τ) = (γ.1.1 ⟨g τ, (hg_prop τ hτ).1⟩).1 := by
+        rw [hγ_perm, intMoebiusPerm_apply]
+      rw [hγ_app, modularLambda_gamma_invariant (@existsUnique_gamma_fundamentalSetQ) γ]
+    have hI_eq : g (Complex.I + 1) = intMoebius a b c d (g Complex.I) := by
+      have hγ_app : intMoebius a b c d (g Complex.I) =
+          (γ.1.1 ⟨g Complex.I, (hg_prop _ I_mem_upperHalfPlaneSet).1⟩).1 := by
+        rw [hγ_perm, intMoebiusPerm_apply]
+      rw [hγ_app, hγ_I]
+    exact eqOn_lifts_of_modularLambda (@existsUnique_gamma_fundamentalSetQ) isOpen_upperHalfPlaneSet convex_upperHalfPlaneSet.isPreconnected
+      hdiff1 hdiff2 (fun τ hτ => (hg_prop _ (by simpa using hτ)).1) hlam_eq
+      I_mem_upperHalfPlaneSet hI_eq
+  -- Step 4: Parity of `(a, b, c, d)` from `γ ∈ GammaSubgroup`
+  have hmem_gam : (⟨intMoebiusPerm a b c d hdet, a, b, c, d, hdet, rfl⟩ : ModularMoebiusGroup) ∈
+      GammaSubgroup := by
+    have heq_sub : (⟨intMoebiusPerm a b c d hdet, a, b, c, d, hdet, rfl⟩ : ModularMoebiusGroup) = γ.1 := by
+      ext z; rw [hγ_perm]
+    rw [heq_sub]; exact γ.2
+  obtain ⟨ha, hd, hb, hc⟩ := (intMoebiusPerm_mem_gammaSubgroup_iff hdet).mp hmem_gam
+  -- Step 5: Case split on `γ = 1` vs `γ ≠ 1` and trace `a + d`
+  by_cases hγ1 : γ.1.1 = 1
+  · -- Case A: `γ = 1`, so `g` is `1`-periodic and descends to `ball 0 1 \ {0} → Π⁺`
+    left
+    have hg_per : ∀ τ ∈ UpperHalfPlaneSet, g (τ + 1) = g τ := by
+      intro τ hτ
+      rw [hg_deck τ hτ]
+      have h1 : intMoebius a b c d (g τ) = (γ.1.1 ⟨g τ, (hg_prop τ hτ).1⟩).1 := by
+        rw [hγ_perm, intMoebiusPerm_apply]
+      rw [h1, hγ1]; rfl
+    obtain ⟨hh_holo, _⟩ := periodic_descent_unitBall hg_diff hg_per
+    let h : ℂ → ℂ := fun z => g (zToTau z)
+    have hh_up : ∀ z ∈ Metric.ball (0 : ℂ) 1 \ {0}, h z ∈ UpperHalfPlaneSet := by
+      rintro z ⟨hz_ball, hz_ne⟩
+      have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz_ball
+      exact (hg_prop _ (zToTau_mem_uhp hz_ne hz_lt)).1
+    have hh_lam : ∀ z ∈ Metric.ball (0 : ℂ) 1 \ {0}, modularLambda (h z) = f₁ z := by
+      rintro z ⟨hz_ball, hz_ne⟩
+      have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz_ball
+      have hτ := zToTau_mem_uhp hz_ne hz_lt
+      change modularLambda (g (zToTau z)) = f₁ z
+      rw [(hg_prop _ hτ).2]
+      dsimp [F, E2π]
+      rw [exp_two_pi_I_mul_zToTau hz_ne]
+    let u : ℂ → ℂ := fun z => RudinRCA.Chapter14.upperHalfPlaneToUnitBall (h z)
+    have hu_iso : RudinRCA.Chapter10.HasIsolatedSingularity u (Metric.ball (0 : ℂ) 1) 0 := by
+      refine ⟨Metric.isOpen_ball, Metric.mem_ball_self zero_lt_one, fun z hz => ?_⟩
+      have hhz_ne : h z ≠ -Complex.I := by
+        intro h0
+        have := hh_up z hz
+        rw [mem_upperHalfPlaneSet, h0, Complex.neg_im, Complex.I_im] at this
+        linarith
+      exact (RudinRCA.Chapter14.upperHalfPlaneToUnitBall_props.1 _ hhz_ne).comp z (hh_holo z hz)
+    have hu_lt1 : ∀ z ∈ Metric.ball (0 : ℂ) 1 \ {0}, ‖u z‖ < 1 := fun z hz =>
+      mem_ball_zero_iff.mp
+        (RudinRCA.Chapter14.upperHalfPlaneToUnitBall_props.2.1.mapsTo (hh_up z hz))
+    obtain ⟨U, hU_holo, hU_eq⟩ := RudinRCA.Chapter10.removable_of_bounded hu_iso zero_lt_one
+      ⟨1, fun z hz => (hu_lt1 z hz).le⟩
+    have hU0_le1 : ‖U 0‖ ≤ 1 := by
+      by_contra hgt
+      push Not at hgt
+      have hcont : ContinuousAt (fun z => ‖U z‖) 0 :=
+        (hU_holo 0 (Metric.mem_ball_self zero_lt_one)).continuousAt.norm
+      have hev := hcont.eventually (Ioi_mem_nhds hgt)
+      obtain ⟨r, hr_pos, hr_sub⟩ := Metric.eventually_nhds_iff.mp hev
+      let z_test : ℂ := ((min (r / 2) (1 / 2) : ℝ) : ℂ)
+      have hz_pos : 0 < min (r / 2) (1 / 2) := lt_min (half_pos hr_pos) (by norm_num)
+      have hz_ne : z_test ≠ 0 := Complex.ofReal_ne_zero.mpr hz_pos.ne'
+      have hz_ball : z_test ∈ Metric.ball (0 : ℂ) 1 := by
+        rw [Metric.mem_ball, dist_zero_right, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hz_pos]
+        exact lt_of_le_of_lt (min_le_right _ _) (by norm_num)
+      have hz_r : dist z_test 0 < r := by
+        rw [dist_zero_right, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hz_pos]
+        exact lt_of_le_of_lt (min_le_left _ _) (half_lt_self hr_pos)
+      have hgt1 : 1 < ‖U z_test‖ := hr_sub hz_r
+      rw [hU_eq ⟨hz_ball, hz_ne⟩] at hgt1
+      linarith [hu_lt1 z_test ⟨hz_ball, hz_ne⟩]
+    have hU0_lt1 : ‖U 0‖ < 1 := by
+      rcases lt_or_eq_of_le hU0_le1 with hlt | heq1
+      · exact hlt
+      · exfalso
+        have hreg : RudinRCA.Chapter10.IsRegion (Metric.ball (0 : ℂ) 1) :=
+          ⟨Metric.isOpen_ball, ⟨⟨0, Metric.mem_ball_self zero_lt_one⟩,
+            (convex_ball (0 : ℂ) 1).isPreconnected⟩⟩
+        have hlocmax : IsLocalMax (fun z => ‖U z‖) 0 := by
+          filter_upwards [Metric.ball_mem_nhds (0 : ℂ) zero_lt_one] with z hz
+          by_cases hz0 : z = 0
+          · subst hz0; exact le_rfl
+          · rw [hU_eq ⟨hz, hz0⟩, heq1]; exact (hu_lt1 z ⟨hz, hz0⟩).le
+        have hconst := RudinRCA.Chapter10.constant_of_local_maximum hreg hU_holo
+          (Metric.mem_ball_self zero_lt_one) hlocmax
+        have hhalf_ball : (1 / 2 : ℂ) ∈ Metric.ball (0 : ℂ) 1 := by
+          rw [Metric.mem_ball, dist_zero_right]; norm_num
+        have hhalf_ne : (1 / 2 : ℂ) ≠ 0 := by norm_num
+        have hc := hconst (1 / 2) hhalf_ball
+        rw [hU_eq ⟨hhalf_ball, hhalf_ne⟩] at hc
+        have hlt := hu_lt1 (1 / 2) ⟨hhalf_ball, hhalf_ne⟩
+        rw [hc, heq1] at hlt
+        exact lt_irrefl 1 hlt
+    have hU0_ball : U 0 ∈ Metric.ball (0 : ℂ) 1 := mem_ball_zero_iff.mpr hU0_lt1
+    let w₀ : ℂ := unitBallToUpperHalfPlane (U 0)
+    have hw₀_up : w₀ ∈ UpperHalfPlaneSet := unitBallToUpperHalfPlane_mem_uhp hU0_ball
+    have h1U0 : 1 - U 0 ≠ 0 := by
+      intro h0; have heq : U 0 = 1 := by linear_combination -h0
+      rw [heq, norm_one] at hU0_lt1; exact lt_irrefl 1 hU0_lt1
+    have hinv_cont : ContinuousAt (fun z => unitBallToUpperHalfPlane (U z)) 0 := by
+      unfold unitBallToUpperHalfPlane
+      have hUc := (hU_holo 0 (Metric.mem_ball_self zero_lt_one)).continuousAt
+      exact (continuousAt_const.mul (continuousAt_const.add hUc)).div
+        (continuousAt_const.sub hUc) h1U0
+    have hlam_cont : ContinuousAt modularLambda w₀ :=
+      (modularLambda_holomorphicOn (@existsUnique_gamma_fundamentalSetQ) w₀ hw₀_up).continuousAt
+    refine ⟨modularLambda w₀, ?_⟩
+    have htend : Tendsto (fun z : ℂ => modularLambda (unitBallToUpperHalfPlane (U z)))
+        (𝓝[≠] (0 : ℂ)) (𝓝 (modularLambda w₀)) :=
+      hlam_cont.tendsto.comp (hinv_cont.tendsto.mono_left nhdsWithin_le_nhds)
+    refine htend.congr' ?_
+    filter_upwards [self_mem_nhdsWithin,
+      nhdsWithin_le_nhds (Metric.ball_mem_nhds (0 : ℂ) zero_lt_one)] with z hz_ne hz_ball
+    rw [hU_eq ⟨hz_ball, hz_ne⟩]
+    dsimp [u]
+    rw [upperHalfPlaneToUnitBall_left_inv (hh_up z ⟨hz_ball, hz_ne⟩), hh_lam z ⟨hz_ball, hz_ne⟩]
+  · -- Case B & C: `γ ≠ 1`; classify by `a + d`
+    rcases gammaSubgroup_trace_cases hdet ha hd hb hc with htr2 | htr_neg2 | hhyp
+    · -- Case C1: parabolic with `a + d = 2`
+      have hne_id : ¬ (a = 1 ∧ b = 0 ∧ c = 0 ∧ d = 1) := by
+        rintro ⟨rfl, rfl, rfl, rfl⟩
+        exact hγ1 (hγ_perm.trans intMoebiusPerm_one)
+      obtain ⟨p, q, r, s, k, hdetM, hk0, hconj⟩ := parabolic_sl2z_conjugation hdet htr2 hne_id
+      exact parabolic_case_tendsto hdetM hk0 hg_diff hg_prop fun τ hτ => by
+        rw [hg_deck τ hτ, hconj _ (hg_prop τ hτ).1]
+    · -- Case C2: parabolic with `a + d = -2`; negate `(a, b, c, d)` to reduce to `a + d = 2`
+      have hdet_neg : (-a) * (-d) - (-b) * (-c) = 1 := by linear_combination hdet
+      have htr_neg : (-a) + (-d) = 2 := by linarith
+      have hne_id : ¬ (-a = 1 ∧ -b = 0 ∧ -c = 0 ∧ -d = 1) := by
+        rintro ⟨ha', hb', hc', hd'⟩
+        have heq1 : intMoebiusPerm (-a) (-b) (-c) (-d) hdet_neg = 1 := by
+          rw [intMoebiusPerm_eq_one_iff]; left; exact ⟨ha', hb', hc', hd'⟩
+        rw [intMoebiusPerm_neg a b c d hdet] at heq1
+        exact hγ1 (hγ_perm.trans heq1)
+      obtain ⟨p, q, r, s, k, hdetM, hk0, hconj⟩ :=
+        parabolic_sl2z_conjugation hdet_neg htr_neg hne_id
+      exact parabolic_case_tendsto hdetM hk0 hg_diff hg_prop fun τ hτ => by
+        rw [hg_deck τ hτ, ← intMoebius_neg a b c d, hconj _ (hg_prop τ hτ).1]
+    · -- Case B: hyperbolic (`12 ≤ (a + d)^2 - 4`), contradiction via Schwarz–Pick at `τ₁ = i, τ₂ = i + 1`
+      exfalso
+      have hsp := uhp_schwarz_pick hg_diff (fun τ hτ => (hg_prop τ hτ).1)
+        I_mem_upperHalfPlaneSet hI1
+      have hrhs : ‖(Complex.I + 1) - Complex.I‖ ^ 2 / (Complex.I.im * (Complex.I + 1).im) = 1 := by
+        simp
+      rw [hrhs, hg_deck Complex.I I_mem_upperHalfPlaneSet] at hsp
+      have hlb := intMoebius_hyperbolic_lower_bound hdet (hg_prop _ I_mem_upperHalfPlaneSet).1
+      linarith
+
+/-! ### Part 5: Five Fresh Unconditional Target Theorems (Rudin 16.21) -/
+
+/-- **Big Picard's Theorem (unconditional discharge of `BigPicardStatement`, Rudin 16.21,
+pp. 331–332):**
+If `f` has an isolated essential singularity at `z₀ ∈ Ω`, then on every punctured open disc
+`Metric.ball z₀ r \ {z₀} ⊆ Ω` (`r > 0`), `f` assumes every complex value with at most one
+exception. Proved via the elliptic modular function `modularLambda`, Monodromy (`16.15`),
+hyperbolic Schwarz–Pick (`12.5`), `Γ(2)` trace classification (`16.19`), and `S₃` cusp
+equivariance of `modularLambda`. -/
+theorem bigPicardStatement : BigPicardStatement := by
+  rw [bigPicardStatement_iff_no_two_omitted]
+  intro f Ω z₀ hess r hr hsub α β hne homit
+  have hβα : β - α ≠ 0 := sub_ne_zero.mpr hne.symm
+  have hrC : (r : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hr.ne'
+  let f₁ : ℂ → ℂ := fun z => (f (z₀ + (r : ℂ) * z) - α) / (β - α)
+  have hmaps : ∀ z ∈ Metric.ball (0 : ℂ) 1 \ {0}, z₀ + (r : ℂ) * z ∈ Metric.ball z₀ r \ {z₀} := by
+    rintro z ⟨hz_ball, hz_ne⟩
+    have hz_lt : ‖z‖ < 1 := by simpa [Metric.mem_ball] using hz_ball
+    refine ⟨?_, ?_⟩
+    · rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_mul, Complex.norm_real,
+        Real.norm_eq_abs, abs_of_pos hr]
+      nlinarith
+    · intro h0
+      rw [Set.mem_singleton_iff] at h0
+      have hrz : (r : ℂ) * z = 0 := by linear_combination h0
+      exact hz_ne ((mul_eq_zero.mp hrz).resolve_left hrC)
+  have hf₁_holo : RudinRCA.Chapter10.HolomorphicOn f₁ (Metric.ball (0 : ℂ) 1 \ {0}) := by
+    intro z hz
+    have hmz := hmaps z hz
+    have hd_aff : DifferentiableAt ℂ (fun u : ℂ => z₀ + (r : ℂ) * u) z :=
+      (differentiableAt_const z₀).add (differentiableAt_id.const_mul (r : ℂ))
+    have hd_f : DifferentiableAt ℂ f (z₀ + (r : ℂ) * z) :=
+      hess.1.2.2 _ ⟨hsub hmz.1, hmz.2⟩
+    exact (((hd_f.comp z hd_aff).sub (differentiableAt_const α)).div_const (β - α))
+  have hf₁_omit : ∀ z ∈ Metric.ball (0 : ℂ) 1 \ {0}, f₁ z ≠ 0 ∧ f₁ z ≠ 1 := by
+    intro z hz
+    have hmz := homit _ (hmaps z hz)
+    refine ⟨?_, ?_⟩
+    · intro h0
+      rcases div_eq_zero_iff.mp h0 with hnum | hden
+      · exact hmz.1 (sub_eq_zero.mp hnum)
+      · exact hβα hden
+    · intro h1
+      have heq : f (z₀ + (r : ℂ) * z) - α = β - α := (div_eq_one_iff_eq hβα).mp h1
+      exact hmz.2 (by linear_combination heq)
+  have hcw := ((RudinRCA.Chapter10.theorem10_21 hess.1).2.2.2.mp hess r hr hsub).2
+  rcases punctured_unitBall_omitting_zero_one_tendsto hf₁_holo hf₁_omit with ⟨L, hL⟩ | htop
+  · obtain ⟨z_seq, hz_punc, hz_tend, hfz_tend⟩ := hcw (α + (β - α) * (L + 1))
+    let u_seq : ℕ → ℂ := fun n => (z_seq n - z₀) / (r : ℂ)
+    have hu_tend : Tendsto u_seq Filter.atTop (𝓝[≠] (0 : ℂ)) := by
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+      · have hsub0 : Tendsto (fun n => z_seq n - z₀) Filter.atTop (𝓝 0) := by
+          simpa using hz_tend.sub_const z₀
+        simpa [u_seq] using hsub0.div_const (r : ℂ)
+      · refine Filter.Eventually.of_forall fun n => ?_
+        exact div_ne_zero (sub_ne_zero.mpr (hz_punc n).2) hrC
+    have hlim1 : Tendsto (f₁ ∘ u_seq) Filter.atTop (𝓝 L) := hL.comp hu_tend
+    have hlim2 : Tendsto (f₁ ∘ u_seq) Filter.atTop (𝓝 (L + 1)) := by
+      have h1 : Tendsto (fun n => (f (z_seq n) - α) / (β - α)) Filter.atTop
+          (𝓝 ((α + (β - α) * (L + 1) - α) / (β - α))) :=
+        (hfz_tend.sub_const α).div_const (β - α)
+      have hval : (α + (β - α) * (L + 1) - α) / (β - α) = L + 1 := by
+        rw [add_sub_cancel_left, mul_div_cancel_left₀ _ hβα]
+      rw [hval] at h1
+      refine h1.congr fun n => ?_
+      dsimp [f₁, u_seq, Function.comp]
+      rw [mul_div_cancel₀ _ hrC, add_sub_cancel]
+    have heqL : L = L + 1 := tendsto_nhds_unique hlim1 hlim2
+    have : (0 : ℂ) = 1 := by linear_combination heqL
+    exact zero_ne_one this
+  · obtain ⟨z_seq, hz_punc, hz_tend, hfz_tend⟩ := hcw α
+    let u_seq : ℕ → ℂ := fun n => (z_seq n - z₀) / (r : ℂ)
+    have hu_tend : Tendsto u_seq Filter.atTop (𝓝[≠] (0 : ℂ)) := by
+      refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
+      · have hsub0 : Tendsto (fun n => z_seq n - z₀) Filter.atTop (𝓝 0) := by
+          simpa using hz_tend.sub_const z₀
+        simpa [u_seq] using hsub0.div_const (r : ℂ)
+      · refine Filter.Eventually.of_forall fun n => ?_
+        exact div_ne_zero (sub_ne_zero.mpr (hz_punc n).2) hrC
+    have hlim_top : Tendsto (fun n => ‖f₁ (u_seq n)‖) Filter.atTop Filter.atTop :=
+      htop.comp hu_tend
+    have hlim_zero : Tendsto (fun n => ‖f₁ (u_seq n)‖) Filter.atTop (𝓝 0) := by
+      have h1 : Tendsto (fun n => (f (z_seq n) - α) / (β - α)) Filter.atTop (𝓝 0) := by
+        simpa using (hfz_tend.sub_const α).div_const (β - α)
+      have h2 : Tendsto (fun n => ‖(f (z_seq n) - α) / (β - α)‖) Filter.atTop (𝓝 0) := by
+        simpa using h1.norm
+      refine h2.congr fun n => ?_
+      dsimp [f₁, u_seq]
+      rw [mul_div_cancel₀ _ hrC, add_sub_cancel]
+    exact not_tendsto_nhds_of_tendsto_atTop hlim_top 0 hlim_zero
+
+/-- **Big Picard's Theorem (two-omitted-values form, Rudin 16.21, p. 332):**
+Near an isolated essential singularity `z₀ ∈ Ω`, `f` cannot omit two distinct complex values
+`α ≠ β` on any punctured open disc `Metric.ball z₀ r \ {z₀} ⊆ Ω`. -/
+theorem bigPicard_no_two_omitted
+    {f : ℂ → ℂ} {Ω : Set ℂ} {z₀ : ℂ}
+    (hess : RudinRCA.Chapter10.HasEssentialSingularity f Ω z₀)
+    {r : ℝ} (hr : 0 < r) (hsub : Metric.ball z₀ r ⊆ Ω)
+    {α β : ℂ} (hne : α ≠ β) :
+    ¬ (∀ z ∈ Metric.ball z₀ r \ {z₀}, f z ≠ α ∧ f z ≠ β) :=
+  bigPicardStatement_iff_no_two_omitted.mp bigPicardStatement f Ω z₀ hess r hr hsub α β hne
+
+/-- **Big Picard's Theorem (punctured-disc infinite-fiber form, Rudin 16.21):**
+Near an isolated essential singularity `z₀ ∈ Ω`, `f` assumes every complex value infinitely often
+on every punctured open disc `Metric.ball z₀ r \ {z₀} ⊆ Ω`, with at most one exception. -/
+theorem bigPicard_infinite_preimages
+    {f : ℂ → ℂ} {Ω : Set ℂ} {z₀ : ℂ}
+    (hess : RudinRCA.Chapter10.HasEssentialSingularity f Ω z₀)
+    {r : ℝ} (hr : 0 < r) (hsub : Metric.ball z₀ r ⊆ Ω) :
+    ∃ w₀ : ℂ, ∀ w : ℂ, w ≠ w₀ →
+      ({z ∈ Metric.ball z₀ r \ {z₀} | f z = w}).Infinite :=
+  theorem16_21_bigPicard_infinite_preimages bigPicardStatement hess hr hsub
+
+/-- **Big Picard's Theorem (punctured-neighborhood infinite-fiber form, Rudin 16.21):**
+If `f` has an isolated essential singularity at `z₀ ∈ Ω`, then `f` assumes every complex value
+infinitely often on `Ω \ {z₀}`, with at most one exception. -/
+theorem bigPicard_infinite_preimages_open
+    {f : ℂ → ℂ} {Ω : Set ℂ} {z₀ : ℂ}
+    (hess : RudinRCA.Chapter10.HasEssentialSingularity f Ω z₀) :
+    ∃ w₀ : ℂ, ∀ w : ℂ, w ≠ w₀ →
+      ({z ∈ Ω \ {z₀} | f z = w}).Infinite := by
+  obtain ⟨r, hr, hsub⟩ := Metric.isOpen_iff.mp hess.1.1 z₀ hess.1.2.1
+  obtain ⟨w₀, hw₀⟩ := bigPicard_infinite_preimages hess hr hsub
+  refine ⟨w₀, fun w hw => (hw₀ w hw).mono ?_⟩
+  rintro z ⟨⟨hz_ball, hz_ne⟩, hfz⟩
+  exact ⟨⟨hsub hz_ball, hz_ne⟩, hfz⟩
+
+/-- **Big Picard's Theorem (nonpolynomial-entire infinite-fiber form, Rudin 16.21, pp. 331–332):**
+Every nonpolynomial entire function assumes every complex value infinitely often, with at most
+one exception. -/
+theorem bigPicard_nonpolynomial_entire
+    {f : ℂ → ℂ} (hf : Differentiable ℂ f)
+    (hnp : ¬ ∃ P : Polynomial ℂ, ∀ z : ℂ, f z = P.eval z) :
+    ∃ w₀ : ℂ, ∀ w : ℂ, w ≠ w₀ → ({z : ℂ | f z = w}).Infinite :=
+  theorem16_21_bigPicard_nonpolynomial_entire bigPicardStatement hf hnp
+
+#print axioms bigPicardStatement
+#print axioms bigPicard_no_two_omitted
+#print axioms bigPicard_infinite_preimages
+#print axioms bigPicard_infinite_preimages_open
+#print axioms bigPicard_nonpolynomial_entire
+
+end BigPicard1621
+
 end RudinRCA.Chapter16
