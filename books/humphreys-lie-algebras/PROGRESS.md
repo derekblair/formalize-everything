@@ -20,7 +20,7 @@
 | `PIN-SQUARE-IDENTITY-25-2C` | Ch. VII, §25.1(c) & §25.2(c) (pp. 145–148) | `Humphreys/Ch7/SquareIdentity25_2c.lean` | 6 / 6 (6 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #148 (`a138dbbc`) |
 | `PIN-CLOSED-SUBSET-BASIS-26-3B` | Ch. VII, §26.3, Lemma B (pp. 154–155) | `Humphreys/Ch7/ClosedSubsetBasis26_3B.lean` | 9 / 9 (5 defs + 4 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #150 (`665faebc`) |
 | `PIN-BINOMIAL-BASIS-26-1` | Ch. VII, §26.1, Lemma 26.1 (p. 152) | `Humphreys/Ch7/BinomialBasis26_1.lean` | 7 / 7 (3 defs + 4 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #149 (`086fc61`) |
-| `PIN-CHEVALLEY-GROUP-25-5` | Ch. VII, §§25.4–25.5, Prop. 25.5, `D25.5` & Ex. 25.11 (pp. 149–151) | `Humphreys/Ch7/ChevalleyGroup25_5.lean` | 15 / 15 (8 defs + 7 theorems) | `[propext, Classical.choice, Quot.sound]` | Proved (draft PR pending crossed review) |
+| `PIN-CHEVALLEY-GROUP-25-5` | Ch. VII, §§25.4–25.5, Prop. 25.5, `D25.5` & Ex. 25.11 (pp. 149–151) | `Humphreys/Ch7/ChevalleyGroup25_5.lean` | 15 / 15 (8 defs + 7 theorems) | `[propext, Classical.choice, Quot.sound]` | Proved, landed (merged in FE PR #151, `a38edfc7`) |
 
 ## `PIN-CHEVALLEY-14-3` Declarations (`Humphreys/Ch4/ChevalleyInvolution14_3.lean`)
 
