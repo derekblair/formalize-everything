@@ -207,7 +207,6 @@ theorem section_15_1_roots_group_cyclic {K : Type u} {L : Type v}
     intro x
     rw [mem_garlingRootSet_iff]
     simp only [map_sub, map_pow, map_one, Polynomial.aeval_X, sub_eq_zero]
-    exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨hf_ne0, h⟩⟩
   let e : R ≃ garlingRootSet K L (Polynomial.X ^ m - 1) :=
     { toFun := fun u => ⟨(u.1 : L), (hroot_iff (u.1 : L)).mpr u.2⟩
       invFun := fun x =>
@@ -222,7 +221,7 @@ theorem section_15_1_roots_group_cyclic {K : Type u} {L : Type v}
       left_inv := fun u => by ext; rfl
       right_inv := fun x => by ext; rfl }
   have hfin_roots : (garlingRootSet K L (Polynomial.X ^ m - 1)).Finite := by
-    rw [garlingRootSet_eq_rootSet K L _ hf_ne0]
+    rw [garlingRootSet_eq_rootSet (K := K) (L := L) hf_ne0]
     exact Finite.of_fintype _
   have _ : Finite (garlingRootSet K L (Polynomial.X ^ m - 1)) := hfin_roots
   have hfinR : Finite R := Finite.of_equiv _ e.symm
@@ -301,7 +300,8 @@ theorem generatesGarlingRootsOfUnity_iff_isGarlingPrimitiveRoot {K : Type u} {L 
       have h1 : orderOf (u.1 : Lˣ) = orderOf u := orderOf_injective _ hinj1 u
       have h2 : orderOf ((u.1 : Lˣ) : L) = orderOf (u.1 : Lˣ) := orderOf_units
       exact h2.trans (h1.trans hord_u)
-    exact hord_val ▸ IsPrimitiveRoot.orderOf ((u.1 : Lˣ) : L)
+    have hprim_ord := IsPrimitiveRoot.orderOf ((u.1 : Lˣ) : L)
+    rwa [hord_val] at hprim_ord
   · intro hprim
     have hpow : ε ^ m = 1 := hprim.pow_eq_one
     have hε0 : ε ≠ 0 := hprim.ne_zero (by omega)
@@ -677,12 +677,12 @@ private theorem exists_poly_map_eq_of_coeff_mem_range {R S : Type*} [CommRing R]
   simp only [Polynomial.coeff_monomial]
   by_cases hj : j ∈ q.support
   · rw [Finset.sum_eq_single j
-      (fun b _ hbj => if_neg hbj)
-      (fun h => absurd hj h),
-      if_pos rfl]
-    exact hc j
-  · rw [Finset.sum_eq_zero (fun b hb =>
-      if_neg (fun hbj : b = j => hj (hbj ▸ hb))),
+      (fun b _ hbj => by simp [hbj])
+      (fun h => absurd hj h)]
+    simp [hc j]
+  · rw [Finset.sum_eq_zero (fun b hb => by
+      have hbj : b ≠ j := fun h => hj (h ▸ hb)
+      simp [hbj]),
       Polynomial.notMem_support_iff.mp hj, map_zero]
 
 /-- **Theorem 15.1** (§15.1, printed p. 119 / PDF p. 127; OCR warning: `garling1986_pages.txt` l. 4444
@@ -1154,7 +1154,7 @@ theorem exercise_15_3 :
         ∑ j ∈ Finset.range p, (Polynomial.X : R[X]) ^ (j * p ^ (n - 1))) ∧
     (∀ {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L] {p n : ℕ},
       Nat.Prime p → 1 ≤ n →
-      ∀ (hchar : ¬ (ringChar K ∣ p ^ n))
+      ∀ (_hchar : ¬ (ringChar K ∣ p ^ n))
         (_hsf : IsGarlingSplittingFieldExtension K L (Polynomial.X ^ (p ^ n) - 1)),
         garlingCyclotomicPoly L (p ^ n) =
           ∑ j ∈ Finset.range p, (Polynomial.X : L[X]) ^ (j * p ^ (n - 1))) := by
@@ -1181,7 +1181,7 @@ private theorem irreducible_of_natDegree_two_of_no_roots {F : Type*} [Field F] {
   have hf_nu : ¬ IsUnit f := Polynomial.not_isUnit_of_natDegree_pos f (by omega)
   refine irreducible_iff.mpr ⟨hf_nu, fun a b hfab => ?_⟩
   by_contra hboth
-  push_neg at hboth
+  push Not at hboth
   rcases hboth with ⟨ha_nu, hb_nu⟩
   have ha0 : a ≠ 0 := fun h0 => by
     rw [h0, zero_mul] at hfab
@@ -1215,8 +1215,9 @@ private theorem irreducible_of_natDegree_two_of_no_roots {F : Type*} [Field F] {
   have ha_root : a.eval r = 0 := by
     rw [ha_eq, Polynomial.eval_add, Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_X,
       Polynomial.eval_C]
+    dsimp [r]
     field_simp [hc1_ne0]
-    ring_nf
+    ring
   have hf_root : f.eval r = 0 := by
     rw [hfab, Polynomial.eval_mul, ha_root, zero_mul]
   exact hnr r hf_root
@@ -1235,17 +1236,21 @@ theorem section_15_2_phi3_zmod5_zmod7 :
       (Polynomial.X - Polynomial.C (2 : ZMod 7)) *
         (Polynomial.X - Polynomial.C (4 : ZMod 7)) ∧
     ¬ Irreducible (Polynomial.cyclotomic 3 (ZMod 7)) := by
+  have hnr5_val : ∀ x : ZMod 5, x ^ 2 + x + 1 ≠ 0 := by decide
+  have _ : Fact (Nat.Prime 5) := ⟨by decide⟩
+  have _ : Fact (Nat.Prime 7) := ⟨by decide⟩
   have h3_5 : Polynomial.cyclotomic 3 (ZMod 5) = Polynomial.X ^ 2 + Polynomial.X + 1 :=
     Polynomial.cyclotomic_three (ZMod 5)
   have h3_7 : Polynomial.cyclotomic 3 (ZMod 7) = Polynomial.X ^ 2 + Polynomial.X + 1 :=
     Polynomial.cyclotomic_three (ZMod 7)
   have hdeg5 : (Polynomial.cyclotomic 3 (ZMod 5)).natDegree = 2 := by
     rw [Polynomial.natDegree_cyclotomic]
-    norm_num
+    decide
   have hnr5 : ∀ x : ZMod 5, (Polynomial.cyclotomic 3 (ZMod 5)).eval x ≠ 0 := by
     rw [h3_5]
     intro x
-    fin_cases x <;> decide
+    simp only [Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_X, Polynomial.eval_one]
+    exact hnr5_val x
   have hirr5 : Irreducible (Polynomial.cyclotomic 3 (ZMod 5)) :=
     irreducible_of_natDegree_two_of_no_roots hdeg5 hnr5
   have hgirr5 : IsGarlingIrreducible (Polynomial.cyclotomic 3 (ZMod 5)) :=
@@ -1319,7 +1324,7 @@ theorem theorem_15_3_root_pow_prime {L : Type u} [Field L] [Algebra ℚ L]
     rw [Polynomial.aeval_map_algebraMap]
     exact hk_ε
   have hfQ_min : f.map (algebraMap ℤ ℚ) = minpoly ℚ ε :=
-    (minpoly.eq_of_irreducible_of_monic hf_irr hfQ_ε hfQ_mon).symm
+    minpoly.eq_of_irreducible_of_monic hf_irr hfQ_ε hfQ_mon
   have hdvdQ : f.map (algebraMap ℤ ℚ) ∣ k.map (algebraMap ℤ ℚ) := by
     rw [hfQ_min]
     exact minpoly.dvd ℚ ε hkQ_ε
@@ -1539,6 +1544,31 @@ theorem cyclotomic_zero_not_irreducible_remark :
     · simp [not_irreducible_one]
     · exact ⟨fun _ => by omega, fun hm => (theorem_15_3 hm).1⟩
 
+private theorem rat_finrank_mul_finrank {M E : Type*} [Field M] [Field E]
+    [Algebra ℚ M] [Algebra ℚ E] [Algebra M E] [Module.Finite ℚ E] :
+    Module.finrank ℚ M * Module.finrank M E = Module.finrank ℚ E := by
+  have _ : IsScalarTower ℚ M E :=
+    IsScalarTower.of_algebraMap_eq fun q =>
+      RingHom.congr_fun (Subsingleton.elim
+        (algebraMap ℚ E) ((algebraMap M E).comp (algebraMap ℚ M))) q
+  have _ : FiniteDimensional ℚ M := FiniteDimensional.left ℚ M E
+  exact Module.finrank_mul_finrank ℚ M E
+
+private theorem rat_finrank_eq_of_ringEquiv {A B : Type*} [Field A] [Field B]
+    [mA : Module ℚ A] [mB : Module ℚ B]
+    (hA : ∀ (q : ℚ) (x : A), @SMul.smul ℚ A mA.toSMul q x = (q : A) * x)
+    (hB : ∀ (q : ℚ) (x : B), @SMul.smul ℚ B mB.toSMul q x = (q : B) * x)
+    (e : A ≃+* B) :
+    @Module.finrank ℚ A _ _ mA = @Module.finrank ℚ B _ _ mB := by
+  let le : A ≃ₗ[ℚ] B :=
+    { e.toAddEquiv with
+      map_smul' := fun q x => by
+        dsimp only [RingHom.id_apply, RingEquiv.toAddEquiv_eq_coe, EquivLike.coe_coe]
+        exact (congrArg e (hA q x)).trans
+          ((map_mul e (q : A) x).trans
+            ((congrArg (· * e x) (map_ratCast e q)).trans (hB q (e x)).symm)) }
+  exact LinearEquiv.finrank_eq le
+
 /-- **Exercise 15.4** (`QUEUE.md` fidelity hold — open-ended minimal-polynomial and Galois-group
 identification prompt; §15.2, printed p. 121 / PDF p. 129; OCR warning: `garling1986_pages.txt`
 ll. 4511–4513 mangles `[ℚ(ε):ℚ(η)] = 2` and `Γ[ℚ(ε):ℚ(η)]`):
@@ -1592,34 +1622,69 @@ theorem exercise_15_4 {L : Type u} [Field L] [Algebra ℚ L] {m : ℕ} (hm : 2 <
     rw [← IsPrimitiveRoot.coe_submonoidClass_iff]
     exact hprimL
   -- Equivalence `M ≃ₐ[ℚ] F` inside `L`:
-  have hMF_range : (E.val.comp M.val).fieldRange = F := by
-    ext x
-    constructor
-    · rintro ⟨y, rfl⟩
-      change (y : E).1 ∈ F
-      have hy : (y : E) ∈ M := y.2
-      let F_sub_E : IntermediateField ℚ E := F.comap E.val
-      have hη₀_mem : η₀ ∈ F_sub_E := by
-        change η ∈ F
-        exact IntermediateField.mem_adjoin_simple_self ℚ η
-      have hle : M ≤ F_sub_E := IntermediateField.adjoin_le_iff.mpr (Set.singleton_subset_iff.mpr hη₀_mem)
-      exact hle hy
-    · intro hx
-      have hηE : η ∈ E := E.add_mem ε₀.2 (E.inv_mem ε₀.2)
-      have hFE : F ≤ E := IntermediateField.adjoin_le_iff.mpr (Set.singleton_subset_iff.mpr hηE)
-      let xE : E := ⟨x, hFE hx⟩
-      have hxM : xE ∈ M := by
-        let M_map : IntermediateField ℚ L := M.map E.val
-        have hη_in_Mmap : η ∈ M_map := ⟨η₀, ηM.2, rfl⟩
-        have hF_le : F ≤ M_map :=
-          IntermediateField.adjoin_le_iff.mpr (Set.singleton_subset_iff.mpr hη_in_Mmap)
-        rcases hF_le hx with ⟨z, hzM, hzx⟩
-        have hz_eq : z = xE := Subtype.ext hzx
-        exact hz_eq ▸ hzM
-      exact ⟨⟨xE, hxM⟩, rfl⟩
+  have hM_in_F : ∀ y : M, ((y : E) : L) ∈ F := by
+    intro y
+    have hy : (y : E) ∈ M := y.2
+    let F_sub_E : IntermediateField ℚ E :=
+      { carrier := {z : E | z.1 ∈ F}
+        add_mem' := fun {a b} ha hb => F.add_mem ha hb
+        zero_mem' := F.zero_mem
+        mul_mem' := fun {a b} ha hb => F.mul_mem ha hb
+        one_mem' := F.one_mem
+        inv_mem' := fun {a} ha => F.inv_mem ha
+        algebraMap_mem' := fun q => by
+          change ((algebraMap ℚ E q : E) : L) ∈ F
+          have hq : ((algebraMap ℚ E q : E) : L) = algebraMap ℚ L q :=
+            RingHom.congr_fun (Subsingleton.elim
+              (E.toSubfield.subtype.comp (algebraMap ℚ E)) (algebraMap ℚ L)) q
+          rw [hq]
+          exact F.algebraMap_mem q }
+    have hη₀_mem : η₀ ∈ F_sub_E := by
+      change η ∈ F
+      exact IntermediateField.mem_adjoin_simple_self ℚ η
+    have hle : M ≤ F_sub_E := IntermediateField.adjoin_le_iff.mpr (Set.singleton_subset_iff.mpr hη₀_mem)
+    exact hle hy
+  have hF_in_M : ∀ x : L, x ∈ F → ∃ hx : x ∈ E, (⟨x, hx⟩ : E) ∈ M := by
+    intro x hx
+    have hηE : η ∈ E := E.add_mem ε₀.2 (E.inv_mem ε₀.2)
+    let M_sub_L : IntermediateField ℚ L :=
+      { carrier := {z : L | ∃ hz : z ∈ E, (⟨z, hz⟩ : E) ∈ M}
+        add_mem' := fun {a b} ⟨haE, haM⟩ ⟨hbE, hbM⟩ =>
+          ⟨E.add_mem haE hbE, M.add_mem haM hbM⟩
+        zero_mem' := ⟨E.zero_mem, M.zero_mem⟩
+        mul_mem' := fun {a b} ⟨haE, haM⟩ ⟨hbE, hbM⟩ =>
+          ⟨E.mul_mem haE hbE, M.mul_mem haM hbM⟩
+        one_mem' := ⟨E.one_mem, M.one_mem⟩
+        inv_mem' := fun {a} ⟨haE, haM⟩ =>
+          ⟨E.inv_mem haE, M.inv_mem haM⟩
+        algebraMap_mem' := fun q => by
+          refine ⟨E.algebraMap_mem q, ?_⟩
+          have hq : (⟨algebraMap ℚ L q, E.algebraMap_mem q⟩ : E) = algebraMap ℚ E q := by
+            apply Subtype.ext
+            exact (RingHom.congr_fun (Subsingleton.elim
+              (E.toSubfield.subtype.comp (algebraMap ℚ E)) (algebraMap ℚ L)) q).symm
+          rw [hq]
+          exact M.algebraMap_mem q }
+    have hη_in : η ∈ M_sub_L := ⟨hηE, ηM.2⟩
+    have hF_le : F ≤ M_sub_L :=
+      IntermediateField.adjoin_le_iff.mpr (Set.singleton_subset_iff.mpr hη_in)
+    exact hF_le hx
+  let gMF_ring : M →+* F :=
+    { toFun := fun y => ⟨((y : E) : L), hM_in_F y⟩
+      map_one' := Subtype.ext rfl
+      map_mul' := fun _ _ => Subtype.ext rfl
+      map_zero' := Subtype.ext rfl
+      map_add' := fun _ _ => Subtype.ext rfl }
+  let gMF : M →ₐ[ℚ] F :=
+    { gMF_ring with
+      commutes' := fun q =>
+        RingHom.congr_fun (Subsingleton.elim (gMF_ring.comp (algebraMap ℚ M)) (algebraMap ℚ F)) q }
   let isoMF : M ≃ₐ[ℚ] F :=
-    (AlgEquiv.ofInjective (E.val.comp M.val) (RingHom.injective _)).trans
-      (IntermediateField.equivOfEq hMF_range)
+    AlgEquiv.ofBijective gMF
+      ⟨fun a b hab => Subtype.ext (Subtype.ext (congrArg (fun z : F => (z : L)) hab)),
+       fun ⟨x, hx⟩ => by
+         obtain ⟨hxE, hxM⟩ := hF_in_M x hx
+         exact ⟨⟨⟨x, hxE⟩, hxM⟩, Subtype.ext rfl⟩⟩
   -- Degree `[E : ℚ] = φ(m)`:
   have hminQ_ε₀ : minpoly ℚ ε₀ = Polynomial.cyclotomic m ℚ :=
     (Polynomial.cyclotomic_eq_minpoly_rat hprimE (by omega : 0 < m)).symm
@@ -1629,30 +1694,58 @@ theorem exercise_15_4 {L : Type u} [Field L] [Algebra ℚ L] {m : ℕ} (hm : 2 <
     ext x
     simp only [IntermediateField.mem_top, iff_true]
     have hxE : x.1 ∈ E := x.2
-    let S : IntermediateField ℚ L := ℚ⟮ε₀⟯.map E.val
-    have hεS : ε ∈ S := ⟨ε₀, IntermediateField.mem_adjoin_simple_self ℚ ε₀, rfl⟩
+    let S : IntermediateField ℚ L :=
+      { carrier := {z : L | ∃ hz : z ∈ E, (⟨z, hz⟩ : E) ∈ ℚ⟮ε₀⟯}
+        add_mem' := fun {a b} ⟨haE, haS⟩ ⟨hbE, hbS⟩ => ⟨E.add_mem haE hbE, ℚ⟮ε₀⟯.add_mem haS hbS⟩
+        zero_mem' := ⟨E.zero_mem, ℚ⟮ε₀⟯.zero_mem⟩
+        mul_mem' := fun {a b} ⟨haE, haS⟩ ⟨hbE, hbS⟩ => ⟨E.mul_mem haE hbE, ℚ⟮ε₀⟯.mul_mem haS hbS⟩
+        one_mem' := ⟨E.one_mem, ℚ⟮ε₀⟯.one_mem⟩
+        inv_mem' := fun {a} ⟨haE, haS⟩ => ⟨E.inv_mem haE, ℚ⟮ε₀⟯.inv_mem haS⟩
+        algebraMap_mem' := fun q => by
+          refine ⟨E.algebraMap_mem q, ?_⟩
+          have hq : (⟨algebraMap ℚ L q, E.algebraMap_mem q⟩ : E) = algebraMap ℚ E q := by
+            apply Subtype.ext
+            exact (RingHom.congr_fun (Subsingleton.elim
+              (E.toSubfield.subtype.comp (algebraMap ℚ E)) (algebraMap ℚ L)) q).symm
+          rw [hq]
+          exact ℚ⟮ε₀⟯.algebraMap_mem q }
+    have hεS : ε ∈ S := ⟨ε₀.2, IntermediateField.mem_adjoin_simple_self ℚ ε₀⟩
     have hES : E ≤ S := IntermediateField.adjoin_le_iff.mpr (Set.singleton_subset_iff.mpr hεS)
-    rcases hES hxE with ⟨y, hy, hyx⟩
-    have hyeq : y = x := Subtype.ext hyx
-    exact hyeq ▸ hy
+    rcases hES hxE with ⟨_, hxS⟩
+    exact hxS
   let pbE : PowerBasis ℚ E :=
     (IntermediateField.adjoin.powerBasis hintQ_ε₀).map
       ((IntermediateField.equivOfEq hE_top).trans IntermediateField.topEquiv)
   have hpbE_gen : pbE.gen = ε₀ := by
     simp [pbE, IntermediateField.adjoin.powerBasis_gen]
-  have hfinrankQE : Module.finrank ℚ E = Nat.totient m := by
-    rw [pbE.finrank, pbE.dim_eq_natDegree_minpoly, hpbE_gen, hminQ_ε₀,
+  have hfinrankQE_pb : @Module.finrank ℚ E _ _ DivisionRing.toRatAlgebra.toModule = Nat.totient m := by
+    rw [pbE.finrank, ← pbE.natDegree_minpoly, hpbE_gen, hminQ_ε₀,
       Polynomial.natDegree_cyclotomic]
+  have hε_cyc : Polynomial.aeval ε (Polynomial.cyclotomic m ℚ) = 0 := by
+    rw [Polynomial.aeval_def, Polynomial.eval₂_eq_eval_map, Polynomial.map_cyclotomic,
+      ← Polynomial.IsRoot.def]
+    exact hprimL.isRoot_cyclotomic (by omega)
+  have hintQ_ε : IsIntegral ℚ ε :=
+    ⟨Polynomial.cyclotomic m ℚ, Polynomial.cyclotomic.monic m ℚ, hε_cyc⟩
+  have hminQ_ε : minpoly ℚ ε = Polynomial.cyclotomic m ℚ :=
+    (minpoly.eq_of_irreducible_of_monic (theorem_15_3 hm_pos).1 hε_cyc
+      (Polynomial.cyclotomic.monic m ℚ)).symm
+  have hfinrankQE : Module.finrank ℚ E = Nat.totient m := by
+    rw [IntermediateField.adjoin.finrank hintQ_ε, hminQ_ε, Polynomial.natDegree_cyclotomic]
   -- Construct the `ℚ`-automorphism `τ₀ : E ≃ₐ[ℚ] E` sending `ε₀ ↦ ε₀⁻¹`:
   have hprimE_inv : IsPrimitiveRoot ε₀⁻¹ m := hprimE.inv
   have hminQ_inv : minpoly ℚ ε₀⁻¹ = minpoly ℚ ε₀ := by
     rw [hminQ_ε₀]
     exact (Polynomial.cyclotomic_eq_minpoly_rat hprimE_inv (by omega : 0 < m)).symm
   have hintQ_inv : IsIntegral ℚ ε₀⁻¹ :=
-    IsIntegral.tower_top (A := ℤ) (hprimE_inv.isIntegral (by omega))
+    IsIntegral.tower_top (R := ℤ) (A := ℚ) (hprimE_inv.isIntegral (by omega))
   have hE_top_inv : ℚ⟮ε₀⁻¹⟯ = (⊤ : IntermediateField ℚ E) := by
-    rw [IntermediateField.adjoin_inv]
-    exact hE_top
+    apply eq_top_iff.mpr
+    rw [← hE_top]
+    refine IntermediateField.adjoin_le_iff.mpr (Set.singleton_subset_iff.mpr ?_)
+    have hmem : ε₀⁻¹ ∈ ℚ⟮ε₀⁻¹⟯ := IntermediateField.mem_adjoin_simple_self ℚ ε₀⁻¹
+    have hinv : (ε₀⁻¹)⁻¹ ∈ ℚ⟮ε₀⁻¹⟯ := ℚ⟮ε₀⁻¹⟯.inv_mem hmem
+    rwa [inv_inv] at hinv
   let pbE_inv : PowerBasis ℚ E :=
     (IntermediateField.adjoin.powerBasis hintQ_inv).map
       ((IntermediateField.equivOfEq hE_top_inv).trans IntermediateField.topEquiv)
@@ -1661,6 +1754,7 @@ theorem exercise_15_4 {L : Type u} [Field L] [Algebra ℚ L] {m : ℕ} (hm : 2 <
   let τ₀ : E ≃ₐ[ℚ] E := pbE.equivOfMinpoly pbE_inv (by rw [hpbE_gen, hpbE_inv_gen, hminQ_inv])
   have hτ₀_gen : τ₀ ε₀ = ε₀⁻¹ := by
     have h := pbE.equivOfMinpoly_gen pbE_inv (by rw [hpbE_gen, hpbE_inv_gen, hminQ_inv])
+    change τ₀ pbE.gen = pbE_inv.gen at h
     rwa [hpbE_gen, hpbE_inv_gen] at h
   have hτ₀_η₀ : τ₀ η₀ = η₀ := by
     dsimp [η₀]
@@ -1670,7 +1764,6 @@ theorem exercise_15_4 {L : Type u} [Field L] [Algebra ℚ L] {m : ℕ} (hm : 2 <
       { carrier := {x : E | τ₀ x = x}
         add_mem' := fun {a b} ha hb => by change τ₀ (a + b) = a + b; rw [map_add, ha, hb]
         zero_mem' := map_zero τ₀
-        neg_mem' := fun {a} ha => by change τ₀ (-a) = -a; rw [map_neg, ha]
         mul_mem' := fun {a b} ha hb => by change τ₀ (a * b) = a * b; rw [map_mul, ha, hb]
         one_mem' := map_one τ₀
         inv_mem' := fun {a} ha => by change τ₀ a⁻¹ = a⁻¹; rw [map_inv₀, ha]
@@ -1698,21 +1791,19 @@ theorem exercise_15_4 {L : Type u} [Field L] [Algebra ℚ L] {m : ℕ} (hm : 2 <
     exact hε₀_ne_inv this.symm
   have hτ_sq : τ ^ 2 = 1 := by
     rw [sq]
-    apply AlgEquiv.coe_algHom_injective
-    apply AlgHom.coe_ringHom_injective
     have hext : ∀ x : E, (τ * τ) x = x := by
       let Fix2 : IntermediateField ℚ E :=
         { carrier := {x : E | (τ * τ) x = x}
           add_mem' := fun {a b} ha hb => by change (τ * τ) (a + b) = a + b; rw [map_add, ha, hb]
           zero_mem' := map_zero (τ * τ)
-          neg_mem' := fun {a} ha => by change (τ * τ) (-a) = -a; rw [map_neg, ha]
           mul_mem' := fun {a b} ha hb => by change (τ * τ) (a * b) = a * b; rw [map_mul, ha, hb]
           one_mem' := map_one (τ * τ)
           inv_mem' := fun {a} ha => by change (τ * τ) a⁻¹ = a⁻¹; rw [map_inv₀, ha]
           algebraMap_mem' := fun q => by
             change τ (τ (algebraMap ℚ E q)) = algebraMap ℚ E q
             have hq : algebraMap ℚ E q = algebraMap M E (algebraMap ℚ M q) :=
-              IsScalarTower.algebraMap_apply ℚ M E q
+              RingHom.congr_fun (Subsingleton.elim
+                (algebraMap ℚ E) ((algebraMap M E).comp (algebraMap ℚ M))) q
             rw [hq, τ.commutes, τ.commutes] }
       have hε₀_fix2 : ε₀ ∈ Fix2 := by
         change τ (τ ε₀) = ε₀
@@ -1722,7 +1813,7 @@ theorem exercise_15_4 {L : Type u} [Field L] [Algebra ℚ L] {m : ℕ} (hm : 2 <
         exact IntermediateField.adjoin_le_iff.mpr (Set.singleton_subset_iff.mpr hε₀_fix2)
       exact fun x => htop_le IntermediateField.mem_top
     ext x
-    exact hext x
+    exact congrArg Subtype.val (hext x)
   -- Quadratic polynomial `P = X^2 - ηM * X + 1 ∈ M[X]`:
   let P : M[X] := Polynomial.X ^ 2 - Polynomial.C ηM * Polynomial.X + 1
   have hP_deg_and_mon : P.Monic ∧ P.natDegree = 2 := by
@@ -1764,18 +1855,18 @@ theorem exercise_15_4 {L : Type u} [Field L] [Algebra ℚ L] {m : ℕ} (hm : 2 <
   have hdeg_min_le_2 : (minpoly M ε₀).natDegree ≤ 2 := by
     have := Polynomial.natDegree_le_of_dvd hminM_dvd_P hP_mon.ne_zero
     omega
-  have hfin_QE : FiniteDimensional ℚ E := pbE.finite
   have hfin_ME : FiniteDimensional M E := pbME.finite
-  have hfinrank_le_2 : Module.finrank M E ≤ 2 := by
-    rw [pbME.finrank, pbME.dim_eq_natDegree_minpoly, hpbME_gen]
-    exact hdeg_min_le_2
+  have hfinrank_ME_eq_deg : Module.finrank M E = (minpoly M ε₀).natDegree := by
+    rw [pbME.finrank, ← pbME.natDegree_minpoly, hpbME_gen]
+  have hfinrank_le_2 : Module.finrank M E ≤ 2 := hfinrank_ME_eq_deg.le.trans hdeg_min_le_2
   -- Also `2 ≤ Nat.card (GarlingGaloisGroup M E) ≤ Module.finrank M E`:
+  let _ : Fintype (GarlingGaloisGroup M E) := AlgEquiv.fintype M E
+  have hfin_ext_ME : IsFiniteExtension M E := (isFiniteExtension_iff_moduleFinite M E).mpr hfin_ME
   have hcard_gal_le : Nat.card (GarlingGaloisGroup M E) ≤ Module.finrank M E := by
-    let _ : Fintype (GarlingGaloisGroup M E) := AlgEquiv.fintype M E
-    rw [Nat.card_eq_fintype_card]
-    exact AlgEquiv.card_le_finrank M E
+    by_cases hgal : IsGarlingGaloisExtension M E
+    · exact ((theorem_10_4_algEquiv (K := M) (L := E) hfin_ext_ME).1 hgal).le
+    · exact ((theorem_10_4_algEquiv (K := M) (L := E) hfin_ext_ME).2 hgal).le
   have hcard_gal_ge_2 : 2 ≤ Nat.card (GarlingGaloisGroup M E) := by
-    let _ : Fintype (GarlingGaloisGroup M E) := AlgEquiv.fintype M E
     rw [Nat.card_eq_fintype_card]
     have hcard_pair : ({1, τ} : Finset (GarlingGaloisGroup M E)).card = 2 :=
       Finset.card_pair hτ_ne1.symm
@@ -1788,39 +1879,43 @@ theorem exercise_15_4 {L : Type u} [Field L] [Algebra ℚ L] {m : ℕ} (hm : 2 <
   have hextME : extDegree M E = 2 := by
     rw [extDegree_eq_finrank, hfinrankME]
     rfl
-  have hdeg_min_eq_2 : (minpoly M ε₀).natDegree = 2 := by
-    have h := hfinrankME
-    rw [pbME.finrank, pbME.dim_eq_natDegree_minpoly, hpbME_gen] at h
-    exact h
+  have hdeg_min_eq_2 : (minpoly M ε₀).natDegree = 2 := hfinrank_ME_eq_deg.symm.trans hfinrankME
   have hminM_eq_P : minpoly M ε₀ = P :=
-    Polynomial.eq_of_monic_of_dvd_of_natDegree_le hP_mon (minpoly.monic hintM_ε₀)
-      hminM_dvd_P (by omega)
+    (Polynomial.eq_of_monic_of_dvd_of_natDegree_le (minpoly.monic hintM_ε₀) hP_mon
+      hminM_dvd_P (by omega)).symm
   have hP_irr : Irreducible P := hminM_eq_P ▸ minpoly.irreducible hintM_ε₀
   -- Tower law `finrank ℚ E = finrank ℚ M * finrank M E` gives `finrank ℚ F = φ(m) / 2`:
-  have hfin_QM : FiniteDimensional ℚ M := FiniteDimensional.left ℚ M E
-  have htower : Module.finrank ℚ M * Module.finrank M E = Module.finrank ℚ E :=
-    Module.finrank_mul_finrank ℚ M E
-  have hfinrankQM : Module.finrank ℚ M = Nat.totient m / 2 := by
-    rw [hfinrankME, hfinrankQE] at htower
+  have htower : @Module.finrank ℚ M _ _ DivisionRing.toRatAlgebra.toModule * Module.finrank M E =
+      @Module.finrank ℚ E _ _ DivisionRing.toRatAlgebra.toModule :=
+    @rat_finrank_mul_finrank M E _ _ DivisionRing.toRatAlgebra DivisionRing.toRatAlgebra _ pbE.finite
+  have hfinrankQM : @Module.finrank ℚ M _ _ DivisionRing.toRatAlgebra.toModule = Nat.totient m / 2 := by
+    rw [hfinrankME, hfinrankQE_pb] at htower
     omega
   have hfinrankQF : Module.finrank ℚ F = Nat.totient m / 2 := by
-    rw [← LinearEquiv.finrank_eq isoMF.toLinearEquiv, hfinrankQM]
+    refine (@rat_finrank_eq_of_ringEquiv M F _ _
+      DivisionRing.toRatAlgebra.toModule _ (fun q x => Rat.smul_def q x) ?_
+      isoMF.toRingEquiv).symm.trans hfinrankQM
+    intro q x
+    apply Subtype.ext
+    have hq : algebraMap ℚ L q = (q : L) :=
+      RingHom.congr_fun (Subsingleton.elim (algebraMap ℚ L) (Rat.castHom L)) q
+    have hqF : ((q : F) : L) = (q : L) := map_ratCast F.toSubfield.subtype q
+    change q • (x : L) = ((q : F) : L) * (x : L)
+    rw [Algebra.smul_def, hq, hqF]
   -- Galoisness and Galois group identification:
   have hgalME : IsGarlingGaloisExtension M E := by
-    have hfin_ext : IsFiniteExtension M E := (isFiniteExtension_iff_moduleFinite M E).mpr hfin_ME
     by_contra hng
-    have hlt := (theorem_10_4_algEquiv (K := M) (L := E) hfin_ext).2 hng
+    have hlt := (theorem_10_4_algEquiv (K := M) (L := E) hfin_ext_ME).2 hng
     change Nat.card (GarlingGaloisGroup M E) < Module.finrank M E at hlt
     omega
+  have _ : Fact (Nat.Prime 2) := ⟨Nat.prime_two⟩
   have hcyc_gal : IsCyclic (GarlingGaloisGroup M E) := by
     apply isCyclic_of_prime_card (p := 2)
     exact hcard_gal
   have hsetOrder_gal : setOrder (GarlingGaloisGroup M E) = 2 := by
-    let _ : Fintype (GarlingGaloisGroup M E) := AlgEquiv.fintype M E
     rw [setOrder, ENat.card_eq_coe_fintype_card, ← Nat.card_eq_fintype_card, hcard_gal]
     rfl
   have huniv_eq : (Set.univ : Set (GarlingGaloisGroup M E)) = {1, τ} := by
-    let _ : Fintype (GarlingGaloisGroup M E) := AlgEquiv.fintype M E
     have hcard_u : (Finset.univ : Finset (GarlingGaloisGroup M E)).card = 2 := by
       rw [← Fintype.card, ← Nat.card_eq_fintype_card, hcard_gal]
     have hcard_p : ({1, τ} : Finset (GarlingGaloisGroup M E)).card = 2 :=
@@ -1838,11 +1933,12 @@ theorem exercise_15_4 {L : Type u} [Field L] [Algebra ℚ L] {m : ℕ} (hm : 2 <
         map_mul' := fun x y => by
           change τ ^ (Multiplicative.toAdd x + Multiplicative.toAdd y).val =
             τ ^ (Multiplicative.toAdd x).val * τ ^ (Multiplicative.toAdd y).val
-          rw [← pow_add]
           have hmod : ((Multiplicative.toAdd x + Multiplicative.toAdd y).val) =
               ((Multiplicative.toAdd x).val + (Multiplicative.toAdd y).val) % 2 :=
             ZMod.val_add _ _
-          rw [hmod, ← pow_mod_orderOf, hord_τ] }
+          have hpow : ∀ k : ℕ, τ ^ (k % 2) = τ ^ k := fun k => by
+            rw [← hord_τ, pow_mod_orderOf]
+          rw [hmod, hpow, pow_add] }
     have hsurj : Function.Surjective φ := by
       intro σ
       have hmem : σ ∈ ({1, τ} : Set (GarlingGaloisGroup M E)) := huniv_eq ▸ Set.mem_univ σ
@@ -1853,7 +1949,6 @@ theorem exercise_15_4 {L : Type u} [Field L] [Algebra ℚ L] {m : ℕ} (hm : 2 <
         have hval1 : (1 : ZMod 2).val = 1 := rfl
         rw [hval1, pow_one]
     have hinj : Function.Injective φ := by
-      let _ : Fintype (GarlingGaloisGroup M E) := AlgEquiv.fintype M E
       have hcard1 : Fintype.card (Multiplicative (ZMod 2)) = 2 := by
         rw [Fintype.card_multiplicative, ZMod.card]
       have hcard2 : Fintype.card (GarlingGaloisGroup M E) = 2 := by
@@ -1879,7 +1974,7 @@ theorem section_15_3_units_zmod_coprime {m : ℕ} (hm : 1 ≤ m) :
     Nat.card (GarlingUnitsZMod m) = Nat.totient m ∧
     (∀ n : ℕ, IsUnit (n : ZMod m) ↔ Nat.Coprime n m) ∧
     (∀ n : ℕ, Nat.Coprime n m ↔ ∃ a b : ℤ, a * (n : ℤ) + b * (m : ℤ) = 1) ∧
-    (∀ {L : Type u} [Field L] {ε : L}, IsGarlingPrimitiveRoot m ε →
+    (∀ {L : Type u} [Field L] [DecidableEq L] {ε : L}, IsGarlingPrimitiveRoot m ε →
       garlingPrimRootsFinset L m =
         ((Finset.range m).filter (fun n => Nat.Coprime n m)).image (fun n => ε ^ n)) := by
   classical
@@ -1905,7 +2000,7 @@ theorem section_15_3_units_zmod_coprime {m : ℕ} (hm : 1 ≤ m) :
       exact absurd (Nat.dvd_one.mp hp1) hp.ne_one
   refine ⟨⟨Units.mapEquiv (Int.quotientSpanNatEquivZMod m).toMulEquiv⟩, hcard,
     fun n => ZMod.isUnit_iff_coprime n m, hbezout, ?_⟩
-  intro L _ ε hε
+  intro L _ _ ε hε
   have hprim : IsPrimitiveRoot ε m :=
     (isGarlingPrimitiveRoot_iff_isPrimitiveRoot hm ε).mp hε
   ext θ
@@ -2030,7 +2125,6 @@ theorem garlingCyclotomicGalHom_spec_and_injective {K : Type u} {L : Type v}
     { carrier := {x : L | σ x = τ x}
       add_mem' := fun {a b} ha hb => by change σ (a + b) = τ (a + b); rw [map_add, map_add, ha, hb]
       zero_mem' := by change σ 0 = τ 0; rw [map_zero, map_zero]
-      neg_mem' := fun {a} ha => by change σ (-a) = τ (-a); rw [map_neg, map_neg, ha]
       mul_mem' := fun {a b} ha hb => by change σ (a * b) = τ (a * b); rw [map_mul, map_mul, ha, hb]
       one_mem' := by change σ 1 = τ 1; rw [map_one, map_one]
       inv_mem' := fun {a} ha => by change σ a⁻¹ = τ a⁻¹; rw [map_inv₀, map_inv₀, ha]
@@ -2094,11 +2188,12 @@ theorem theorem_15_4 {K : Type u} {L : Type v}
   have hpbKL_gen : pbKL.gen = ε := by
     simp [pbKL, IntermediateField.adjoin.powerBasis_gen]
   have hfinrankKL : Module.finrank K L = (minpoly K ε).natDegree := by
-    rw [pbKL.finrank, pbKL.dim_eq_natDegree_minpoly, hpbKL_gen]
+    rw [pbKL.finrank, ← pbKL.natDegree_minpoly, hpbKL_gen]
   have hcardG : Nat.card G = Module.finrank K L :=
     (theorem_10_4_algEquiv (K := K) (L := L) hgalKL.1).1 hgalKL
   have hcardUm : Nat.card (GarlingUnitsZMod m) = Nat.totient m := by
     rw [Nat.card_eq_fintype_card, ZMod.card_units_eq_totient]
+  have _ : FiniteDimensional K L := (isFiniteExtension_iff_moduleFinite K L).mp hgalKL.1
   let _ : Fintype G := AlgEquiv.fintype K L
   have hirr_imp_surj : Irreducible (Polynomial.cyclotomic m K) → Function.Surjective φ := by
     intro hirr
@@ -2117,8 +2212,8 @@ theorem theorem_15_4 {K : Type u} {L : Type v}
     have hdeg_eq : (minpoly K ε).natDegree = (Polynomial.cyclotomic m K).natDegree := by
       rw [← hfinrankKL, ← hcardG, hcard_eq, hcardUm, Polynomial.natDegree_cyclotomic]
     have hpoly_eq : Polynomial.cyclotomic m K = minpoly K ε :=
-      (Polynomial.eq_of_monic_of_dvd_of_natDegree_le (Polynomial.cyclotomic.monic m K)
-        (minpoly.monic hint_ε) hmin_dvd hdeg_eq.ge).symm
+      Polynomial.eq_of_monic_of_dvd_of_natDegree_le (minpoly.monic hint_ε)
+        (Polynomial.cyclotomic.monic m K) hmin_dvd hdeg_eq.ge
     rw [hpoly_eq]
     exact minpoly.irreducible hint_ε
   have hirr_iff_iso : Irreducible (Polynomial.cyclotomic m K) ↔
@@ -2160,33 +2255,32 @@ private noncomputable def kleinFourMulEquiv {G : Type*} [CommGroup G] [Fintype G
     intro p q hpq
     rcases p with ⟨x1, y1⟩
     rcases q with ⟨x2, y2⟩
-    revert hpq
-    -- Case-split on `Multiplicative.toAdd` in `ZMod 2`:
     obtain ⟨u1, rfl⟩ := Multiplicative.ofAdd.surjective x1
     obtain ⟨v1, rfl⟩ := Multiplicative.ofAdd.surjective y1
     obtain ⟨u2, rfl⟩ := Multiplicative.ofAdd.surjective x2
     obtain ⟨v2, rfl⟩ := Multiplicative.ofAdd.surjective y2
-    fin_cases u1 <;> fin_cases v1 <;> fin_cases u2 <;> fin_cases v2 <;>
-      intro hpq
+    have h2 : ∀ z : ZMod 2, z = 0 ∨ z = 1 := by decide
+    rcases h2 u1 with rfl | rfl <;> rcases h2 v1 with rfl | rfl <;>
+      rcases h2 u2 with rfl | rfl <;> rcases h2 v2 with rfl | rfl
     all_goals
       try rfl
+    all_goals
       dsimp [φ] at hpq
-      change a ^ (_ : ℕ) * b ^ (_ : ℕ) = a ^ (_ : ℕ) * b ^ (_ : ℕ) at hpq
       simp only [ZMod.val_zero, ZMod.val_one, pow_zero, pow_one, one_mul, mul_one] at hpq
     · exact absurd hpq hb1.symm
     · exact absurd hpq ha1.symm
     · exact absurd hpq hab_ne1.symm
     · exact absurd hpq hb1
     · exact absurd hpq hab.symm
-    · exact absurd (mul_right_cancel (by rw [hpq, one_mul])) ha1.symm
+    · exact absurd (mul_right_cancel (by rw [one_mul]; exact hpq)) ha1.symm
     · exact absurd hpq ha1
     · exact absurd hpq hab
     · exact absurd (mul_left_cancel (by rw [← hpq, mul_one])) hb1
     · exact absurd hpq hab_ne1
-    · exact absurd (mul_right_cancel (by rw [← hpq, one_mul])) ha1
+    · exact absurd (mul_right_cancel (by rw [one_mul]; exact hpq)) ha1
     · exact absurd (mul_left_cancel (by rw [hpq, mul_one])) hb1.symm
   have hcard_dom : Fintype.card (Multiplicative (ZMod 2) × Multiplicative (ZMod 2)) = 4 := by
-    rw [Fintype.card_prod, Fintype.card_multiplicative, Fintype.card_multiplicative, ZMod.card]
+    rw [Fintype.card_prod, Fintype.card_multiplicative, ZMod.card]
   have hbij : Function.Bijective φ :=
     (Fintype.bijective_iff_injective_and_card φ).mpr ⟨hinj, hcard_dom.trans hcard.symm⟩
   exact (MulEquiv.ofBijective φ hbij).symm
@@ -2202,7 +2296,10 @@ private noncomputable def cyclicMulEquivOfOrderOf {G : Type*} [Group G] [Fintype
       map_mul' := fun x y => by
         change g ^ (Multiplicative.toAdd x + Multiplicative.toAdd y).val =
           g ^ (Multiplicative.toAdd x).val * g ^ (Multiplicative.toAdd y).val
-        rw [ZMod.val_add, ← pow_mod_orderOf, hord, pow_add] }
+        rw [ZMod.val_add]
+        have hpow : ∀ k : ℕ, g ^ (k % n) = g ^ k := fun k => by
+          rw [← hord, pow_mod_orderOf]
+        rw [hpow, pow_add] }
   have hinj : Function.Injective φ := by
     intro x y hxy
     obtain ⟨u, rfl⟩ := Multiplicative.ofAdd.surjective x
@@ -2250,8 +2347,8 @@ theorem section_15_3_u12_example :
     intro hcyc
     obtain ⟨g, hg⟩ := hcyc.exists_generator
     have hg2 : g ^ 2 = 1 := by
-      revert g
-      decide
+      have hall : ∀ x : GarlingUnitsZMod 12, x ^ 2 = 1 := by decide
+      exact hall g
     have hord_le : orderOf g ≤ 2 := orderOf_le_of_pow_eq_one (by omega) hg2
     have hcard_zpow : Nat.card (Subgroup.zpowers g) = 4 := by
       have htop : Subgroup.zpowers g = ⊤ :=
@@ -2300,7 +2397,7 @@ theorem corollary_to_theorem_15_4 {K : Type u} {L : Type v}
       simp only [Polynomial.C_1]
       rw [h1, h2, h3]
     have hsplitsK : GarlingSplitsOver K K (Polynomial.cyclotomic p K) := by
-      rw [garlingSplitsOver_iff_splits, Polynomial.map_id, hpoly_eq]
+      rw [garlingSplitsOver_iff_splits, Algebra.algebraMap_self, Polynomial.map_id, hpoly_eq]
       exact (Polynomial.Splits.X_sub_C (1 : K)).pow (p - 1)
     have hsplits_bot :
         GarlingSplitsOver K (⊥ : IntermediateField K L) (Polynomial.cyclotomic p K) := by
@@ -2340,7 +2437,7 @@ theorem corollary_to_theorem_15_4 {K : Type u} {L : Type v}
       have hbot_ne_top : (⊥ : IntermediateField K L) ≠ ⊤ := by
         intro hbt
         apply hsp
-        rw [garlingSplitsOver_iff_splits, Polynomial.map_id]
+        rw [garlingSplitsOver_iff_splits, Algebra.algebraMap_self, Polynomial.map_id]
         have hsL : ((Polynomial.cyclotomic p K).map (algebraMap K L)).Splits :=
           (garlingSplitsOver_iff_splits K L _).mp hsf.1
         have hsurj : Function.Surjective (algebraMap K L) := by
@@ -2358,7 +2455,25 @@ theorem corollary_to_theorem_15_4 {K : Type u} {L : Type v}
         by_contra hle1
         have hpos : 0 < Module.finrank K L := Module.finrank_pos
         have heq1 : Module.finrank K L = 1 := by omega
-        exact hbot_ne_top (IntermediateField.bot_eq_top_of_finrank_eq_one heq1)
+        apply hbot_ne_top
+        have hlin : LinearIndependent K (fun _ : Unit => (1 : L)) := by
+          rw [Fintype.linearIndependent_iff]
+          intro f hf u
+          cases u
+          simp only [Finset.univ_unique, PUnit.default_eq_unit, Finset.sum_singleton,
+            Algebra.smul_def, mul_one] at hf
+          exact (algebraMap K L).injective (hf.trans (map_zero _).symm)
+        have hspan : Submodule.span K (Set.range (fun _ : Unit => (1 : L))) = ⊤ :=
+          Submodule.eq_top_of_finrank_eq (by
+            rw [finrank_span_eq_card hlin, Fintype.card_unit, heq1])
+        ext x
+        simp only [IntermediateField.mem_top, iff_true]
+        have hx : x ∈ Submodule.span K (Set.range (fun _ : Unit => (1 : L))) :=
+          hspan ▸ Submodule.mem_top
+        rw [Set.range_const, Submodule.mem_span_singleton] at hx
+        rcases hx with ⟨k, rfl⟩
+        rw [Algebra.smul_def, mul_one]
+        exact IntermediateField.algebraMap_mem ⊥ k
       let _ : Fintype G := AlgEquiv.fintype K L
       exact Finite.one_lt_card_iff_nontrivial.mp (by omega)
 
@@ -2417,15 +2532,27 @@ theorem exercise_15_5 :
     kleinFourMulEquiv hcard_u8 (a := u8_3) (b := u8_5)
       (by decide) (by decide) (by decide) (by decide) (by decide)
   -- Also `viergruppe ≃* Multiplicative (ZMod 2) × Multiplicative (ZMod 2)`:
-  have hcard_vier : Fintype.card viergruppe = 4 := by decide
-  let v_a : viergruppe := ⟨Equiv.swap 0 1 * Equiv.swap 2 3, by decide⟩
-  let v_b : viergruppe := ⟨Equiv.swap 0 2 * Equiv.swap 1 3, by decide⟩
-  have hcomm_vier : ∀ x y : viergruppe, x * y = y * x := by decide
-  let _ : CommGroup viergruppe :=
-    { inferInstanceAs (Group viergruppe) with mul_comm := hcomm_vier }
+  let toVierPerm : Multiplicative (ZMod 2) × Multiplicative (ZMod 2) → SigmaN 4 := fun p =>
+    match (Multiplicative.toAdd p.1).val, (Multiplicative.toAdd p.2).val with
+    | 0, 0 => 1
+    | 1, 0 => Equiv.swap (0 : Fin 4) 1 * Equiv.swap 2 3
+    | 0, 1 => Equiv.swap (0 : Fin 4) 2 * Equiv.swap 1 3
+    | _, _ => Equiv.swap (0 : Fin 4) 3 * Equiv.swap 1 2
+  have hv_mem : ∀ p, toVierPerm p ∈ viergruppeFinset := by decide
+  have hv_one : toVierPerm 1 = 1 := by decide
+  have hv_mul : ∀ p q, toVierPerm (p * q) = toVierPerm p * toVierPerm q := by decide
+  have hv_inj : Function.Injective toVierPerm := by decide
+  have hv_surj : ∀ σ ∈ viergruppeFinset, ∃ p, toVierPerm p = σ := by decide
+  let homVier : Multiplicative (ZMod 2) × Multiplicative (ZMod 2) →* viergruppe :=
+    { toFun := fun p => ⟨toVierPerm p, hv_mem p⟩
+      map_one' := Subtype.ext hv_one
+      map_mul' := fun p q => Subtype.ext (hv_mul p q) }
   let iso_vier_v4 : viergruppe ≃* Multiplicative (ZMod 2) × Multiplicative (ZMod 2) :=
-    kleinFourMulEquiv hcard_vier (a := v_a) (b := v_b)
-      (by decide) (by decide) (by decide) (by decide) (by decide)
+    (MulEquiv.ofBijective homVier
+      ⟨fun p q hpq => hv_inj (congrArg Subtype.val hpq),
+       fun ⟨σ, hσ⟩ => by
+         obtain ⟨p, hp⟩ := hv_surj σ hσ
+         exact ⟨p, Subtype.ext hp⟩⟩).symm
   -- Part 2: `x^5 + 1 = (x + 1) Φ_{10}(x)` over `ℚ`
   have hphi10 : Polynomial.cyclotomic 10 ℚ =
       Polynomial.X ^ 4 - Polynomial.X ^ 3 + Polynomial.X ^ 2 - Polynomial.X + 1 := by
@@ -2443,10 +2570,10 @@ theorem exercise_15_5 :
     ring
   have hirr10 : Irreducible (Polynomial.cyclotomic 10 ℚ) :=
     (theorem_15_3 (m := 10) (by omega)).1
-  have hsplits_x5_iff : ∀ (M : Type u) [Field M] [Algebra ℚ M],
-      GarlingSplitsOver ℚ M (Polynomial.X ^ 5 + 1) ↔
-      GarlingSplitsOver ℚ M (Polynomial.cyclotomic 10 ℚ) := by
-    intro M _ _
+  have hsplits_x5_iff : ∀ {M : Type u} [Field M] (instA : Algebra ℚ M),
+      @GarlingSplitsOver ℚ M _ _ instA (Polynomial.X ^ 5 + 1) ↔
+      @GarlingSplitsOver ℚ M _ _ instA (Polynomial.cyclotomic 10 ℚ) := by
+    intro M _ instA
     rw [garlingSplitsOver_iff_splits, garlingSplitsOver_iff_splits, hx5_fac, Polynomial.map_mul]
     have hlin : ((Polynomial.X + 1 : ℚ[X]).map (algebraMap ℚ M)).Splits := by
       simpa using Polynomial.Splits.X_add_C (1 : M)
@@ -2463,13 +2590,15 @@ theorem exercise_15_5 :
   have hsf_x5_iff : ∀ {L : Type u} [Field L] [Algebra ℚ L],
       IsGarlingSplittingFieldExtension ℚ L (Polynomial.X ^ 5 + 1) ↔
       IsGarlingSplittingFieldExtension ℚ L (Polynomial.cyclotomic 10 ℚ) := by
-    intro L _ _
+    intro L _ instAL
     unfold IsGarlingSplittingFieldExtension
     constructor
     · rintro ⟨hL, hmin⟩
-      exact ⟨(hsplits_x5_iff L).mp hL, fun M hM hMs => hmin M hM ((hsplits_x5_iff M).mpr hMs)⟩
+      exact ⟨(hsplits_x5_iff instAL).mp hL,
+        fun M hM hMs => hmin M hM ((hsplits_x5_iff M.algebra').mpr hMs)⟩
     · rintro ⟨hL, hmin⟩
-      exact ⟨(hsplits_x5_iff L).mpr hL, fun M hM hMs => hmin M hM ((hsplits_x5_iff M).mp hMs)⟩
+      exact ⟨(hsplits_x5_iff instAL).mpr hL,
+        fun M hM hMs => hmin M hM ((hsplits_x5_iff M.algebra').mp hMs)⟩
   have hcharQ10 : ¬ (ringChar ℚ ∣ 10) := by
     rw [ringChar.eq_zero]
     decide
@@ -2484,11 +2613,13 @@ theorem exercise_15_5 :
     have hle : orderOf u10_3 ≤ 4 := Nat.le_of_dvd (by omega) hdvd
     have hpos : 0 < orderOf u10_3 := isOfFinOrder_of_finite u10_3 |>.orderOf_pos
     by_contra hne4
-    interval_cases orderOf u10_3
-    · have h1 : u10_3 = 1 := by simpa using pow_orderOf_eq_one u10_3
+    interval_cases h : orderOf u10_3
+    · have h1 : u10_3 ^ 1 = 1 := h ▸ pow_orderOf_eq_one u10_3
+      rw [pow_one] at h1
       exact h2 (by rw [h1, one_pow])
-    · exact h2 (pow_orderOf_eq_one u10_3)
+    · exact h2 (h ▸ pow_orderOf_eq_one u10_3)
     · norm_num at hdvd
+    · exact hne4 rfl
   let iso_u10_z4 : GarlingUnitsZMod 10 ≃* Multiplicative (ZMod 4) :=
     cyclicMulEquivOfOrderOf hcard_u10 hord_u10_3
   refine ⟨⟨hphi8, hirr8, ?_⟩, ⟨hx5_fac, hphi10, hirr10, hsf_x5_iff, ?_⟩⟩
@@ -2608,6 +2739,8 @@ theorem exercise_15_6 :
       have hfinrank :
           Module.finrank (ZMod p) (IntermediateField.adjoin (ZMod p) ({ε} : Set L)) = k := by
         rw [IntermediateField.adjoin.finrank hint, hdeg_min]
+      have _ : FiniteDimensional (ZMod p) (IntermediateField.adjoin (ZMod p) ({ε} : Set L)) :=
+        IntermediateField.adjoin.finiteDimensional hint
       have hext :
           extDegree (ZMod p) (IntermediateField.adjoin (ZMod p) ({ε} : Set L)) = (k : ℕ) := by
         rw [extDegree_eq_finrank, hfinrank]
@@ -2687,6 +2820,7 @@ theorem exercise_15_6 :
       have hmod_cases : p % 4 = 1 ∨ p % 4 = 3 := by omega
       rcases hmod_cases with hm1 | hm3
       · refine iff_of_false ?_ (by omega)
+        change ¬ Subgroup.zpowers pbar4 = ⊤
         have hp1 : pbar4 = 1 := by
           apply Units.ext
           change (p : ZMod 4) = 1
@@ -2700,6 +2834,7 @@ theorem exercise_15_6 :
         rw [hbot_top] at hcard1
         omega
       · refine iff_of_true ?_ hm3
+        change Subgroup.zpowers pbar4 = ⊤
         have hp_ne1 : pbar4 ≠ 1 := by
           intro h1
           have hval : (p : ZMod 4) = 1 := congrArg Units.val h1
@@ -2707,8 +2842,8 @@ theorem exercise_15_6 :
           revert hval
           decide
         have hp_sq : pbar4 ^ 2 = 1 := by
-          revert pbar4
-          decide
+          have hall : ∀ x : GarlingUnitsZMod 4, x ^ 2 = 1 := by decide
+          exact hall pbar4
         have hord2 : orderOf pbar4 = 2 := orderOf_eq_prime hp_sq hp_ne1
         have hcard_eq : Nat.card (Subgroup.zpowers pbar4) = Nat.card (GarlingUnitsZMod 4) := by
           rw [Nat.card_zpowers, hord2, Nat.card_eq_fintype_card, ZMod.card_units_eq_totient]
@@ -2768,12 +2903,14 @@ theorem exercise_15_7_counterexamples :
       rw [pow_zero, Nat.card_eq_fintype_card, ZMod.card_units_eq_totient]
       rfl
     have hneq : (1 : ℕ) ≠ (q - 1) * q ^ (0 - 1) := by
-      simp only [Nat.sub_zero, pow_zero, mul_one]
+      simp only [Nat.zero_sub, pow_zero, mul_one]
       omega
     have hno_ord : ¬ ∃ x : GarlingUnitsZMod (q ^ 0), orderOf x = q - 1 := by
       rintro ⟨x, hx⟩
-      rw [pow_zero] at x
-      have hx1 : x = 1 := Subsingleton.elim x 1
+      have hsub : Subsingleton (GarlingUnitsZMod (q ^ 0)) := by
+        rw [pow_zero]
+        infer_instance
+      have hx1 : x = 1 := hsub.elim x 1
       rw [hx1, orderOf_one] at hx
       omega
     exact ⟨hcard1, hcard1 ▸ hneq, hno_ord⟩
@@ -2807,7 +2944,7 @@ theorem exercise_15_7 {q t m : ℕ} (hq : Nat.Prime q) (hq_odd : Odd q) (ht : 1 
     let u1q : GarlingUnitsZMod m :=
       ZMod.unitOfCoprime (1 + q) (by
         rw [hm]
-        exact (Nat.coprime_add_self_left.mpr Nat.coprime_one_left).pow_right t)
+        exact (Nat.coprime_add_self_left.mpr (Nat.coprime_one_left q)).pow_right t)
     -- (i) `|U_m| = (q - 1) q^{t - 1}`
     (Nat.card (GarlingUnitsZMod m) = (q - 1) * q ^ (t - 1) ∧
       setOrder (GarlingUnitsZMod m) = ((q - 1) * q ^ (t - 1) : ℕ)) ∧
@@ -2836,7 +2973,7 @@ theorem exercise_15_7 {q t m : ℕ} (hq : Nat.Prime q) (hq_odd : Odd q) (ht : 1 
   have _ : NeZero (q ^ t) := ⟨pow_ne_zero t hq.ne_zero⟩
   let u1q : GarlingUnitsZMod (q ^ t) :=
     ZMod.unitOfCoprime (1 + q)
-      ((Nat.coprime_add_self_left.mpr Nat.coprime_one_left).pow_right t)
+      ((Nat.coprime_add_self_left.mpr (Nat.coprime_one_left q)).pow_right t)
   -- (i) Cardinality of `U_{q^t}`:
   have hcard : Nat.card (GarlingUnitsZMod (q ^ t)) = (q - 1) * q ^ (t - 1) := by
     rw [Nat.card_eq_fintype_card, ZMod.card_units_eq_totient,
@@ -2878,17 +3015,19 @@ theorem exercise_15_7 {q t m : ℕ} (hq : Nat.Prime q) (hq_odd : Odd q) (ht : 1 
   have hu1q_coe : (u1q : ZMod (q ^ t)) = 1 + (q : ZMod (q ^ t)) := by
     simp [u1q]
   have hu1q_ord : orderOf u1q = q ^ (t - 1) := by
-    obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le ht
-    rw [add_comm 1 k, Nat.add_sub_cancel]
-    have hord_val : orderOf (u1q : ZMod (q ^ (k + 1))) = orderOf u1q := orderOf_units
-    rw [← hord_val, hu1q_coe]
-    exact ZMod.orderOf_one_add_prime hq hq_ne2 k
+    cases t with
+    | zero => omega
+    | succ k =>
+      simp only [Nat.add_sub_cancel]
+      have hord_val : orderOf (u1q : ZMod (q ^ (k + 1))) = orderOf u1q := orderOf_units
+      rw [← hord_val, hu1q_coe]
+      exact ZMod.orderOf_one_add_prime hq hq_ne2 k
   -- (v) Combine `(ii)` and `(iv)`:
   have hcop_orders : Nat.Coprime (orderOf g) (orderOf u1q) := by
     rw [hg_ord, hu1q_ord]
     refine Nat.Coprime.pow_right (t - 1) ?_
     rw [Nat.coprime_self_sub_left hq.pos]
-    exact Nat.coprime_one_right q
+    exact Nat.coprime_one_left q
   have hprod_ord : orderOf (g * u1q) = (q - 1) * q ^ (t - 1) := by
     rw [(Commute.all g u1q).orderOf_mul_eq_mul_orderOf_of_coprime hcop_orders, hg_ord, hu1q_ord]
   have hcard_zpow :
@@ -2945,6 +3084,11 @@ theorem exercise_15_8_same_prime_counterexamples :
   · have h := Nat.card_congr e.toEquiv
     omega
 
+private def garlingUnitsZModCast {a b : ℕ} (h : a = b) :
+    GarlingUnitsZMod a ≃* GarlingUnitsZMod b := by
+  subst h
+  exact MulEquiv.refl _
+
 /-- Explicit finite-product Chinese Remainder unit isomorphism
 `U_{m_1 ⋯ m_r} ≃* U_{m_1} × ⋯ × U_{m_r}` for any pairwise relatively prime tuple `μ : Fin r → ℕ`
 (**Exercise 15.8**, §15.3, printed p. 122 / PDF p. 130). -/
@@ -2953,9 +3097,12 @@ noncomputable def garlingUnitsZModProdEquiv :
       Pairwise (fun i j => Nat.Coprime (μ i) (μ j)) →
       GarlingUnitsZMod (∏ i : Fin r, μ i) ≃* (∀ i : Fin r, GarlingUnitsZMod (μ i))
   | 0, μ, _ =>
+    have hsub : Subsingleton (GarlingUnitsZMod (∏ i : Fin 0, μ i)) := by
+      rw [Fin.prod_univ_zero]
+      infer_instance
     { toFun := fun _ i => Fin.elim0 i
       invFun := fun _ => 1
-      left_inv := fun u => Subsingleton.elim 1 u
+      left_inv := fun u => hsub.elim 1 u
       right_inv := fun f => funext fun i => Fin.elim0 i
       map_mul' := fun _ _ => funext fun i => Fin.elim0 i }
   | r + 1, μ, hcop =>
@@ -2966,14 +3113,7 @@ noncomputable def garlingUnitsZModProdEquiv :
       Nat.coprime_prod_right_iff.mpr fun j _ => hcop (Fin.succ_ne_zero j).symm
     let e_split : GarlingUnitsZMod (∏ i : Fin (r + 1), μ i) ≃*
         GarlingUnitsZMod (μ 0) × GarlingUnitsZMod (∏ j : Fin r, μ_tail j) :=
-      ({ toFun := fun u => Equiv.cast (congrArg GarlingUnitsZMod (Fin.prod_univ_succ μ)) u
-         invFun := fun u => Equiv.cast (congrArg GarlingUnitsZMod (Fin.prod_univ_succ μ)).symm u
-         left_inv := fun _ => by simp
-         right_inv := fun _ => by simp
-         map_mul' := fun a b => by
-           cases Fin.prod_univ_succ μ
-           rfl } : GarlingUnitsZMod (∏ i : Fin (r + 1), μ i) ≃*
-             GarlingUnitsZMod (μ 0 * ∏ j : Fin r, μ_tail j)).trans
+      (garlingUnitsZModCast (Fin.prod_univ_succ μ)).trans
         ((Units.mapEquiv (ZMod.chineseRemainder hcop_head).toMulEquiv).trans MulEquiv.prodUnits)
     let e_ih := garlingUnitsZModProdEquiv μ_tail hcop_tail
     let e_cons : (GarlingUnitsZMod (μ 0) × ∀ j : Fin r, GarlingUnitsZMod (μ_tail j)) ≃*
@@ -3044,8 +3184,8 @@ theorem exercise_15_8 :
         simpa [ZMod.card_units_eq_totient] using h
       intro i j hij
       by_contra hnot_cop
-      rcases (isPrimePow_nat_iff.mp (hpp i)) with ⟨pi, ai, hpi, hai, hμi⟩
-      rcases (isPrimePow_nat_iff.mp (hpp j)) with ⟨pj, aj, hpj, haj, hμj⟩
+      rcases ((isPrimePow_nat_iff (μ i)).mp (hpp i)) with ⟨pi, ai, hpi, hai, hμi⟩
+      rcases ((isPrimePow_nat_iff (μ j)).mp (hpp j)) with ⟨pj, aj, hpj, haj, hμj⟩
       have hpeq : pi = pj := by
         by_contra hpne
         apply hnot_cop
@@ -3195,6 +3335,11 @@ theorem exercise_15_9 :
           · exact Or.inr (Or.inl rfl)
         · exact Or.inr (Or.inr (Or.inr ⟨q, t + 1, hqp, hqo, by omega, hqt⟩))
 
+private theorem isPrimitiveRoot_neg_two_zmod73 : IsPrimitiveRoot (-2 : ZMod 73) 18 := by
+  rw [← isGarlingPrimitiveRoot_iff_isPrimitiveRoot (by omega : 1 ≤ 18)]
+  refine ⟨by omega, by decide, fun j hj1 hj18 => ?_⟩
+  interval_cases j <;> decide
+
 /-- **Exercise 15.10** (§15.3, printed p. 122 / PDF p. 130):
 *"Is `Φ_{18}` irreducible over (a) `ℤ_{23}`, (b) `ℤ_{43}`, (c) `ℤ_{73}`?"*
 
@@ -3206,6 +3351,9 @@ Proved directly via `Exercise 15.6` (`|U_{18}| = φ(18) = 6`, `Φ_{18}(x) = x^6 
 - **(c) `ℤ_{73}` — NO:** `73̄ = 1̄ ∈ U_{18}` has order `1 ≠ 6`, so `Φ_{18}` **splits into linear
   factors** and **is not irreducible** over `ℤ_{73}`. -/
 theorem exercise_15_10 :
+    haveI : Fact (Nat.Prime 23) := ⟨by decide⟩
+    haveI : Fact (Nat.Prime 43) := ⟨by decide⟩
+    haveI : Fact (Nat.Prime 73) := ⟨by decide⟩
     (∀ R : Type u, ∀ [CommRing R],
       Polynomial.cyclotomic 18 R = Polynomial.X ^ 6 - Polynomial.X ^ 3 + 1) ∧
     -- (a) Over `ℤ_{23}`: irreducible (YES)
@@ -3227,7 +3375,7 @@ theorem exercise_15_10 :
     have h2n := exercise_15_2_cyclotomic R (n := 9) (by decide) (by omega)
     have h9 := exercise_15_3_cyclotomic R Nat.prime_three (n := 2) (by omega)
     rw [show (18 : ℕ) = 2 * 9 from rfl, h2n, show (9 : ℕ) = 3 ^ 2 from rfl, h9]
-    simp only [Nat.add_sub_cancel, pow_one, Finset.sum_range_succ, Finset.sum_range_zero,
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero,
       zero_add, Polynomial.add_comp, Polynomial.pow_comp, Polynomial.X_comp]
     ring
   have hp23 : Nat.Prime 23 := by decide
@@ -3251,13 +3399,15 @@ theorem exercise_15_10 :
     have hle : orderOf u23 ≤ 6 := Nat.le_of_dvd (by omega) hdvd
     have hpos : 0 < orderOf u23 := (isOfFinOrder_of_finite u23).orderOf_pos
     by_contra hne6
-    interval_cases orderOf u23
-    · have h1 : u23 = 1 := by simpa using pow_orderOf_eq_one u23
+    interval_cases h : orderOf u23
+    · have h1 : u23 ^ 1 = 1 := h ▸ pow_orderOf_eq_one u23
+      rw [pow_one] at h1
       exact h2 (by rw [h1, one_pow])
-    · exact h2 (pow_orderOf_eq_one u23)
-    · exact h3 (pow_orderOf_eq_one u23)
+    · exact h2 (h ▸ pow_orderOf_eq_one u23)
+    · exact h3 (h ▸ pow_orderOf_eq_one u23)
     · norm_num at hdvd
     · norm_num at hdvd
+    · exact hne6 rfl
   -- Order of `u43` is `3`:
   have hord43 : orderOf u43 = 3 :=
     orderOf_eq_prime (p := 3) (hp := ⟨Nat.prime_three⟩) (by decide) (by decide)
@@ -3267,13 +3417,13 @@ theorem exercise_15_10 :
     rw [hu73_1, orderOf_one]
   -- (a) Irreducibility over `ℤ_{23}`:
   have hirr23 : Irreducible (Polynomial.cyclotomic 18 (ZMod 23)) := by
-    obtain ⟨_, hirr_iff, _⟩ := exercise_15_6.1 hp23 (m := 18) (by decide)
+    obtain ⟨_, hirr_iff, _⟩ := exercise_15_6.{0}.1 hp23 (m := 18) (by decide)
     rw [hirr_iff]
     refine Subgroup.eq_top_of_card_eq _ ?_
     rw [Nat.card_zpowers, hord23, hcard18]
   -- (b) Reducibility over `ℤ_{43}`:
   have hnot_irr43 : ¬ Irreducible (Polynomial.cyclotomic 18 (ZMod 43)) := by
-    obtain ⟨_, hirr_iff, _⟩ := exercise_15_6.1 hp43 (m := 18) (by decide)
+    obtain ⟨_, hirr_iff, _⟩ := exercise_15_6.{0}.1 hp43 (m := 18) (by decide)
     rw [hirr_iff]
     intro htop
     have hc : Nat.card (Subgroup.zpowers u43) = 6 := by
@@ -3282,19 +3432,16 @@ theorem exercise_15_10 :
     omega
   -- (c) Splitting and reducibility over `ℤ_{73}`:
   have hnot_irr73 : ¬ Irreducible (Polynomial.cyclotomic 18 (ZMod 73)) := by
-    obtain ⟨_, hirr_iff, _⟩ := exercise_15_6.1 hp73 (m := 18) (by decide)
+    obtain ⟨_, hirr_iff, _⟩ := exercise_15_6.{0}.1 hp73 (m := 18) (by decide)
     rw [hirr_iff]
     intro htop
     have hc : Nat.card (Subgroup.zpowers u73) = 6 := by
       rw [htop, Subgroup.card_top, hcard18]
     rw [Nat.card_zpowers, hord73] at hc
     omega
-  have hprim73 : IsPrimitiveRoot (-2 : ZMod 73) 18 := by
-    rw [← isGarlingPrimitiveRoot_iff_isPrimitiveRoot (by omega : 1 ≤ 18)]
-    refine ⟨by omega, by decide, fun j hj1 hj18 => ?_⟩
-    interval_cases j <;> decide
+  have hprim73 : IsPrimitiveRoot (-2 : ZMod 73) 18 := isPrimitiveRoot_neg_two_zmod73
   have hsplits73 : GarlingSplitsOver (ZMod 73) (ZMod 73) (Polynomial.cyclotomic 18 (ZMod 73)) := by
-    rw [garlingSplitsOver_iff_splits, Polynomial.map_id]
+    rw [garlingSplitsOver_iff_splits, Algebra.algebraMap_self, Polynomial.map_id]
     have hs_x18 : (Polynomial.X ^ 18 - 1 : (ZMod 73)[X]).Splits := by
       simpa using Polynomial.X_pow_sub_one_splits hprim73
     have hne0 : (Polynomial.X ^ 18 - 1 : (ZMod 73)[X]) ≠ 0 := by
