@@ -12917,7 +12917,7 @@ pp. 331–332):**
 If `f` has an isolated essential singularity at `z₀ ∈ Ω`, then on every punctured open disc
 `Metric.ball z₀ r \ {z₀} ⊆ Ω` (`r > 0`), `f` assumes every complex value with at most one
 exception. Proved via the elliptic modular function `modularLambda`, Monodromy (`16.15`),
-hyperbolic Schwarz–Pick (`12.5`), `Γ(2)` trace classification (`16.19`), and `S₃` cusp
+hyperbolic Schwarz–Pick (`12.5`), `Γ(2)` trace classification (`gammaSubgroup_trace_cases`), and `S₃` cusp
 equivariance of `modularLambda`. -/
 theorem bigPicardStatement : BigPicardStatement := by
   rw [bigPicardStatement_iff_no_two_omitted]
