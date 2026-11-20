@@ -633,7 +633,7 @@ private theorem adjoin_insert_eq_adjoin_simple_over
 /-- **Exercise 18.1 (arbitrary finite subset form)** (§18.1, printed p. 141 / PDF p. 149):
 Suppose `A ⊆ L` is finite and algebraically independent over `K`, `β ∈ K(A)`, and `β ∉ K`.
 Then `β` is transcendental over `K`.
-*(Proved by induction on `|A|` using `Theorem 18.3` and Chapter 5's `Exercise 5.5` — note that
+*(Proved by induction on `|A|` using `isGarlingAlgebraicallyIndependent_insert_iff` (the single-step insertion criterion underlying `Theorem 18.3`) and Chapter 5's `Exercise 5.5` — note that
 Garling p. 141 misprints the cross-reference as `(cf. Exercise 5.3)`.)* -/
 theorem exercise_18_1_finset {K L : Type*} [Field K] [Field L] [Algebra K L]
     (A : Finset L) (hA : IsGarlingAlgebraicallyIndependent K (A : Set L))
@@ -3068,7 +3068,6 @@ theorem exercise_18_7_i {K L : Type*} [Field K] [Field L] [Algebra K L] {n : ℕ
 `QUEUE.md` fidelity hold):
 If `n ≥ 3`, `char K ∤ n`, `f, g, h ∈ K[X]` are relatively prime with
 `max (deg f, deg g, deg h) ≥ 1` and `fⁿ + gⁿ = hⁿ`, then
-`f^(n-1) ∣ (h * Df - ...)` — specifically:
 `f^(n-1) ∣ (h * garlingDeriv g - g * garlingDeriv h)` and
 `g^(n-1) ∣ (h * garlingDeriv f - f * garlingDeriv h)`. -/
 theorem exercise_18_7_ii_dvd {K : Type*} [Field K] {n : ℕ}
