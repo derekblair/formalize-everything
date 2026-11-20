@@ -4008,4 +4008,914 @@ theorem theorem_2_24_corollary_support_finite {α : Type*} [TopologicalSpace α]
 
 end LusinApproximation2_24
 
+/-!
+## 2.21 (Converse): Lebesgue criterion for proper Riemann integrability on boxes in `ℝ^k`
+-/
+
+section Exposition2_21_Converse
+
+/-- Nondegenerate 1-D box `[a, b]` (`a < b`) in `Fin 1 → ℝ` for `RCA 2.21`. -/
+def intervalBox {a b : ℝ} (hab : a < b) : BoxIntegral.Box (Fin 1) :=
+  ⟨fun _ => a, fun _ => b, fun _ => hab⟩
+
+private theorem box_volume_real_pos {ι : Type*} [Fintype ι] (J : BoxIntegral.Box ι) :
+    0 < (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) := by
+  rw [measureReal_def, BoxIntegral.Box.volume_apply']
+  exact Finset.prod_pos fun i _ => sub_pos.mpr (J.lower_lt_upper i)
+
+private theorem iUnion_Icc_eq_of_isPartition {ι : Type*} [Fintype ι]
+    {I : BoxIntegral.Box ι} {P : BoxIntegral.Prepartition I} (hP : P.IsPartition) :
+    (⋃ J ∈ P.boxes, BoxIntegral.Box.Icc J) = BoxIntegral.Box.Icc I := by
+  have hcl : closure (I : Set (ι → ℝ)) = BoxIntegral.Box.Icc I := by
+    rw [BoxIntegral.Box.coe_eq_pi, closure_pi_set, BoxIntegral.Box.Icc_eq_pi]
+    exact Set.pi_congr rfl fun i _ => closure_Ioc (I.lower_ne_upper i)
+  refine Subset.antisymm
+    (iUnion₂_subset fun J hJ => BoxIntegral.Box.le_iff_Icc.mp (P.le_of_mem hJ)) ?_
+  rw [← hcl, ← hP.iUnion_eq, BoxIntegral.Prepartition.iUnion_def']
+  exact closure_minimal
+    (iUnion₂_mono fun J _ => BoxIntegral.Box.coe_subset_Icc)
+    (P.boxes.finite_toSet.isClosed_biUnion fun J _ => isClosed_Icc)
+
+private def retagPartition {ι : Type*} {I : BoxIntegral.Box ι}
+    (P : BoxIntegral.Prepartition I) (t : BoxIntegral.Box ι → ι → ℝ)
+    (ht : ∀ J ∈ P.boxes, t J ∈ BoxIntegral.Box.Icc J) :
+    BoxIntegral.TaggedPrepartition I where
+  toPrepartition := P
+  tag J := by
+    classical
+    exact if J ∈ P.boxes then t J else I.upper
+  tag_mem_Icc J := by
+    classical
+    by_cases hJ : J ∈ P.boxes
+    · simp only [hJ, ↓reduceIte]
+      exact BoxIntegral.Box.le_iff_Icc.mp (P.le_of_mem hJ) (ht J hJ)
+    · simp only [hJ, ↓reduceIte]
+      exact I.upper_mem_Icc
+
+private theorem retagPartition_tag_of_mem {ι : Type*} {I : BoxIntegral.Box ι}
+    (P : BoxIntegral.Prepartition I) (t : BoxIntegral.Box ι → ι → ℝ)
+    (ht : ∀ J ∈ P.boxes, t J ∈ BoxIntegral.Box.Icc J) {J : BoxIntegral.Box ι}
+    (hJ : J ∈ P.boxes) :
+    (retagPartition P t ht).tag J = t J := by
+  classical
+  change (if J ∈ P.boxes then t J else I.upper) = t J
+  simp [hJ]
+
+private theorem exists_partition_uniform_retag {ι E : Type*} [Fintype ι]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (I : BoxIntegral.Box ι) {f : (ι → ℝ) → E}
+    (hf : BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann f
+      (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ P : BoxIntegral.Prepartition I, P.IsPartition ∧
+      ∀ (t : BoxIntegral.Box ι → ι → ℝ),
+        (∀ J ∈ P.boxes, t J ∈ BoxIntegral.Box.Icc J) →
+        dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t J))
+          (BoxIntegral.integral I BoxIntegral.IntegrationParams.Riemann f
+            (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul) ≤ ε := by
+  obtain ⟨r, hr, hdist⟩ := BoxIntegral.hasIntegral_iff.mp hf.hasIntegral ε hε
+  have hr0 : ∀ x : ι → ℝ, r 0 x = r 0 0 := hr 0 rfl
+  set δ : ℝ := (r 0 0).val
+  have hδ : 0 < δ := (r 0 0).property
+  obtain ⟨π₀, hπ₀_mem, hπ₀_part⟩ :=
+    BoxIntegral.IntegrationParams.exists_memBaseSet_isPartition
+      BoxIntegral.IntegrationParams.Riemann I le_rfl (fun _ => ⟨δ / 2, half_pos hδ⟩)
+  refine ⟨π₀.toPrepartition, hπ₀_part, fun t ht => ?_⟩
+  let πt : BoxIntegral.TaggedPrepartition I := retagPartition π₀.toPrepartition t ht
+  have hπt_sub : πt.IsSubordinate (r 0) := by
+    intro J hJ x hx
+    have hJ₀ : J ∈ π₀.boxes := hJ
+    have hdiam : Metric.diam (BoxIntegral.Box.Icc J) ≤ δ := by
+      have hle := hπ₀_mem.isSubordinate.diam_le hJ₀
+      linarith
+    have htag_eq : πt.tag J = t J := retagPartition_tag_of_mem π₀.toPrepartition t ht hJ₀
+    rw [Metric.mem_closedBall, hr0 (πt.tag J), htag_eq]
+    exact (Metric.dist_le_diam_of_mem J.isBounded_Icc hx (ht J hJ₀)).trans hdiam
+  have hπt_hen : πt.IsHenstock := by
+    intro J hJ
+    rw [retagPartition_tag_of_mem π₀.toPrepartition t ht hJ]
+    exact ht J hJ
+  have hπt_mem : BoxIntegral.IntegrationParams.Riemann.MemBaseSet I 0 (r 0) πt :=
+    ⟨hπt_sub, fun _ => hπt_hen, fun h => by simp [BoxIntegral.IntegrationParams.Riemann] at h,
+      fun h => by simp [BoxIntegral.IntegrationParams.Riemann] at h⟩
+  have hsum :
+      BoxIntegral.integralSum f (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul πt =
+        ∑ J ∈ π₀.toPrepartition.boxes,
+          (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t J) := by
+    unfold BoxIntegral.integralSum
+    refine Finset.sum_congr rfl fun J hJ => ?_
+    rw [BoxIntegral.BoxAdditiveMap.toSMul_apply, Measure.toBoxAdditive_apply,
+      retagPartition_tag_of_mem π₀.toPrepartition t ht hJ]
+  rw [← hsum]
+  exact hdist 0 πt hπt_mem hπ₀_part
+
+private theorem boundedOn_Icc_of_riemannIntegrable {ι E : Type*} [Fintype ι]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (I : BoxIntegral.Box ι) {f : (ι → ℝ) → E}
+    (hf : BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann f
+      (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul) :
+    ∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖f x‖ ≤ C := by
+  classical
+  obtain ⟨P, hP, hdist⟩ := exists_partition_uniform_retag I hf zero_lt_one
+  let y := BoxIntegral.integral I BoxIntegral.IntegrationParams.Riemann f
+    (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul
+  let t₀ : BoxIntegral.Box ι → ι → ℝ := fun J => J.upper
+  have ht₀ : ∀ J ∈ P.boxes, t₀ J ∈ BoxIntegral.Box.Icc J := fun J _ => J.upper_mem_Icc
+  have hS₀ : dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₀ J)) y ≤ 1 :=
+    hdist t₀ ht₀
+  refine ⟨∑ J ∈ P.boxes,
+      (‖f J.upper‖ + 2 / (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ))), ?_⟩
+  intro x hx
+  have hxU : x ∈ ⋃ J ∈ P.boxes, BoxIntegral.Box.Icc J := by
+    rwa [iUnion_Icc_eq_of_isPartition hP]
+  rcases mem_iUnion₂.mp hxU with ⟨J₀, hJ₀, hxJ₀⟩
+  let t₁ : BoxIntegral.Box ι → ι → ℝ := fun J => if J = J₀ then x else J.upper
+  have ht₁ : ∀ J ∈ P.boxes, t₁ J ∈ BoxIntegral.Box.Icc J := by
+    intro J _
+    by_cases h : J = J₀
+    · subst h; simpa [t₁] using hxJ₀
+    · simp [t₁, h]
+  have hS₁ : dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₁ J)) y ≤ 1 :=
+    hdist t₁ ht₁
+  have hdiff_le :
+      dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₁ J))
+        (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₀ J)) ≤ 2 := by
+    calc
+      dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₁ J))
+          (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₀ J))
+          ≤ dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₁ J)) y +
+              dist y (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₀ J)) :=
+        dist_triangle _ _ _
+      _ = dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₁ J)) y +
+            dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₀ J)) y := by
+        rw [dist_comm y]
+      _ ≤ 1 + 1 := add_le_add hS₁ hS₀
+      _ = 2 := by norm_num
+  have hsum_sub :
+      (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₁ J)) -
+        (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₀ J)) =
+        (volume : Measure (ι → ℝ)).real (J₀ : Set (ι → ℝ)) • (f x - f J₀.upper) := by
+    rw [← Finset.sum_sub_distrib]
+    rw [Finset.sum_eq_single J₀]
+    · simp [t₁, t₀, smul_sub]
+    · intro J _ hne
+      simp [t₁, t₀, hne]
+    · intro hnot
+      exact (hnot hJ₀).elim
+  have hvol_pos : 0 < (volume : Measure (ι → ℝ)).real (J₀ : Set (ι → ℝ)) :=
+    box_volume_real_pos J₀
+  have hmul_le :
+      (volume : Measure (ι → ℝ)).real (J₀ : Set (ι → ℝ)) * ‖f x - f J₀.upper‖ ≤ 2 := by
+    rw [dist_eq_norm, hsum_sub, norm_smul, Real.norm_of_nonneg hvol_pos.le] at hdiff_le
+    exact hdiff_le
+  have hsub_le : ‖f x - f J₀.upper‖ ≤ 2 / (volume : Measure (ι → ℝ)).real (J₀ : Set (ι → ℝ)) := by
+    rw [le_div_iff₀ hvol_pos, mul_comm]
+    exact hmul_le
+  have hfx_le : ‖f x‖ ≤ ‖f J₀.upper‖ + 2 / (volume : Measure (ι → ℝ)).real (J₀ : Set (ι → ℝ)) := by
+    have htri : ‖f x‖ ≤ ‖f x - f J₀.upper‖ + ‖f J₀.upper‖ := by
+      simpa [sub_add_cancel] using norm_add_le (f x - f J₀.upper) (f J₀.upper)
+    linarith
+  refine hfx_le.trans ?_
+  refine Finset.single_le_sum (f := fun J : BoxIntegral.Box ι =>
+      ‖f J.upper‖ + 2 / (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ))) ?_ hJ₀
+  intro J _
+  exact add_nonneg (norm_nonneg _) (div_nonneg (by positivity) (box_volume_real_pos J).le)
+
+private def boxUpper {ι : Type*} (f : (ι → ℝ) → ℝ) (J : BoxIntegral.Box ι) : ℝ :=
+  sSup (f '' BoxIntegral.Box.Icc J)
+
+private def boxLower {ι : Type*} (f : (ι → ℝ) → ℝ) (J : BoxIntegral.Box ι) : ℝ :=
+  sInf (f '' BoxIntegral.Box.Icc J)
+
+private def boxOsc {ι : Type*} (f : (ι → ℝ) → ℝ) (J : BoxIntegral.Box ι) : ℝ :=
+  boxUpper f J - boxLower f J
+
+private theorem box_image_nonempty {ι : Type*} (f : (ι → ℝ) → ℝ) (J : BoxIntegral.Box ι) :
+    (f '' BoxIntegral.Box.Icc J).Nonempty :=
+  ⟨f J.upper, J.upper, J.upper_mem_Icc, rfl⟩
+
+private theorem box_image_bddAbove {ι : Type*} {I J : BoxIntegral.Box ι} {f : (ι → ℝ) → ℝ}
+    (hb : ∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖f x‖ ≤ C) (hJ : J ≤ I) :
+    BddAbove (f '' BoxIntegral.Box.Icc J) := by
+  rcases hb with ⟨C, hC⟩
+  refine ⟨C, ?_⟩
+  rintro _ ⟨x, hx, rfl⟩
+  exact (le_abs_self (f x)).trans (hC x (BoxIntegral.Box.le_iff_Icc.mp hJ hx))
+
+private theorem box_image_bddBelow {ι : Type*} {I J : BoxIntegral.Box ι} {f : (ι → ℝ) → ℝ}
+    (hb : ∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖f x‖ ≤ C) (hJ : J ≤ I) :
+    BddBelow (f '' BoxIntegral.Box.Icc J) := by
+  rcases hb with ⟨C, hC⟩
+  refine ⟨-C, ?_⟩
+  rintro _ ⟨x, hx, rfl⟩
+  have hle : |f x| ≤ C := hC x (BoxIntegral.Box.le_iff_Icc.mp hJ hx)
+  exact (neg_le_neg hle).trans (neg_abs_le (f x))
+
+private theorem boxLower_le_apply {ι : Type*} {I J : BoxIntegral.Box ι} {f : (ι → ℝ) → ℝ}
+    (hb : ∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖f x‖ ≤ C) (hJ : J ≤ I)
+    {x : ι → ℝ} (hx : x ∈ BoxIntegral.Box.Icc J) :
+    boxLower f J ≤ f x :=
+  csInf_le (box_image_bddBelow hb hJ) ⟨x, hx, rfl⟩
+
+private theorem apply_le_boxUpper {ι : Type*} {I J : BoxIntegral.Box ι} {f : (ι → ℝ) → ℝ}
+    (hb : ∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖f x‖ ≤ C) (hJ : J ≤ I)
+    {x : ι → ℝ} (hx : x ∈ BoxIntegral.Box.Icc J) :
+    f x ≤ boxUpper f J :=
+  le_csSup (box_image_bddAbove hb hJ) ⟨x, hx, rfl⟩
+
+private theorem boxOsc_nonneg {ι : Type*} {I J : BoxIntegral.Box ι} {f : (ι → ℝ) → ℝ}
+    (hb : ∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖f x‖ ≤ C) (hJ : J ≤ I) :
+    0 ≤ boxOsc f J := by
+  unfold boxOsc
+  have h1 := boxLower_le_apply hb hJ J.upper_mem_Icc
+  have h2 := apply_le_boxUpper hb hJ J.upper_mem_Icc
+  linarith
+
+private theorem exists_isPartition_sum_boxOsc_lt {ι : Type*} [Fintype ι]
+    (I : BoxIntegral.Box ι) {f : (ι → ℝ) → ℝ}
+    (hf : BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann f
+      (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul)
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ P : BoxIntegral.Prepartition I, P.IsPartition ∧
+      ∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * boxOsc f J < ε := by
+  classical
+  have hb := boundedOn_Icc_of_riemannIntegrable I hf
+  obtain ⟨P, hP, hdist⟩ := exists_partition_uniform_retag I hf (by linarith : 0 < ε / 4)
+  set V : ℝ := (volume : Measure (ι → ℝ)).real (I : Set (ι → ℝ))
+  have hV_pos : 0 < V := box_volume_real_pos I
+  set η : ℝ := ε / (4 * (V + 1))
+  have hη_pos : 0 < η := by positivity
+  have hsup_ex : ∀ J : BoxIntegral.Box ι,
+      ∃ x ∈ BoxIntegral.Box.Icc J, J ∈ P.boxes → boxUpper f J - η < f x := by
+    intro J
+    by_cases hJ : J ∈ P.boxes
+    · obtain ⟨_, ⟨x, hx, rfl⟩, hlt⟩ := exists_lt_of_lt_csSup (box_image_nonempty f J)
+        (show boxUpper f J - η < sSup (f '' BoxIntegral.Box.Icc J) by unfold boxUpper; linarith)
+      exact ⟨x, hx, fun _ => hlt⟩
+    · exact ⟨J.upper, J.upper_mem_Icc, fun h => (hJ h).elim⟩
+  have hinf_ex : ∀ J : BoxIntegral.Box ι,
+      ∃ x ∈ BoxIntegral.Box.Icc J, J ∈ P.boxes → f x < boxLower f J + η := by
+    intro J
+    by_cases hJ : J ∈ P.boxes
+    · obtain ⟨_, ⟨x, hx, rfl⟩, hlt⟩ := exists_lt_of_csInf_lt (box_image_nonempty f J)
+        (show sInf (f '' BoxIntegral.Box.Icc J) < boxLower f J + η by unfold boxLower; linarith)
+      exact ⟨x, hx, fun _ => hlt⟩
+    · exact ⟨J.upper, J.upper_mem_Icc, fun h => (hJ h).elim⟩
+  choose t₁ ht₁_mem ht₁_gt using hsup_ex
+  choose t₂ ht₂_mem ht₂_lt using hinf_ex
+  let y := BoxIntegral.integral I BoxIntegral.IntegrationParams.Riemann f
+    (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul
+  have hS₁ := hdist t₁ (fun J _ => ht₁_mem J)
+  have hS₂ := hdist t₂ (fun J _ => ht₂_mem J)
+  have hS_diff :
+      (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * f (t₁ J)) -
+        (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * f (t₂ J)) ≤ ε / 2 := by
+    have htri :
+        dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₁ J))
+          (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₂ J)) ≤
+          ε / 2 := by
+      calc
+        dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₁ J))
+            (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₂ J))
+            ≤ dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₁ J)) y +
+                dist y (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₂ J)) :=
+          dist_triangle _ _ _
+        _ = dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₁ J)) y +
+              dist (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) • f (t₂ J)) y := by
+          rw [dist_comm y]
+        _ ≤ ε / 4 + ε / 4 := add_le_add hS₁ hS₂
+        _ = ε / 2 := by ring
+    simp only [smul_eq_mul, Real.dist_eq] at htri
+    exact (le_abs_self _).trans htri
+  have hsum_vol :
+      ∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) = V := by
+    rw [← BoxIntegral.Prepartition.measure_iUnion_toReal P volume, hP.iUnion_eq]
+  have hV_term : V * (2 * η) < ε / 2 := by
+    have hlt : V < V + 1 := lt_add_one V
+    have hdenom : 0 < 4 * (V + 1) := by positivity
+    calc
+      V * (2 * η) = (2 * V * ε) / (4 * (V + 1)) := by unfold η; ring
+      _ < (2 * (V + 1) * ε) / (4 * (V + 1)) := by
+        apply div_lt_div_of_pos_right _ hdenom
+        nlinarith
+      _ = ε / 2 := by field_simp; ring
+  refine ⟨P, hP, ?_⟩
+  calc
+    ∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * boxOsc f J
+        ≤ ∑ J ∈ P.boxes,
+            (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * ((f (t₁ J) - f (t₂ J)) + 2 * η) := by
+      refine Finset.sum_le_sum fun J hJ => ?_
+      refine mul_le_mul_of_nonneg_left ?_ (box_volume_real_pos J).le
+      unfold boxOsc
+      linarith [ht₁_gt J hJ, ht₂_lt J hJ]
+    _ = ((∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * f (t₁ J)) -
+          (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * f (t₂ J))) +
+          (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ))) * (2 * η) := by
+      simp_rw [mul_add, mul_sub]
+      rw [Finset.sum_add_distrib, Finset.sum_sub_distrib, ← Finset.sum_mul]
+    _ = ((∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * f (t₁ J)) -
+          (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * f (t₂ J))) +
+          V * (2 * η) := by
+      rw [hsum_vol]
+    _ < ε / 2 + ε / 2 := add_lt_add_of_le_of_lt hS_diff hV_term
+    _ = ε := by ring
+
+private def boxOscStep {ι : Type*} {I : BoxIntegral.Box ι}
+    (f : (ι → ℝ) → ℝ) (P : BoxIntegral.Prepartition I) (x : ι → ℝ) : ℝ :=
+  ∑ J ∈ P.boxes, (J : Set (ι → ℝ)).indicator (fun _ => boxOsc f J) x
+
+private theorem boxOscStep_eq_of_mem {ι : Type*} {I : BoxIntegral.Box ι}
+    (f : (ι → ℝ) → ℝ) (P : BoxIntegral.Prepartition I)
+    {J : BoxIntegral.Box ι} (hJ : J ∈ P.boxes) {x : ι → ℝ} (hx : x ∈ (J : Set (ι → ℝ))) :
+    boxOscStep f P x = boxOsc f J := by
+  unfold boxOscStep
+  rw [Finset.sum_eq_single J]
+  · exact Set.indicator_of_mem hx _
+  · intro J' hJ' hne
+    have hnot : x ∉ (J' : Set (ι → ℝ)) := fun hx' =>
+      (P.disjoint_coe_of_mem hJ' hJ hne).le_bot ⟨hx', hx⟩
+    exact Set.indicator_of_notMem hnot _
+  · intro hnot
+    exact (hnot hJ).elim
+
+private theorem boxOscStep_measurable {ι : Type*} [Fintype ι] {I : BoxIntegral.Box ι}
+    (f : (ι → ℝ) → ℝ) (P : BoxIntegral.Prepartition I) :
+    Measurable (boxOscStep f P) :=
+  Finset.measurable_sum P.boxes fun J _ => measurable_const.indicator J.measurableSet_coe
+
+private theorem boxOscStep_lintegral {ι : Type*} [Fintype ι] {I : BoxIntegral.Box ι}
+    {f : (ι → ℝ) → ℝ} (hb : ∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖f x‖ ≤ C)
+    (P : BoxIntegral.Prepartition I) :
+    ∫⁻ x, ENNReal.ofReal (boxOscStep f P x) ∂(volume : Measure (ι → ℝ)) =
+      ENNReal.ofReal
+        (∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * boxOsc f J) := by
+  have hpt :
+      ∀ x : ι → ℝ,
+        ENNReal.ofReal (boxOscStep f P x) =
+          ∑ J ∈ P.boxes, (J : Set (ι → ℝ)).indicator (fun _ => ENNReal.ofReal (boxOsc f J)) x := by
+    intro x
+    by_cases hex : ∃ J ∈ P.boxes, x ∈ (J : Set (ι → ℝ))
+    · rcases hex with ⟨J, hJ, hx⟩
+      rw [boxOscStep_eq_of_mem f P hJ hx]
+      rw [Finset.sum_eq_single J]
+      · exact (Set.indicator_of_mem hx (fun _ => ENNReal.ofReal (boxOsc f J))).symm
+      · intro J' hJ' hne
+        have hnot : x ∉ (J' : Set (ι → ℝ)) := fun hx' =>
+          (P.disjoint_coe_of_mem hJ' hJ hne).le_bot ⟨hx', hx⟩
+        exact Set.indicator_of_notMem hnot (fun _ => ENNReal.ofReal (boxOsc f J'))
+      · intro hnot
+        exact (hnot hJ).elim
+    · have hnot_all : ∀ J ∈ P.boxes, x ∉ (J : Set (ι → ℝ)) := fun J hJ hx => hex ⟨J, hJ, hx⟩
+      have h0 : boxOscStep f P x = 0 := by
+        unfold boxOscStep
+        exact Finset.sum_eq_zero fun J hJ => Set.indicator_of_notMem (hnot_all J hJ) _
+      rw [h0, ENNReal.ofReal_zero]
+      exact (Finset.sum_eq_zero fun J hJ =>
+        Set.indicator_of_notMem (hnot_all J hJ) (fun _ => ENNReal.ofReal (boxOsc f J))).symm
+  simp_rw [hpt]
+  rw [lintegral_finsetSum P.boxes (fun J _ => measurable_const.indicator J.measurableSet_coe)]
+  rw [ENNReal.ofReal_sum_of_nonneg (fun J hJ =>
+    mul_nonneg (box_volume_real_pos J).le (boxOsc_nonneg hb (P.le_of_mem hJ)))]
+  refine Finset.sum_congr rfl fun J hJ => ?_
+  rw [lintegral_indicator_const J.measurableSet_coe,
+    ENNReal.ofReal_mul (box_volume_real_pos J).le, mul_comm,
+    measureReal_def, ENNReal.ofReal_toReal (J.measure_coe_lt_top volume).ne]
+
+/-- `RCA 2.21` / `PMA 11.33` (real `k`-D box converse): every properly Riemann-integrable
+real-valued function on a nondegenerate box `I` in `ℝ^k` (`ι → ℝ`, `[Fintype ι]`) with respect to
+Lebesgue measure `volume` is bounded on the closed box `I.Icc` and Lebesgue-a.e. continuous on
+`I.Icc` (both in the ambient topology and relative to `I.Icc`). -/
+theorem remarks_2_21_riemann_converse_real {ι : Type*} [Fintype ι]
+    (I : BoxIntegral.Box ι) {f : (ι → ℝ) → ℝ}
+    (hf : BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann f
+      (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul) :
+    (∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖f x‖ ≤ C) ∧
+    (∀ᵐ x ∂((volume : Measure (ι → ℝ)).restrict (BoxIntegral.Box.Icc I)),
+      ContinuousAt f x) ∧
+    (∀ᵐ x ∂((volume : Measure (ι → ℝ)).restrict (BoxIntegral.Box.Icc I)),
+      ContinuousWithinAt f (BoxIntegral.Box.Icc I) x) := by
+  have hb := boundedOn_Icc_of_riemannIntegrable I hf
+  have hex : ∀ n : ℕ, ∃ P : BoxIntegral.Prepartition I, P.IsPartition ∧
+      ∑ J ∈ P.boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * boxOsc f J <
+        ((1 : ℝ) / 2) ^ n :=
+    fun n => exists_isPartition_sum_boxOsc_lt I hf (by positivity)
+  choose P hP_part hP_lt using hex
+  have htsum_lt_top :
+      ∫⁻ x, (∑' n : ℕ, ENNReal.ofReal (boxOscStep f (P n) x)) ∂(volume : Measure (ι → ℝ)) < ∞ := by
+    rw [lintegral_tsum (fun n => (boxOscStep_measurable f (P n)).ennreal_ofReal.aemeasurable)]
+    have hle :
+        (∑' n : ℕ, ∫⁻ x, ENNReal.ofReal (boxOscStep f (P n) x) ∂(volume : Measure (ι → ℝ))) ≤
+          ∑' n : ℕ, (2⁻¹ : ℝ≥0∞) ^ n := by
+      refine ENNReal.tsum_le_tsum fun n => ?_
+      rw [boxOscStep_lintegral hb (P n)]
+      calc
+        ENNReal.ofReal
+            (∑ J ∈ (P n).boxes, (volume : Measure (ι → ℝ)).real (J : Set (ι → ℝ)) * boxOsc f J)
+            ≤ ENNReal.ofReal (((1 : ℝ) / 2) ^ n) := ENNReal.ofReal_le_ofReal (hP_lt n).le
+        _ = (ENNReal.ofReal ((1 : ℝ) / 2)) ^ n := ENNReal.ofReal_pow (by positivity) n
+        _ = (2⁻¹ : ℝ≥0∞) ^ n := by
+          congr 1
+          rw [one_div, ENNReal.ofReal_inv_of_pos (by norm_num : (0 : ℝ) < 2), ENNReal.ofReal_ofNat]
+    refine lt_of_le_of_lt hle ?_
+    rw [ENNReal.tsum_geometric, ENNReal.inv_lt_top]
+    exact tsub_pos_of_lt (ENNReal.inv_lt_one.mpr (by norm_num))
+  have hae_fin :
+      ∀ᵐ x ∂(volume : Measure (ι → ℝ)),
+        (∑' n : ℕ, ENNReal.ofReal (boxOscStep f (P n) x)) ≠ ∞ := by
+    have hmeas : Measurable fun x => ∑' n : ℕ, ENNReal.ofReal (boxOscStep f (P n) x) :=
+      Measurable.tsum fun n => (boxOscStep_measurable f (P n)).ennreal_ofReal
+    exact (ae_lt_top hmeas htsum_lt_top.ne).mono fun _ hx => hx.ne
+  have hae_small :
+      ∀ᵐ x ∂(volume : Measure (ι → ℝ)), ∀ ε > (0 : ℝ), ∃ n : ℕ, boxOscStep f (P n) x < ε := by
+    filter_upwards [hae_fin] with x hx ε hε
+    have htend :
+        Filter.Tendsto (fun n => ENNReal.ofReal (boxOscStep f (P n) x)) Filter.atTop (𝓝 0) :=
+      ENNReal.tendsto_atTop_zero_of_tsum_ne_top hx
+    have hmem : Set.Iio (ENNReal.ofReal ε) ∈ 𝓝 (0 : ℝ≥0∞) :=
+      Iio_mem_nhds (ENNReal.ofReal_pos.mpr hε)
+    rcases (htend.eventually hmem).exists with ⟨n, hn⟩
+    exact ⟨n, (ENNReal.ofReal_lt_ofReal_iff hε).mp hn⟩
+  have hae_Ioo :
+      ∀ᵐ x ∂(volume : Measure (ι → ℝ)),
+        ∀ n : ℕ, ∀ J ∈ (P n).boxes, x ∈ (J : Set (ι → ℝ)) → x ∈ BoxIntegral.Box.Ioo J := by
+    rw [ae_all_iff]
+    intro n
+    simp_rw [← Finset.mem_coe]
+    rw [ae_ball_iff (P n).boxes.countable_toSet]
+    intro J _
+    rw [ae_iff]
+    have hsub : {x : ι → ℝ | ¬ (x ∈ (J : Set (ι → ℝ)) → x ∈ BoxIntegral.Box.Ioo J)} ⊆
+        BoxIntegral.Box.Icc J \ BoxIntegral.Box.Ioo J := by
+      intro x hx
+      simp only [Set.mem_ofPred_eq, not_imp] at hx
+      exact ⟨J.coe_subset_Icc hx.1, hx.2⟩
+    have hnull : (volume : Measure (ι → ℝ)) (BoxIntegral.Box.Icc J \ BoxIntegral.Box.Ioo J) = 0 :=
+      ae_le_set.mp (BoxIntegral.Box.Ioo_ae_eq_Icc J).symm.le
+    exact measure_mono_null hsub hnull
+  have hae_cont_I :
+      ∀ᵐ x ∂((volume : Measure (ι → ℝ)).restrict (I : Set (ι → ℝ))), ContinuousAt f x := by
+    filter_upwards [ae_restrict_mem I.measurableSet_coe,
+      ae_restrict_of_ae hae_small, ae_restrict_of_ae hae_Ioo] with x hxI hsmall hIoo
+    rw [Metric.continuousAt_iff]
+    intro ε hε
+    rcases hsmall ε hε with ⟨n, hn⟩
+    have hxU : x ∈ (P n).iUnion := by
+      rw [(hP_part n).iUnion_eq]
+      exact hxI
+    rcases (P n).mem_iUnion.mp hxU with ⟨J, hJ, hxJ⟩
+    have hosc_lt : boxOsc f J < ε := by
+      rwa [← boxOscStep_eq_of_mem f (P n) hJ hxJ]
+    have hx_oo : x ∈ BoxIntegral.Box.Ioo J := hIoo n J hJ hxJ
+    have hopen : IsOpen (BoxIntegral.Box.Ioo J) :=
+      isOpen_set_pi Set.finite_univ fun _ _ => isOpen_Ioo
+    rcases Metric.mem_nhds_iff.mp (hopen.mem_nhds hx_oo) with ⟨δ, hδ, hball⟩
+    refine ⟨δ, hδ, fun y hy => ?_⟩
+    have hy_Icc : y ∈ BoxIntegral.Box.Icc J := J.Ioo_subset_Icc (hball hy)
+    have hx_Icc : x ∈ BoxIntegral.Box.Icc J := J.Ioo_subset_Icc hx_oo
+    have hJle : J ≤ I := (P n).le_of_mem hJ
+    have h1 := boxLower_le_apply hb hJle hy_Icc
+    have h2 := apply_le_boxUpper hb hJle hy_Icc
+    have h3 := boxLower_le_apply hb hJle hx_Icc
+    have h4 := apply_le_boxUpper hb hJle hx_Icc
+    rw [Real.dist_eq, abs_lt]
+    unfold boxOsc at hosc_lt
+    constructor <;> linarith
+  have hae_cont_Icc :
+      ∀ᵐ x ∂((volume : Measure (ι → ℝ)).restrict (BoxIntegral.Box.Icc I)), ContinuousAt f x := by
+    rwa [← Measure.restrict_congr_set (BoxIntegral.Box.coe_ae_eq_Icc I)]
+  exact ⟨hb, hae_cont_Icc, hae_cont_Icc.mono fun _ h => h.continuousWithinAt⟩
+
+private theorem integrable_re_im_of_integrable {ι : Type*} [Fintype ι]
+    (I : BoxIntegral.Box ι) {f : (ι → ℝ) → ℂ}
+    (hf : BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann f
+      (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul) :
+    BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann (fun x => (f x).re)
+      (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul ∧
+    BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann (fun x => (f x).im)
+      (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul := by
+  rcases hf with ⟨y, hy⟩
+  refine ⟨⟨y.re, ?_⟩, ⟨y.im, ?_⟩⟩
+  · have hcomp :
+        Filter.Tendsto
+          (fun π => Complex.reCLM
+            (BoxIntegral.integralSum f (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul π))
+          (BoxIntegral.IntegrationParams.Riemann.toFilteriUnion I ⊤) (𝓝 y.re) :=
+      (Complex.reCLM.continuous.tendsto y).comp hy
+    refine hcomp.congr fun π => ?_
+    simp only [BoxIntegral.integralSum, BoxIntegral.BoxAdditiveMap.toSMul_apply,
+      Measure.toBoxAdditive_apply, map_sum, map_smul, Complex.reCLM_apply]
+  · have hcomp :
+        Filter.Tendsto
+          (fun π => Complex.imCLM
+            (BoxIntegral.integralSum f (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul π))
+          (BoxIntegral.IntegrationParams.Riemann.toFilteriUnion I ⊤) (𝓝 y.im) :=
+      (Complex.imCLM.continuous.tendsto y).comp hy
+    refine hcomp.congr fun π => ?_
+    simp only [BoxIntegral.integralSum, BoxIntegral.BoxAdditiveMap.toSMul_apply,
+      Measure.toBoxAdditive_apply, map_sum, map_smul, Complex.imCLM_apply]
+
+/-- `RCA 2.21` / `PMA 11.33` (complex `k`-D box converse, matching
+`remarks_2_21_riemann_eq_lebesgue` at `L2420`): every properly Riemann-integrable complex-valued
+function on a box `I` in `ℝ^k` with respect to Lebesgue measure `volume` is bounded on `I.Icc`,
+Lebesgue-a.e. continuous on `I.Icc` (both `ContinuousAt` and `ContinuousWithinAt`), Lebesgue/Bochner
+integrable on `I` and `I.Icc`, and has Riemann `BoxIntegral` equal to its Lebesgue integral over
+both `I` and `I.Icc`. -/
+theorem remarks_2_21_riemann_converse {ι : Type*} [Fintype ι]
+    (I : BoxIntegral.Box ι) {f : (ι → ℝ) → ℂ}
+    (hf : BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann f
+      (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul) :
+    (∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖f x‖ ≤ C) ∧
+    (∀ᵐ x ∂((volume : Measure (ι → ℝ)).restrict (BoxIntegral.Box.Icc I)),
+      ContinuousAt f x) ∧
+    (∀ᵐ x ∂((volume : Measure (ι → ℝ)).restrict (BoxIntegral.Box.Icc I)),
+      ContinuousWithinAt f (BoxIntegral.Box.Icc I) x) ∧
+    IntegrableOn f (I : Set (ι → ℝ)) (volume : Measure (ι → ℝ)) ∧
+    IntegrableOn f (BoxIntegral.Box.Icc I) (volume : Measure (ι → ℝ)) ∧
+    BoxIntegral.HasIntegral I BoxIntegral.IntegrationParams.Riemann f
+      (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul
+      (∫ x in (I : Set (ι → ℝ)), f x ∂(volume : Measure (ι → ℝ))) ∧
+    BoxIntegral.integral I BoxIntegral.IntegrationParams.Riemann f
+      (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul =
+      ∫ x in (I : Set (ι → ℝ)), f x ∂(volume : Measure (ι → ℝ)) ∧
+    BoxIntegral.integral I BoxIntegral.IntegrationParams.Riemann f
+      (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul =
+      ∫ x in BoxIntegral.Box.Icc I, f x ∂(volume : Measure (ι → ℝ)) := by
+  have hb := boundedOn_Icc_of_riemannIntegrable I hf
+  obtain ⟨hre, him⟩ := integrable_re_im_of_integrable I hf
+  obtain ⟨_, hre_cont, _⟩ := remarks_2_21_riemann_converse_real I hre
+  obtain ⟨_, him_cont, _⟩ := remarks_2_21_riemann_converse_real I him
+  have hc_Icc :
+      ∀ᵐ x ∂((volume : Measure (ι → ℝ)).restrict (BoxIntegral.Box.Icc I)), ContinuousAt f x := by
+    filter_upwards [hre_cont, him_cont] with x h1 h2
+    have hdecomp : f = fun z => ((f z).re : ℂ) + ((f z).im : ℂ) * Complex.I := by
+      ext z
+      exact (Complex.re_add_im (f z)).symm
+    rw [hdecomp]
+    exact (Complex.continuous_ofReal.continuousAt.comp h1).add
+      ((Complex.continuous_ofReal.continuousAt.comp h2).mul continuousAt_const)
+  have hcw_Icc :
+      ∀ᵐ x ∂((volume : Measure (ι → ℝ)).restrict (BoxIntegral.Box.Icc I)),
+        ContinuousWithinAt f (BoxIntegral.Box.Icc I) x :=
+    hc_Icc.mono fun _ h => h.continuousWithinAt
+  let g : (ι → ℝ) → ℂ := (BoxIntegral.Box.Icc I).indicator f
+  have hg_eqOn : EqOn g f (BoxIntegral.Box.Icc I) := fun x hx => Set.indicator_of_mem hx f
+  have hg_bdd : ∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖g x‖ ≤ C := by
+    rcases hb with ⟨C, hC⟩
+    exact ⟨C, fun x hx => by rw [hg_eqOn hx]; exact hC x hx⟩
+  have hg_ae_cont : ∀ᵐ x ∂(volume : Measure (ι → ℝ)), ContinuousAt g x := by
+    have hc_imp :
+        ∀ᵐ x ∂(volume : Measure (ι → ℝ)), x ∈ BoxIntegral.Box.Icc I → ContinuousAt f x :=
+      (ae_restrict_iff' I.measurableSet_Icc).mp hc_Icc
+    have hbdry :
+        ∀ᵐ x ∂(volume : Measure (ι → ℝ)), x ∉ BoxIntegral.Box.Icc I \ BoxIntegral.Box.Ioo I := by
+      rw [ae_iff]
+      simp only [not_not]
+      exact ae_le_set.mp (BoxIntegral.Box.Ioo_ae_eq_Icc I).symm.le
+    have hopen_oo : IsOpen (BoxIntegral.Box.Ioo I) :=
+      isOpen_set_pi Set.finite_univ fun _ _ => isOpen_Ioo
+    have hopen_compl : IsOpen (BoxIntegral.Box.Icc I)ᶜ := isClosed_Icc.isOpen_compl
+    filter_upwards [hc_imp, hbdry] with x hfx hnb
+    by_cases hx : x ∈ BoxIntegral.Box.Icc I
+    · have hx_oo : x ∈ BoxIntegral.Box.Ioo I := by
+        by_contra hno
+        exact hnb ⟨hx, hno⟩
+      have hmem : BoxIntegral.Box.Icc I ∈ 𝓝 x :=
+        Filter.mem_of_superset (hopen_oo.mem_nhds hx_oo) I.Ioo_subset_Icc
+      have hev : g =ᶠ[𝓝 x] f := Filter.eventually_of_mem hmem fun y hy => Set.indicator_of_mem hy f
+      exact (hfx hx).congr hev.symm
+    · have hmem : (BoxIntegral.Box.Icc I)ᶜ ∈ 𝓝 x := hopen_compl.mem_nhds hx
+      have hev : g =ᶠ[𝓝 x] (fun _ => (0 : ℂ)) :=
+        Filter.eventually_of_mem hmem fun y hy => Set.indicator_of_notMem hy f
+      exact continuousAt_const.congr hev.symm
+  have hg_aesm : AEStronglyMeasurable g (volume : Measure (ι → ℝ)) := by
+    let v : Set (ι → ℝ) := {x | ContinuousAt g x}
+    have hv : v =ᵐ[volume] Set.univ := ae_eq_univ.mpr hg_ae_cont
+    have h1 : AEStronglyMeasurable g ((volume : Measure (ι → ℝ)).restrict v) :=
+      (continuousOn_of_forall_continuousAt fun _ h => h).aestronglyMeasurable
+        (measurableSet_of_continuousAt g)
+    rwa [Measure.restrict_congr_set hv, Measure.restrict_univ] at h1
+  have hf_intOn_Icc : IntegrableOn f (BoxIntegral.Box.Icc I) (volume : Measure (ι → ℝ)) := by
+    refine ⟨hg_aesm.restrict.congr
+      ((ae_restrict_iff' I.measurableSet_Icc).mpr (Filter.Eventually.of_forall hg_eqOn)), ?_⟩
+    have : IsFiniteMeasure ((volume : Measure (ι → ℝ)).restrict (BoxIntegral.Box.Icc I)) :=
+      ⟨by simp [I.measure_Icc_lt_top volume]⟩
+    rcases hb with ⟨C, hC⟩
+    exact HasFiniteIntegral.of_bounded (C := C)
+      ((ae_restrict_iff' I.measurableSet_Icc).mpr (Filter.Eventually.of_forall hC))
+  have hf_intOn_I : IntegrableOn f (I : Set (ι → ℝ)) (volume : Measure (ι → ℝ)) :=
+    hf_intOn_Icc.mono_set I.coe_subset_Icc
+  obtain ⟨hg_has, _⟩ := (remarks_2_21_riemann_eq_lebesgue volume I g).2 hg_bdd hg_ae_cont
+  have hg_int_eq :
+      (∫ x in (I : Set (ι → ℝ)), g x ∂(volume : Measure (ι → ℝ))) =
+        ∫ x in (I : Set (ι → ℝ)), f x ∂(volume : Measure (ι → ℝ)) :=
+    setIntegral_congr_fun I.measurableSet_coe fun x hx => hg_eqOn (I.coe_subset_Icc hx)
+  have hf_has :
+      BoxIntegral.HasIntegral I BoxIntegral.IntegrationParams.Riemann f
+        (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul
+        (∫ x in (I : Set (ι → ℝ)), f x ∂(volume : Measure (ι → ℝ))) := by
+    rw [← hg_int_eq]
+    exact (BoxIntegral.hasIntegral_congr I BoxIntegral.IntegrationParams.Riemann
+      hg_eqOn (fun _ _ => rfl) _).mp hg_has
+  have hf_eq_I :
+      BoxIntegral.integral I BoxIntegral.IntegrationParams.Riemann f
+        (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul =
+        ∫ x in (I : Set (ι → ℝ)), f x ∂(volume : Measure (ι → ℝ)) :=
+    hf_has.integral_eq
+  have hf_eq_Icc :
+      BoxIntegral.integral I BoxIntegral.IntegrationParams.Riemann f
+        (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul =
+        ∫ x in BoxIntegral.Box.Icc I, f x ∂(volume : Measure (ι → ℝ)) :=
+    hf_eq_I.trans (setIntegral_congr_set (BoxIntegral.Box.coe_ae_eq_Icc I))
+  exact ⟨hb, hc_Icc, hcw_Icc, hf_intOn_I, hf_intOn_Icc, hf_has, hf_eq_I, hf_eq_Icc⟩
+
+/-- `RCA 2.21` / `PMA 11.33` (full bidirectional Lebesgue criterion on boxes in `ℝ^k`):
+a complex-valued function `f` on `ℝ^k` is properly Riemann-integrable on a box `I` with respect to
+Lebesgue measure iff `f` is bounded on `I.Icc` and Lebesgue-a.e. continuous on `I.Icc` (stated in
+both `ContinuousWithinAt` and `ContinuousAt` forms); moreover, whenever `f` is Riemann-integrable
+on `I`, it is Lebesgue-integrable on `I.Icc` and its Riemann box integral equals its Lebesgue
+integral. -/
+theorem remarks_2_21_lebesgue_criterion {ι : Type*} [Fintype ι]
+    (I : BoxIntegral.Box ι) (f : (ι → ℝ) → ℂ) :
+    (BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann f
+        (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul ↔
+      (∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖f x‖ ≤ C) ∧
+      (∀ᵐ x ∂((volume : Measure (ι → ℝ)).restrict (BoxIntegral.Box.Icc I)),
+        ContinuousWithinAt f (BoxIntegral.Box.Icc I) x)) ∧
+    (BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann f
+        (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul ↔
+      (∃ C : ℝ, ∀ x ∈ BoxIntegral.Box.Icc I, ‖f x‖ ≤ C) ∧
+      (∀ᵐ x ∂((volume : Measure (ι → ℝ)).restrict (BoxIntegral.Box.Icc I)),
+        ContinuousAt f x)) ∧
+    (BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann f
+        (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul →
+      IntegrableOn f (BoxIntegral.Box.Icc I) (volume : Measure (ι → ℝ)) ∧
+      BoxIntegral.HasIntegral I BoxIntegral.IntegrationParams.Riemann f
+        (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul
+        (∫ x in (I : Set (ι → ℝ)), f x ∂(volume : Measure (ι → ℝ))) ∧
+      BoxIntegral.integral I BoxIntegral.IntegrationParams.Riemann f
+        (volume : Measure (ι → ℝ)).toBoxAdditive.toSMul =
+        ∫ x in BoxIntegral.Box.Icc I, f x ∂(volume : Measure (ι → ℝ))) := by
+  refine ⟨?_, ?_, ?_⟩
+  · constructor
+    · intro hf
+      obtain ⟨hb, _, hcw, _⟩ := remarks_2_21_riemann_converse I hf
+      exact ⟨hb, hcw⟩
+    · rintro ⟨hb, hcw⟩
+      exact BoxIntegral.integrable_of_bounded_and_ae_continuousWithinAt
+        BoxIntegral.IntegrationParams.Riemann hb volume hcw
+  · constructor
+    · intro hf
+      obtain ⟨hb, hc, _⟩ := remarks_2_21_riemann_converse I hf
+      exact ⟨hb, hc⟩
+    · rintro ⟨hb, hc⟩
+      exact BoxIntegral.integrable_of_bounded_and_ae_continuousWithinAt
+        BoxIntegral.IntegrationParams.Riemann hb volume (hc.mono fun _ h => h.continuousWithinAt)
+  · intro hf
+    obtain ⟨_, _, _, _, hf_Icc, hf_has, _, hf_eq_Icc⟩ := remarks_2_21_riemann_converse I hf
+    exact ⟨hf_Icc, hf_has, hf_eq_Icc⟩
+
+/-- `RCA 2.21` (Euclidean / completed Lebesgue-measure bridge to `2.20` and
+`remarks_2_21_restrict_l1`): transfers the box Lebesgue criterion to
+`(EuclideanSpace ℝ (Fin k), lebesgueSigma k, lebesgueMeasure k)` on `closedKCell I.lower I.upper`,
+establishing completed-Lebesgue `Chapter01.BookL1` membership of the cell indicator and equality
+between `Chapter01.BookComplexIntegral` and the Riemann `BoxIntegral`. -/
+theorem remarks_2_21_lebesgue_criterion_euclidean {k : ℕ}
+    (I : BoxIntegral.Box (Fin k)) (f : EuclideanSpace ℝ (Fin k) → ℂ) :
+    (BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann
+        (fun x : Fin k → ℝ => f (WithLp.toLp 2 x))
+        (volume : Measure (Fin k → ℝ)).toBoxAdditive.toSMul ↔
+      (∃ C : ℝ, ∀ x ∈ closedKCell I.lower I.upper, ‖f x‖ ≤ C) ∧
+      (∀ᵐ x ∂((lebesgueMeasure k).restrict (closedKCell I.lower I.upper)),
+        ContinuousAt f x)) ∧
+    (BoxIntegral.Integrable I BoxIntegral.IntegrationParams.Riemann
+        (fun x : Fin k → ℝ => f (WithLp.toLp 2 x))
+        (volume : Measure (Fin k → ℝ)).toBoxAdditive.toSMul →
+      @Chapter01.BookL1 (EuclideanSpace ℝ (Fin k)) (lebesgueSigma k) (lebesgueMeasure k)
+        ((closedKCell I.lower I.upper).indicator f) ∧
+      @Chapter01.BookComplexIntegral (EuclideanSpace ℝ (Fin k)) (lebesgueSigma k)
+        (lebesgueMeasure k) (closedKCell I.lower I.upper)
+        ((closedKCell I.lower I.upper).indicator f) =
+        BoxIntegral.integral I BoxIntegral.IntegrationParams.Riemann
+          (fun x : Fin k → ℝ => f (WithLp.toLp 2 x))
+          (volume : Measure (Fin k → ℝ)).toBoxAdditive.toSMul) := by
+  let fpi : (Fin k → ℝ) → ℂ := fun x => f (WithLp.toLp 2 x)
+  let E : Set (EuclideanSpace ℝ (Fin k)) := closedKCell I.lower I.upper
+  let B : Set (Fin k → ℝ) := BoxIntegral.Box.Icc I
+  have hpre : (@WithLp.ofLp 2 (Fin k → ℝ)) ⁻¹' B = E :=
+    (proposition_2_19_boxIntegral_bridge I).2
+  have hmem_iff : ∀ x : EuclideanSpace ℝ (Fin k), WithLp.ofLp x ∈ B ↔ x ∈ E := fun x =>
+    Set.ext_iff.mp hpre x
+  have hmem_toLp : ∀ y : Fin k → ℝ, WithLp.toLp 2 y ∈ E ↔ y ∈ B := fun y =>
+    (hmem_iff (WithLp.toLp 2 y)).symm
+  have hE_borel : MeasurableSet E :=
+    measurableSet_kCell (fun _ => .closedInterval) I.lower I.upper
+  have hE_leb : @MeasurableSet (EuclideanSpace ℝ (Fin k)) (lebesgueSigma k) E :=
+    hE_borel.nullMeasurableSet
+  have hcont_iff : ∀ x : EuclideanSpace ℝ (Fin k),
+      ContinuousAt f x ↔ ContinuousAt fpi (WithLp.ofLp x) := by
+    intro x
+    constructor
+    · intro hx
+      exact hx.comp (PiLp.continuous_toLp 2 (fun _ : Fin k => ℝ)).continuousAt
+    · intro hx
+      exact hx.comp (PiLp.continuous_ofLp 2 (fun _ : Fin k => ℝ)).continuousAt
+  have hcont_toLp : ∀ y : Fin k → ℝ,
+      ContinuousAt fpi y ↔ ContinuousAt f (WithLp.toLp 2 y) := fun y =>
+    (hcont_iff (WithLp.toLp 2 y)).symm
+  have hmp_of : MeasurePreserving (@WithLp.ofLp 2 (Fin k → ℝ))
+      (volume : Measure (EuclideanSpace ℝ (Fin k))) (volume : Measure (Fin k → ℝ)) :=
+    PiLp.volume_preserving_ofLp (Fin k)
+  have hmp_to : MeasurePreserving (@WithLp.toLp 2 (Fin k → ℝ))
+      (volume : Measure (Fin k → ℝ)) (volume : Measure (EuclideanSpace ℝ (Fin k))) :=
+    PiLp.volume_preserving_toLp (Fin k)
+  refine ⟨?_, ?_⟩
+  · rw [(remarks_2_21_lebesgue_criterion I fpi).2.1]
+    refine and_congr ?_ ?_
+    · constructor
+      · rintro ⟨C, hC⟩
+        exact ⟨C, fun x hx => hC (WithLp.ofLp x) ((hmem_iff x).mpr hx)⟩
+      · rintro ⟨C, hC⟩
+        exact ⟨C, fun y hy => hC (WithLp.toLp 2 y) ((hmem_toLp y).mpr hy)⟩
+    · have hae_leb :
+          (∀ᵐ x ∂((lebesgueMeasure k).restrict E), ContinuousAt f x) ↔
+            ∀ᵐ x ∂(volume : Measure (EuclideanSpace ℝ (Fin k))), x ∈ E → ContinuousAt f x := by
+        rw [@ae_restrict_iff' _ (lebesgueSigma k) _ _ _ hE_leb]
+        exact Iff.rfl
+      rw [hae_leb, ae_restrict_iff' I.measurableSet_Icc]
+      constructor
+      · intro h
+        have h' := hmp_of.quasiMeasurePreserving.ae h
+        exact h'.mono fun x hx hxE => (hcont_iff x).mpr (hx ((hmem_iff x).mpr hxE))
+      · intro h
+        have h' := hmp_to.quasiMeasurePreserving.ae h
+        exact h'.mono fun y hy hyB => (hcont_toLp y).mpr (hy ((hmem_toLp y).mpr hyB))
+  · intro hf_int
+    obtain ⟨hfpi_intOn, _, hfpi_eq⟩ := (remarks_2_21_lebesgue_criterion I fpi).2.2 hf_int
+    let g : EuclideanSpace ℝ (Fin k) → ℂ := E.indicator f
+    let gpi : (Fin k → ℝ) → ℂ := B.indicator fpi
+    have hg_comp : g = fun x => gpi ((MeasurableEquiv.toLp 2 (Fin k → ℝ)).symm x) := by
+      ext x
+      change E.indicator f x = B.indicator fpi (WithLp.ofLp x)
+      by_cases hx : x ∈ E
+      · rw [Set.indicator_of_mem hx, Set.indicator_of_mem ((hmem_iff x).mpr hx)]
+      · rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem (mt (hmem_iff x).mp hx)]
+    have hgpi_int : Integrable gpi (volume : Measure (Fin k → ℝ)) :=
+      (integrable_indicator_iff I.measurableSet_Icc).mpr hfpi_intOn
+    have hmp_eqv :
+        MeasurePreserving (MeasurableEquiv.toLp 2 (Fin k → ℝ)).symm
+          (volume : Measure (EuclideanSpace ℝ (Fin k))) (volume : Measure (Fin k → ℝ)) :=
+      EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin k)
+    have hg_int : Integrable g (volume : Measure (EuclideanSpace ℝ (Fin k))) := by
+      rw [hg_comp]
+      exact (hmp_eqv.integrable_comp_emb
+        (MeasurableEquiv.toLp 2 (Fin k → ℝ)).symm.measurableEmbedding).mpr hgpi_int
+    have hg_vol_eq :
+        (∫ x, g x ∂(volume : Measure (EuclideanSpace ℝ (Fin k)))) =
+          ∫ y in B, fpi y ∂(volume : Measure (Fin k → ℝ)) := by
+      rw [hg_comp, hmp_eqv.integral_comp' gpi, integral_indicator I.measurableSet_Icc]
+    have hg_aem : AEMeasurable g (volume : Measure (EuclideanSpace ℝ (Fin k))) :=
+      hg_int.aestronglyMeasurable.aemeasurable
+    have hg_meas_leb : @Measurable (EuclideanSpace ℝ (Fin k)) ℂ (lebesgueSigma k) _ g :=
+      hg_aem.nullMeasurable.measurable'
+    let m₀ : MeasurableSpace (EuclideanSpace ℝ (Fin k)) := inferInstance
+    have hm_le : m₀ ≤ lebesgueSigma k := fun _ hs => hs.nullMeasurableSet
+    have htrim : (lebesgueMeasure k).trim hm_le = (volume : Measure (EuclideanSpace ℝ (Fin k))) := by
+      refine Measure.ext fun s hs => ?_
+      rw [trim_measurableSet_eq hm_le hs]
+      rfl
+    let g₀ : EuclideanSpace ℝ (Fin k) → ℂ := hg_aem.mk g
+    have hg₀_meas : Measurable g₀ := hg_aem.measurable_mk
+    have hg_ae_vol : g =ᵐ[(volume : Measure (EuclideanSpace ℝ (Fin k)))] g₀ := hg_aem.ae_eq_mk
+    have hg_ae_leb : g =ᵐ[lebesgueMeasure k] g₀ := hg_ae_vol
+    have hg_fin_leb :
+        (∫⁻ x, ENNReal.ofReal ‖g x‖ ∂(lebesgueMeasure k)) < ∞ := by
+      have hlint :
+          (∫⁻ x, ENNReal.ofReal ‖g x‖ ∂(lebesgueMeasure k)) =
+            ∫⁻ x, ENNReal.ofReal ‖g x‖ ∂(volume : Measure (EuclideanSpace ℝ (Fin k))) := by
+        calc
+          (∫⁻ x, ENNReal.ofReal ‖g x‖ ∂(lebesgueMeasure k))
+              = ∫⁻ x, ENNReal.ofReal ‖g₀ x‖ ∂(lebesgueMeasure k) :=
+            lintegral_congr_ae (hg_ae_leb.mono fun _ h => congrArg (fun z => ENNReal.ofReal ‖z‖) h)
+          _ = ∫⁻ x, ENNReal.ofReal ‖g₀ x‖ ∂((lebesgueMeasure k).trim hm_le) :=
+            (lintegral_trim hm_le (hg₀_meas.norm.ennreal_ofReal)).symm
+          _ = ∫⁻ x, ENNReal.ofReal ‖g₀ x‖ ∂(volume : Measure (EuclideanSpace ℝ (Fin k))) := by
+            rw [htrim]
+          _ = ∫⁻ x, ENNReal.ofReal ‖g x‖ ∂(volume : Measure (EuclideanSpace ℝ (Fin k))) :=
+            lintegral_congr_ae
+              (hg_ae_vol.symm.mono fun _ h => congrArg (fun z => ENNReal.ofReal ‖z‖) h)
+      rw [hlint]
+      exact (hasFiniteIntegral_iff_norm g).mp hg_int.hasFiniteIntegral
+    have hg_bookL1 :
+        @Chapter01.BookL1 (EuclideanSpace ℝ (Fin k)) (lebesgueSigma k) (lebesgueMeasure k) g :=
+      ⟨hg_meas_leb, hg_fin_leb⟩
+    refine ⟨hg_bookL1, ?_⟩
+    have hbochner_leb :
+        (@MeasureTheory.integral (EuclideanSpace ℝ (Fin k)) ℂ _ _ (lebesgueSigma k)
+          (lebesgueMeasure k) g) =
+          ∫ x, g x ∂(volume : Measure (EuclideanSpace ℝ (Fin k))) := by
+      calc
+        (@MeasureTheory.integral (EuclideanSpace ℝ (Fin k)) ℂ _ _ (lebesgueSigma k)
+            (lebesgueMeasure k) g)
+            = @MeasureTheory.integral (EuclideanSpace ℝ (Fin k)) ℂ _ _ (lebesgueSigma k)
+                (lebesgueMeasure k) g₀ := integral_congr_ae hg_ae_leb
+        _ = ∫ x, g₀ x ∂((lebesgueMeasure k).trim hm_le) :=
+            integral_trim hm_le hg₀_meas.stronglyMeasurable
+        _ = ∫ x, g₀ x ∂(volume : Measure (EuclideanSpace ℝ (Fin k))) := by rw [htrim]
+        _ = ∫ x, g x ∂(volume : Measure (EuclideanSpace ℝ (Fin k))) :=
+            integral_congr_ae hg_ae_vol.symm
+    have hset_leb :
+        (@MeasureTheory.integral (EuclideanSpace ℝ (Fin k)) ℂ _ _ (lebesgueSigma k)
+          ((lebesgueMeasure k).restrict E) g) =
+          @MeasureTheory.integral (EuclideanSpace ℝ (Fin k)) ℂ _ _ (lebesgueSigma k)
+            (lebesgueMeasure k) g := by
+      let _ : MeasurableSpace (EuclideanSpace ℝ (Fin k)) := lebesgueSigma k
+      rw [← integral_indicator hE_leb]
+      congr 1
+      ext x
+      simp [g, Set.indicator_indicator, Set.inter_self]
+    rw [@Chapter01.definition_1_31 (EuclideanSpace ℝ (Fin k)) (lebesgueSigma k)
+      (lebesgueMeasure k) E g hg_bookL1, hset_leb, hbochner_leb, hg_vol_eq, ← hfpi_eq]
+
+/-- `RCA 2.21` / `PMA 11.33` (1-D interval specialization connecting `remarks_2_21_singleton_and_intervals`
+and `remarks_2_21_riemann_eq_lebesgue`): on any nondegenerate compact interval `[a, b]` (`a < b`),
+proper Riemann integrability is equivalent to boundedness on `[a, b]` together with Lebesgue-a.e.
+continuity within `[a, b]`, and implies `IntervalIntegrable f volume a b` with Riemann integral
+equal to `∫ x in a..b, f x`. -/
+theorem remarks_2_21_lebesgue_criterion_interval {a b : ℝ} (hab : a < b) (f : ℝ → ℂ) :
+    (BoxIntegral.Integrable (intervalBox hab) BoxIntegral.IntegrationParams.Riemann
+        (fun x : Fin 1 → ℝ => f (x 0))
+        (volume : Measure (Fin 1 → ℝ)).toBoxAdditive.toSMul ↔
+      (∃ C : ℝ, ∀ x ∈ Icc a b, ‖f x‖ ≤ C) ∧
+      (∀ᵐ x ∂((volume : Measure ℝ).restrict (Icc a b)), ContinuousWithinAt f (Icc a b) x)) ∧
+    (BoxIntegral.Integrable (intervalBox hab) BoxIntegral.IntegrationParams.Riemann
+        (fun x : Fin 1 → ℝ => f (x 0))
+        (volume : Measure (Fin 1 → ℝ)).toBoxAdditive.toSMul →
+      IntervalIntegrable f (volume : Measure ℝ) a b ∧
+      BoxIntegral.integral (intervalBox hab) BoxIntegral.IntegrationParams.Riemann
+        (fun x : Fin 1 → ℝ => f (x 0))
+        (volume : Measure (Fin 1 → ℝ)).toBoxAdditive.toSMul = ∫ x in a..b, f x) := by
+  let I : BoxIntegral.Box (Fin 1) := intervalBox hab
+  let f₁ : (Fin 1 → ℝ) → ℂ := fun x => f (x 0)
+  let me : (Fin 1 → ℝ) ≃ᵐ ℝ := MeasurableEquiv.funUnique (Fin 1) ℝ
+  have hmp : MeasurePreserving me (volume : Measure (Fin 1 → ℝ)) (volume : Measure ℝ) :=
+    volume_preserving_funUnique (Fin 1) ℝ
+  have hpre : me ⁻¹' Icc a b = BoxIntegral.Box.Icc I := by
+    ext x
+    simp [me, I, intervalBox, BoxIntegral.Box.Icc_def, Pi.le_def, Fin.forall_fin_one]
+  have hmem_iff : ∀ x : Fin 1 → ℝ, x 0 ∈ Icc a b ↔ x ∈ BoxIntegral.Box.Icc I := fun x =>
+    Set.ext_iff.mp hpre x
+  have hmem_symm : ∀ t : ℝ, (fun _ : Fin 1 => t) ∈ BoxIntegral.Box.Icc I ↔ t ∈ Icc a b :=
+    fun t => (hmem_iff (fun _ => t)).symm
+  have hcw_iff : ∀ x : Fin 1 → ℝ,
+      ContinuousWithinAt f₁ (BoxIntegral.Box.Icc I) x ↔
+        ContinuousWithinAt f (Icc a b) (x 0) := by
+    intro x
+    constructor
+    · intro hx
+      have hsymm_eq : (fun _ : Fin 1 => x 0) = x := by
+        ext i
+        rw [Fin.eq_zero i]
+      have hmaps : MapsTo (fun t : ℝ => fun _ : Fin 1 => t) (Icc a b) (BoxIntegral.Box.Icc I) :=
+        fun t ht => (hmem_symm t).mpr ht
+      have hcomp := (hsymm_eq ▸ hx).comp
+        (continuous_pi fun _ => continuous_id).continuousWithinAt hmaps
+      exact hcomp
+    · intro hx
+      have hmaps : MapsTo (fun y : Fin 1 → ℝ => y 0) (BoxIntegral.Box.Icc I) (Icc a b) :=
+        fun y hy => (hmem_iff y).mpr hy
+      exact ContinuousWithinAt.comp (f := fun y : Fin 1 → ℝ => y 0) (g := f)
+        hx (continuous_apply 0).continuousWithinAt hmaps
+  refine ⟨?_, ?_⟩
+  · rw [(remarks_2_21_lebesgue_criterion I f₁).1]
+    refine and_congr ?_ ?_
+    · constructor
+      · rintro ⟨C, hC⟩
+        exact ⟨C, fun t ht => hC (fun _ => t) ((hmem_symm t).mpr ht)⟩
+      · rintro ⟨C, hC⟩
+        exact ⟨C, fun x hx => hC (x 0) ((hmem_iff x).mpr hx)⟩
+    · rw [ae_restrict_iff' I.measurableSet_Icc, ae_restrict_iff' measurableSet_Icc]
+      constructor
+      · intro h
+        have h' := hmp.symm.quasiMeasurePreserving.ae h
+        exact h'.mono fun t ht htab => (hcw_iff (fun _ => t)).mp (ht ((hmem_symm t).mpr htab))
+      · intro h
+        have h' := hmp.quasiMeasurePreserving.ae h
+        exact h'.mono fun x hx hxI => (hcw_iff x).mpr (hx ((hmem_iff x).mpr hxI))
+  · intro hf_int
+    obtain ⟨hf₁_intOn, _, hf₁_eq⟩ := (remarks_2_21_lebesgue_criterion I f₁).2.2 hf_int
+    have hf_intOn : IntegrableOn f (Icc a b) (volume : Measure ℝ) := by
+      have h1 : IntegrableOn (f ∘ me) (me ⁻¹' Icc a b) (volume : Measure (Fin 1 → ℝ)) := by
+        rwa [hpre]
+      exact (hmp.integrableOn_comp_preimage me.measurableEmbedding).mp h1
+    refine ⟨(intervalIntegrable_iff_integrableOn_Icc_of_le hab.le).mpr hf_intOn, ?_⟩
+    have hint_eq :
+        (∫ x in BoxIntegral.Box.Icc I, f₁ x ∂(volume : Measure (Fin 1 → ℝ))) =
+          ∫ t in Icc a b, f t ∂(volume : Measure ℝ) := by
+      rw [← hpre]
+      exact hmp.setIntegral_preimage_emb me.measurableEmbedding f (Icc a b)
+    rw [hf₁_eq, hint_eq]
+    exact (remarks_2_21_singleton_and_intervals hab.le f).2.2.2.2.2.2.2.2
+
+end Exposition2_21_Converse
+
 end RudinRCA.Chapter02

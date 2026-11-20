@@ -7,7 +7,7 @@ its ticket) and updated as chapters land. "Done" means proved at the bar
 | Chapter | Title | Nodes (total) | Done |
 |---|---|---|---|
 | 1 | Abstract Integration | 41 | 41 |
-| 2 | Positive Borel Measures | 25 | 24 |
+| 2 | Positive Borel Measures | 25 | 25 |
 | 3 | Lp-Spaces | 17 | 17 |
 | 4 | Elementary Hilbert Space Theory | 26 | 26 |
 | 5 | Examples of Banach Space Techniques | 25 | 25 |
@@ -152,9 +152,9 @@ see [QUEUE.md](QUEUE.md). No exercise is included.
 | Chapter | Inventoried | Formalized items | Remaining original items | Proved result groups / total |
 |---|---:|---:|---:|---:|
 | 1 | 41 | 41 | 0 | 25 / 25 |
-| 2 | 25 | 24 | 1 | 14 / 14 |
+| 2 | 25 | 25 | 0 | 14 / 14 |
 | 3 | 17 | 17 | 0 | 10 / 10 |
-| Total | 83 | 82 | 1 | 49 / 49 |
+| Total | 83 | 83 | 0 | 49 / 49 |
 
 Chapter 1 covers 1.1–1.41 (`41/41` items, `25/25` result groups; see [INVENTORY-CH01.md](INVENTORY-CH01.md)). Chapter 2 covers 2.1–2.25 except exposition remarks node 2.21 (`24/25` `Done` items, `14/14` theorem/lemma groups), including complex integration functionals `2.2`, the complex Riesz representation theorem `2.14` (completed `σ`-algebra, `Book214RegularityHypotheses` `2.14(b–d)`, completeness `2.14(e)`, complex integral representation `2.14(a)`, and uniqueness), regular approximation `2.17`, automatic Borel regularity `2.18`, Euclidean `k`-cells and dyadic decomposition `2.19`, the full Lebesgue measure package `2.20`, Vitali nonmeasurable subsets `2.22`, determinant scaling `2.23`, Lusin's theorem `2.24`, and Vitali–Carathéodory `2.25`, together with all definition assertions, notation `2.11`, and seven attached corollary clauses; exposition node `2.21` is formalized in `Exposition2_21` via four supporting theorems and conservatively excluded from `Done` (see [CHAPTER02-COVERAGE.md](CHAPTER02-COVERAGE.md)). Chapter 3 is complete at `17/17` numbered items (`3.1`–`3.17`, `10/10` theorem groups), preserving the `5`-declaration zero-measure counterexample scaffold alongside the explicitly disclosed `ℝ≥0∞`-threshold essential-supremum repair for `3.7` and `μ ≠ 0` printed `sInf` bridges (see [CHAPTER03-COVERAGE.md](CHAPTER03-COVERAGE.md)).
 Cluster A is independently reviewed and merged on `main` (`82/83` items recorded in `Done`, `49/49` result groups, with the single remaining item the exposition node `2.21`; main-table `Done` total is `454/456` at `main` `62d90ab` after landing the remaining `10` provable Cluster A Stage 2 Chapter 2 nodes in FE #37 (PR #110, crossed review PASS WITH ISSUES, zero blocking findings, merged 2026-11-14T02:46:36Z, merge commit `62d90ab`) on top of the `444/456` total at `main` `66e4100` after landing all `37/37` Cluster H Stage 2 Chapters 18–20 nodes in FE #44 (PR #109, crossed review PASS WITH ISSUES, zero blocking findings), the `407/456` total at `main` `6e8857a5` after landing all `17/17` Cluster A Stage 2 Chapter 3 nodes in FE #37 (PR #108, crossed review PASS, zero blocking findings), the `390/456` total at `main` `12cc36c8` after landing the remaining `3` Cluster F Stage 3 nodes `14.18`–`14.20` in FE #105 (PR #107, crossed review PASS WITH ISSUES, zero blocking findings), the `387/456` total at `main` `82f2d447` after landing the remaining `19` Cluster E Stage 3 nodes in FE #88 (PR #106, crossed review PASS WITH ISSUES), the `368/456` total at `main` `3a6d3953` after landing the remaining `13` Cluster C Stage 3 nodes in FE #102 (PR #104, crossed review PASS WITH ISSUES), the `355/456` total at `main` `687afd23` from the `74/75` Cluster G Stage 2 nodes in FE #43 (PR #103, crossed review PASS), the `281/456` total at `main` `e30ccaad` from the `31/34` Cluster F Stage 2 nodes in FE #42 (PR #101, crossed review PASS WITH ISSUES), the `250/456` total at `main` `35efa215` from the `71/90` Cluster E Stage 2 nodes in FE #88 (PR #91, crossed review PASS WITH ISSUES), and the `179/456` baseline on `main` `3c83822` including `24/26` Chapter 7 nodes landed in FE #86 (PR #89) and `23/23` Chapter 9 nodes landed in FE #87 (PR #90, crossed review PASS WITH ISSUES)).
@@ -187,6 +187,13 @@ Branch `coordinator/bigpicard-1621-20261119` (authored from `main` `0eb4fec68a86
 
 - **Chapter 16 advances from `21/22` to `22/22`**, and the book total advances from **`454/456` to `455/456`** on this branch (reaching **`456/456`**, closing RCA completely, once paired with Chapter 2 exposition node `2.21`).
 - **Build & audit:** Clean-slate `lake build` exits `0` (`0` errors, `0` warnings in `RudinRCA/Chapter16.lean`); whole-book `AuditA` passes across **`8,180`** project declarations (`+182` over `7,998`) across `22` audited project modules (`23` package source modules), `scripts/check_audit.py` passes `6/6`, axiom union strictly `{propext, Classical.choice, Quot.sound}`, zero `sorry`/`admit`/`native_decide`/`ofReduceBool`/`bv_decide`/`decide!`/local `axiom`/`opaque`.
+
+## FE #140 — Unconditional 2.21 Converse (Lebesgue Criterion for Riemann Integrability)
+
+Branch `coordinator/fe140-221-converse-proof-20261119` (authored from `main` `8c6ef4fef2f9461951ce25d012ee2c8ba765a210`, `FE #140`, frozen contract `PIN-221-CONVERSE.md` v1) proves all six pinned public declarations (`intervalBox`, `remarks_2_21_riemann_converse_real`, `remarks_2_21_riemann_converse`, `remarks_2_21_lebesgue_criterion`, `remarks_2_21_lebesgue_criterion_euclidean`, `remarks_2_21_lebesgue_criterion_interval`) in `RudinRCA/Chapter02.lean` (`section Exposition2_21_Converse`, `L4015–L4919`; `4,921` lines, blob `0b224df070f2d81bec03a1417f3f2af8fbb01b03`, SHA-256 `16fac6ad8a25070490c8e09bce5dacd7cfabae87e0ff859c2d294454b6108c60`, `209` total source declarations / `181` public source / `176` public value / `321` `AuditA` constants, `+35` over the `286` baseline, preserving `L1–L4010` and `section Exposition2_21` byte-for-byte unchanged):
+
+- **Chapter 2 advances from `24/25` to `25/25`** (Cluster A `82/83 → 83/83`), and the book total advances from **`455/456` to `456/456`** on this branch, completing all `456/456` inventoried numbered body nodes across Chapters 1–20 of Rudin's *Real and Complex Analysis* unconditionally at the programme bar (pending independent crossed review PASS and merge).
+- **Build & audit:** Clean-slate `lake build` exits `0` (`8,947` jobs, `0` errors, `0` warnings in `RudinRCA/Chapter02.lean`); whole-book `AuditA` passes across **`8,215`** project declarations (`+35` over `8,180`) across `22` audited project modules (`23` package source modules), `scripts/check_audit.py` passes `6/6`, axiom union strictly `{propext, Classical.choice, Quot.sound}`, zero `sorry`/`admit`/`native_decide`/`ofReduceBool`/`bv_decide`/`decide!`/local `axiom`/`opaque`.
 
 ## RCA close-out — final exposition state and completion criterion (FE #111)
 
