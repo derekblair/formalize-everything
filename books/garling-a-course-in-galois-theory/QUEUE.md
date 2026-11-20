@@ -864,3 +864,187 @@ All **5 / 5** main-text theorem/lemma/corollary items in Chapter 15 (`Theorem 15
     2. For `3 ≤ m` with `1 ≤ t`: `IsCyclic U_m ↔ m = 4 ∨ ∃ q t, q.Prime ∧ Odd q ∧ 1 ≤ t ∧ (m = q^t ∨ m = 2 * q^t)`;
     3. For `1 ≤ m` allowing `t : ℕ` (`t ≥ 0`): the literal printed formula `m = 4 ∨ ∃ q t, q.Prime ∧ Odd q ∧ (m = q^t ∨ m = 2 * q^t)`.
 - **Status:** Held in `QUEUE.md` as a boundary-omission (`m = 1, 2` under `1 ≤ t`, `m = 0`) fidelity hold; counterexamples and all three repaired characterizations are kernel-proved.
+
+---
+
+# Chapter 16 — Fidelity Holds (Printed pp. 123–130 / PDF pp. 131–138)
+
+Chapter 16 (*Cyclic extensions*) contains **7** main-text theorem/corollary items (`Theorem 16.1`–`Theorem 16.6` + unnumbered `Corollary` [to `Theorem 16.3`]; `0` numbered definitions, `0` numbered lemmas) and **16** numbered exercises (`Exercise 16.1`–`Exercise 16.16`), for **23** scope-of-record items total (plus 5 unnumbered inline prose definitions — *(`K`-valued) character*, *cyclic* extension, *trace*, *norm*, and *Kummer extension of exponent `d`* — formalized as supporting declarations; Chapter 15 is formalized on a separate parallel lane and is not imported or referenced). Among these **23** items, **9 / 23** (`3 / 7` main-text: `Theorem 16.3`, `Theorem 16.4`, `Theorem 16.5`; + `6 / 16` exercises: `Exercise 16.1`, `Exercise 16.2`, `Exercise 16.7`, `Exercise 16.8`, `Exercise 16.11`, `Exercise 16.15`) are proved literally as printed, while **14 / 23** (`4 / 7` main-text: `Theorem 16.1`, `Theorem 16.2`, `Corollary` [to `Theorem 16.3`], `Theorem 16.6`; + `10 / 16` exercises: `Exercise 16.3`, `Exercise 16.4`, `Exercise 16.5`, `Exercise 16.6`, `Exercise 16.9`, `Exercise 16.10`, `Exercise 16.12`, `Exercise 16.13`, `Exercise 16.14`, `Exercise 16.16`) are held below as source-fidelity holds covering genuine textbook mathematical errors (`Theorem 16.1`, `Theorem 16.2`, `Exercise 16.4`, `Exercise 16.14`), implicit non-vanishing / positivity / primality / integer-quotient guards (`Corollary` [to `Theorem 16.3`], `Theorem 16.6`, `Exercise 16.9`, `Exercise 16.12`, `Exercise 16.13`, `Exercise 16.16`), and non-propositional *"What is... / List... / Describe... / Explain..."* prompts (`Exercise 16.3`, `Exercise 16.5`, `Exercise 16.6`, `Exercise 16.10`). Every held item has its full repaired/classified theorem(s) and, wherever the literal printed statement fails or hits a Lean/Mathlib trap, its explicit kernel-proved counterexample in `Garling/Chapter16.lean`; none is silently weakened or counted as literally closed prior to coordinator ruling.
+
+---
+
+## Ch. 16, Theorem 16.1 (§16.1, printed p. 123 / PDF p. 131) — Omitted `θ ≠ 0` hypothesis (false at `θ = 0`) + proof slip `Γ(L:K)` for `Γ(L:K(ω))` (fidelity hold)
+
+- **Printed statement (p. 123):** *"Suppose that $x^n - \theta \in K[x]$, and that $\operatorname{char} K$ does not divide $n$. Let $L:K$ be a splitting field extension for $x^n - \theta$ over $K$. Then $L$ contains a primitive $n$th root of unity, $\omega$ say. The group $\Gamma(L:K(\omega))$ is cyclic, and its order divides $n$. $x^n - \theta$ is irreducible over $K(\omega)$ if and only if $[L:K(\omega)] = n$."*
+- **Exact blockers:**
+  1. **Genuine omitted hypothesis `θ ≠ 0` (false as printed at `θ = 0`):** When $\theta = 0$ and $n \ge 2$ (e.g. $K = \mathbb{Q}$, $n = 3$, $\theta = 0$), $\operatorname{char} \mathbb{Q} = 0 \nmid 3$, and $x^3 - 0 = x^3$ already splits over $\mathbb{Q}$, so $L = \mathbb{Q}$ is a splitting field extension for $x^3$ over $\mathbb{Q}$. Yet $L = \mathbb{Q}$ contains **no** primitive cube root of unity (`¬ ∃ ω : ℚ, IsPrimitiveRoot ω 3`, because any rational cube root of unity satisfies $x = 1$). Garling's proof on p. 123 divides by a root $\alpha_1$ of $x^n - \theta$ without assuming $\theta \ne 0$.
+  2. **Proof-text notation slips (p. 123):** The proof also switches root-of-unity symbol mid-proof ($\omega \to \varepsilon$) and writes $\Gamma(L:K)$ twice where $\Gamma(L:K(\omega))$ is intended; $\Gamma(L:K)$ itself need not be cyclic (e.g. $x^3 - 2 \in \mathbb{Q}[x]$ has $\Gamma(L:\mathbb{Q}) \cong \Sigma_3$, non-abelian and non-cyclic).
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.theorem_16_1_zero_counterexample`: proves on $K = L = \mathbb{Q}$, $n = 3$, $\theta = 0$ that `¬ (ringChar ℚ ∣ 3)`, `IsGarlingSplittingFieldExtension ℚ ℚ (X^3 - C 0)`, and `¬ ∃ ω : ℚ, IsPrimitiveRoot ω 3`.
+  - `Garling.Chapter16.theorem_16_1`: proves the full statement of `Theorem 16.1` under `hθ : θ ≠ 0` (existence of primitive $n$th root of unity $\omega \in L$, `IsGarlingGaloisExtension K⟮ω⟯ L`, `IsCyclic (GarlingGaloisGroup K⟮ω⟯ L)`, `Nat.card (GarlingGaloisGroup K⟮ω⟯ L) ∣ n`, and `Irreducible ((X^n - C θ).map (algebraMap K K⟮ω⟯)) ↔ Module.finrank K⟮ω⟯ L = n`).
+  - `Garling.Chapter16.theorem_16_1_galoisGroup_over_K_not_cyclic_example`: proves on any splitting field $L:\mathbb{Q}$ of $x^3 - 2$ that `¬ IsCyclic (GarlingGaloisGroup ℚ L)` (confirming p. 123's proof occurrences of `Γ(L:K)` are slips for `Γ(L:K(ω))`).
+- **Status:** Held in `QUEUE.md` as an omitted-`θ ≠ 0` textbook error; counterexample, repaired theorem, and proof-slip witness are all kernel-proved.
+
+---
+
+## Ch. 16, Exercise 16.3 (§16.1, printed p. 124 / PDF p. 132) — Non-propositional *"What is... List... determine..."* prompt (fidelity hold)
+
+- **Printed statement (p. 124):** *"Let $L:\mathbb{Q}$ be a splitting field extension for $x^4 - 5$ over $\mathbb{Q}$. What is its Galois group? List the fields intermediate between $L$ and $\mathbb{Q}$, and determine which of them are normal over $\mathbb{Q}$."*
+- **Exact blocker:** Open-ended computational/classification prompt (*"What is... List... determine..."*) rather than a standalone *"Show that..."* proposition (matching `Exercises 7.6–7.8, 11.5–11.8, 14.8`).
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.d4SubgroupFinset`, `Garling.Chapter16.d4Subgroup`, `Garling.Chapter16.d4Subgroup_classification`: complete classification of all `10` subgroups of `DihedralGroup 4` ($D_4$ of order `8`), identifying the `6` normal subgroups (`k ∈ {0, 1, 2, 7, 8, 9}`) and `4` non-normal subgroups (`k ∈ {3, 4, 5, 6}`).
+  - `Garling.Chapter16.ex163Field`, `Garling.Chapter16.exercise_16_3`: proves universally for **every** splitting field $L:\mathbb{Q}$ of $x^4 - 5$ that `GarlingGaloisGroup ℚ L ≃* DihedralGroup 4` (`[L:ℚ] = 8`), exhibits explicit generators $\alpha$ ($\alpha^4 = 5$) and $\mathrm{i}$ ($\mathrm{i}^2 = -1$) in $L$, lists all **10** pairwise-distinct intermediate fields (`⊥ = ℚ`, `ℚ(i)`, `ℚ(α²)`, `ℚ(iα²)`, `ℚ(α)`, `ℚ(iα)`, `ℚ((1+i)α)`, `ℚ((1-i)α)`, `ℚ(i, α²)`, `⊤ = L`), proves exhaustiveness (`∀ M : IntermediateField ℚ L, ∃ k : Fin 10, M = ex163Field α im k`), and proves the exact normality criterion `Normal ℚ (ex163Field α im k) ↔ k ∈ ({0, 1, 2, 3, 8, 9} : Finset (Fin 10))` (`6` normal, `4` non-normal).
+- **Status:** Held pending coordinator ruling on whether `exercise_16_3` closes Exercise 16.3.
+
+---
+
+## Ch. 16, Theorem 16.2 (Abel's theorem) (§16.2, printed p. 124 / PDF p. 132) — Sentence 2 omits `θ ≠ 0` (false at `θ = 0`) (fidelity hold)
+
+- **Printed statement (p. 124):** *"Suppose that $q$ is a prime, that $x^q - \theta \in K[x]$ and that $\operatorname{char} K \ne q$. Then either $x^q - \theta$ is irreducible over $K$ or $x^q - \theta$ has a root in $K$. In the latter case $x^q - \theta$ splits over $K$ if and only if $K$ contains a primitive $q$th root of unity."*
+- **Exact blocker:** Sentence 1 (*"either $x^q - \theta$ is irreducible over $K$ or $x^q - \theta$ has a root in $K$"*) holds **unconditionally** for all $\theta \in K$ (including $\theta = 0$). However, Sentence 2 (*"In the latter case $x^q - \theta$ splits over $K$ if and only if $K$ contains a primitive $q$th root of unity"*) omits $\theta \ne 0$ and is **mathematically false** at $\theta = 0$: for $K = \mathbb{Q}$, $q = 3$, $\theta = 0$, $x^3 - 0 = x^3$ has root $0 \in \mathbb{Q}$ and splits completely over $\mathbb{Q}$ (`(x - 0)^3`), yet $\mathbb{Q}$ contains **no** primitive cube root of unity.
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.theorem_16_2_part1_unconditional`: proves Sentence 1 unconditionally (`Xor (Irreducible (X^q - C θ)) (∃ c : K, (X^q - C θ).eval c = 0)`) for every field $K$, prime $q \ne \operatorname{char} K$, and every $\theta \in K$ (including $\theta = 0$).
+  - `Garling.Chapter16.theorem_16_2_zero_counterexample`: proves on $K = \mathbb{Q}$, $q = 3$, $\theta = 0$ that `Nat.Prime 3`, `ringChar ℚ ≠ 3`, `(X^3 - C 0).eval 0 = 0`, `GarlingSplitsOver ℚ ℚ (X^3 - C 0)`, and `¬ ∃ ω : ℚ, IsPrimitiveRoot ω 3`.
+  - `Garling.Chapter16.theorem_16_2`: proves both sentences in full under `hθ : θ ≠ 0`.
+  - `Garling.Chapter16.theorem_16_2_iff`: proves the exact unconditional equivalence `GarlingSplitsOver K K (X^q - C θ) ↔ θ = 0 ∨ ∃ ω : K, IsPrimitiveRoot ω q` whenever $x^q - \theta$ has a root in $K$.
+- **Status:** Held in `QUEUE.md` as an omitted-`θ ≠ 0` textbook error in Sentence 2; unconditional Sentence 1, counterexample, repaired theorem, and exact iff are all kernel-proved.
+
+---
+
+## Ch. 16, Exercise 16.4 (§16.2, printed p. 125 / PDF p. 133) — Genuine textbook error: printed *"generator of `ℤ_q*`"* false whenever `j < q - 1` (fidelity hold)
+
+- **Printed statement (p. 125):** *"Suppose that $q$ is a prime, that $\operatorname{char} K \ne q$ and that $x^q - \theta$ is irreducible in $K[x]$. Let $\omega$ be a primitive $q$th root of unity, and let $[K(\omega):K] = j$. Show that the Galois group of $x^q - \theta$ can be generated by elements $\sigma$ and $\tau$ satisfying $\sigma^q = \tau^j = 1$, $\sigma^k \tau = \tau\sigma$, where $\bar{k}$ is a generator of the multiplicative group $\mathbb{Z}_q^*$."*
+- **Exact blocker:** The printed claim that $\bar{k} \in \mathbb{Z}_q^*$ is a **generator of the full multiplicative group $\mathbb{Z}_q^*$** (i.e. multiplicative order $q - 1$) is **mathematically false** whenever $j = [K(\omega):K] < q - 1$:
+  - From $\sigma^k \tau = \tau\sigma$ (i.e. $\tau^{-1}\sigma\tau = \sigma^k$), conjugating $j$ times gives $\sigma = \tau^{-j}\sigma\tau^j = \sigma^{k^j}$, so $k^j \equiv 1 \pmod q$ (`orderOf (k : (ZMod q)ˣ) ∣ j`).
+  - If $\bar{k}$ generated $\mathbb{Z}_q^*$, then $q - 1 = \operatorname{ord}(\bar{k}) \mid j$, forcing $j = q - 1$.
+  - Whenever $j < q - 1$ (e.g. $q = 3$, $K = \mathbb{Q}(\zeta_3)$, $\theta = 2$, where $x^3 - 2$ is irreducible over $K$, $j = [K(\omega):K] = 1 < 2 = q - 1$, and $\Gamma_K(x^3 - 2) \cong C_3$ is abelian), **no** elements $\sigma, \tau$ in the Galois group satisfy $\sigma^q = \tau^j = 1$, $\sigma^k \tau = \tau\sigma$ with $\bar{k}$ generating $\mathbb{Z}_q^*$ (since $\tau = 1$ forces $\sigma^k = \sigma$, i.e. $k \equiv 1 \pmod 3$, which has order $1 \ne 2$).
+  - The **true** condition is that $\bar{k} \in (\mathbb{Z}_q)^\times$ has exact multiplicative order $j$ (equivalently generates the subgroup of order $j$ in $(\mathbb{Z}_q)^\times$, matching the image of $\Gamma(K(\omega):K) \hookrightarrow (\mathbb{Z}_q)^\times$, which equals the full group $\mathbb{Z}_q^*$ if and only if $j = q - 1$).
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.exercise_16_4_counterexample`: constructs $q = 3$, $K = \mathbb{Q}(\omega)$ (`qZeta3`), $\theta = 2$, $L = \mathbb{Q}(\omega, 2^{1/3})$, proving `Irreducible (X^3 - C 2)`, `Module.finrank K K⟮ω⟯ = 1`, `IsGarlingSplittingFieldExtension K L (X^3 - C 2)`, and `¬ ∃ σ τ k, Subgroup.closure {σ, τ} = ⊤ ∧ σ^3 = 1 ∧ τ^1 = 1 ∧ σ^k * τ = τ * σ ∧ Subgroup.zpowers k_unit = ⊤`.
+  - `Garling.Chapter16.exercise_16_4_repaired`: proves across all fields $K$, primes $q \ne \operatorname{char} K$, irreducible $x^q - \theta$, and all splitting fields $L:K$ that `j ∣ q - 1`, `Nat.card (GarlingGaloisGroup K L) = q * j`, and there exist $\sigma, \tau \in \Gamma(L:K)$ and $k \in \mathbb{N}$ (`¬ (q ∣ k)`) generating $\Gamma(L:K)$ with `orderOf σ = q`, `orderOf τ = j`, `σ^q = 1`, `τ^j = 1`, `σ^k * τ = τ * σ`, and `orderOf (k : (ZMod q)ˣ) = j`.
+  - `Garling.Chapter16.exercise_16_4_printed_iff`: proves that the literal printed `"generator of ℤ_q*"` statement holds **if and only if** `j = q - 1`.
+- **Status:** Held in `QUEUE.md` as a genuine textbook mathematical error; concrete counterexample, repaired order-$j$ theorem, and exact `j = q - 1` iff characterization are all kernel-proved.
+
+---
+
+## Ch. 16, Exercise 16.5 (§16.2, printed p. 125 / PDF p. 133) — Open-ended *"Describe the splitting field..."* prompt (fidelity hold)
+
+- **Printed statement (p. 125):** *"Suppose that $q$ is a prime, that $\operatorname{char} K = q$ and that $\theta \in K$. Describe the splitting field for $x^q - \theta$ over $K$."*
+- **Exact blocker:** Non-propositional descriptive prompt (*"Describe..."*) rather than a standalone *"Show that..."* proposition.
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.char_q_X_pow_sub_C_fac`, `Garling.Chapter16.exercise_16_5_part1`, `Garling.Chapter16.exercise_16_5`: prove the complete characterization over any field $K$ with $\operatorname{char} K = q$ (prime) and any $\theta \in K$:
+    1. If $\theta = \alpha^q$ for some $\alpha \in K$, then $x^q - \theta = (x - \alpha)^q$ splits over $K$, so $L = K$ (`[L:K] = 1`, `IsGarlingGaloisExtension K L`, `|Γ(L:K)| = 1`);
+    2. If $\theta$ is not a $q$th power in $K$, then $x^q - \theta$ is irreducible over $K$, $L = K(\alpha)$ for the unique root $\alpha \in L$ with $(x - \alpha)^q = x^q - \theta$, `[L:K] = q`, $L:K$ is purely/totally inseparable (`IsGarlingTotallyInseparable K L`), not separable, not Galois, and `|Γ(L:K)| = 1` (trivial automorphism group), together with explicit construction `AdjoinRoot (X^q - C θ)`.
+- **Status:** Held pending coordinator ruling on whether `exercise_16_5` closes Exercise 16.5.
+
+---
+
+## Ch. 16, Corollary [to Theorem 16.3] (§16.3, printed p. 126 / PDF p. 134) — Omitted `n ≥ 1` non-emptiness hypothesis (fidelity hold)
+
+- **Printed statement (p. 126):** *"Suppose that $\tau_1, \dots, \tau_n$ are distinct automorphisms of a field $K$ and that $k_1, \dots, k_n$ are non-zero elements of $K$. Then there exists $k$ in $K$ such that $k_1\tau_1(k) + \dots + k_n\tau_n(k) \ne 0$."*
+- **Exact blocker:** The printed list $\tau_1, \dots, \tau_n$ implicitly requires $n \ge 1$. At $n = 0$, the empty family `Fin 0 → GarlingAut K` is vacuously injective and `Fin 0 → K` is vacuously non-zero, yet the empty sum `∑ i : Fin 0, k i * τ i x = 0` vanishes for every $x \in K$.
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.corollary_to_theorem_16_3_empty_counterexample`: proves for every field $K$ at $n = 0$ that injectivity and non-vanishing hold vacuously while `¬ ∃ x : K, ∑ i : Fin 0, c i * τ i x ≠ 0`.
+  - `Garling.Chapter16.corollary_to_theorem_16_3`: proves the exact printed conclusion for all `1 ≤ n` (derived from `exists_ne_zero_sum_aut_apply` and `theorem_16_3`).
+  - `Garling.Chapter16.exists_apply_sum_ne_zero_of_algEquiv`: helper specializing the corollary to distinct $K$-automorphisms in $\Gamma(L:K)$ with at least one non-zero coefficient.
+- **Status:** Held in `QUEUE.md` as an omitted-`n ≥ 1` indexing-convention hold; empty-sum counterexample and `1 ≤ n` theorem are both kernel-proved.
+
+---
+
+## Ch. 16, Exercise 16.6 (§16.3, printed p. 127 / PDF p. 135) — Non-propositional *"Explain why..."* prompt in `(iv)` & root-tuple multiplicity/distinctness (fidelity hold)
+
+- **Printed statement (p. 127):** *"Suppose that $[L:K]$ is a prime $p$, that $p \ne \operatorname{char} K$ and that $L$ is algebraically closed. Suppose (if possible) that $p > 2$. (i) Show that the cyclotomic polynomials $\Phi_p$ and $\Phi_{p^2}$ split over $K$. (ii) Show that there exists $\theta$ in $K$ such that $x^p - \theta$ is irreducible over $K$ and $L:K$ is the splitting field extension for $x^p - \theta$. (iii) Show that $f = x^{p^2} - \theta$ has no roots in $K$, and must be of the form $f = f_1 \dots f_p$, where each $f_j$ is an irreducible polynomial in $K[x]$ of degree $p$. (iv) Show that if $\alpha_1, \dots, \alpha_p$ are roots of $f_1$ then $\alpha_1 \dots \alpha_p = \omega\beta$, where $\omega$ is a $p^2$th root of unity and $\beta^p = \theta$. Explain why this gives a contradiction."*
+- **Exact blockers:**
+  1. Part `(iv)` ends with the non-propositional prompt *"Explain why this gives a contradiction"* (requiring an explicit deduction of `False`).
+  2. In `(iv)`, the product identity $\alpha_1 \cdots \alpha_p = \omega\beta$ holds for *any* $p$ roots $\alpha_1, \dots, \alpha_p$ of $f_1$ (even with repetitions), while deriving the contradiction uses the $p$ roots of monic degree-$p$ $f_1$ listed with multiplicity (equivalently the $p$ distinct roots of separable $f_1$, whose product is $(-1)^p f_1(0) \in K$).
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.exercise_16_6_i`: proves existence of primitive $p$th and $p^2$th roots of unity in $K$ and that `Polynomial.cyclotomic p K` and `Polynomial.cyclotomic (p ^ 2) K` split over $K$ (proved directly without importing Chapter 15).
+  - `Garling.Chapter16.exercise_16_6_ii`: proves `∃ θ : K, Irreducible (X^p - C θ) ∧ IsGarlingSplittingFieldExtension K L (X^p - C θ)`.
+  - `Garling.Chapter16.exercise_16_6_iii`: proves $x^{p^2} - \theta$ has no roots in $K$ and factors as `∏ j : Fin p, fs j` with each `fs j` monic, irreducible, and of degree `p`.
+  - `Garling.Chapter16.exercise_16_6_iv`: proves **both** the product identity `∏ i : Fin p, α i = ω * β` (`ω^(p^2) = 1`, `β^p = θ`) for **arbitrary** $p$-tuples of roots `α : Fin p → L` of `f₁` **and** `False` via the multiset of $p$ roots of monic `f₁`.
+  - `Garling.Chapter16.exercise_16_6`: bundles `(i)`–`(iv)` together with the overall impossibility conclusion `False`.
+- **Status:** Held pending coordinator ruling on whether `exercise_16_6_i`–`exercise_16_6_iv` + `exercise_16_6` close Exercise 16.6.
+
+---
+
+## Ch. 16, Exercise 16.9 (§16.3, printed p. 127 / PDF p. 135) — Implicit primality of `p` (`Nat.Prime p`) omitted from statement (fidelity hold)
+
+- **Printed statement (p. 127):** *"Suppose that $\operatorname{char} K = p$, that $f = x^p - x - \alpha \in K[x]$ and that $L:K$ is a splitting field extension for $f$. Show that if $\beta$ is a root of $f$ then the roots of $f$ are $\beta, \beta + 1, \dots, \beta + p - 1$. Show that either $f$ splits over $K$ or $f$ is irreducible over $K$ and $L:K$ is cyclic of degree $p$."*
+- **Exact blocker:** Unlike `Theorem 16.2` and `Exercises 16.4–16.5`, `Exercise 16.9` omits *"where $p$ is a prime"* (relying on the preceding prose paragraph on p. 127 and §3.9 `Theorem 3.16`; matching Chapter 12 `Exercise 12.3` and `Theorem 12.4`). At $p = 0$ ($K = \mathbb{Q}$, $\operatorname{char} \mathbb{Q} = 0$), $f = x^0 - x - \alpha = 1 - x - \alpha$ has root $1 - \alpha$ (not `0` roots) and no finite extension of $\mathbb{Q}$ has degree `0`.
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.exercise_16_9_char_zero_counterexample`: proves `ringChar ℚ = 0`, `(X^0 - X - C 0 : ℚ[X]).eval 1 = 0`, and `¬ ∃ (L : Type) (_ : Field L) (_ : Algebra ℚ L) (_ : FiniteDimensional ℚ L), Module.finrank ℚ L = 0`.
+  - `Garling.Chapter16.exercise_16_9`: proves both the complete root characterization (`β, β + 1, ..., β + p - 1` pairwise distinct, `f.map = ∏ j : Fin p, (X - C (β + j))`, exact `roots.toFinset`) and the exact exclusive dichotomy `Xor (GarlingSplitsOver K K f) (Irreducible f ∧ IsGarlingCyclicExtension K L ∧ Module.finrank K L = p ∧ extDegree K L = p)` for every prime `p` (`hp : Nat.Prime p`).
+- **Status:** Held in `QUEUE.md` as an omitted-primality (`Nat.Prime p`) fidelity hold; characteristic-`0` counterexample and full prime-`p` theorem are both kernel-proved.
+
+---
+
+## Ch. 16, Exercise 16.10 (§16.3, printed pp. 127–128 / PDF pp. 135–136) — Non-propositional *"What is the effect..."* prompt + §10.3 finite Galois convention (fidelity hold)
+
+- **Printed statement (pp. 127–128):** *"Suppose that $L:K$ is a Galois extension with Galois group $G$. If $x \in L$, let $\operatorname{tr}(x) = \sum_{\sigma \in G} \sigma(x)$. Show that $\operatorname{tr}$ is a $K$-linear mapping of $L$ onto $K$. The mapping $\operatorname{tr}$ is the trace. What is the effect of $\operatorname{tr}$ on $K$ if $\operatorname{char} K \mid |G|$?"*
+- **Exact blockers:**
+  1. Ends with the non-propositional question *"What is the effect of $\operatorname{tr}$ on $K$ if $\operatorname{char} K \mid |G|$?"*.
+  2. The finite sum $\sum_{\sigma \in G} \sigma(x)$ depends essentially on Garling's §10.3 (p. 84) convention that a *Galois extension* is **finite** (`IsGarlingGaloisExtension K L`), as opposed to Mathlib's bare `[IsGalois K L]`.
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.garlingTraceL`, `Garling.Chapter16.garlingTrace`, `Garling.Chapter16.garlingTrace_spec`, `Garling.Chapter16.garlingTrace_apply_gal`: defines the `K`-linear trace map `garlingTrace K L hgal : L →ₗ[K] K` for any `IsGarlingGaloisExtension K L`.
+  - `Garling.Chapter16.exercise_16_10`: proves `algebraMap K L (tr x) = ∑ σ, σ x`, `Function.Surjective (garlingTrace K L hgal)` (via the Corollary to Theorem 16.3), `∀ k : K, tr k = |G| * k`, and the exact characterization `ringChar K ∣ Nat.card (GarlingGaloisGroup K L) ↔ ∀ k : K, tr k = 0` (i.e. `tr` vanishes identically on `K`).
+- **Status:** Held pending coordinator ruling on whether `garlingTrace` + `exercise_16_10` close Exercise 16.10.
+
+---
+
+## Ch. 16, Exercise 16.12 (§16.3, printed p. 128 / PDF p. 136) — Exact integer quotient `((n / r : ℕ) : K)` vs. field division in positive characteristic (fidelity hold)
+
+- **Printed statement (p. 128):** *"Suppose that $L:K$ is a Galois extension of degree $n$ with Galois group $G$. If $x \in L$, let $\operatorname{tr}(x) = \sum_{\sigma \in G} \sigma(x)$, $N(x) = \prod_{\sigma \in G} \sigma(x)$. The mapping $N$ is the norm. Suppose that $\alpha \in L$ has minimal polynomial $x^r - a_1 x^{r-1} + \dots + (-1)^r a_r$ Show that $\operatorname{tr}(\alpha) = (n/r)a_1$ and $N(\alpha) = a_r^{n/r}$."*
+- **Exact blocker:** In positive characteristic $\operatorname{char} K = p$ with $p \mid r$ (hence $p \mid n$ since $r \mid n$), the expression `(n / r) a₁` is the **exact natural-number quotient** $n / r \in \mathbb{N}$ cast into $K$ (`((n / r : ℕ) : K) * a₁`), **not** field division `((n : K) / (r : K)) * a₁`: e.g. for $K = \mathbb{Z}_2$, $L = \mathbb{F}_4 = \mathbb{Z}_2[x]/(x^2 + x + 1)$, $\alpha$ a root of $x^2 + x + 1$ ($n = r = 2$, $a_1 = 1$), $\operatorname{tr}(\alpha) = 1 = ((2 / 2 : \mathbb{N}) : \mathbb{Z}_2) \cdot 1$, whereas field division gives $((2 : \mathbb{Z}_2) / (2 : \mathbb{Z}_2)) \cdot 1 = (0 / 0) \cdot 1 = 0 \ne 1$.
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.garlingNormL`, `Garling.Chapter16.garlingNorm`, `Garling.Chapter16.garlingNorm_spec`, `Garling.Chapter16.garlingNorm_apply_gal`, `Garling.Chapter16.garlingNorm_zero`, `Garling.Chapter16.garlingNorm_div`: defines the multiplicative norm `garlingNorm K L hgal : L →* K`.
+  - `Garling.Chapter16.exercise_16_12_field_division_counterexample`: proves on `ZMod 2` that `((2 / 2 : ℕ) : ZMod 2) * 1 = 1`, `((2 : ZMod 2) / (2 : ZMod 2)) * 1 = 0`, and the two differ.
+  - `Garling.Chapter16.exercise_16_12`: proves `1 ≤ r`, `r ∣ n`, `garlingTrace K L hgal α = ((n / r : ℕ) : K) * a₁`, and `garlingNorm K L hgal α = a_r ^ (n / r)` for every Garling Galois extension $L:K$ of degree $n$ and every $\alpha \in L$.
+- **Status:** Held in `QUEUE.md` to make the exact integer-quotient interpretation vs. field division explicit; counterexample and full theorem are both kernel-proved.
+
+---
+
+## Ch. 16, Exercise 16.13 (Hilbert's theorem 90) (§16.3, printed p. 128 / PDF p. 136) — Implicit `β ≠ 0` hypothesis in `(i)` under Lean total division (fidelity hold)
+
+- **Printed statement (p. 128; OCR `garling1986_pages.txt` ll. 4784–4785 corrupts Greek `γ` to `y` four times, and the Index lists p. 129 instead of p. 128):** *"(Hilbert's theorem 90) Suppose that $L:K$ is a Galois extension of degree $n$ with cyclic Galois group generated by $\tau$, say. (i) Suppose that $\alpha = \beta/\tau(\beta)$. Show that $N(\alpha) = 1$. (ii) Suppose that $N(\alpha) = 1$. Let $c_0 = \alpha, c_1 = \alpha\tau(c_0), c_2 = \alpha\tau(c_1), \dots, c_{n-1} = \alpha\tau(c_{n-2})$. Show that there exists $\gamma$ in $L$ such that $\beta = c_0\gamma + c_1\tau(\gamma) + \dots + c_{n-1}\tau^{n-1}(\gamma) \ne 0$. Show that $\alpha = \beta/\tau(\beta)$."*
+- **Exact blocker:** Part `(i)` assumes $\beta / \tau(\beta)$ is defined, implicitly requiring $\beta \ne 0$ (equivalently $\tau(\beta) \ne 0$). Under Lean's total field division `0 / 0 = 0`, setting $\beta = 0$ and $\alpha = 0$ satisfies `α = β / τ β` literally yet gives `N(0) = 0 ≠ 1`. (Part `(ii)` holds unconditionally as printed with zero extra hypotheses!)
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.exercise_16_13_i_zero_counterexample`: proves in every Garling Galois extension $L:K$ that `(0 : L) = 0 / τ 0 ∧ garlingNorm K L hgal 0 ≠ 1`.
+  - `Garling.Chapter16.exercise_16_13_i`: proves `garlingNorm K L hgal α = 1` under `hβ : β ≠ 0` and `hα : α = β / τ β`.
+  - `Garling.Chapter16.hilbert90Coeff`, `Garling.Chapter16.hilbert90Coeff_eq_prod`, `Garling.Chapter16.exercise_16_13_ii`: proves Part `(ii)` literally as printed (`∃ γ : L, β ≠ 0 ∧ α = β / τ β` with Garling's exact recursive cocycle `c₀, ..., c_{n-1}`).
+  - `Garling.Chapter16.exercise_16_13`: bundles the full biconditional `garlingNorm K L hgal α = 1 ↔ ∃ β : L, β ≠ 0 ∧ α = β / τ β`.
+- **Status:** Held in `QUEUE.md` as an implicit-`β ≠ 0` total-division guard on `(i)`; counterexample, `(i)`, unconditional `(ii)`, and bundled iff are all kernel-proved.
+
+---
+
+## Ch. 16, Exercise 16.14 (§16.3, printed p. 128 / PDF p. 136) — Genuine textbook typo `σβ` (unbound `σ`) for `τ(β)` (fidelity hold)
+
+- **Printed statement (p. 128):** *"Suppose that $L:K$ is a Galois extension of degree $n$ with cyclic Galois group generated by $\tau$, say, and that $\alpha \in L$. Show that $\operatorname{tr}(\alpha) = 0$ if and only if there exists $\beta$ in $L$ such that $\alpha = \beta - \sigma\beta$."*
+- **Exact blocker:** The printed equation $\alpha = \beta - \sigma\beta$ uses an unbound variable $\sigma$ where the preceding sentence named the cyclic generator $\tau$. If $\sigma$ is instantiated by an arbitrary element of $\Gamma(L:K)$ rather than a generator (e.g. $\sigma = 1 \in \Gamma(\mathbb{C}:\mathbb{R})$ with $\alpha = \mathrm{i}$), $\operatorname{tr}(\mathrm{i}) = 0$ while $\beta - 1(\beta) = 0 \ne \mathrm{i}$ has no solution $\beta \in \mathbb{C}$.
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.exercise_16_14_unbound_sigma_counterexample`: proves on $\mathbb{C}:\mathbb{R}$ (`[ℂ:ℝ] = 2`, Galois) that `garlingTrace ℝ ℂ hgal Complex.I = 0` while `¬ ∃ β : ℂ, Complex.I = β - (1 : GarlingGaloisGroup ℝ ℂ) β`.
+  - `Garling.Chapter16.exercise_16_14_repaired`: proves the repaired Additive Hilbert's Theorem 90 `garlingTrace K L hgal α = 0 ↔ ∃ β : L, α = β - τ β` for every cyclic Garling Galois extension $L:K$ generated by $\tau$.
+- **Status:** Held in `QUEUE.md` as a genuine textbook variable-name typo (`σβ` for `τ(β)`); counterexample and repaired theorem are both kernel-proved.
+
+---
+
+## Ch. 16, Theorem 16.6 (§16.4, printed p. 129 / PDF p. 137) — Implicit `d ≥ 1` in Kummer-extension definition + Mathlib `(X^0 - 1).roots = 0` trap (fidelity hold)
+
+- **Printed statement (p. 129):** *"A[n] extension $L:K$ is called a Kummer extension of exponent $d$ if it is a splitting field extension of a polynomial of the form $(x^d - \theta_1)\dots(x^d - \theta_r)$ (where $\theta_1, \dots, \theta_r$ are in $K$) and if $x^d - 1$ has $d$ distinct roots in $K$." ... "**Theorem 16.6** Suppose that $L:K$ is a Kummer extension of exponent $d$. Then $\Gamma(L:K)$ is abelian, and its exponent divides $d$."* *(Minor prose typos on p. 129: `"As extension"` for `"An extension"`, and proof line 2 writes `θ_j` for `θ_r`.)*
+- **Exact blocker:** The Kummer-extension definition implicitly assumes $d \ge 1$. At $d = 0$, $x^0 - 1 = 0 \in K[x]$ evaluates to $0$ at **every** element of $K$ (infinitely many roots over $\mathbb{Q}$, not $0$ distinct roots), yet Mathlib's junk definition `(0 : K[X]).roots = 0` gives `(Polynomial.X ^ 0 - 1 : K[X]).roots.toFinset.card = 0 = d`. Making `1 ≤ d` explicit inside `IsGarlingKummerExtension K L d` eliminates this zero-polynomial roots trap.
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.IsGarlingKummerExtension`: formalizes Garling's p. 129 definition with explicit `1 ≤ d`.
+  - `Garling.Chapter16.theorem_16_6_zero_exponent_mathlib_trap`: proves `(Polynomial.X ^ 0 - 1 : ℚ[X]) = 0`, `(Polynomial.X ^ 0 - 1 : ℚ[X]).roots.toFinset.card = 0`, and `∀ x : ℚ, (Polynomial.X ^ 0 - 1 : ℚ[X]).eval x = 0`.
+  - `Garling.Chapter16.theorem_16_6`: proves for every Kummer extension `IsGarlingKummerExtension K L d` (handling arbitrary `r : ℕ` and allowing some `θ j = 0` or duplicates!) that `IsGarlingGaloisExtension K L`, `∀ σ τ : GarlingGaloisGroup K L, σ * τ = τ * σ`, and `garlingExponent (GarlingGaloisGroup K L) ∣ d` (following Garling's pp. 129–130 proof via Chapter 11 `theorem_11_6`).
+- **Status:** Held in `QUEUE.md` as an implicit-`1 ≤ d` / Mathlib `0.roots` trap fidelity hold; trap witness and full theorem are both kernel-proved.
+
+---
+
+## Ch. 16, Exercise 16.16 (§16.4, printed p. 130 / PDF p. 138) — `n = 1, a = 0, b = 1` sensitivity to positive `r ≥ 1` vs. `r : ℕ` (fidelity hold)
+
+- **Printed statement (p. 130):** *"Suppose $K$ is a field which contains a primitive $n$th root of unity, and that $x^n - a$ and $x^n - b$ are irreducible polynomials over $K$ with the same splitting field extension $L:K$. Let $\alpha$ be a root of $x^n - a$ in $L$, $\beta$ a root of $x^n - b$. By considering the action of $\Gamma(L:K)$ on $\alpha$ and $\beta$, show that there exists $r$, prime to $n$, such that $\beta \alpha^{-r} \in K$. Show that $b = a^r c^n$ for some $c$ in $K$."*
+- **Exact blocker:** Because `Irreducible (X^n - C a)` automatically forces $1 \le n$, the sole degenerate case is $n = 1$ with $a = 0, b = 1$ (where $1$ is a primitive $1$st root of unity in $\mathbb{Q}$, $x - 0$ and $x - 1$ are irreducible with common splitting field $\mathbb{Q}:\mathbb{Q}$, $\alpha = 0$, $\beta = 1$). Under `r : ℕ` with `Nat.Coprime r n` (allowing $r = 0$, since $\gcd(0, 1) = 1$), $r = 0, c = b$ satisfies both $\beta \alpha^{-0} = b \in K$ and $b = a^0 c^1$ unconditionally for **all** $n$; however, if *"there exists $r$, prime to $n$"* is read as requiring a **positive** integer $r \ge 1$, then at $n = 1, a = 0, b = 1$ no $r \ge 1$ and $c \in \mathbb{Q}$ satisfy $1 = 0^r \cdot c^1 = 0$.
+- **Kernel-proved declarations in `Garling/Chapter16.lean`:**
+  - `Garling.Chapter16.exercise_16_16_n1_pos_r_counterexample`: proves on $K = \mathbb{Q}, n = 1, \omega = 1, a = 0, b = 1$ that all printed hypotheses hold while `¬ ∃ (r : ℕ) (c : ℚ), 1 ≤ r ∧ (1 : ℚ) = 0 ^ r * c ^ 1`.
+  - `Garling.Chapter16.exercise_16_16`: proves unconditionally for **all** $n$ (deducing $1 \le n$ from irreducibility) that `∃ (r : ℕ) (c : K), Nat.Coprime r n ∧ algebraMap K L c = β * (α ^ r)⁻¹ ∧ b = a ^ r * c ^ n`.
+  - `Garling.Chapter16.exercise_16_16_pos_r`: proves for **all `2 ≤ n`** the strengthened positive-`r` form `∃ (r : ℕ) (c : K), 1 ≤ r ∧ r < n ∧ Nat.Coprime r n ∧ algebraMap K L c = β * (α ^ r)⁻¹ ∧ b = a ^ r * c ^ n`.
+- **Status:** Held in `QUEUE.md` for the `n = 1, a = 0` positive-`r` boundary convention; counterexample, unconditional `r : ℕ` theorem, and `2 ≤ n` positive-`r` companion are all kernel-proved.

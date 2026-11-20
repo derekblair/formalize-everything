@@ -2,6 +2,7 @@ import Garling.Chapter12
 import Garling.Chapter14
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 import Mathlib.NumberTheory.Cyclotomic.Gal
+import Mathlib.GroupTheory.Sylow
 
 /-!
 # Chapter 16: Cyclic extensions
@@ -97,7 +98,7 @@ theorem not_ringChar_dvd_of_isPrimitiveRoot {K : Type*} [Field K] {n : ℕ} {ω 
 /-- Any splitting field extension of a non-zero Garling-separable polynomial `f ∈ K[X]` is a
 Garling Galois extension (`IsGarlingGaloisExtension K L`, §10.3 Corollary 3 to Theorem 10.3). -/
 theorem isGarlingGalois_of_splittingField {K : Type u} {L : Type v}
-    [Field K] [Field L] [Algebra K L] {f : K[X]} (hf0 : f ≠ 0)
+    [Field K] [Field L] [Algebra K L] {f : K[X]} (_hf0 : f ≠ 0)
     (hsf : IsGarlingSplittingFieldExtension K L f)
     (hgsep : IsGarlingSeparablePoly f) :
     IsGarlingGaloisExtension K L := by
@@ -569,9 +570,9 @@ theorem theorem_16_1_galoisGroup_over_K_not_cyclic_example
     {L : Type u} [Field L] [Algebra ℚ L]
     (hsf : IsGarlingSplittingFieldExtension ℚ L (Polynomial.X ^ 3 - Polynomial.C (2 : ℚ))) :
     ¬ IsCyclic (GarlingGaloisGroup ℚ L) := by
-  obtain rfl : ‹Algebra ℚ L› = DivisionRing.toRatAlgebra := Subsingleton.elim _ _
   have _ : CharZero L :=
     ⟨fun a b hab => Nat.cast_injective (R := ℚ) ((algebraMap ℚ L).injective (by simpa using hab))⟩
+  obtain rfl : ‹Algebra ℚ L› = DivisionRing.toRatAlgebra := Subsingleton.elim _ _
   let f : ℚ[X] := Polynomial.X ^ 3 - Polynomial.C (2 : ℚ)
   have hf_irr : Irreducible f := (exercise_5_7 (p := 2) (n := 3) Nat.prime_two (by decide)).1
   have hchar : ¬ (ringChar ℚ ∣ 3) := by rw [ringChar.eq_zero]; simp
@@ -634,13 +635,15 @@ theorem theorem_16_1_galoisGroup_over_K_not_cyclic_example
   let eGrp : GarlingGaloisGroup ℚ L ≃* Equiv.Perm (Fin 3) :=
     MulEquiv.ofBijective ψ hψ_bij
   intro hcyc
-  have _ : CommGroup (GarlingGaloisGroup ℚ L) := IsCyclic.commGroup
+  have hcommG : ∀ a b : GarlingGaloisGroup ℚ L, a * b = b * a :=
+    @mul_comm _ (@IsCyclic.commGroup _ _ hcyc).toCommMagma
   let c01 : Equiv.Perm (Fin 3) := Equiv.swap 0 1
   let c12 : Equiv.Perm (Fin 3) := Equiv.swap 1 2
   have hcomm : c01 * c12 = c12 * c01 := by
-    have := mul_comm (eGrp.symm c01) (eGrp.symm c12)
+    have := hcommG (eGrp.symm c01) (eGrp.symm c12)
     have h2 := congrArg eGrp this
-    simpa [map_mul] using h2
+    rw [map_mul, map_mul, eGrp.apply_symm_apply, eGrp.apply_symm_apply] at h2
+    exact h2
   have hne : (c01 * c12) 0 ≠ (c12 * c01) 0 := by decide
   exact hne (congrArg (fun p : Equiv.Perm (Fin 3) => p 0) hcomm)
 
@@ -782,9 +785,9 @@ theorem exercise_16_2 {L : Type u} [Field L] [Algebra ℚ L]
       σ⁻¹ * ρ * σ = ρ ^ 7 ∧
       τ⁻¹ * ρ * τ = ρ ^ 14 ∧
       τ⁻¹ * σ * τ = σ := by
-  obtain rfl : ‹Algebra ℚ L› = DivisionRing.toRatAlgebra := Subsingleton.elim _ _
   have _ : CharZero L :=
     ⟨fun a b hab => Nat.cast_injective (R := ℚ) ((algebraMap ℚ L).injective (by simpa using hab))⟩
+  obtain rfl : ‹Algebra ℚ L› = DivisionRing.toRatAlgebra := Subsingleton.elim _ _
   let f : ℚ[X] := Polynomial.X ^ 15 - Polynomial.C (2 : ℚ)
   have hf_irr : Irreducible f := (exercise_5_7 (p := 2) (n := 15) Nat.prime_two (by decide)).1
   have hchar : ¬ (ringChar ℚ ∣ 15) := by rw [ringChar.eq_zero]; simp
@@ -860,9 +863,7 @@ theorem exercise_16_2 {L : Type u} [Field L] [Algebra ℚ L]
           ((Polynomial.X ^ 15 - Polynomial.C (2 : ℚ)).map (@algebraMap ℚ E _ _ E.algebra')).map
               (algebraMap E L) =
             (Polynomial.X ^ 15 - Polynomial.C (2 : ℚ)).map (algebraMap ℚ L) := by
-        rw [Polynomial.map_map]
-        congr 1
-        exact Subsingleton.elim _ _
+        rw [Polynomial.map_map]; rfl
       rw [hmc, hfac ω β hω hβ]
       simp only [map_one, one_mul, Polynomial.map_prod]
       exact Finset.prod_congr rfl fun k _ => by simp
@@ -887,9 +888,7 @@ theorem exercise_16_2 {L : Type u} [Field L] [Algebra ℚ L]
           ((Polynomial.X ^ 15 - Polynomial.C (2 : ℚ)).map (@algebraMap ℚ E _ _ E.algebra')).map
               (algebraMap E L) =
             (Polynomial.X ^ 15 - Polynomial.C (2 : ℚ)).map (algebraMap ℚ L) := by
-        rw [Polynomial.map_map]
-        congr 1
-        exact Subsingleton.elim _ _
+        rw [Polynomial.map_map]; rfl
       rw [hmc, hfac ω β hω hβ]
       simp only [map_one, one_mul, Polynomial.map_prod]
       exact Finset.prod_congr rfl fun k _ => by simp
@@ -1022,7 +1021,7 @@ theorem exercise_16_2 {L : Type u} [Field L] [Algebra ℚ L]
     intro k; induction k with
     | zero => simp
     | succ k ih =>
-      rw [pow_succ', AlgEquiv.mul_apply, ih, map_pow, hσ_ω, ← pow_mul, ← pow_succ]
+      rw [pow_succ', AlgEquiv.mul_apply, ih, map_pow, hσ_ω, ← pow_mul, ← pow_succ']
   have hσ_pow_β : ∀ k : ℕ, (σ ^ k) β = β := by
     intro k; induction k with
     | zero => rfl
@@ -1031,7 +1030,7 @@ theorem exercise_16_2 {L : Type u} [Field L] [Algebra ℚ L]
     intro k; induction k with
     | zero => simp
     | succ k ih =>
-      rw [pow_succ', AlgEquiv.mul_apply, ih, map_pow, hτ_ω, ← pow_mul, ← pow_succ]
+      rw [pow_succ', AlgEquiv.mul_apply, ih, map_pow, hτ_ω, ← pow_mul, ← pow_succ']
   have hτ_pow_β : ∀ k : ℕ, (τ ^ k) β = β := by
     intro k; induction k with
     | zero => rfl
@@ -1073,7 +1072,7 @@ theorem exercise_16_2 {L : Type u} [Field L] [Algebra ℚ L]
   have hrel_τστ : τ⁻¹ * σ * τ = σ := by
     rw [mul_assoc, inv_mul_eq_iff_eq_mul]
     refine aut_ext _ _ ?_ ?_
-    · rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, hτ_ω, map_pow, hσ_ω, hσ_ω, map_pow, hτ_ω,
+    · rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, hσ_ω, hτ_ω, map_pow, map_pow, hτ_ω, hσ_ω,
         ← pow_mul, ← pow_mul, Nat.mul_comm 13 14]
     · simp [AlgEquiv.mul_apply, hτ_β, hσ_β]
   have hord_ρ : orderOf ρ = 15 := by
@@ -1395,6 +1394,7 @@ noncomputable def ex163Field {L : Type u} [Field L] [Algebra ℚ L] (α im : L) 
   | 8 => ℚ⟮(1 - im) * α⟯
   | 9 => ⊤
 
+set_option maxHeartbeats 800000 in
 /-- **Exercise 16.3** (§16.1, printed p. 124 / PDF p. 132; `QUEUE.md` fidelity hold for open-ended
 *"What is its Galois group? List ... and determine..."* prompt):
 *"Let `L : ℚ` be a splitting field extension for `x⁴ - 5` over `ℚ`. What is its Galois group? List
@@ -1436,9 +1436,9 @@ theorem exercise_16_3 :
     rw [hf_eq] at hsf3
     exact ⟨_, hsf3, hfin3⟩
   refine ⟨hexC, fun L _ _ hsf => ?_⟩
-  obtain rfl : ‹Algebra ℚ L› = DivisionRing.toRatAlgebra := Subsingleton.elim _ _
   have _ : CharZero L :=
     ⟨fun a b hab => Nat.cast_injective (R := ℚ) ((algebraMap ℚ L).injective (by simpa using hab))⟩
+  obtain rfl : ‹Algebra ℚ L› = DivisionRing.toRatAlgebra := Subsingleton.elim _ _
   have hchar4 : ¬ (ringChar ℚ ∣ 4) := by rw [ringChar.eq_zero]; simp
   obtain ⟨_, hmonic, _, _, hgsep⟩ :=
     X_pow_sub_C_separable_of_ne_zero (K := ℚ) (n := 4) (θ := 5) (by norm_num) hchar4
@@ -1512,7 +1512,7 @@ theorem exercise_16_3 :
       apply Polynomial.map_injective (algebraMap E L) (algebraMap E L).injective
       have hmc :
           (f.map (@algebraMap ℚ E _ _ E.algebra')).map (algebraMap E L) = f.map (algebraMap ℚ L) := by
-        rw [Polynomial.map_map]; congr 1; exact Subsingleton.elim _ _
+        rw [Polynomial.map_map]; rfl
       rw [hmc, hfac im α him_prim hα_ev]
       simp only [map_one, one_mul, Polynomial.map_prod]
       exact Finset.prod_congr rfl fun k _ => by simp
@@ -1531,7 +1531,7 @@ theorem exercise_16_3 :
       apply Polynomial.map_injective (algebraMap E L) (algebraMap E L).injective
       have hmc :
           (f.map (@algebraMap ℚ E _ _ E.algebra')).map (algebraMap E L) = f.map (algebraMap ℚ L) := by
-        rw [Polynomial.map_map]; congr 1; exact Subsingleton.elim _ _
+        rw [Polynomial.map_map]; rfl
       rw [hmc, hfac im α him_prim hα_ev]
       simp only [map_one, one_mul, Polynomial.map_prod]
       exact Finset.prod_congr rfl fun k _ => by simp
@@ -1663,32 +1663,34 @@ theorem exercise_16_3 :
           simp [DihedralGroup.r_mul_r, DihedralGroup.r_mul_sr, DihedralGroup.sr_mul_r,
             DihedralGroup.sr_mul_sr, AlgEquiv.mul_apply, hΦFun_im]
       · rcases g₁ with a | a <;> rcases g₂ with b | b
-        · rw [DihedralGroup.r_mul_r, AlgEquiv.mul_apply, hΦFun_α, map_mul, map_pow,
-            hΦFun_im, hΦFun_α, ← mul_assoc]
+        · simp only [DihedralGroup.r_mul_r, AlgEquiv.mul_apply, hΦFun_α, map_mul, map_pow,
+            hΦFun_im, ← mul_assoc]
           congr 1
           rw [← pow_add, isPrimitiveRoot_pow_eq_pow_iff_modEq (by decide) him_prim]
           fin_cases a <;> fin_cases b <;> decide
-        · rw [DihedralGroup.r_mul_sr, AlgEquiv.mul_apply, hΦFun_α, map_mul, map_pow,
-            map_neg, hΦFun_im, hΦFun_α, ← mul_assoc]
+        · simp only [DihedralGroup.r_mul_sr, AlgEquiv.mul_apply, hΦFun_α, map_mul, map_pow,
+            map_neg, hΦFun_im, ← mul_assoc]
           congr 1
           rw [hneg_im3, ← pow_mul, ← pow_mul, ← pow_add,
             isPrimitiveRoot_pow_eq_pow_iff_modEq (by decide) him_prim]
           fin_cases a <;> fin_cases b <;> decide
-        · rw [DihedralGroup.sr_mul_r, AlgEquiv.mul_apply, hΦFun_α, map_mul, map_pow,
-            hΦFun_im, hΦFun_α, ← mul_assoc]
+        · simp only [DihedralGroup.sr_mul_r, AlgEquiv.mul_apply, hΦFun_α, map_mul, map_pow,
+            hΦFun_im, ← mul_assoc]
           congr 1
           rw [hneg_im3, ← pow_mul, ← pow_mul, ← pow_mul, ← pow_add,
             isPrimitiveRoot_pow_eq_pow_iff_modEq (by decide) him_prim]
           fin_cases a <;> fin_cases b <;> decide
-        · rw [DihedralGroup.sr_mul_sr, AlgEquiv.mul_apply, hΦFun_α, map_mul, map_pow,
-            map_neg, hΦFun_im, neg_neg, hΦFun_α, ← mul_assoc]
+        · simp only [DihedralGroup.sr_mul_sr, AlgEquiv.mul_apply, hΦFun_α, map_mul, map_pow,
+            map_neg, hΦFun_im, neg_neg, ← mul_assoc]
           congr 1
           rw [hneg_im3, ← pow_mul, ← pow_add,
             isPrimitiveRoot_pow_eq_pow_iff_modEq (by decide) him_prim]
           fin_cases a <;> fin_cases b <;> decide
     let ΦHom : DihedralGroup 4 →* (L ≃ₐ[ℚ] L) :=
       { toFun := ΦFun
-        map_one' := aut_ext _ _ (by simp [ΦFun]) (by simp [ΦFun])
+        map_one' := by
+          change ΦFun (.r 0) = 1
+          exact aut_ext _ _ (hΦFun_im (.r 0)) (by simpa [ZMod.val_zero] using hΦFun_α (.r 0))
         map_mul' := hΦ_mul }
     have hΦ_inj : Function.Injective ΦHom := by
       intro g₁ g₂ heq
@@ -1696,15 +1698,15 @@ theorem exercise_16_3 :
       have h2 : ΦFun g₁ α = ΦFun g₂ α := congrArg (fun g : L ≃ₐ[ℚ] L => g α) heq
       have him_ne_neg : im ≠ -im := fun h => him_ne (by linear_combination h / 2)
       rcases g₁ with a | a <;> rcases g₂ with b | b
-      · rw [hΦFun_α, hΦFun_α] at h2
+      · simp only [hΦFun_α] at h2
         have hp := mul_right_cancel₀ hα_ne h2
         have hv : a.val = b.val := him_prim.pow_inj a.val_lt b.val_lt hp
         exact congrArg DihedralGroup.r (ZMod.val_injective 4 hv)
-      · rw [hΦFun_im, hΦFun_im] at h1
+      · simp only [hΦFun_im] at h1
         exact (him_ne_neg h1).elim
-      · rw [hΦFun_im, hΦFun_im] at h1
+      · simp only [hΦFun_im] at h1
         exact (him_ne_neg h1.symm).elim
-      · rw [hΦFun_α, hΦFun_α] at h2
+      · simp only [hΦFun_α] at h2
         have hp := mul_right_cancel₀ hα_ne h2
         have hneg_prim : IsPrimitiveRoot (-im) 4 := by
           rw [hneg_im3]
@@ -1790,34 +1792,41 @@ theorem exercise_16_3 :
       Nat.card_congr (Φ.symm.subgroupMap (IntermediateField.fixingSubgroup ℚ⟮x⟯)).toEquiv.symm
     have hr2D : DihedralGroup.r 2 ∈ D := d4_r2_mem_of_card_ge_four D (hD_card ▸ hcard_fix)
     rcases hr2D with ⟨g, hg, hΦg⟩
-    have hg_eq : g = Φ (.r 2) := by rw [← hΦg, Φ.apply_symm_apply]
+    have hg_eq : g = Φ (.r 2) := by
+      change Φ.symm g = .r 2 at hΦg
+      rw [← hΦg, Φ.apply_symm_apply]
     rw [hg_eq] at hg
     exact hmove (hg ⟨x, IntermediateField.mem_adjoin_simple_self ℚ x⟩)
   have h_r1_im : Φ (.r 1) im = im := hΦ_im (.r 1)
   have h_r1_α : Φ (.r 1) α = im * α := by
-    rw [hΦ_α (.r 1), ZMod.val_one, pow_one]
+    have h := hΦ_α (.r 1); dsimp only at h
+    have hv1 : (1 : ZMod 4).val = 1 := rfl
+    rwa [hv1, pow_one] at h
   have h_r2_im : Φ (.r 2) im = im := hΦ_im (.r 2)
   have h_r2_α : Φ (.r 2) α = -α := by
-    have h := hΦ_α (.r 2)
+    have h := hΦ_α (.r 2); dsimp only at h
     have hv2 : (2 : ZMod 4).val = 2 := rfl
     rw [hv2, him_sq] at h
     linear_combination h
   have h_sr0_im : Φ (.sr 0) im = -im := hΦ_im (.sr 0)
   have h_sr0_α : Φ (.sr 0) α = α := by
-    rw [hΦ_α (.sr 0), ZMod.val_zero, pow_zero, one_mul]
+    have h := hΦ_α (.sr 0); dsimp only at h
+    rwa [ZMod.val_zero, pow_zero, one_mul] at h
   have h_sr1_im : Φ (.sr 1) im = -im := hΦ_im (.sr 1)
   have h_sr1_α : Φ (.sr 1) α = -im * α := by
-    rw [hΦ_α (.sr 1), ZMod.val_one, pow_one]
+    have h := hΦ_α (.sr 1); dsimp only at h
+    have hv1 : (1 : ZMod 4).val = 1 := rfl
+    rwa [hv1, pow_one] at h
   have h_sr2_im : Φ (.sr 2) im = -im := hΦ_im (.sr 2)
   have h_sr2_α : Φ (.sr 2) α = -α := by
-    have h := hΦ_α (.sr 2)
+    have h := hΦ_α (.sr 2); dsimp only at h
     have hv2 : (2 : ZMod 4).val = 2 := rfl
     have hn : (-im) ^ 2 = -1 := by linear_combination him_sq
     rw [hv2, hn] at h
     linear_combination h
   have h_sr3_im : Φ (.sr 3) im = -im := hΦ_im (.sr 3)
   have h_sr3_α : Φ (.sr 3) α = im * α := by
-    have h := hΦ_α (.sr 3)
+    have h := hΦ_α (.sr 3); dsimp only at h
     have hv3 : (3 : ZMod 4).val = 3 := rfl
     have hn : (-im) ^ 3 = im := by
       calc (-im) ^ 3 = -im * im ^ 2 := by ring
@@ -1836,9 +1845,10 @@ theorem exercise_16_3 :
       change ℚ⟮im⟯ = IntermediateField.fixedField (Hsub 1)
       have hle : ℚ⟮im⟯ ≤ IntermediateField.fixedField (Hsub 1) := by
         rw [IntermediateField.adjoin_le_iff, Set.singleton_subset_iff,
-          IntermediateField.mem_fixedField_iff]
+          SetLike.mem_coe, IntermediateField.mem_fixedField_iff]
         rintro _ ⟨g, hg, rfl⟩
-        rw [mem_d4Subgroup_iff] at hg
+        dsimp only [MulEquiv.coe_toMonoidHom]
+        rw [SetLike.mem_coe, mem_d4Subgroup_iff] at hg
         rcases g with a | a
         · exact hΦ_im (.r a)
         · exact absurd hg (by fin_cases a <;> decide)
@@ -1847,9 +1857,10 @@ theorem exercise_16_3 :
       change ℚ⟮α ^ 2⟯ = IntermediateField.fixedField (Hsub 2)
       have hle : ℚ⟮α ^ 2⟯ ≤ IntermediateField.fixedField (Hsub 2) := by
         rw [IntermediateField.adjoin_le_iff, Set.singleton_subset_iff,
-          IntermediateField.mem_fixedField_iff]
+          SetLike.mem_coe, IntermediateField.mem_fixedField_iff]
         rintro _ ⟨g, hg, rfl⟩
-        rw [mem_d4Subgroup_iff] at hg
+        dsimp only [MulEquiv.coe_toMonoidHom]
+        rw [SetLike.mem_coe, mem_d4Subgroup_iff] at hg
         have hc : g = .r 0 ∨ g = .r 2 ∨ g = .sr 0 ∨ g = .sr 2 := by
           rcases g with a | a <;> fin_cases a <;> first
             | exact Or.inl rfl | exact Or.inr (Or.inl rfl)
@@ -1882,9 +1893,10 @@ theorem exercise_16_3 :
       change ℚ⟮im * α ^ 2⟯ = IntermediateField.fixedField (Hsub 3)
       have hle : ℚ⟮im * α ^ 2⟯ ≤ IntermediateField.fixedField (Hsub 3) := by
         rw [IntermediateField.adjoin_le_iff, Set.singleton_subset_iff,
-          IntermediateField.mem_fixedField_iff]
+          SetLike.mem_coe, IntermediateField.mem_fixedField_iff]
         rintro _ ⟨g, hg, rfl⟩
-        rw [mem_d4Subgroup_iff] at hg
+        dsimp only [MulEquiv.coe_toMonoidHom]
+        rw [SetLike.mem_coe, mem_d4Subgroup_iff] at hg
         have hc : g = .r 0 ∨ g = .r 2 ∨ g = .sr 1 ∨ g = .sr 3 := by
           rcases g with a | a <;> fin_cases a <;> first
             | exact Or.inl rfl | exact Or.inr (Or.inl rfl)
@@ -1923,8 +1935,10 @@ theorem exercise_16_3 :
       change F4 = IntermediateField.fixedField (Hsub 4)
       have hle : F4 ≤ IntermediateField.fixedField (Hsub 4) := by
         rw [IntermediateField.adjoin_le_iff]
-        rintro x (rfl | rfl) <;> rw [IntermediateField.mem_fixedField_iff] <;>
-          rintro _ ⟨g, hg, rfl⟩ <;> rw [mem_d4Subgroup_iff] at hg
+        rintro x (rfl | rfl) <;>
+          rw [SetLike.mem_coe, IntermediateField.mem_fixedField_iff] <;>
+          rintro _ ⟨g, hg, rfl⟩ <;> dsimp only [MulEquiv.coe_toMonoidHom] <;>
+          rw [SetLike.mem_coe, mem_d4Subgroup_iff] at hg
         · have hc : g = .r 0 ∨ g = .r 2 := by
             rcases g with a | a <;> fin_cases a <;>
               first | exact Or.inl rfl | exact Or.inr rfl | exact absurd hg (by decide)
@@ -1939,14 +1953,17 @@ theorem exercise_16_3 :
           · rw [map_pow, h_r2_α]; ring
       refine IntermediateField.eq_of_le_of_finrank_eq hle ?_
       have hfk : Module.finrank ℚ (IntermediateField.fixedField (Hsub 4)) = 4 := hfixed_finrank 4
-      have hQim_le : ℚ⟮im⟯ ≤ F4 := IntermediateField.adjoin_le_adjoin (by simp)
+      have hQim_le : ℚ⟮im⟯ ≤ F4 :=
+        IntermediateField.adjoin_le_iff.mpr (by
+          rw [Set.singleton_subset_iff]
+          exact IntermediateField.subset_adjoin ℚ ({im, α ^ 2} : Set L) (by simp))
       have hnot_mem : α ^ 2 ∉ ℚ⟮im⟯ := by
         intro hmem
         have hmem1 : α ^ 2 ∈ IntermediateField.fixedField (Hsub 1) := by
           change ex163Field α im 1 = _ at hk1
           rwa [← hk1]
         have hfix : Φ (.r 1) (α ^ 2) = α ^ 2 :=
-          hmem1 ⟨Φ (.r 1), ⟨.r 1, by rw [mem_d4Subgroup_iff]; decide, rfl⟩⟩
+          hmem1 ⟨Φ (.r 1), ⟨.r 1, by rw [SetLike.mem_coe, mem_d4Subgroup_iff]; decide, rfl⟩⟩
         rw [map_pow, h_r1_α] at hfix
         have h1 : (im ^ 2 - 1) * α ^ 2 = 0 := by linear_combination hfix
         rw [him_sq] at h1
@@ -1980,9 +1997,10 @@ theorem exercise_16_3 :
     have hk5 : ex163Field α im 5 = IntermediateField.fixedField (Hsub 5) := by
       refine finrank_four_of_le_and_r2_moves α 5 rfl ?_ ?_
       · rw [IntermediateField.adjoin_le_iff, Set.singleton_subset_iff,
-          IntermediateField.mem_fixedField_iff]
+          SetLike.mem_coe, IntermediateField.mem_fixedField_iff]
         rintro _ ⟨g, hg, rfl⟩
-        rw [mem_d4Subgroup_iff] at hg
+        dsimp only [MulEquiv.coe_toMonoidHom]
+        rw [SetLike.mem_coe, mem_d4Subgroup_iff] at hg
         have hc : g = .r 0 ∨ g = .sr 0 := by
           rcases g with a | a <;> fin_cases a <;>
             first | exact Or.inl rfl | exact Or.inr rfl | exact absurd hg (by decide)
@@ -1993,9 +2011,10 @@ theorem exercise_16_3 :
     have hk6 : ex163Field α im 6 = IntermediateField.fixedField (Hsub 6) := by
       refine finrank_four_of_le_and_r2_moves (im * α) 6 rfl ?_ ?_
       · rw [IntermediateField.adjoin_le_iff, Set.singleton_subset_iff,
-          IntermediateField.mem_fixedField_iff]
+          SetLike.mem_coe, IntermediateField.mem_fixedField_iff]
         rintro _ ⟨g, hg, rfl⟩
-        rw [mem_d4Subgroup_iff] at hg
+        dsimp only [MulEquiv.coe_toMonoidHom]
+        rw [SetLike.mem_coe, mem_d4Subgroup_iff] at hg
         have hc : g = .r 0 ∨ g = .sr 2 := by
           rcases g with a | a <;> fin_cases a <;>
             first | exact Or.inl rfl | exact Or.inr rfl | exact absurd hg (by decide)
@@ -2007,9 +2026,10 @@ theorem exercise_16_3 :
     have hk7 : ex163Field α im 7 = IntermediateField.fixedField (Hsub 7) := by
       refine finrank_four_of_le_and_r2_moves ((1 + im) * α) 7 rfl ?_ ?_
       · rw [IntermediateField.adjoin_le_iff, Set.singleton_subset_iff,
-          IntermediateField.mem_fixedField_iff]
+          SetLike.mem_coe, IntermediateField.mem_fixedField_iff]
         rintro _ ⟨g, hg, rfl⟩
-        rw [mem_d4Subgroup_iff] at hg
+        dsimp only [MulEquiv.coe_toMonoidHom]
+        rw [SetLike.mem_coe, mem_d4Subgroup_iff] at hg
         have hc : g = .r 0 ∨ g = .sr 3 := by
           rcases g with a | a <;> fin_cases a <;>
             first | exact Or.inl rfl | exact Or.inr rfl | exact absurd hg (by decide)
@@ -2028,9 +2048,10 @@ theorem exercise_16_3 :
     have hk8 : ex163Field α im 8 = IntermediateField.fixedField (Hsub 8) := by
       refine finrank_four_of_le_and_r2_moves ((1 - im) * α) 8 rfl ?_ ?_
       · rw [IntermediateField.adjoin_le_iff, Set.singleton_subset_iff,
-          IntermediateField.mem_fixedField_iff]
+          SetLike.mem_coe, IntermediateField.mem_fixedField_iff]
         rintro _ ⟨g, hg, rfl⟩
-        rw [mem_d4Subgroup_iff] at hg
+        dsimp only [MulEquiv.coe_toMonoidHom]
+        rw [SetLike.mem_coe, mem_d4Subgroup_iff] at hg
         have hc : g = .r 0 ∨ g = .sr 1 := by
           rcases g with a | a <;> fin_cases a <;>
             first | exact Or.inl rfl | exact Or.inr rfl | exact absurd hg (by decide)
@@ -2093,8 +2114,9 @@ theorem exercise_16_3 :
       rw [hex_eq_fixed k]
       have hH_eq : Hsub k = H := by
         ext g
-        simp only [Hsub, hk, Subgroup.mem_map, Subgroup.mem_comap]
-        exact ⟨fun ⟨d, hd, hgd⟩ => hgd ▸ hd, fun hg => ⟨Φ.symm g, by simpa using hg, Φ.apply_symm_apply g⟩⟩
+        simp only [Hsub, hk, Subgroup.mem_map]
+        exact ⟨fun ⟨d, hd, hgd⟩ => hgd ▸ hd, fun hg =>
+          ⟨Φ.symm g, by change Φ (Φ.symm g) ∈ H; simpa using hg, Φ.apply_symm_apply g⟩⟩
       rw [hH_eq, IsGalois.fixedField_fixingSubgroup]
     exact ⟨hinj_ex, hsurj_ex⟩
   have hex_finrank : ∀ k : Fin 10,
@@ -2111,12 +2133,11 @@ theorem exercise_16_3 :
       · intro hN
         have hfix := IntermediateField.fixingSubgroup_fixedField (Hsub k)
         rw [← hfix]
-        haveI : Normal ℚ (IntermediateField.fixedField (Hsub k)) := hN
-        haveI : IsGalois ℚ (IntermediateField.fixedField (Hsub k)) :=
-          { to_isSeparable := inferInstance, to_normal := hN }
-        exact IsGalois.fixingSubgroup_normal_of_isGalois (IntermediateField.fixedField (Hsub k))
+        have : Normal ℚ (IntermediateField.fixedField (Hsub k)) := hN
+        rw [← IntermediateField.restrictNormalHom_ker (IntermediateField.fixedField (Hsub k))]
+        exact MonoidHom.normal_ker _
       · intro hHN
-        haveI : (Hsub k).Normal := hHN
+        have : (Hsub k).Normal := hHN
         exact (IsGalois.of_fixedField_normal_subgroup (Hsub k)).to_normal
     rw [hnorm_iff]
     constructor
@@ -2141,7 +2162,7 @@ theorem exercise_16_3 :
 is irreducible over `K` or `x^q - θ` has a root in `K`."* -/
 theorem theorem_16_2_part1_unconditional {K : Type u} [Field K] {q : ℕ} (hq : Nat.Prime q)
     (θ : K) (hchar : ringChar K ≠ q) :
-    Xor' (Irreducible (Polynomial.X ^ q - Polynomial.C θ : K[X]))
+    Xor (Irreducible (Polynomial.X ^ q - Polynomial.C θ : K[X]))
       (∃ r : K, (Polynomial.X ^ q - Polynomial.C θ).eval r = 0) := by
   let f : K[X] := Polynomial.X ^ q - Polynomial.C θ
   have hf_monic : f.Monic := Polynomial.monic_X_pow_sub_C θ hq.ne_zero
@@ -2168,7 +2189,7 @@ theorem theorem_16_2_part1_unconditional {K : Type u} [Field K] {q : ℕ} (hq : 
   · refine Or.inr ⟨?_, hirr⟩
     by_cases hθ : θ = 0
     · refine ⟨0, ?_⟩
-      simp [f, hθ, zero_pow hq.ne_zero]
+      simp [hθ, zero_pow hq.ne_zero]
     · -- Garling's Bézout proof on printed p. 125: let g be a monic irreducible factor of f in K[X] of degree d < q
       have hndvd_char : ¬ (ringChar K ∣ q) := by
         intro hd
@@ -2187,8 +2208,7 @@ theorem theorem_16_2_part1_unconditional {K : Type u} [Field K] {q : ℕ} (hq : 
         rw [Polynomial.Monic, Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_C,
           mul_inv_cancel₀ hlc_ne]
       have hg_irr : Irreducible g :=
-        Associated.irreducible ⟨Units.mk0 (Polynomial.C p_fac.leadingCoeff⁻¹)
-          (Polynomial.C_ne_zero.mpr (inv_ne_zero hlc_ne))
+        Associated.irreducible ⟨Units.mk (Polynomial.C p_fac.leadingCoeff⁻¹)
           (Polynomial.C p_fac.leadingCoeff)
           (by simp [← Polynomial.C_mul, inv_mul_cancel₀ hlc_ne])
           (by simp [← Polynomial.C_mul, mul_inv_cancel₀ hlc_ne]), rfl⟩ hp_irr
@@ -2196,16 +2216,21 @@ theorem theorem_16_2_part1_unconditional {K : Type u} [Field K] {q : ℕ} (hq : 
         rcases hp_dvd with ⟨c, hc⟩
         exact ⟨Polynomial.C p_fac.leadingCoeff * c, by
           simp only [g]
-          rw [mul_assoc, Polynomial.C_mul_C, inv_mul_cancel₀ hlc_ne, Polynomial.C_1, one_mul, ← hc]⟩
+          rw [mul_assoc, ← mul_assoc (Polynomial.C p_fac.leadingCoeff⁻¹),
+            ← Polynomial.C_mul, inv_mul_cancel₀ hlc_ne, Polynomial.C_1, one_mul, ← hc]⟩
       let d := g.natDegree
-      have hd_pos : 1 ≤ d := Polynomial.Irreducible.natDegree_pos hg_irr
+      have hd_pos : 1 ≤ d := Nat.pos_of_ne_zero fun h0 => by
+        change g.natDegree = 0 at h0
+        exact hg_irr.not_isUnit (Polynomial.isUnit_iff_degree_eq_zero.mpr
+          (by rw [Polynomial.degree_eq_natDegree hg_monic.ne_zero, h0]; rfl))
       have hd_le : d ≤ q := hf_deg ▸ Polynomial.natDegree_le_of_dvd hg_dvd hf_monic.ne_zero
       have hd_lt : d < q := by
         rcases eq_or_lt_of_le hd_le with hd_eq | hlt
         · exfalso
+          have hd_eq' : g.natDegree = q := hd_eq
           have heq : f = g :=
             Polynomial.eq_of_monic_of_dvd_of_natDegree_le hg_monic hf_monic hg_dvd
-              (by rw [hf_deg, hd_eq])
+              (by rw [hf_deg, hd_eq'])
           exact hirr (heq ▸ hg_irr)
         · exact hlt
       -- Take a splitting field L : K of f (`Theorem 7.3`)
@@ -2231,13 +2256,12 @@ theorem theorem_16_2_part1_unconditional {K : Type u} [Field K] {q : ℕ} (hq : 
           (Polynomial.map_ne_zero hf_monic.ne_zero)
           (Polynomial.map_dvd (algebraMap K L) hg_dvd)
       -- Product of multiset of roots of monic gL: gL = (gL.roots.map (X - C ·)).prod!
-      have hgL_prod : gL = (gL.roots.map fun r => Polynomial.X - Polynomial.C r).prod := by
-        have hs := Polynomial.eq_prod_roots_of_monic_of_splits_id hgL_monic hgL_splits
-        exact hs
+      have hgL_prod : gL = (gL.roots.map fun r => Polynomial.X - Polynomial.C r).prod :=
+        hgL_splits.eq_prod_roots_of_monic hgL_monic
       have hroots_pow : ∀ x ∈ gL.roots, x ^ q = algebraMap K L θ := by
         intro x hx
         have hmem_f : x ∈ (f.map (algebraMap K L)).roots :=
-          (Polynomial.roots.le_of_dvd (Polynomial.map_ne_zero hf_monic.ne_zero)
+          Multiset.mem_of_le (Polynomial.roots.le_of_dvd (Polynomial.map_ne_zero hf_monic.ne_zero)
             (Polynomial.map_dvd (algebraMap K L) hg_dvd)) hx
         rw [Polynomial.mem_roots (Polynomial.map_ne_zero hf_monic.ne_zero),
           Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def,
@@ -2254,14 +2278,17 @@ theorem theorem_16_2_part1_unconditional {K : Type u} [Field K] {q : ℕ} (hq : 
           have hfn : ((Polynomial.eval (0 : L)) ∘ fun r : L => Polynomial.X - Polynomial.C r) =
               fun r : L => (-1 : L) * r := by
             ext r; simp
-          rw [hfn, Multiset.prod_map_mul, Multiset.map_const, Multiset.prod_replicate,
+          rw [hfn, Multiset.prod_map_mul, Multiset.map_const', Multiset.prod_replicate,
             Multiset.map_id', hcard_r]
         calc algebraMap K L g₀
             = (-1 : L) ^ d * gL.eval 0 := by
-              simp [g₀, gL, Polynomial.eval_map, Polynomial.eval₂_at_zero]
+              rw [map_mul, map_pow, map_neg, map_one]
+              congr 1
+              simp [gL, Polynomial.eval_map, Polynomial.eval₂_at_zero,
+                ← Polynomial.coeff_zero_eq_eval_zero]
           _ = (-1 : L) ^ d * ((-1 : L) ^ d * gL.roots.prod) := by rw [hev0]
-          _ = ((-1 : L) ^ 2) ^ d * gL.roots.prod := by ring
-          _ = gL.roots.prod := by norm_num
+          _ = gL.roots.prod := by
+              rw [← mul_assoc, ← mul_pow, neg_one_mul, neg_neg, one_pow, one_mul]
       have hg₀_pow_L : algebraMap K L (g₀ ^ q) = algebraMap K L (θ ^ d) := by
         rw [map_pow, hg₀_L]
         have hmult_pow : ∀ m : Multiset L,
@@ -2283,7 +2310,8 @@ theorem theorem_16_2_part1_unconditional {K : Type u} [Field K] {q : ℕ} (hq : 
         exact pow_ne_zero d hθ hg₀_pow.symm
       -- Bézout identity: gcd(d, q) = 1 ⇒ d * a + q * b = 1 in ℤ
       have hcop : Nat.Coprime d q :=
-        (Nat.coprime_of_lt_prime (by omega) hd_lt hq)
+        (hq.coprime_iff_not_dvd.mpr fun hdvd =>
+          not_lt_of_ge (Nat.le_of_dvd hd_pos hdvd) hd_lt).symm
       let a : ℤ := Nat.gcdA d q
       let b : ℤ := Nat.gcdB d q
       have hbez : (d : ℤ) * a + (q : ℤ) * b = 1 := by
@@ -2292,13 +2320,13 @@ theorem theorem_16_2_part1_unconditional {K : Type u} [Field K] {q : ℕ} (hq : 
         simpa [a, b] using h1.symm
       let rootK : K := g₀ ^ a * θ ^ b
       refine ⟨rootK, ?_⟩
-      simp only [f, Polynomial.eval_sub, Polynomial.eval_pow, Polynomial.eval_X,
+      simp only [Polynomial.eval_sub, Polynomial.eval_pow, Polynomial.eval_X,
         Polynomial.eval_C, sub_eq_zero]
       calc rootK ^ q
           = (g₀ ^ a) ^ (q : ℤ) * (θ ^ b) ^ (q : ℤ) := by
             simp [rootK, mul_pow]
         _ = (g₀ ^ (q : ℤ)) ^ a * θ ^ ((q : ℤ) * b) := by
-            rw [← zpow_mul, mul_comm a (q : ℤ), zpow_mul, ← zpow_mul, mul_comm b (q : ℤ)]
+            rw [← zpow_mul g₀, mul_comm a (q : ℤ), zpow_mul g₀, ← zpow_mul θ, mul_comm b (q : ℤ)]
         _ = (θ ^ (d : ℤ)) ^ a * θ ^ ((q : ℤ) * b) := by
             have hgqZ : g₀ ^ (q : ℤ) = θ ^ (d : ℤ) := by simpa using hg₀_pow
             rw [hgqZ]
@@ -2329,7 +2357,7 @@ either `x^q - θ` is irreducible over `K` or `x^q - θ` has a root in `K`. In th
 splits over `K` if and only if `K` contains a primitive `q`th root of unity."* -/
 theorem theorem_16_2 {K : Type u} [Field K] {q : ℕ} (hq : Nat.Prime q)
     {θ : K} (hθ : θ ≠ 0) (hchar : ringChar K ≠ q) :
-    Xor' (Irreducible (Polynomial.X ^ q - Polynomial.C θ : K[X]))
+    Xor (Irreducible (Polynomial.X ^ q - Polynomial.C θ : K[X]))
       (∃ r : K, (Polynomial.X ^ q - Polynomial.C θ).eval r = 0) ∧
     ((∃ r : K, (Polynomial.X ^ q - Polynomial.C θ).eval r = 0) →
       (GarlingSplitsOver K K (Polynomial.X ^ q - Polynomial.C θ) ↔
@@ -2353,7 +2381,8 @@ theorem theorem_16_2 {K : Type u} [Field K] {q : ℕ} (hq : Nat.Prime q)
     exact (theorem_16_1 hθ hndvd_char hsfK).2.1
   · rintro ⟨ω, hω⟩
     refine ⟨q, 1, fun k => ω ^ (k : ℕ) * r, ?_⟩
-    rw [GarlingSplitsExplicit, Polynomial.map_id, map_one, Polynomial.C_1, one_mul, ← hr_pow]
+    rw [GarlingSplitsExplicit, Algebra.algebraMap_self, Polynomial.map_id, map_one,
+      Polynomial.C_1, one_mul, ← hr_pow]
     exact X_pow_sub_C_pow_eq_prod hq.one_le hω r
 
 /-- Exact unconditional Sentence-2 characterization across **all** `θ ∈ K` (including `θ = 0`):
@@ -2371,6 +2400,7 @@ theorem theorem_16_2_iff {K : Type u} [Field K] {q : ℕ} (hq : Nat.Prime q)
   · simp only [hθ, false_or]
     exact (theorem_16_2 hq hθ hchar).2 hroot
 
+set_option maxHeartbeats 800000 in
 /-- **Exercise 16.4 — Repaired Theorem** (§16.2, printed p. 125 / PDF p. 133; `QUEUE.md` fidelity hold,
 Flag 2):
 For prime `q`, `char K ≠ q`, irreducible `x^q - θ ∈ K[x]`, splitting field `L : K`, primitive `q`th
@@ -2402,7 +2432,7 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
       σ ^ q = 1 ∧
       τ ^ j = 1 ∧
       σ ^ ((u : ZMod q).val) * τ = τ * σ := by
-  letI : Fact q.Prime := ⟨hq⟩
+  have : Fact q.Prime := ⟨hq⟩
   let f : K[X] := Polynomial.X ^ q - Polynomial.C θ
   have hθ : θ ≠ 0 := by
     intro h0
@@ -2439,7 +2469,7 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
       rw [← map_pow, hω.pow_eq_one, map_one]
     obtain ⟨m, _, hm⟩ := hω.eq_pow_of_pow_eq_one hpow_ginv
     have hginv_mem : g⁻¹ ω ∈ K⟮ω⟯ := by
-      rw [hm]; exact pow_mem (IntermediateField.mem_adjoin_simple_self K ω) m
+      rw [← hm]; exact pow_mem (IntermediateField.mem_adjoin_simple_self K ω) m
     have hfix_ω : (g * n * g⁻¹) ω = ω := by
       simp only [AlgEquiv.mul_apply]
       rw [hn (g⁻¹ ω) hginv_mem]
@@ -2454,12 +2484,11 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
       exact hfix_ω
     intro x hx
     exact hle hx
-  have _ : Normal K K⟮ω⟯ := by
+  have _ : IsGalois K K⟮ω⟯ := by
+    have : (IntermediateField.fixingSubgroup K⟮ω⟯).Normal := hfix_normal
     have heq_f := IsGalois.fixedField_fixingSubgroup (K := K⟮ω⟯)
     rw [← heq_f]
-    exact IsGalois.normal_of_normal_subgroup (IntermediateField.fixingSubgroup K⟮ω⟯)
-  have _ : Algebra.IsSeparable K K⟮ω⟯ := Algebra.IsSeparable.tower_bot K K⟮ω⟯ L
-  have _ : IsGalois K K⟮ω⟯ := { to_isSeparable := inferInstance, to_normal := inferInstance }
+    exact IsGalois.of_fixedField_normal_subgroup (IntermediateField.fixingSubgroup K⟮ω⟯)
   -- Embed Gal(K⟮ω⟯ / K) injectively into (ZMod q)ˣ
   let ωK : K⟮ω⟯ := ⟨ω, IntermediateField.mem_adjoin_simple_self K ω⟩
   have hωK : IsPrimitiveRoot ωK q := by
@@ -2493,7 +2522,7 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
         have h1 := htoUnits_spec 1
         simp only [AlgEquiv.one_apply] at h1
         have hm : (toUnitsFun 1 : ZMod q).val ≡ 1 [MOD q] :=
-          (isPrimitiveRoot_pow_eq_pow_iff_modEq hωK).mp (h1.symm.trans (pow_one ωK))
+          (isPrimitiveRoot_pow_eq_pow_iff_modEq hq.one_le hωK).mp (h1.symm.trans (pow_one ωK).symm)
         ext
         rw [← ZMod.natCast_zmod_val (toUnitsFun 1 : ZMod q), Units.val_one,
           ← Nat.cast_one, ZMod.natCast_eq_natCast_iff]
@@ -2505,7 +2534,7 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
           rw [AlgEquiv.mul_apply, htoUnits_spec ψ₂, map_pow, htoUnits_spec ψ₁, ← pow_mul]
         have hm : (toUnitsFun (ψ₁ * ψ₂) : ZMod q).val ≡
             (toUnitsFun ψ₁ : ZMod q).val * (toUnitsFun ψ₂ : ZMod q).val [MOD q] :=
-          (isPrimitiveRoot_pow_eq_pow_iff_modEq hωK).mp (h12.symm.trans hcalc)
+          (isPrimitiveRoot_pow_eq_pow_iff_modEq hq.one_le hωK).mp (h12.symm.trans hcalc)
         ext
         rw [Units.val_mul, ← ZMod.natCast_zmod_val (toUnitsFun (ψ₁ * ψ₂) : ZMod q),
           ← ZMod.natCast_zmod_val (toUnitsFun ψ₁ : ZMod q),
@@ -2514,24 +2543,28 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
         exact hm }
   have htoUnits_inj : Function.Injective toUnitsHom := by
     intro ψ₁ ψ₂ heq
+    change toUnitsFun ψ₁ = toUnitsFun ψ₂ at heq
     have hω_eq : ψ₁ ωK = ψ₂ ωK := by
       rw [htoUnits_spec ψ₁, htoUnits_spec ψ₂, heq]
     let Eeq : IntermediateField K L :=
       { carrier := {x : L | ∃ hx : x ∈ K⟮ω⟯, ψ₁ ⟨x, hx⟩ = ψ₂ ⟨x, hx⟩}
         add_mem' := by
           rintro a b ⟨ha, ea⟩ ⟨hb, eb⟩
-          exact ⟨add_mem ha hb, by change ψ₁ (⟨a, ha⟩ + ⟨b, hb⟩) = _; rw [map_add, map_add, ea, eb]⟩
+          refine ⟨add_mem ha hb, ?_⟩
+          change ψ₁ (⟨a, ha⟩ + ⟨b, hb⟩) = ψ₂ (⟨a, ha⟩ + ⟨b, hb⟩)
+          rw [map_add, map_add, ea, eb]
         zero_mem' := ⟨zero_mem _, by change ψ₁ 0 = ψ₂ 0; simp⟩
-        neg_mem' := by
-          rintro a ⟨ha, ea⟩
-          exact ⟨neg_mem ha, by change ψ₁ (-⟨a, ha⟩) = _; rw [map_neg, map_neg, ea]⟩
         mul_mem' := by
           rintro a b ⟨ha, ea⟩ ⟨hb, eb⟩
-          exact ⟨mul_mem ha hb, by change ψ₁ (⟨a, ha⟩ * ⟨b, hb⟩) = _; rw [map_mul, map_mul, ea, eb]⟩
+          refine ⟨mul_mem ha hb, ?_⟩
+          change ψ₁ (⟨a, ha⟩ * ⟨b, hb⟩) = ψ₂ (⟨a, ha⟩ * ⟨b, hb⟩)
+          rw [map_mul, map_mul, ea, eb]
         one_mem' := ⟨one_mem _, by change ψ₁ 1 = ψ₂ 1; simp⟩
         inv_mem' := by
           rintro a ⟨ha, ea⟩
-          exact ⟨inv_mem ha, by change ψ₁ (⟨a, ha⟩)⁻¹ = _; rw [map_inv₀, map_inv₀, ea]⟩
+          refine ⟨inv_mem ha, ?_⟩
+          change ψ₁ (⟨a, ha⟩)⁻¹ = ψ₂ (⟨a, ha⟩)⁻¹
+          rw [map_inv₀, map_inv₀, ea]
         algebraMap_mem' := fun c => ⟨K⟮ω⟯.algebraMap_mem c, by
           change ψ₁ (algebraMap K K⟮ω⟯ c) = ψ₂ (algebraMap K K⟮ω⟯ c)
           rw [ψ₁.commutes, ψ₂.commutes]⟩ }
@@ -2561,7 +2594,7 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
   obtain ⟨_, ⟨gTop, _, hord_gTop⟩⟩ := theorem_12_3 (ZMod q) (⊤ : Subgroup (ZMod q)ˣ)
   let g : (ZMod q)ˣ := gTop.1
   have hg_ord : orderOf g = q - 1 := by
-    rw [← Subgroup.orderOf_mk]
+    rw [show orderOf g = orderOf gTop from Subgroup.orderOf_coe gTop]
     rw [Nat.card_congr (Subgroup.topEquiv.toEquiv), hcard_units] at hord_gTop
     exact hord_gTop
   have hg_gen : Subgroup.zpowers g = ⊤ := by
@@ -2612,12 +2645,16 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
       let _ : Fintype (ZMod q)ˣ := Fintype.ofFinite _
       apply Subgroup.eq_of_le_of_card_ge hH_le_u
       rw [hH_card, Nat.card_zpowers, hu_ord]
+    change u ∈ H
     rw [h_eq_sub]
     exact Subgroup.mem_zpowers u
   obtain ⟨ψ₀, hψ₀_u⟩ := hu_in_range
   have hψ₀_ord : orderOf ψ₀ = j := by
     rw [← orderOf_injective toUnitsHom htoUnits_inj ψ₀, hψ₀_u, hu_ord]
   -- Degree of L / K is q * j since gcd(q, j) = 1
+  have _ : FiniteDimensional K K⟮β⟯ := Module.Finite.left K K⟮β⟯ L
+  have _ : FiniteDimensional K⟮ω⟯ L := Module.Finite.right K K⟮ω⟯ L
+  have _ : FiniteDimensional K⟮β⟯ L := Module.Finite.right K K⟮β⟯ L
   have hdeg_Kβ : Module.finrank K K⟮β⟯ = q := by
     have hm : minpoly K β = f :=
       (minpoly.eq_of_irreducible_of_monic hirr hβ hmonic).symm
@@ -2652,8 +2689,6 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
     change Nat.card (L ≃ₐ[K] L) = q * j
     rw [IsGalois.card_aut_eq_finrank K L, hfinL]
   have hf_Kω_irr : Irreducible (f.map (algebraMap K K⟮ω⟯)) := hirr_Kω.mpr hfin_KωL
-  have _ : FiniteDimensional K⟮ω⟯ L := Module.Finite.right K K⟮ω⟯ L
-  have _ : FiniteDimensional K⟮β⟯ L := Module.Finite.right K K⟮β⟯ L
   have hL_over_Kω : IntermediateField.adjoin K⟮ω⟯ ({β} : Set L) = ⊤ := by
     let E : IntermediateField K L :=
       (IntermediateField.adjoin K⟮ω⟯ ({β} : Set L)).restrictScalars K
@@ -2707,7 +2742,8 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
   obtain ⟨σ, hσ_ω, hσ_β⟩ : ∃ σ : L ≃ₐ[K] L, σ ω = ω ∧ σ β = ω * β := by
     let pb : PowerBasis K⟮ω⟯ (K⟮ω⟯)⟮β⟯ :=
       IntermediateField.adjoin.powerBasis (Algebra.IsIntegral.isIntegral β)
-    have hgen : (pb.gen : L) = β := by rw [IntermediateField.adjoin.powerBasis_gen]; rfl
+    have hgen : algebraMap (K⟮ω⟯)⟮β⟯ L pb.gen = β :=
+      congrArg (algebraMap _ L) (IntermediateField.adjoin.powerBasis_gen _)
     have hroot : Polynomial.aeval (ω * β) (minpoly K⟮ω⟯ pb.gen) = 0 := by
       have hmin_eq : minpoly K⟮ω⟯ pb.gen = minpoly K⟮ω⟯ β := by
         rw [← minpoly.algebraMap_eq (algebraMap (K⟮ω⟯)⟮β⟯ L).injective, hgen]
@@ -2735,7 +2771,8 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
   obtain ⟨τ, hτ_ω, hτ_β⟩ : ∃ τ : L ≃ₐ[K] L, τ ω = ω ^ kVal ∧ τ β = β := by
     let pb : PowerBasis K⟮β⟯ (K⟮β⟯)⟮ω⟯ :=
       IntermediateField.adjoin.powerBasis (Algebra.IsIntegral.isIntegral ω)
-    have hgen : (pb.gen : L) = ω := by rw [IntermediateField.adjoin.powerBasis_gen]; rfl
+    have hgen : algebraMap (K⟮β⟯)⟮ω⟯ L pb.gen = ω :=
+      congrArg (algebraMap _ L) (IntermediateField.adjoin.powerBasis_gen _)
     -- minpoly K⟮β⟯ ω = (minpoly K ω).map since both are monic of degree j!
     have hmin_K_deg : (minpoly K ω).natDegree = j := by
       rw [← IntermediateField.adjoin.finrank (Algebra.IsIntegral.isIntegral ω), hj]
@@ -2747,12 +2784,12 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
         rw [← IntermediateField.adjoin.finrank hω_int_Kβ]
         have ht : ((K⟮β⟯)⟮ω⟯ : IntermediateField K⟮β⟯ L) = ⊤ := hL_over_Kβ
         rw [ht, LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, hfin_KβL]
-      exact Polynomial.eq_of_monic_of_dvd_of_natDegree_le
+      exact (Polynomial.eq_of_monic_of_dvd_of_natDegree_le
         (minpoly.monic hω_int_Kβ)
         ((minpoly.monic (Algebra.IsIntegral.isIntegral ω)).map _)
         hdvd
         (by rw [Polynomial.natDegree_map_eq_of_injective (algebraMap K K⟮β⟯).injective,
-              hmin_K_deg, hdeg_eq])
+              hmin_K_deg, hdeg_eq])).symm
     -- Since ψ₀ ∈ Gal(K⟮ω⟯ / K) sends ωK ↦ ωK ^ kVal, ω ^ kVal is a root of minpoly K ω!
     have hroot_K : Polynomial.aeval (ω ^ kVal) (minpoly K ω) = 0 := by
       have hspec := htoUnits_spec ψ₀
@@ -2764,7 +2801,7 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
       have haev_Kω : Polynomial.aeval (ψ₀ ωK) (minpoly K ωK) = 0 := by
         rw [Polynomial.aeval_algHom_apply, minpoly.aeval, map_zero]
       have hmin_sub : minpoly K ωK = minpoly K ω :=
-        minpoly.algebraMap_eq (algebraMap K⟮ω⟯ L).injective ωK
+        (minpoly.algebraMap_eq (algebraMap K⟮ω⟯ L).injective ωK).symm
       rw [← hmin_sub]
       simpa using congrArg (algebraMap K⟮ω⟯ L) haev_Kω
     have hroot : Polynomial.aeval (ω ^ kVal) (minpoly K⟮β⟯ pb.gen) = 0 := by
@@ -2798,7 +2835,7 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
     intro m; induction m with
     | zero => simp
     | succ m ih =>
-      rw [pow_succ', AlgEquiv.mul_apply, ih, map_pow, hτ_ω, ← pow_mul, mul_comm, pow_succ']
+      rw [pow_succ', AlgEquiv.mul_apply, ih, map_pow, hτ_ω, ← pow_mul, mul_comm, ← pow_succ]
   have hτ_pow_β : ∀ m : ℕ, (τ ^ m) β = β := by
     intro m; induction m with
     | zero => rfl
@@ -2806,23 +2843,24 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
   have hσq : σ ^ q = 1 :=
     aut_ext _ _ (by rw [hσ_pow_ω]; rfl) (by rw [hσ_pow_β, hω.pow_eq_one, one_mul]; rfl)
   -- Helper: kVal ^ m ≡ ((u ^ m : (ZMod q)ˣ) : ZMod q).val [MOD q]
-  have hkVal_pow_mod : ∀ m : ℕ, (kVal ^ m : ZMod q) = ((u ^ m : (ZMod q)ˣ) : ZMod q) := by
+  have hkVal_pow_mod : ∀ m : ℕ, (kVal : ZMod q) ^ m = ((u ^ m : (ZMod q)ˣ) : ZMod q) := by
     intro m
-    rw [Nat.cast_pow, Units.val_pow_eq_pow_val]
+    rw [Units.val_pow_eq_pow_val]
     simp [kVal]
   have hτj : τ ^ j = 1 := by
     refine aut_ext _ _ ?_ (by rw [hτ_pow_β]; rfl)
     rw [hτ_pow_ω]
     have hpow_u : u ^ j = 1 := by rw [← hu_ord, pow_orderOf_eq_one]
     have hmod : kVal ^ j ≡ 1 [MOD q] := by
-      rw [← ZMod.natCast_eq_natCast_iff, hkVal_pow_mod j, hpow_u, Units.val_one, Nat.cast_one]
-    exact (isPrimitiveRoot_pow_eq_pow_iff_modEq hω).mpr hmod |>.trans (pow_one ω)
+      rw [← ZMod.natCast_eq_natCast_iff, Nat.cast_pow, hkVal_pow_mod j, hpow_u, Units.val_one, Nat.cast_one]
+    exact (isPrimitiveRoot_pow_eq_pow_iff_modEq hq.one_le hω).mpr hmod |>.trans (pow_one ω)
   have hord_σ : orderOf σ = q := by
     refine orderOf_eq_prime hσq fun h1 => ?_
     have hb := congrArg (fun g : L ≃ₐ[K] L => g β) h1
     simp only [hσ_β, AlgEquiv.one_apply] at hb
     have hw1 : ω = 1 := mul_right_cancel₀ hβ_ne (hb.trans (one_mul β).symm)
-    exact absurd (hω.dvd_of_pow_eq_one 1 (by simpa using hw1)) (by have := hq.two_le; omega)
+    have hq1 : q ≤ 1 := Nat.le_of_dvd (by decide) (hω.dvd_of_pow_eq_one 1 (by simpa using hw1))
+    have := hq.two_le; omega
   have hord_τ : orderOf τ = j := by
     apply Nat.dvd_antisymm (orderOf_dvd_of_pow_eq_one hτj)
     rw [← hu_ord]
@@ -2830,14 +2868,14 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
     have hw := congrArg (fun g : L ≃ₐ[K] L => g ω) (pow_orderOf_eq_one τ)
     simp only [hτ_pow_ω, AlgEquiv.one_apply] at hw
     have hmod : kVal ^ orderOf τ ≡ 1 [MOD q] :=
-      (isPrimitiveRoot_pow_eq_pow_iff_modEq hω).mp (hw.trans (pow_one ω).symm)
+      (isPrimitiveRoot_pow_eq_pow_iff_modEq hq.one_le hω).mp (hw.trans (pow_one ω).symm)
     have hz : ((u ^ orderOf τ : (ZMod q)ˣ) : ZMod q) = 1 := by
-      rw [← hkVal_pow_mod, ← Nat.cast_one, ZMod.natCast_eq_natCast_iff]
+      rw [← hkVal_pow_mod, ← Nat.cast_pow, ← Nat.cast_one, ZMod.natCast_eq_natCast_iff]
       exact hmod
     exact Units.ext hz
   have hrel : σ ^ kVal * τ = τ * σ := by
     refine aut_ext _ _ ?_ ?_
-    · rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, hτ_ω, hσ_pow_ω, hσ_ω, hτ_ω]
+    · rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, hτ_ω, map_pow, hσ_pow_ω, hσ_ω, hτ_ω]
     · rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, hτ_β, hσ_pow_β, hσ_β, map_mul, hτ_ω, hτ_β]
   -- Closure {σ, τ} = ⊤ by counting q * j distinct elements σ^a * τ^b
   have hclosure : Subgroup.closure ({σ, τ} : Set (L ≃ₐ[K] L)) = ⊤ := by
@@ -2857,8 +2895,9 @@ theorem exercise_16_4_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Al
       subst ha_eq
       have hτ_eq : τ ^ (b₁ : ℕ) = τ ^ (b₂ : ℕ) := mul_left_cancel hg_eq
       have hb_mod : (b₁ : ℕ) ≡ (b₂ : ℕ) [MOD j] := by
-        rw [← hord_τ, ← pow_eq_pow_iff_modEq]
-        exact hτ_eq
+        have h1 : (b₁ : ℕ) ≡ (b₂ : ℕ) [MOD orderOf τ] :=
+          pow_eq_pow_iff_modEq.mp hτ_eq
+        rwa [hord_τ] at h1
       have hb_eq : b₁ = b₂ := by
         apply Fin.ext
         rw [Nat.ModEq, Nat.mod_eq_of_lt b₁.isLt, Nat.mod_eq_of_lt b₂.isLt] at hb_mod
@@ -2901,7 +2940,7 @@ theorem exercise_16_4_printed_iff {K : Type u} {L : Type v} [Field K] [Field L] 
       σ ^ q = 1 ∧
       τ ^ j = 1 ∧
       σ ^ ((u : ZMod q).val) * τ = τ * σ) ↔ j = q - 1 := by
-  letI : Fact q.Prime := ⟨hq⟩
+  have : Fact q.Prime := ⟨hq⟩
   obtain ⟨hj_pos, hj_dvd, hcardG, σ₀, τ₀, u₀, hu₀_ord, ⟨g, hg_gen, hu₀_eq⟩,
     hclosure₀, _, _, hσ₀q, hτ₀j, hrel₀⟩ :=
     exercise_16_4_repaired hq hchar hirr hsf hω hj
@@ -2938,17 +2977,18 @@ theorem exercise_16_4_printed_iff {K : Type u} {L : Type v} [Field K] [Field L] 
     have hσ_ne1 : σ ≠ 1 := by
       intro hσ1
       subst hσ1
-      have hsub_eq : Subgroup.closure ({(1 : GarlingPolyGaloisGroup K L _), τ} : Set _) =
+      have hsub_eq : Subgroup.closure
+          ({(1 : GarlingPolyGaloisGroup K L (Polynomial.X ^ q - Polynomial.C θ)), τ} : Set _) =
           Subgroup.zpowers τ := by
         apply le_antisymm
         · rw [Subgroup.closure_le]
-          rintro x (rfl | rfl)
+          rintro x (rfl | hx)
           · exact one_mem _
-          · exact Subgroup.mem_zpowers τ
+          · rw [Set.mem_singleton_iff] at hx; rw [hx]; exact Subgroup.mem_zpowers τ
         · rw [Subgroup.zpowers_le]
           exact Subgroup.subset_closure (by simp)
       rw [hclosure] at hsub_eq
-      have hcard_top : Nat.card (⊤ : Subgroup (GarlingPolyGaloisGroup K L _)) = q * j := by
+      have hcard_top : Nat.card (⊤ : Subgroup (GarlingPolyGaloisGroup K L (Polynomial.X ^ q - Polynomial.C θ))) = q * j := by
         rw [Nat.card_congr Subgroup.topEquiv.toEquiv, hcardG]
       rw [hsub_eq, Nat.card_zpowers] at hcard_top
       have hord_le : orderOf τ ≤ j :=
@@ -2978,7 +3018,7 @@ theorem exercise_16_4_printed_iff {K : Type u} {L : Type v} [Field K] [Field L] 
     subst hj_eq
     have hdiv1 : (q - 1) / (q - 1) = 1 := Nat.div_self (by have := hq.two_le; omega)
     rw [hdiv1, pow_one] at hu₀_eq
-    subst hu₀_eq
+    rw [hu₀_eq] at hrel₀
     exact ⟨σ₀, τ₀, g, hg_gen, hclosure₀, hσ₀q, hτ₀j, hrel₀⟩
 
 /-- **Concrete Counterexample to Literal `Exercise 16.4`** (`QUEUE.md` fidelity hold, Flag 2):
@@ -3022,7 +3062,10 @@ theorem exercise_16_4_counterexample :
   have hdegK : Module.finrank ℚ K = 2 := by
     have hm : minpoly ℚ ζ₃ = Polynomial.cyclotomic 3 ℚ :=
       (Polynomial.cyclotomic_eq_minpoly_rat hζ₃ (by decide)).symm
-    rw [IntermediateField.adjoin.finrank (Algebra.IsIntegral.isIntegral ζ₃), hm,
+    have hζ₃_int : IsIntegral ℚ ζ₃ :=
+      ⟨Polynomial.X ^ 3 - 1, by simpa using Polynomial.monic_X_pow_sub_C (1 : ℚ) (by decide),
+        by simp [hζ₃.pow_eq_one]⟩
+    rw [IntermediateField.adjoin.finrank hζ₃_int, hm,
       Polynomial.natDegree_cyclotomic]
     decide
   have _ : FiniteDimensional ℚ K :=
@@ -3088,6 +3131,155 @@ field extension `L : K` of `x^q - θ`:
    (`L = K`), and `K : K` is a splitting field extension;
 3. **Case (b) (`¬ ∃ c ∈ K, c^q = θ`):** `x^q - θ` is **irreducible** in `K[x]`, `[L : K] = q`, and
    `AdjoinRoot (X^q - C θ)` is an explicit splitting field extension of degree `q`. -/
+private theorem char_q_X_pow_sub_C_fac {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {q : ℕ} (hq : Nat.Prime q) (hchar : ringChar K = q) (a : K) (α : L)
+    (hα : α ^ q = algebraMap K L a) :
+    (Polynomial.X ^ q - Polynomial.C a).map (algebraMap K L) =
+      (Polynomial.X - Polynomial.C α) ^ q := by
+  have _ : CharP K q := hchar ▸ ringChar.charP K
+  have _ : CharP L q := charP_of_injective_algebraMap (algebraMap K L).injective q
+  have _ : Fact q.Prime := ⟨hq⟩
+  rw [Polynomial.map_sub, Polynomial.map_pow, Polynomial.map_X, Polynomial.map_C, ← hα,
+    sub_pow_char, Polynomial.C_pow]
+
+private theorem exercise_16_5_part1 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {q : ℕ} (hq : Nat.Prime q) (hchar : ringChar K = q) (θ : K)
+    (hsf : IsGarlingSplittingFieldExtension K L (Polynomial.X ^ q - Polynomial.C θ)) :
+    (∃! α : L, α ^ q = algebraMap K L θ) ∧
+    (∀ α : L, α ^ q = algebraMap K L θ →
+      (Polynomial.X ^ q - Polynomial.C θ).map (algebraMap K L) =
+        (Polynomial.X - Polynomial.C α) ^ q ∧ K⟮α⟯ = ⊤) ∧
+    IsGarlingTotallyInseparable K L ∧
+    Nat.card (GarlingGaloisGroup K L) = 1 := by
+  have _ : CharP K q := hchar ▸ ringChar.charP K
+  have _ : CharP L q := charP_of_injective_algebraMap (algebraMap K L).injective q
+  have _ : Fact q.Prime := ⟨hq⟩
+  let f : K[X] := Polynomial.X ^ q - Polynomial.C θ
+  have hf_monic : f.Monic := Polynomial.monic_X_pow_sub_C θ hq.ne_zero
+  have hf_deg : f.natDegree = q := Polynomial.natDegree_X_pow_sub_C
+  have hspL : (f.map (algebraMap K L)).Splits :=
+    (garlingSplitsOver_iff_splits K L f).mp hsf.1
+  have hcard_r : (f.map (algebraMap K L)).roots.card = q := by
+    rw [← Polynomial.Splits.natDegree_eq_card_roots hspL,
+      Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective, hf_deg]
+  have hne_r : (f.map (algebraMap K L)).roots ≠ 0 := by
+    intro h0; rw [h0] at hcard_r; exact hq.ne_zero hcard_r.symm
+  obtain ⟨α, hα_mem⟩ := Multiset.exists_mem_of_ne_zero hne_r
+  have hα_pow : α ^ q = algebraMap K L θ := by
+    rw [Polynomial.mem_roots (Polynomial.map_ne_zero hf_monic.ne_zero),
+      Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def,
+      map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, sub_eq_zero] at hα_mem
+    exact hα_mem
+  have huniq : ∀ β : L, β ^ q = algebraMap K L θ → β = α := by
+    intro β hβ
+    have hsub : (β - α) ^ q = 0 := by rw [sub_pow_char, hβ, hα_pow, sub_self]
+    exact sub_eq_zero.mp (eq_zero_of_pow_eq_zero hsub)
+  have hadj_top : ∀ β : L, β ^ q = algebraMap K L θ → K⟮β⟯ = ⊤ := by
+    intro β hβ
+    have hsplit_sub : GarlingSplitsOver K K⟮β⟯ f := by
+      let βK : K⟮β⟯ := ⟨β, IntermediateField.mem_adjoin_simple_self K β⟩
+      have hβK : βK ^ q = algebraMap K K⟮β⟯ θ := by ext; exact hβ
+      refine ⟨q, 1, fun _ => βK, ?_⟩
+      rw [GarlingSplitsExplicit, map_one, Polynomial.C_1, one_mul, Finset.prod_const,
+        Finset.card_fin]
+      exact char_q_X_pow_sub_C_fac hq hchar θ βK hβK
+    by_contra hne
+    exact hsf.2 K⟮β⟯ hne hsplit_sub
+  have hsp_ml : Polynomial.IsSplittingField K L f :=
+    (isGarlingSplittingFieldExtension_iff K L f).mp hsf
+  have _ : FiniteDimensional K L := Polynomial.IsSplittingField.finiteDimensional L f
+  have hx_pow_mem : ∀ x : L, x ^ q ∈ Set.range (algebraMap K L) := by
+    intro x
+    have hx_mem : x ∈ K⟮α⟯ := by rw [hadj_top α hα_pow]; exact IntermediateField.mem_top
+    let Fpow : IntermediateField K L :=
+      { carrier := {y : L | y ^ q ∈ Set.range (algebraMap K L)}
+        add_mem' := by
+          rintro a b ⟨ca, ha⟩ ⟨cb, hb⟩
+          exact ⟨ca + cb, by rw [add_pow_char, ← ha, ← hb, ← map_add]⟩
+        zero_mem' := ⟨0, by rw [zero_pow hq.ne_zero, map_zero]⟩
+        mul_mem' := by
+          rintro a b ⟨ca, ha⟩ ⟨cb, hb⟩
+          exact ⟨ca * cb, by rw [mul_pow, ← ha, ← hb, ← map_mul]⟩
+        one_mem' := ⟨1, by rw [one_pow, map_one]⟩
+        inv_mem' := by
+          rintro a ⟨ca, ha⟩
+          exact ⟨ca⁻¹, by rw [inv_pow, ← ha, map_inv₀]⟩
+        algebraMap_mem' := fun c => ⟨c ^ q, map_pow _ _ _⟩ }
+    have hle_Fpow : K⟮α⟯ ≤ Fpow := by
+      rw [IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]
+      exact ⟨θ, hα_pow.symm⟩
+    exact hle_Fpow hx_mem
+  have htot_insep : IsGarlingTotallyInseparable K L := by
+    refine ⟨(theorem_4_6 K L).1.mp ((isFiniteExtension_iff_moduleFinite K L).mpr inferInstance) |>.1, ?_⟩
+    intro x hx_not_mem hx_sep
+    obtain ⟨c, hc⟩ := hx_pow_mem x
+    have hx_int : IsIntegral K x := Algebra.IsIntegral.isIntegral x
+    have hdvd_min : minpoly K x ∣ Polynomial.X ^ q - Polynomial.C c := by
+      refine minpoly.dvd K x ?_
+      rw [map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, hc, sub_self]
+    have hsep_min : (minpoly K x).Separable :=
+      (isGarlingSeparableElement_iff K x).mp hx_sep
+    have hsep_L : ((minpoly K x).map (algebraMap K L)).Separable := hsep_min.map
+    have hdvd_L : (minpoly K x).map (algebraMap K L) ∣ (Polynomial.X - Polynomial.C x) ^ q := by
+      rw [← char_q_X_pow_sub_C_fac hq hchar c x hc.symm]
+      exact Polynomial.map_dvd (algebraMap K L) hdvd_min
+    have hsq : Squarefree ((minpoly K x).map (algebraMap K L)) := hsep_L.squarefree
+    have hdeg_le1 : (minpoly K x).natDegree ≤ 1 := by
+      by_contra hgt1
+      have hge2 : 2 ≤ ((minpoly K x).map (algebraMap K L)).natDegree := by
+        rw [Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective]; omega
+      obtain ⟨k, _, hasc⟩ :=
+        (dvd_prime_pow (Polynomial.prime_X_sub_C x) q).mp hdvd_L
+      have hmon_map : ((minpoly K x).map (algebraMap K L)).Monic :=
+        (minpoly.monic hx_int).map _
+      have hmon_pow : ((Polynomial.X - Polynomial.C x) ^ k).Monic :=
+        (Polynomial.monic_X_sub_C x).pow k
+      have heq_pow : (minpoly K x).map (algebraMap K L) = (Polynomial.X - Polynomial.C x) ^ k :=
+        Polynomial.eq_of_monic_of_associated hmon_map hmon_pow hasc
+      have hk_ge2 : 2 ≤ k := by
+        have hd_eq := congrArg Polynomial.natDegree heq_pow
+        rw [Polynomial.natDegree_pow, Polynomial.natDegree_X_sub_C, mul_one] at hd_eq
+        omega
+      have hdvd2 : (Polynomial.X - Polynomial.C x) * (Polynomial.X - Polynomial.C x) ∣
+          (minpoly K x).map (algebraMap K L) := by
+        rw [heq_pow]
+        exact ⟨(Polynomial.X - Polynomial.C x) ^ (k - 2), by
+          rw [← sq, ← pow_add, Nat.add_sub_of_le hk_ge2]⟩
+      have hisunit := hsq (Polynomial.X - Polynomial.C x) hdvd2
+      rw [Polynomial.isUnit_iff_degree_eq_zero,
+        Polynomial.degree_eq_natDegree (Polynomial.X_sub_C_ne_zero x),
+        Polynomial.natDegree_X_sub_C] at hisunit
+      exact absurd hisunit (by decide)
+    have hdeg1 : (minpoly K x).natDegree = 1 :=
+      le_antisymm hdeg_le1 (minpoly.natDegree_pos hx_int)
+    have hfin1 : Module.finrank K K⟮x⟯ = 1 := by
+      rw [IntermediateField.adjoin.finrank hx_int, hdeg1]
+    have hbot : (⊥ : IntermediateField K L) = K⟮x⟯ :=
+      IntermediateField.eq_of_le_of_finrank_eq bot_le (by rw [IntermediateField.finrank_bot, hfin1])
+    have hx_bot : x ∈ (⊥ : IntermediateField K L) :=
+      hbot ▸ IntermediateField.mem_adjoin_simple_self K x
+    exact hx_not_mem (IntermediateField.mem_bot.mp hx_bot)
+  have hsub_gal : Subsingleton (GarlingGaloisGroup K L) := by
+    refine ⟨fun σ₁ σ₂ => ?_⟩
+    have h1 : (σ₁ α) ^ q = algebraMap K L θ := by
+      rw [← map_pow, hα_pow, σ₁.commutes]
+    have h2 : (σ₂ α) ^ q = algebraMap K L θ := by
+      rw [← map_pow, hα_pow, σ₂.commutes]
+    have heq_α : σ₁ α = σ₂ α := (huniq _ h1).trans (huniq _ h2).symm
+    let Eeq : IntermediateField K L :=
+      { (AlgHom.equalizer σ₁.toAlgHom σ₂.toAlgHom) with
+        inv_mem' := fun {a} ha => by
+          change σ₁ a⁻¹ = σ₂ a⁻¹; rw [map_inv₀, map_inv₀]; exact congrArg Inv.inv ha }
+    have htop_le : (⊤ : IntermediateField K L) ≤ Eeq := by
+      rw [← hadj_top α hα_pow, IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]
+      exact heq_α
+    ext x; exact htop_le IntermediateField.mem_top
+  have hcard1 : Nat.card (GarlingGaloisGroup K L) = 1 := by
+    let _ : Subsingleton (GarlingGaloisGroup K L) := hsub_gal
+    exact Nat.card_unique
+  exact ⟨⟨α, hα_pow, huniq⟩, fun β hβ => ⟨char_q_X_pow_sub_C_fac hq hchar θ β hβ, hadj_top β hβ⟩,
+    htot_insep, hcard1⟩
+
 theorem exercise_16_5 {K : Type u} [Field K] {q : ℕ} (hq : Nat.Prime q)
     (hchar : ringChar K = q) (θ : K) :
     (∀ (L : Type v) [Field L] [Algebra K L],
@@ -3107,9 +3299,10 @@ theorem exercise_16_5 {K : Type u} [Field K] {q : ℕ} (hq : Nat.Prime q)
         Module.finrank K L = 1 ∧ extDegree K L = 1) ∧
     ((¬ ∃ c : K, c ^ q = θ) →
       Irreducible (Polynomial.X ^ q - Polynomial.C θ : K[X]) ∧
-      IsGarlingSplittingFieldExtension K (AdjoinRoot (Polynomial.X ^ q - Polynomial.C θ))
-        (Polynomial.X ^ q - Polynomial.C θ) ∧
-      Module.finrank K (AdjoinRoot (Polynomial.X ^ q - Polynomial.C θ)) = q ∧
+      (∀ [Fact (Irreducible (Polynomial.X ^ q - Polynomial.C θ : K[X]))],
+        IsGarlingSplittingFieldExtension K (AdjoinRoot (Polynomial.X ^ q - Polynomial.C θ))
+          (Polynomial.X ^ q - Polynomial.C θ) ∧
+        Module.finrank K (AdjoinRoot (Polynomial.X ^ q - Polynomial.C θ)) = q) ∧
       ∀ (L : Type v) [Field L] [Algebra K L],
         IsGarlingSplittingFieldExtension K L (Polynomial.X ^ q - Polynomial.C θ) →
         Module.finrank K L = q ∧ extDegree K L = q) := by
@@ -3118,15 +3311,6 @@ theorem exercise_16_5 {K : Type u} [Field K] {q : ℕ} (hq : Nat.Prime q)
   let f : K[X] := Polynomial.X ^ q - Polynomial.C θ
   have hf_monic : f.Monic := Polynomial.monic_X_pow_sub_C θ hq.ne_zero
   have hf_deg : f.natDegree = q := Polynomial.natDegree_X_pow_sub_C
-  -- Helper: in characteristic q over any K-algebra field L, α^q = θ ⇔ (X - C α)^q = f.map!
-  have char_q_fac : ∀ {L : Type*} [Field L] [Algebra K L] (α : L),
-      α ^ q = algebraMap K L θ →
-      (Polynomial.X ^ q - Polynomial.C θ).map (algebraMap K L) =
-        (Polynomial.X - Polynomial.C α) ^ q := by
-    intro L _ _ α hα
-    have _ : CharP L q := charP_of_injective_algebraMap (algebraMap K L).injective q
-    rw [Polynomial.map_sub, Polynomial.map_pow, Polynomial.map_X, Polynomial.map_C, ← hα,
-      sub_pow_char, Polynomial.C_pow]
   -- Part 1: Universal properties of any splitting field L : K of X^q - C θ
   have hpart1 : ∀ (L : Type v) [Field L] [Algebra K L],
       IsGarlingSplittingFieldExtension K L f →
@@ -3134,142 +3318,8 @@ theorem exercise_16_5 {K : Type u} [Field K] {q : ℕ} (hq : Nat.Prime q)
       (∀ α : L, α ^ q = algebraMap K L θ →
         f.map (algebraMap K L) = (Polynomial.X - Polynomial.C α) ^ q ∧ K⟮α⟯ = ⊤) ∧
       IsGarlingTotallyInseparable K L ∧
-      Nat.card (GarlingGaloisGroup K L) = 1 := by
-    intro L _ _ hsf
-    have _ : CharP L q := charP_of_injective_algebraMap (algebraMap K L).injective q
-    have hspL : (f.map (algebraMap K L)).Splits :=
-      (garlingSplitsOver_iff_splits K L f).mp hsf.1
-    have hcard_r : (f.map (algebraMap K L)).roots.card = q := by
-      rw [← Polynomial.Splits.natDegree_eq_card_roots hspL,
-        Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective, hf_deg]
-    have hne_r : (f.map (algebraMap K L)).roots ≠ 0 := by
-      intro h0; rw [h0] at hcard_r; exact hq.ne_zero hcard_r.symm
-    obtain ⟨α, hα_mem⟩ := Multiset.exists_mem_of_ne_zero hne_r
-    have hα_pow : α ^ q = algebraMap K L θ := by
-      rw [Polynomial.mem_roots (Polynomial.map_ne_zero hf_monic.ne_zero),
-        Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def,
-        map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, sub_eq_zero] at hα_mem
-      exact hα_mem
-    have huniq : ∀ β : L, β ^ q = algebraMap K L θ → β = α := by
-      intro β hβ
-      have hsub : (β - α) ^ q = 0 := by rw [sub_pow_char, hβ, hα_pow, sub_self]
-      exact sub_eq_zero.mp (eq_zero_of_pow_eq_zero hsub)
-    have hadj_top : ∀ β : L, β ^ q = algebraMap K L θ → K⟮β⟯ = ⊤ := by
-      intro β hβ
-      have hsplit_sub : GarlingSplitsOver K K⟮β⟯ f := by
-        let βK : K⟮β⟯ := ⟨β, IntermediateField.mem_adjoin_simple_self K β⟩
-        have hβK : βK ^ q = algebraMap K K⟮β⟯ θ := by ext; exact hβ
-        refine ⟨q, 1, fun _ => βK, ?_⟩
-        rw [GarlingSplitsExplicit, map_one, Polynomial.C_1, one_mul, Finset.prod_const,
-          Finset.card_fin]
-        exact char_q_fac βK hβK
-      by_contra hne
-      exact hsf.2 K⟮β⟯ hne hsplit_sub
-    have hsp_ml : Polynomial.IsSplittingField K L f :=
-      (isGarlingSplittingFieldExtension_iff K L hf_monic.ne_zero).mp hsf
-    have _ : FiniteDimensional K L := Polynomial.IsSplittingField.finiteDimensional L f
-    -- Every element x ∈ L = K(α) satisfies x^q ∈ K since (∑ c_i α^i)^q = ∑ c_i^q θ^i ∈ K!
-    have hx_pow_mem : ∀ x : L, x ^ q ∈ Set.range (algebraMap K L) := by
-      intro x
-      have hx_mem : x ∈ K⟮α⟯ := by rw [hadj_top α hα_pow]; exact IntermediateField.mem_top
-      -- Subring {x : L | x ^ q ∈ range (algebraMap K L)} is a Subfield containing K and α!
-      let Fpow : IntermediateField K L :=
-        { carrier := {y : L | y ^ q ∈ Set.range (algebraMap K L)}
-          add_mem' := by
-            rintro a b ⟨ca, ha⟩ ⟨cb, hb⟩
-            exact ⟨ca + cb, by rw [add_pow_char, ← ha, ← hb, ← map_add]⟩
-          zero_mem' := ⟨0, by rw [zero_pow hq.ne_zero, map_zero]⟩
-          neg_mem' := by
-            rintro a ⟨ca, ha⟩
-            exact ⟨(-1) ^ q * ca, by rw [neg_eq_neg_one_mul, mul_pow, ← ha, map_mul, map_pow, map_neg, map_one]⟩
-          mul_mem' := by
-            rintro a b ⟨ca, ha⟩ ⟨cb, hb⟩
-            exact ⟨ca * cb, by rw [mul_pow, ← ha, ← hb, ← map_mul]⟩
-          one_mem' := ⟨1, by rw [one_pow, map_one]⟩
-          inv_mem' := by
-            rintro a ⟨ca, ha⟩
-            exact ⟨ca⁻¹, by rw [inv_pow, ← ha, map_inv₀]⟩
-          algebraMap_mem' := fun c => ⟨c ^ q, map_pow _ _ _⟩ }
-      have hle_Fpow : K⟮α⟯ ≤ Fpow := by
-        rw [IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]
-        exact ⟨θ, hα_pow.symm⟩
-      exact hle_Fpow hx_mem
-    -- Minimal polynomial over K of any x ∈ L \ K divides X^q - C c = (X - C x)^q, so has unique root x in L, hence is NOT separable!
-    have htot_insep : IsGarlingTotallyInseparable K L := by
-      refine ⟨(theorem_4_6 K L).1.mp ((isFiniteExtension_iff_moduleFinite K L).mpr inferInstance) |>.1, ?_⟩
-      intro x hx_sep
-      -- Since x is separable over K and x^q = c ∈ K, minpoly K x divides X^q - C c = (X - C x)^q in L[X];
-      -- a separable polynomial dividing (X - C x)^q has natDegree ≤ 1, so x ∈ K!
-      obtain ⟨c, hc⟩ := hx_pow_mem x
-      have hx_int : IsIntegral K x := Algebra.IsIntegral.isIntegral x
-      have hdvd_min : minpoly K x ∣ Polynomial.X ^ q - Polynomial.C c := by
-        refine minpoly.dvd K x ?_
-        rw [map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, hc, sub_self]
-      have hsep_min : (minpoly K x).Separable :=
-        (isGarlingSeparableElement_iff K x).mp hx_sep |>.2
-      have hsep_L : ((minpoly K x).map (algebraMap K L)).Separable := hsep_min.map
-      have hdvd_L : (minpoly K x).map (algebraMap K L) ∣ (Polynomial.X - Polynomial.C x) ^ q := by
-        rw [← char_q_fac x hc.symm]
-        exact Polynomial.map_dvd (algebraMap K L) hdvd_min
-      -- Irreducible factors in L[X] of (X - C x)^q are all associated to X - C x; since squarefree, natDegree ≤ 1!
-      have hsq : Squarefree ((minpoly K x).map (algebraMap K L)) := hsep_L.squarefree
-      have hdeg_le1 : (minpoly K x).natDegree ≤ 1 := by
-        by_contra hgt1
-        have hge2 : 2 ≤ ((minpoly K x).map (algebraMap K L)).natDegree := by
-          rw [Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective]; omega
-        -- Since minpoly K x divides (X - C x)^q and is monic of degree d ≥ 2, by unique factorization in L[X] it equals (X - C x)^d!
-        obtain ⟨u_fac, hu_eq⟩ :=
-          (dvd_prime_pow (Polynomial.prime_X_sub_C x) q).mp hdvd_L
-        rcases u_fac with ⟨k, hk_le, hasc⟩
-        have hmon_map : ((minpoly K x).map (algebraMap K L)).Monic :=
-          (minpoly.monic hx_int).map _
-        have hmon_pow : ((Polynomial.X - Polynomial.C x) ^ k).Monic :=
-          (Polynomial.monic_X_sub_C x).pow k
-        have heq_pow : (minpoly K x).map (algebraMap K L) = (Polynomial.X - Polynomial.C x) ^ k :=
-          Polynomial.eq_of_monic_of_associated hmon_map hmon_pow hasc
-        have hk_ge2 : 2 ≤ k := by
-          have hd_eq := congrArg Polynomial.natDegree heq_pow
-          rw [Polynomial.natDegree_pow, Polynomial.natDegree_X_sub_C, mul_one] at hd_eq
-          omega
-        have hdvd2 : (Polynomial.X - Polynomial.C x) * (Polynomial.X - Polynomial.C x) ∣
-            (minpoly K x).map (algebraMap K L) := by
-          rw [heq_pow]
-          exact ⟨(Polynomial.X - Polynomial.C x) ^ (k - 2), by
-            rw [← sq, ← pow_add, Nat.add_sub_of_le hk_ge2]⟩
-        have hisunit := hsq (Polynomial.X - Polynomial.C x) hdvd2
-        rw [Polynomial.isUnit_iff_degree_eq_zero,
-          Polynomial.degree_eq_natDegree (Polynomial.X_sub_C_ne_zero x),
-          Polynomial.natDegree_X_sub_C] at hisunit
-        exact absurd hisunit (by decide)
-      have hdeg1 : (minpoly K x).natDegree = 1 :=
-        le_antisymm hdeg_le1 (minpoly.natDegree_pos hx_int)
-      have hfin1 : Module.finrank K K⟮x⟯ = 1 := by
-        rw [IntermediateField.adjoin.finrank hx_int, hdeg1]
-      have hbot : (⊥ : IntermediateField K L) = K⟮x⟯ :=
-        IntermediateField.eq_of_le_of_finrank_eq' bot_le (by rw [IntermediateField.finrank_bot, hfin1])
-      have hx_bot : x ∈ (⊥ : IntermediateField K L) :=
-        hbot ▸ IntermediateField.mem_adjoin_simple_self K x
-      exact IntermediateField.mem_bot.mp hx_bot
-    -- Any σ ∈ Γ(L : K) sends α to a root of X^q - θ, hence σ(α) = α by uniqueness, hence σ = 1!
-    have hsub_gal : Subsingleton (GarlingGaloisGroup K L) := by
-      refine ⟨fun σ₁ σ₂ => ?_⟩
-      have h1 : (σ₁ α) ^ q = algebraMap K L θ := by
-        rw [← map_pow, hα_pow, σ₁.commutes]
-      have h2 : (σ₂ α) ^ q = algebraMap K L θ := by
-        rw [← map_pow, hα_pow, σ₂.commutes]
-      have heq_α : σ₁ α = σ₂ α := (huniq _ h1).trans (huniq _ h2).symm
-      let Eeq : IntermediateField K L :=
-        { (AlgHom.equalizer σ₁.toAlgHom σ₂.toAlgHom) with
-          inv_mem' := fun {a} ha => by
-            change σ₁ a⁻¹ = σ₂ a⁻¹; rw [map_inv₀, map_inv₀]; exact congrArg Inv.inv ha }
-      have htop_le : (⊤ : IntermediateField K L) ≤ Eeq := by
-        rw [← hadj_top α hα_pow, IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]
-        exact heq_α
-      ext x; exact htop_le IntermediateField.mem_top
-    have hcard1 : Nat.card (GarlingGaloisGroup K L) = 1 := by
-      let _ : Subsingleton (GarlingGaloisGroup K L) := hsub_gal
-      exact Nat.card_unique
-    exact ⟨⟨α, hα_pow, huniq⟩, fun β hβ => ⟨char_q_fac β hβ, hadj_top β hβ⟩, htot_insep, hcard1⟩
+      Nat.card (GarlingGaloisGroup K L) = 1 :=
+    fun L _ _ hsf => exercise_16_5_part1 hq hchar θ hsf
   -- Part 2: Case (a) θ = c^q for some c ∈ K
   have hpart2 : (∃ c : K, c ^ q = θ) →
       GarlingSplitsOver K K f ∧
@@ -3280,159 +3330,3807 @@ theorem exercise_16_5 {K : Type u} [Field K] {q : ℕ} (hq : Nat.Prime q)
     rintro ⟨c, hc⟩
     have hspK : GarlingSplitsOver K K f := by
       refine ⟨q, 1, fun _ => c, ?_⟩
-      rw [GarlingSplitsExplicit, Polynomial.map_id, map_one, Polynomial.C_1, one_mul,
-        Finset.prod_const, Finset.card_fin]
-      simpa using char_q_fac (L := K) c hc
+      rw [GarlingSplitsExplicit, map_one, Polynomial.C_1, one_mul, Finset.prod_const,
+        Finset.card_fin]
+      exact char_q_X_pow_sub_C_fac hq hchar θ c hc
     have hsfK : IsGarlingSplittingFieldExtension K K f :=
       ⟨hspK, fun M hM _ => hM (Subsingleton.elim M ⊤)⟩
     refine ⟨hspK, hsfK, fun L _ _ hsfL => ?_⟩
     obtain ⟨e⟩ := splitting_field_unique_up_to_algEquiv hsfK hsfL
+    have _ : FiniteDimensional K L := Module.Finite.equiv e.toLinearEquiv
     have hfin1 : Module.finrank K L = 1 := by
       rw [← e.toLinearEquiv.finrank_eq, Module.finrank_self]
     exact ⟨hfin1, by rw [extDegree_eq_finrank K L, hfin1]; rfl⟩
   -- Part 3: Case (b) θ is NOT a qth power in K ⇒ Irreducible f and [L : K] = q
   have hpart3 : (¬ ∃ c : K, c ^ q = θ) →
       Irreducible f ∧
-      IsGarlingSplittingFieldExtension K (AdjoinRoot f) f ∧
-      Module.finrank K (AdjoinRoot f) = q ∧
+      (∀ [Fact (Irreducible f)],
+        IsGarlingSplittingFieldExtension K (AdjoinRoot f) f ∧
+        Module.finrank K (AdjoinRoot f) = q) ∧
       ∀ (L : Type v) [Field L] [Algebra K L],
         IsGarlingSplittingFieldExtension K L f →
         Module.finrank K L = q ∧ extDegree K L = q := by
     intro hno
-    -- Irreducibility proof in char q: if g ∣ f in K[X] is monic of degree 1 ≤ d < q, in a splitting field L, g = (X - α)^d, so coeff (d - 1) = -d * α ∈ K with (d : K) ≠ 0 ⇒ α ∈ K!
     obtain ⟨L₀, _, _, hsf₀, _⟩ := theorem_7_3_natDegree f
-    obtain ⟨⟨α₀, hα₀, _⟩, hfac₀, _, _⟩ := hpart1 L₀ hsf₀
+    obtain ⟨⟨α₀, hα₀, _⟩, hfac₀, _, _⟩ := exercise_16_5_part1 hq hchar θ hsf₀
     have hf_irr : Irreducible f := by
-      refine (Monic.irreducible_iff_natDegree hf_monic).mpr ⟨by have := hq.two_le; omega, ?_⟩
-      intro g h hg_mon hh_mon hd_pos he_pos hmul
-      exfalso
-      let d := g.natDegree
-      have hd_lt : d < q := by
-        have hsum := congrArg Polynomial.natDegree hmul
-        rw [hf_deg, Polynomial.natDegree_mul hg_mon.ne_zero hh_mon.ne_zero] at hsum
-        omega
-      have hd_ge1 : 1 ≤ d := hd_pos
-      have hdvd_L₀ : g.map (algebraMap K L₀) ∣ (Polynomial.X - Polynomial.C α₀) ^ q := by
-        rw [← (hfac₀ α₀ hα₀).1, hmul, Polynomial.map_mul]
-        exact dvd_mul_right _ _
-      obtain ⟨k, _, hasc⟩ :=
-        (dvd_prime_pow (Polynomial.prime_X_sub_C α₀) q).mp hdvd_L₀
-      have heq_pow : g.map (algebraMap K L₀) = (Polynomial.X - Polynomial.C α₀) ^ k :=
-        Polynomial.eq_of_monic_of_associated (hg_mon.map _)
-          ((Polynomial.monic_X_sub_C α₀).pow k) hasc
-      have hk_eq : k = d := by
-        have hdeg_eq := congrArg Polynomial.natDegree heq_pow
-        rw [Polynomial.natDegree_map_eq_of_injective (algebraMap K L₀).injective,
-          Polynomial.natDegree_pow, Polynomial.natDegree_X_sub_C, mul_one] at hdeg_eq
-        exact hdeg_eq.symm
-      subst hk_eq
-      -- Inspect coefficient of X^(d - 1) in (X - C α₀)^d: it equals -(d : L₀) * α₀!
-      have hcoeff_pow :
-          ((Polynomial.X - Polynomial.C α₀) ^ d).coeff (d - 1) = -(d : L₀) * α₀ := by
-        -- Prove by induction on d ≥ 1!
-        clear heq_pow hasc hdvd_L₀ hd_lt hmul he_pos
-        induction d with
-        | zero => omega
-        | succ m ih =>
-          rcases Nat.eq_zero_or_pos m with rfl | hm_pos
-          · simp
-          · have hsub1 : m + 1 - 1 = m := Nat.add_sub_cancel m 1
-            rw [hsub1, pow_succ, sub_eq_add_neg, Polynomial.mul_add, Polynomial.coeff_add,
-              Polynomial.mul_X, Polynomial.coeff_X_mul, ← sub_eq_add_neg]
-            have h1 := ih hm_pos
-            have hmon_m : ((Polynomial.X - Polynomial.C α₀) ^ m).Monic :=
-              (Polynomial.monic_X_sub_C α₀).pow m
-            have hdeg_m : ((Polynomial.X - Polynomial.C α₀) ^ m).natDegree = m := by
-              rw [Polynomial.natDegree_pow, Polynomial.natDegree_X_sub_C, mul_one]
-            have hcm : ((Polynomial.X - Polynomial.C α₀) ^ m).coeff m = 1 := by
-              rw [← hdeg_m]; exact hmon_m.leadingCoeff
-            have hmulC : ((Polynomial.X - Polynomial.C α₀) ^ m * -Polynomial.C α₀).coeff m = -α₀ := by
-              rw [← Polynomial.C_neg, Polynomial.coeff_mul_C, hcm, one_mul]
-            have hm_idx : m - 1 + 1 = m := Nat.sub_add_cancel hm_pos
-            -- Wait: coeff_X_mul is (X * p).coeff (n + 1) = p.coeff n! Let's compute directly with Polynomial.coeff_mul_X!
-            have hmulX : ((Polynomial.X - Polynomial.C α₀) ^ m * Polynomial.X).coeff m =
-                -(m : L₀) * α₀ := by
-              conv_lhs => rw [← hm_idx]
-              rw [Polynomial.coeff_mul_X, h1]
-            rw [sub_eq_add_neg] at hmulX hmulC ⊢
-            -- Recompute cleanly:
-            have hclean :
-                ((Polynomial.X - Polynomial.C α₀) ^ (m + 1)).coeff m = -(↑(m + 1) : L₀) * α₀ := by
-              rw [pow_succ, Polynomial.mul_sub, Polynomial.coeff_sub]
-              have hx1 : ((Polynomial.X - Polynomial.C α₀) ^ m * Polynomial.X).coeff m =
-                  -(m : L₀) * α₀ := by
-                conv_lhs => rw [← hm_idx]
-                rw [Polynomial.coeff_mul_X, h1]
-              have hc1 : ((Polynomial.X - Polynomial.C α₀) ^ m * Polynomial.C α₀).coeff m = α₀ := by
-                rw [Polynomial.coeff_mul_C, hcm, one_mul]
-              rw [hx1, hc1, Nat.cast_add, Nat.cast_one]
-              ring
-            simpa [pow_succ, sub_eq_add_neg, Polynomial.mul_add] using hclean
-      have hcoeff_map : (g.map (algebraMap K L₀)).coeff (d - 1) =
-          algebraMap K L₀ (g.coeff (d - 1)) := Polynomial.coeff_map _ _
-      rw [heq_pow, hcoeff_pow] at hcoeff_map
-      have hdK_ne : (d : K) ≠ 0 := by
-        intro hd0
-        have hq_dvd : q ∣ d := (CharP.cast_eq_zero_iff K q d).mp hd0
-        exact not_lt_of_ge (Nat.le_of_dvd hd_ge1 hq_dvd) hd_lt
-      let c_cand : K := -(g.coeff (d - 1)) / (d : K)
-      have hc_eq_α₀ : algebraMap K L₀ c_cand = α₀ := by
-        have hdL_ne : (d : L₀) ≠ 0 := by
-          simpa using (map_ne_zero (algebraMap K L₀)).mpr hdK_ne
-        simp only [c_cand, map_div₀, map_neg, ← hcoeff_map, map_natCast]
-        field_simp
-      have hc_pow : c_cand ^ q = θ :=
-        (algebraMap K L₀).injective (by rw [map_pow, hc_eq_α₀, hα₀])
-      exact hno ⟨c_cand, hc_pow⟩
-    -- AdjoinRoot f is a Field when Irreducible f!
-    letI : Fact (Irreducible f) := ⟨hf_irr⟩
-    let rAdj : AdjoinRoot f := AdjoinRoot.root f
-    have hrAdj_pow : rAdj ^ q = algebraMap K (AdjoinRoot f) θ := by
-      have hev : Polynomial.aeval rAdj f = 0 := AdjoinRoot.aeval_eq f
-      rw [map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, sub_eq_zero] at hev
-      exact hev
-    have hsf_adj : IsGarlingSplittingFieldExtension K (AdjoinRoot f) f := by
-      refine ⟨⟨q, 1, fun _ => rAdj, ?_⟩, ?_⟩
-      · rw [GarlingSplitsExplicit, map_one, Polynomial.C_1, one_mul, Finset.prod_const,
-          Finset.card_fin]
-        exact char_q_fac rAdj hrAdj_pow
-      · intro M hM hspM
-        have _ : CharP M q := charP_of_injective_algebraMap (algebraMap K M).injective q
-        have hsp_ml := (garlingSplitsOver_iff_splits K M f).mp hspM
-        have hcr : (f.map (algebraMap K M)).roots.card = q := by
-          rw [← Polynomial.Splits.natDegree_eq_card_roots hsp_ml,
-            Polynomial.natDegree_map_eq_of_injective (algebraMap K M).injective, hf_deg]
-        obtain ⟨βM, hβM⟩ := Multiset.exists_mem_of_ne_zero
-          (fun h0 => hq.ne_zero (by rw [h0] at hcr; exact hcr.symm))
-        rw [Polynomial.mem_roots (Polynomial.map_ne_zero hf_monic.ne_zero),
-          Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def,
-          map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, sub_eq_zero] at hβM
-        have hsub0 : ((βM : AdjoinRoot f) - rAdj) ^ q = 0 := by
-          have _ : CharP (AdjoinRoot f) q :=
-            charP_of_injective_algebraMap (algebraMap K (AdjoinRoot f)).injective q
-          rw [sub_pow_char]
-          have hb_pow : (βM : AdjoinRoot f) ^ q = algebraMap K (AdjoinRoot f) θ := by
-            simpa using congrArg (algebraMap M (AdjoinRoot f)) hβM
-          rw [hb_pow, hrAdj_pow, sub_self]
-        have hr_in_M : rAdj ∈ M := by
-          have heq : (βM : AdjoinRoot f) = rAdj := sub_eq_zero.mp (eq_zero_of_pow_eq_zero hsub0)
-          exact heq ▸ βM.2
-        have htop_M : M = ⊤ := by
-          rw [eq_top_iff]
-          intro x _
-          induction x using AdjoinRoot.induction_on with | ih p =>
-          rw [AdjoinRoot.mk_eq_aeval]
-          exact Polynomial.aeval_mem_of_mem M hr_in_M p
-        exact hM htop_M
-    have hfin_adj : Module.finrank K (AdjoinRoot f) = q := by
-      rw [PowerBasis.finrank (AdjoinRoot.powerBasis hf_monic.ne_zero),
-        AdjoinRoot.powerBasis_dim, hf_deg]
-    refine ⟨hf_irr, hsf_adj, hfin_adj, fun L _ _ hsfL => ?_⟩
+      have hf_not_unit : ¬ IsUnit f := by
+        rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hf_monic.ne_zero,
+          hf_deg]
+        exact Nat.cast_ne_zero.mpr hq.ne_zero
+      refine ⟨hf_not_unit, fun g₀ h₀ hmul₀ => ?_⟩
+      by_cases hg0_unit : IsUnit g₀
+      · exact Or.inl hg0_unit
+      · by_cases hh0_unit : IsUnit h₀
+        · exact Or.inr hh0_unit
+        · exfalso
+          have hg0_ne : g₀ ≠ 0 := fun h => by rw [h, zero_mul] at hmul₀; exact hf_monic.ne_zero hmul₀
+          have hh0_ne : h₀ ≠ 0 := fun h => by rw [h, mul_zero] at hmul₀; exact hf_monic.ne_zero hmul₀
+          let g : K[X] := g₀ * Polynomial.C g₀.leadingCoeff⁻¹
+          have hlc_ne : g₀.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hg0_ne
+          have hg_mon : g.Monic := by
+            rw [Polynomial.Monic, Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_C,
+              mul_inv_cancel₀ hlc_ne]
+          have hg_deg_eq : g.natDegree = g₀.natDegree := by
+            rw [Polynomial.natDegree_mul hg0_ne (Polynomial.C_ne_zero.mpr (inv_ne_zero hlc_ne)),
+              Polynomial.natDegree_C, add_zero]
+          let d := g.natDegree
+          have hd_ge1 : 1 ≤ d := by
+            rw [Nat.one_le_iff_ne_zero]; intro hd0
+            change g.natDegree = 0 at hd0
+            apply hg0_unit
+            rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hg0_ne, ← hg_deg_eq, hd0]
+            rfl
+          have hh_ge1 : 1 ≤ h₀.natDegree := by
+            rw [Nat.one_le_iff_ne_zero]; intro hh0
+            apply hh0_unit
+            rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hh0_ne, hh0]
+            rfl
+          have hd_lt : d < q := by
+            have hsum := congrArg Polynomial.natDegree hmul₀
+            rw [hf_deg, Polynomial.natDegree_mul hg0_ne hh0_ne, ← hg_deg_eq] at hsum
+            omega
+          have hg_dvd_f : g ∣ f := ⟨Polynomial.C g₀.leadingCoeff * h₀, by
+            simp only [g]
+            rw [mul_assoc, ← mul_assoc (Polynomial.C g₀.leadingCoeff⁻¹), ← Polynomial.C_mul,
+              inv_mul_cancel₀ hlc_ne, Polynomial.C_1, one_mul, ← hmul₀]⟩
+          have hdvd_L₀ : g.map (algebraMap K L₀) ∣ (Polynomial.X - Polynomial.C α₀) ^ q := by
+            rw [← (hfac₀ α₀ hα₀).1]
+            exact Polynomial.map_dvd (algebraMap K L₀) hg_dvd_f
+          obtain ⟨k, _, hasc⟩ :=
+            (dvd_prime_pow (Polynomial.prime_X_sub_C α₀) q).mp hdvd_L₀
+          have heq_pow : g.map (algebraMap K L₀) = (Polynomial.X - Polynomial.C α₀) ^ k :=
+            Polynomial.eq_of_monic_of_associated (hg_mon.map _)
+              ((Polynomial.monic_X_sub_C α₀).pow k) hasc
+          have hk_eq : k = d := by
+            have hdeg_eq := congrArg Polynomial.natDegree heq_pow
+            rw [Polynomial.natDegree_map_eq_of_injective (algebraMap K L₀).injective,
+              Polynomial.natDegree_pow, Polynomial.natDegree_X_sub_C, mul_one] at hdeg_eq
+            exact hdeg_eq.symm
+          subst hk_eq
+          have hcoeff_pow_gen : ∀ n : ℕ, 1 ≤ n →
+              ((Polynomial.X - Polynomial.C α₀) ^ n).coeff (n - 1) = -(n : L₀) * α₀ := by
+            intro n
+            induction n with
+            | zero => intro h; omega
+            | succ m ih =>
+              intro _
+              rcases Nat.eq_zero_or_pos m with rfl | hm_pos
+              · simp
+              · have hsub1 : m + 1 - 1 = m := Nat.add_sub_cancel m 1
+                rw [hsub1]
+                have h1 := ih hm_pos
+                have hmon_m : ((Polynomial.X - Polynomial.C α₀) ^ m).Monic :=
+                  (Polynomial.monic_X_sub_C α₀).pow m
+                have hdeg_m : ((Polynomial.X - Polynomial.C α₀) ^ m).natDegree = m := by
+                  rw [Polynomial.natDegree_pow, Polynomial.natDegree_X_sub_C, mul_one]
+                have hcm : ((Polynomial.X - Polynomial.C α₀) ^ m).coeff m = 1 := by
+                  rw [← hmon_m.coeff_natDegree]; congr 1; exact hdeg_m.symm
+                have hm_idx : m - 1 + 1 = m := Nat.sub_add_cancel hm_pos
+                rw [pow_succ, mul_sub, Polynomial.coeff_sub]
+                have hx1 : ((Polynomial.X - Polynomial.C α₀) ^ m * Polynomial.X).coeff m =
+                    -(m : L₀) * α₀ := by
+                  conv_lhs => arg 2; rw [← hm_idx]
+                  rw [Polynomial.coeff_mul_X, h1]
+                have hc1 : ((Polynomial.X - Polynomial.C α₀) ^ m * Polynomial.C α₀).coeff m = α₀ := by
+                  rw [Polynomial.coeff_mul_C, hcm, one_mul]
+                rw [hx1, hc1, Nat.cast_add, Nat.cast_one]
+                ring
+          have hcoeff_pow := hcoeff_pow_gen d hd_ge1
+          have hcoeff_map : (g.map (algebraMap K L₀)).coeff (d - 1) =
+              algebraMap K L₀ (g.coeff (d - 1)) := Polynomial.coeff_map _ _
+          rw [heq_pow, hcoeff_pow] at hcoeff_map
+          have hdK_ne : (d : K) ≠ 0 := by
+            intro hd0
+            have hq_dvd : q ∣ d := (CharP.cast_eq_zero_iff K q d).mp hd0
+            exact not_lt_of_ge (Nat.le_of_dvd hd_ge1 hq_dvd) hd_lt
+          let c_cand : K := -(g.coeff (d - 1)) / (d : K)
+          have hc_eq_α₀ : algebraMap K L₀ c_cand = α₀ := by
+            have hdL_ne : (d : L₀) ≠ 0 := by
+              simpa using (map_ne_zero (algebraMap K L₀)).mpr hdK_ne
+            simp only [c_cand, map_div₀, map_neg, ← hcoeff_map, map_natCast]
+            field_simp
+          have hc_pow : c_cand ^ q = θ :=
+            (algebraMap K L₀).injective (by rw [map_pow, hc_eq_α₀, hα₀])
+          exact hno ⟨c_cand, hc_pow⟩
+    have hadj_fact : ∀ [Fact (Irreducible f)],
+        IsGarlingSplittingFieldExtension K (AdjoinRoot f) f ∧
+        Module.finrank K (AdjoinRoot f) = q := by
+      intro _
+      let rAdj : AdjoinRoot f := AdjoinRoot.root f
+      have hrAdj_pow : rAdj ^ q = algebraMap K (AdjoinRoot f) θ := by
+        have hev : Polynomial.aeval rAdj f = 0 :=
+          (AdjoinRoot.aeval_eq f).trans AdjoinRoot.mk_self
+        rw [map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, sub_eq_zero] at hev
+        exact hev
+      have hsf_adj : IsGarlingSplittingFieldExtension K (AdjoinRoot f) f := by
+        refine ⟨⟨q, 1, fun _ => rAdj, ?_⟩, ?_⟩
+        · rw [GarlingSplitsExplicit, map_one, Polynomial.C_1, one_mul, Finset.prod_const,
+            Finset.card_fin]
+          exact char_q_X_pow_sub_C_fac hq hchar θ rAdj hrAdj_pow
+        · intro M hM hspM
+          have _ : CharP M q := charP_of_injective_algebraMap (algebraMap K M).injective q
+          have hsp_ml := (garlingSplitsOver_iff_splits K M f).mp hspM
+          have hcr : (f.map (algebraMap K M)).roots.card = q := by
+            rw [← Polynomial.Splits.natDegree_eq_card_roots hsp_ml,
+              Polynomial.natDegree_map_eq_of_injective (algebraMap K M).injective, hf_deg]
+          have hne_m : (f.map (algebraMap K M)).roots ≠ 0 := fun h0 =>
+            hq.ne_zero (by rw [h0] at hcr; exact hcr.symm)
+          obtain ⟨βM, hβM⟩ := Multiset.exists_mem_of_ne_zero hne_m
+          rw [Polynomial.mem_roots (Polynomial.map_ne_zero hf_monic.ne_zero),
+            Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def,
+            map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, sub_eq_zero] at hβM
+          have hsub0 : ((βM : AdjoinRoot f) - rAdj) ^ q = 0 := by
+            have _ : CharP (AdjoinRoot f) q :=
+              charP_of_injective_algebraMap (algebraMap K (AdjoinRoot f)).injective q
+            rw [sub_pow_char]
+            have hb_pow : (βM : AdjoinRoot f) ^ q = algebraMap K (AdjoinRoot f) θ := by
+              simpa using congrArg (algebraMap M (AdjoinRoot f)) hβM
+            rw [hb_pow, hrAdj_pow, sub_self]
+          have hr_in_M : rAdj ∈ M := by
+            have heq : (βM : AdjoinRoot f) = rAdj := sub_eq_zero.mp (eq_zero_of_pow_eq_zero hsub0)
+            exact heq ▸ βM.2
+          have htop_M : M = ⊤ := by
+            have hp_mem : ∀ p : K[X], Polynomial.aeval rAdj p ∈ M := by
+              intro p
+              induction p using Polynomial.induction_on' with
+              | add p₁ p₂ hp₁ hp₂ => rw [map_add]; exact add_mem hp₁ hp₂
+              | monomial k a =>
+                rw [Polynomial.aeval_monomial]
+                exact mul_mem (M.algebraMap_mem a) (pow_mem hr_in_M k)
+            rw [eq_top_iff]
+            intro x _
+            induction x using AdjoinRoot.induction_on with | ih p =>
+            rw [← AdjoinRoot.aeval_eq]
+            exact hp_mem p
+          exact hM htop_M
+      have hfin_adj : Module.finrank K (AdjoinRoot f) = q := by
+        rw [PowerBasis.finrank (AdjoinRoot.powerBasis hf_monic.ne_zero),
+          AdjoinRoot.powerBasis_dim, hf_deg]
+      exact ⟨hsf_adj, hfin_adj⟩
+    refine ⟨hf_irr, fun [_] => hadj_fact, fun L _ _ hsfL => ?_⟩
+    have : Fact (Irreducible f) := ⟨hf_irr⟩
+    obtain ⟨hsf_adj, hfin_adj⟩ := hadj_fact
     obtain ⟨e⟩ := splitting_field_unique_up_to_algEquiv hsf_adj hsfL
+    have _ : FiniteDimensional K (AdjoinRoot f) := (AdjoinRoot.powerBasis hf_monic.ne_zero).finite
+    have _ : FiniteDimensional K L := Module.Finite.equiv e.toLinearEquiv
     have hfinL : Module.finrank K L = q := by
       rw [← e.toLinearEquiv.finrank_eq, hfin_adj]
     exact ⟨hfinL, by rw [extDegree_eq_finrank K L, hfinL]⟩
   exact ⟨hpart1, hpart2, hpart3⟩
+
+/-! ## §16.3 A sufficient condition (printed pp. 125–128, PDF pp. 133–136) -/
+
+/-- **Inline prose definition** (§16.3, printed p. 125 / PDF p. 133):
+*"Suppose that `G` is a group and that `K` is a field. A `(`K`-valued) character` on `G` is a
+homomorphism of `G` into the multiplicative group `K*` of non-zero elements of `K`."* -/
+abbrev GarlingCharacter (G : Type u) (K : Type v) [Group G] [Field K] : Type (max u v) :=
+  G →* Kˣ
+
+/-- Viewing a `K`-valued character on `G` as a `K`-valued function `G → K` inside the `K`-vector
+space `G → K` (printed p. 125). -/
+def GarlingCharacter.toFunK {G : Type u} {K : Type v} [Group G] [Field K]
+    (γ : GarlingCharacter G K) : G → K :=
+  fun g => (γ g : K)
+
+/-- Distinct characters determine distinct `K`-valued functions on `G`. -/
+theorem GarlingCharacter.toFunK_injective {G : Type u} {K : Type v} [Group G] [Field K] :
+    Function.Injective (GarlingCharacter.toFunK (G := G) (K := K)) := by
+  intro γ₁ γ₂ h
+  ext g
+  exact congrFun h g
+
+/-- **Theorem 16.3** (§16.3, printed p. 125 / PDF p. 133; proof p. 126):
+*"Suppose that `G` is a group, that `K` is a field and that `S` is a set of `K`-valued characters
+on `G`. Then `S` is linearly independent over `K`."*
+
+Proved in both Garling's Chapter 1 subset sense (`IsLinearlyIndependent K (toFunK '' S)`) and
+Mathlib's indexed sense (`LinearIndependent K (fun γ : S => γ.1.toFunK)`). -/
+theorem theorem_16_3 {G : Type u} {K : Type v} [Group G] [Field K]
+    (S : Set (GarlingCharacter G K)) :
+    IsLinearlyIndependent K (GarlingCharacter.toFunK '' S) ∧
+    LinearIndependent K (fun γ : S => γ.1.toFunK) := by
+  let toMH : GarlingCharacter G K → (G →* K) := fun γ => (Units.coeHom K).comp γ
+  have htoMH_inj : Function.Injective toMH := by
+    intro γ₁ γ₂ h
+    ext g
+    exact DFunLike.congr_fun h g
+  have hLI_all : LinearIndependent K (fun γ : GarlingCharacter G K => γ.toFunK) :=
+    (linearIndependent_monoidHom G K).comp toMH htoMH_inj
+  have hLI_S : LinearIndependent K (fun γ : S => γ.1.toFunK) :=
+    hLI_all.comp Subtype.val Subtype.val_injective
+  have hG_LI : IsLinearlyIndependent K (GarlingCharacter.toFunK '' S) := by
+    rw [isLinearlyIndependent_iff, LinearIndepOn, linearIndependent_iff']
+    intro s c hsum f hf
+    let g_idx : (GarlingCharacter.toFunK '' S) → S := fun x =>
+      ⟨x.2.choose, x.2.choose_spec.1⟩
+    have hg_spec : ∀ x : GarlingCharacter.toFunK '' S, (g_idx x).1.toFunK = x.1 :=
+      fun x => x.2.choose_spec.2
+    have hg_inj : Function.Injective g_idx := by
+      intro x y hxy
+      ext1
+      rw [← hg_spec x, ← hg_spec y, hxy]
+    have hLI_img : LinearIndependent K (fun x : GarlingCharacter.toFunK '' S => x.1) := by
+      have hcomp := hLI_S.comp g_idx hg_inj
+      convert hcomp using 1
+      funext x
+      exact (hg_spec x).symm
+    exact (linearIndependent_iff'.mp hLI_img) s c hsum f hf
+  exact ⟨hG_LI, hLI_S⟩
+
+/-- **§16.3 Prose Bridge** (printed p. 126 / PDF p. 134):
+*"If `τ` is an automorphism of a field `K`, then the restriction of `τ` to `K*` is a `K`-valued
+character on `K*`."* -/
+def garlingAutCharacter {K : Type u} [Field K] (τ : GarlingAut K) : GarlingCharacter Kˣ K :=
+  Units.map τ.toRingHom.toMonoidHom
+
+theorem garlingAutCharacter_apply {K : Type u} [Field K] (τ : GarlingAut K) (u : Kˣ) :
+    (garlingAutCharacter τ).toFunK u = τ (u : K) := rfl
+
+theorem garlingAutCharacter_injective {K : Type u} [Field K] :
+    Function.Injective (garlingAutCharacter (K := K)) := by
+  intro τ₁ τ₂ h
+  ext x
+  by_cases hx : x = 0
+  · subst hx; simp
+  · have hu := congrArg (fun γ : GarlingCharacter Kˣ K => γ.toFunK (Units.mk0 x hx)) h
+    simpa [garlingAutCharacter_apply] using hu
+
+/-- Helper: given finitely many distinct field automorphisms `τ : Fin n → GarlingAut K` and
+coefficients `c : Fin n → K` with at least one `c i₀ ≠ 0`, there exists `k ∈ Kˣ` (hence `k ∈ K`,
+`k ≠ 0`) such that `∑ i, c i * τ i k ≠ 0`. -/
+theorem exists_ne_zero_sum_aut_apply {K : Type u} [Field K] {n : ℕ}
+    (τ : Fin n → GarlingAut K) (hτ : Function.Injective τ)
+    (c : Fin n → K) (hc : ∃ i : Fin n, c i ≠ 0) :
+    ∃ k : K, k ≠ 0 ∧ ∑ i : Fin n, c i * τ i k ≠ 0 := by
+  by_contra hno
+  push Not at hno
+  have hLI_all : LinearIndependent K (fun γ : GarlingCharacter Kˣ K => γ.toFunK) := by
+    have h := (theorem_16_3 (Set.univ : Set (GarlingCharacter Kˣ K))).2
+    exact h.comp (fun γ => ⟨γ, Set.mem_univ γ⟩) (fun _ _ hxy => congrArg Subtype.val hxy)
+  have hLI_τ : LinearIndependent K (fun i : Fin n => (garlingAutCharacter (τ i)).toFunK) :=
+    hLI_all.comp (fun i => garlingAutCharacter (τ i)) (garlingAutCharacter_injective.comp hτ)
+  have hsum0 : ∑ i : Fin n, c i • (garlingAutCharacter (τ i)).toFunK = 0 := by
+    ext u
+    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply,
+      garlingAutCharacter_apply]
+    exact hno (u : K) u.ne_zero
+  rcases hc with ⟨i₀, hi₀⟩
+  exact hi₀ ((linearIndependent_iff'.mp hLI_τ) Finset.univ c hsum0 i₀ (Finset.mem_univ i₀))
+
+/-- **Empty-list counterexample to unguarded `Corollary` [to Theorem 16.3]** (`QUEUE.md` Flag 5):
+For `n = 0`, the empty sum is identically `0` for every `k ∈ K`, confirming that Garling's
+`τ₁, ..., τ_n` implicitly assumes a non-empty list `1 ≤ n`. -/
+theorem corollary_to_theorem_16_3_empty_counterexample (K : Type u) [Field K]
+    (τ : Fin 0 → GarlingAut K) (c : Fin 0 → K) :
+    Function.Injective τ ∧ (∀ i : Fin 0, c i ≠ 0) ∧
+    ¬ ∃ k : K, ∑ i : Fin 0, c i * τ i k ≠ 0 := by
+  exact ⟨fun i => i.elim0, fun i => i.elim0, by simp⟩
+
+/-- **Corollary** [to **Theorem 16.3**] (§16.3, printed p. 126 / PDF p. 134; non-empty list guard
+`1 ≤ n` made explicit per `QUEUE.md` Flag 5):
+*"Suppose that `τ₁, ..., τ_n` are distinct automorphisms of a field `K` and that `k₁, ..., k_n` are
+non-zero elements of `K`. Then there exists `k` in `K` such that
+`k₁ τ₁(k) + ... + k_n τ_n(k) ≠ 0`."* -/
+theorem corollary_to_theorem_16_3 {K : Type u} [Field K] {n : ℕ} (hn : 1 ≤ n)
+    (τ : Fin n → GarlingAut K) (hτ : Function.Injective τ)
+    (c : Fin n → K) (hc : ∀ i : Fin n, c i ≠ 0) :
+    ∃ k : K, ∑ i : Fin n, c i * τ i k ≠ 0 := by
+  obtain ⟨k, _, hk⟩ := exists_ne_zero_sum_aut_apply τ hτ c ⟨⟨0, hn⟩, hc ⟨0, hn⟩⟩
+  exact ⟨k, hk⟩
+
+/-- Convenience wrapper for distinct `K`-automorphisms `σ : Fin n → (L ≃ₐ[K] L)`. -/
+theorem exists_apply_sum_ne_zero_of_algEquiv {K : Type u} {L : Type v}
+    [Field K] [Field L] [Algebra K L] {n : ℕ}
+    (σ : Fin n → (L ≃ₐ[K] L)) (hσ : Function.Injective σ)
+    (c : Fin n → L) (hc : ∃ i : Fin n, c i ≠ 0) :
+    ∃ x : L, ∑ i : Fin n, c i * σ i x ≠ 0 := by
+  have hinj : Function.Injective (fun i : Fin n => (σ i).toRingEquiv) := by
+    intro i j hij
+    apply hσ
+    ext x
+    exact RingEquiv.congr_fun hij x
+  obtain ⟨x, _, hx⟩ := exists_ne_zero_sum_aut_apply (fun i => (σ i).toRingEquiv) hinj c hc
+  exact ⟨x, hx⟩
+
+/-- **Inline prose definition** (§16.3, printed p. 126 / PDF p. 134):
+*"We say that an extension `L : K` is `cyclic` if it is a Galois extension and `Γ(L : K)` is a
+cyclic group."*
+*(Recall that by §10.3 p. 84, `IsGarlingGaloisExtension K L` already bundles `[FiniteDimensional K L]`
+and `[IsGalois K L]`.)* -/
+def IsGarlingCyclicExtension (K : Type u) (L : Type v) [Field K] [Field L] [Algebra K L] : Prop :=
+  IsGarlingGaloisExtension K L ∧ IsCyclic (GarlingGaloisGroup K L)
+
+/-- Helper: an element fixed by every `σ : L ≃ₐ[K] L` in a finite Galois extension `L : K` lies in
+the base field `K` (`Set.range (algebraMap K L)`). -/
+theorem mem_range_algebraMap_of_forall_gal_fix {K : Type u} {L : Type v}
+    [Field K] [Field L] [Algebra K L] [FiniteDimensional K L] [IsGalois K L]
+    {x : L} (hfix : ∀ σ : L ≃ₐ[K] L, σ x = x) :
+    ∃ θ : K, algebraMap K L θ = x := by
+  have hx_mem : x ∈ IntermediateField.fixedField (⊤ : Subgroup (L ≃ₐ[K] L)) := by
+    rw [IntermediateField.mem_fixedField_iff]
+    intro σ _
+    exact hfix σ
+  have htop_eq : IntermediateField.fixedField (⊤ : Subgroup (L ≃ₐ[K] L)) = ⊥ := by
+    have h := IsGalois.fixedField_fixingSubgroup (K := (⊥ : IntermediateField K L))
+    rwa [IntermediateField.fixingSubgroup_bot] at h
+  rw [htop_eq, IntermediateField.mem_bot] at hx_mem
+  exact hx_mem
+
+/-- Helper: if `σ` generates `L ≃ₐ[K] L` and `σ x = x`, then every `g : L ≃ₐ[K] L` fixes `x`. -/
+theorem forall_gal_fix_of_gen_fix {K : Type u} {L : Type v}
+    [Field K] [Field L] [Algebra K L]
+    {σ : L ≃ₐ[K] L} (hgen : Subgroup.zpowers σ = ⊤) {x : L} (hσx : σ x = x) :
+    ∀ g : L ≃ₐ[K] L, g x = x := by
+  let S : Subgroup (L ≃ₐ[K] L) :=
+    { carrier := {g : L ≃ₐ[K] L | g x = x}
+      mul_mem' := fun {a b} ha hb => by change (a * b) x = x; rw [AlgEquiv.mul_apply, hb, ha]
+      one_mem' := rfl
+      inv_mem' := fun {a} ha => by
+        change a⁻¹ x = x
+        exact a.injective (by rw [← AlgEquiv.mul_apply, mul_inv_cancel, AlgEquiv.one_apply, ha]) }
+  have hle : (⊤ : Subgroup (L ≃ₐ[K] L)) ≤ S := by
+    rw [← hgen, Subgroup.zpowers_le]
+    exact hσx
+  intro g
+  exact hle (Subgroup.mem_top g)
+
+/-- **Theorem 16.4** (§16.3, printed p. 126 / PDF p. 134; proof pp. 126–127):
+*"Suppose that `L : K` is a cyclic extension of degree `n`, that `char K` does not divide `n` and
+that `K` contains a primitive `n`th root of unity, `ω` say. Then there exists `θ` in `K` such that
+`x^n - θ` is irreducible over `K` and `L : K` is a splitting field extension for `x^n - θ`. If `β`
+is a root of `x^n - θ` in `L`, then `L = K(β)`."*
+
+Proved literally for all `n` (including `n = 1`) following Garling's proof via the Corollary to
+Theorem 16.3. -/
+theorem theorem_16_4 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {n : ℕ} (hcyc : IsGarlingCyclicExtension K L) (hdeg : Module.finrank K L = n)
+    (hchar : ¬ (ringChar K ∣ n)) {ω : K} (hω : IsPrimitiveRoot ω n) :
+    ∃ θ : K,
+      Irreducible (Polynomial.X ^ n - Polynomial.C θ : K[X]) ∧
+      IsGarlingSplittingFieldExtension K L (Polynomial.X ^ n - Polynomial.C θ) ∧
+      ∀ β : L, Polynomial.aeval β (Polynomial.X ^ n - Polynomial.C θ) = 0 →
+        K⟮β⟯ = ⊤ := by
+  obtain ⟨hn, _⟩ := pos_and_natCast_ne_zero_of_not_ringChar_dvd hchar
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hcyc.1 |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hcyc.1 |>.2
+  have _ : IsCyclic (L ≃ₐ[K] L) := hcyc.2
+  have hcardG : Nat.card (L ≃ₐ[K] L) = n := by
+    rw [IsGalois.card_aut_eq_finrank K L, hdeg]
+  obtain ⟨σ, hσ_gen⟩ := IsCyclic.exists_generator (α := L ≃ₐ[K] L)
+  have hσ_zpow : Subgroup.zpowers σ = ⊤ := by
+    ext g; simp only [Subgroup.mem_zpowers_iff, Subgroup.mem_top, iff_true]; exact hσ_gen g
+  have hσ_ord : orderOf σ = n := by
+    rw [← Nat.card_zpowers, hσ_zpow, Nat.card_congr Subgroup.topEquiv.toEquiv, hcardG]
+  have hσ_pow_inj : Function.Injective (fun k : Fin n => σ ^ (k : ℕ)) := by
+    intro a b hab
+    have hmod : (a : ℕ) ≡ (b : ℕ) [MOD n] := by
+      have h1 := pow_eq_pow_iff_modEq.mp hab
+      rwa [hσ_ord] at h1
+    rw [Nat.ModEq, Nat.mod_eq_of_lt a.isLt, Nat.mod_eq_of_lt b.isLt] at hmod
+    exact Fin.ext hmod
+  let ωL : L := algebraMap K L ω
+  have hωL : IsPrimitiveRoot ωL n := hω.map_of_injective (algebraMap K L).injective
+  have hωL_ne : ωL ≠ 0 := hωL.ne_zero (Nat.ne_of_gt hn)
+  have hσ_ωL : σ ωL = ωL := σ.commutes ω
+  -- Apply Corollary to Theorem 16.3 to {1, σ, ..., σ^{n-1}} with coefficients 1, ωL, ..., ωL^{n-1}
+  obtain ⟨α, hβ_ne⟩ := exists_apply_sum_ne_zero_of_algEquiv
+    (fun k : Fin n => σ ^ (k : ℕ)) hσ_pow_inj
+    (fun k : Fin n => ωL ^ (k : ℕ))
+    ⟨⟨0, hn⟩, by simp⟩
+  let β : L := ∑ k : Fin n, ωL ^ (k : ℕ) * (σ ^ (k : ℕ)) α
+  change β ≠ 0 at hβ_ne
+  -- Compute ωL * σ(β) = β by cyclic shift on Fin n
+  have hωL_mul_σβ : ωL * σ β = β := by
+    have h1 : ωL * σ β = ∑ k : Fin n, ωL ^ ((k : ℕ) + 1) * (σ ^ ((k : ℕ) + 1)) α := by
+      simp only [β, map_sum, map_mul, map_pow, hσ_ωL, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      rw [← mul_assoc, ← pow_succ' ωL, ← AlgEquiv.mul_apply, ← pow_succ']
+    rw [h1]
+    have : NeZero n := ⟨Nat.ne_of_gt hn⟩
+    let shift : Fin n ≃ Fin n := Equiv.addRight (1 : Fin n)
+    rw [← Equiv.sum_comp shift.symm]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    have hk_eq : (shift.symm k : ℕ) + 1 = if (k : ℕ) = 0 then n else (k : ℕ) := by
+      have hsymm : shift.symm k = k - 1 := by simp [shift, sub_eq_add_neg]
+      rw [hsymm]
+      rcases eq_or_lt_of_le hn with rfl | hgt1
+      · simp
+      · have h1val : (1 : Fin n).val = 1 := by
+          change 1 % n = 1
+          exact Nat.mod_eq_of_lt hgt1
+        have hsub_val : ((k - 1 : Fin n) : ℕ) = (n - 1 + (k : ℕ)) % n := by
+          have h0 : ((k - 1 : Fin n) : ℕ) = (n - (1 : Fin n).val + (k : ℕ)) % n := by
+            rw [Fin.sub_def]
+          rw [h0, h1val]
+        rw [hsub_val]
+        have hlt : (k : ℕ) < n := k.isLt
+        split_ifs with hk0
+        · rw [hk0, add_zero, Nat.mod_eq_of_lt (by omega)]; omega
+        · have hadd : n - 1 + (k : ℕ) = n + ((k : ℕ) - 1) := by omega
+          rw [hadd, Nat.add_mod_left, Nat.mod_eq_of_lt (by omega)]; omega
+    rw [hk_eq]
+    split_ifs with hk0
+    · rw [hk0, pow_zero, pow_zero, hωL.pow_eq_one,
+        show σ ^ n = 1 from hσ_ord ▸ pow_orderOf_eq_one σ]
+    · rfl
+  have hσβ : σ β = ωL⁻¹ * β := by
+    apply mul_left_cancel₀ hωL_ne
+    rw [hωL_mul_σβ, ← mul_assoc, mul_inv_cancel₀ hωL_ne, one_mul]
+  have hσ_pow_β : ∀ m : ℕ, (σ ^ m) β = (ωL⁻¹) ^ m * β := by
+    intro m
+    induction m with
+    | zero => simp
+    | succ m ih =>
+      rw [pow_succ', AlgEquiv.mul_apply, ih, map_mul, map_pow, map_inv₀, hσ_ωL, hσβ,
+        ← mul_assoc, ← pow_succ]
+  have hσ_βn : σ (β ^ n) = β ^ n := by
+    rw [map_pow, hσβ, mul_pow, inv_pow, hωL.pow_eq_one, inv_one, one_mul]
+  obtain ⟨θ, hθ_eq⟩ :=
+    mem_range_algebraMap_of_forall_gal_fix (forall_gal_fix_of_gen_fix hσ_zpow hσ_βn)
+  -- Show K⟮β⟯ = ⊤ by exhibiting n distinct roots of minpoly K β in L
+  have hβ_int : IsIntegral K β := Algebra.IsIntegral.isIntegral β
+  have hmin_dvd : minpoly K β ∣ Polynomial.X ^ n - Polynomial.C θ := by
+    refine minpoly.dvd K β ?_
+    rw [map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, hθ_eq, sub_self]
+  have hωL_inv : IsPrimitiveRoot ωL⁻¹ n := hωL.inv
+  have hroots_inj : Function.Injective (fun k : Fin n => (σ ^ (k : ℕ)) β) := by
+    intro a b hab
+    dsimp only at hab
+    rw [hσ_pow_β, hσ_pow_β] at hab
+    exact Fin.ext (hωL_inv.pow_inj a.isLt b.isLt (mul_right_cancel₀ hβ_ne hab))
+  have hmin_deg_ge : n ≤ (minpoly K β).natDegree := by
+    let S : Finset L := Finset.univ.image (fun k : Fin n => (σ ^ (k : ℕ)) β)
+    have hS_sub : S ⊆ ((minpoly K β).map (algebraMap K L)).roots.toFinset := by
+      intro x hx
+      rw [Finset.mem_image] at hx
+      rcases hx with ⟨k, _, rfl⟩
+      rw [Multiset.mem_toFinset, Polynomial.mem_roots (Polynomial.map_ne_zero (minpoly.ne_zero hβ_int)),
+        Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def,
+        Polynomial.aeval_algHom_apply, minpoly.aeval, map_zero]
+    have hcard_le : S.card ≤ ((minpoly K β).map (algebraMap K L)).roots.card :=
+      (Finset.card_le_card hS_sub).trans (Multiset.toFinset_card_le _)
+    have hroots_le_deg : ((minpoly K β).map (algebraMap K L)).roots.card ≤ (minpoly K β).natDegree := by
+      have h := Polynomial.card_roots' ((minpoly K β).map (algebraMap K L))
+      rwa [Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective] at h
+    have hS_card : S.card = n := by
+      rw [Finset.card_image_of_injective _ hroots_inj, Finset.card_fin]
+    omega
+  have hmin_eq : minpoly K β = Polynomial.X ^ n - Polynomial.C θ :=
+    (Polynomial.eq_of_monic_of_dvd_of_natDegree_le
+      (minpoly.monic hβ_int)
+      (Polynomial.monic_X_pow_sub_C θ (Nat.ne_of_gt hn))
+      hmin_dvd
+      (by rw [Polynomial.natDegree_X_pow_sub_C]; exact hmin_deg_ge)).symm
+  have hirr : Irreducible (Polynomial.X ^ n - Polynomial.C θ : K[X]) :=
+    hmin_eq ▸ minpoly.irreducible hβ_int
+  have hKβ_top : K⟮β⟯ = ⊤ := by
+    refine IntermediateField.eq_of_le_of_finrank_eq le_top ?_
+    rw [IntermediateField.adjoin.finrank hβ_int, hmin_eq, Polynomial.natDegree_X_pow_sub_C,
+      LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, hdeg]
+  have hsf : IsGarlingSplittingFieldExtension K L (Polynomial.X ^ n - Polynomial.C θ) := by
+    refine ⟨⟨n, 1, fun k => ωL ^ (k : ℕ) * β, ?_⟩, ?_⟩
+    · rw [GarlingSplitsExplicit, map_one, Polynomial.C_1, one_mul,
+        Polynomial.map_sub, Polynomial.map_pow, Polynomial.map_X, Polynomial.map_C, hθ_eq]
+      exact X_pow_sub_C_pow_eq_prod hn hωL β
+    · intro M hM hspM
+      have hsp_ml := (garlingSplitsOver_iff_splits K M _).mp hspM
+      have hcr : ((Polynomial.X ^ n - Polynomial.C θ).map (algebraMap K M)).roots.card = n := by
+        rw [← Polynomial.Splits.natDegree_eq_card_roots hsp_ml,
+          Polynomial.natDegree_map_eq_of_injective (algebraMap K M).injective,
+          Polynomial.natDegree_X_pow_sub_C]
+      have hne_r : ((Polynomial.X ^ n - Polynomial.C θ).map (algebraMap K M)).roots ≠ 0 := by
+        intro h0; rw [h0, Multiset.card_zero] at hcr; omega
+      obtain ⟨γM, hγM⟩ := Multiset.exists_mem_of_ne_zero hne_r
+      rw [Polynomial.mem_roots (Polynomial.map_ne_zero (Polynomial.monic_X_pow_sub_C θ (Nat.ne_of_gt hn)).ne_zero),
+        Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def,
+        map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, sub_eq_zero] at hγM
+      have hγL_pow : (γM : L) ^ n = β ^ n := by
+        rw [← hθ_eq]
+        simpa using congrArg (algebraMap M L) hγM
+      have hratio_pow : ((γM : L) * β⁻¹) ^ n = 1 := by
+        rw [mul_pow, inv_pow, hγL_pow, mul_inv_cancel₀ (pow_ne_zero n hβ_ne)]
+      have : NeZero n := ⟨Nat.ne_of_gt hn⟩
+      obtain ⟨k, _, hk⟩ := hωL.eq_pow_of_pow_eq_one hratio_pow
+      have hβ_eq : β = (ωL ^ k)⁻¹ * (γM : L) := by
+        have h1 : (γM : L) = ωL ^ k * β := by
+          rw [hk, mul_assoc, inv_mul_cancel₀ hβ_ne, mul_one]
+        rw [h1, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero k hωL_ne), one_mul]
+      have hβ_mem_M : β ∈ M := by
+        rw [hβ_eq]
+        exact mul_mem (inv_mem (pow_mem (M.algebraMap_mem ω) k)) γM.2
+      have htop_le : (⊤ : IntermediateField K L) ≤ M := by
+        rw [← hKβ_top, IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]
+        exact hβ_mem_M
+      exact hM (le_antisymm le_top htop_le)
+  refine ⟨θ, hirr, hsf, fun γ hγ => ?_⟩
+  have hγ_int : IsIntegral K γ := Algebra.IsIntegral.isIntegral γ
+  have hmin_γ : minpoly K γ = Polynomial.X ^ n - Polynomial.C θ :=
+    (minpoly.eq_of_irreducible_of_monic hirr hγ (Polynomial.monic_X_pow_sub_C θ (Nat.ne_of_gt hn))).symm
+  refine IntermediateField.eq_of_le_of_finrank_eq le_top ?_
+  rw [IntermediateField.adjoin.finrank hγ_int, hmin_γ, Polynomial.natDegree_X_pow_sub_C,
+    LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, hdeg]
+
+/-- Helper: value of `k - 1` in `Fin n` (for `n ≥ 1`). -/
+private theorem fin_sub_one_val {n : ℕ} [NeZero n] (k : Fin n) :
+    ((k - 1 : Fin n) : ℕ) = if (k : ℕ) = 0 then n - 1 else (k : ℕ) - 1 := by
+  have hn : 1 ≤ n := Nat.pos_of_ne_zero (NeZero.ne n)
+  rcases eq_or_lt_of_le hn with rfl | hgt1
+  · simp
+  · have h1val : (1 : Fin n).val = 1 := by
+      change 1 % n = 1
+      exact Nat.mod_eq_of_lt hgt1
+    have hsub_val : ((k - 1 : Fin n) : ℕ) = (n - 1 + (k : ℕ)) % n := by
+      have h0 : ((k - 1 : Fin n) : ℕ) = (n - (1 : Fin n).val + (k : ℕ)) % n := by
+        rw [Fin.sub_def]
+      rw [h0, h1val]
+    rw [hsub_val]
+    have hlt : (k : ℕ) < n := k.isLt
+    split_ifs with hk0
+    · rw [hk0, add_zero, Nat.mod_eq_of_lt (by omega)]
+    · have hadd : n - 1 + (k : ℕ) = n + ((k : ℕ) - 1) := by omega
+      rw [hadd, Nat.add_mod_left, Nat.mod_eq_of_lt (by omega)]
+
+/-- Helper: if `L : K` is finite, `L` is algebraically closed, and `char K ∤ [L : K]`, then `L : K`
+is a Garling Galois extension (`IsGarlingGaloisExtension K L`). -/
+theorem isGarlingGalois_of_isAlgClosed_of_not_char_dvd_finrank
+    {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsAlgClosed L]
+    (hchar : ¬ (ringChar K ∣ Module.finrank K L)) :
+    IsGarlingGaloisExtension K L := by
+  have hnorm : Normal K L :=
+    { toIsAlgebraic := Algebra.IsAlgebraic.of_finite K L
+      splits' := fun x => IsAlgClosed.splits _ }
+  have hsep : Algebra.IsSeparable K L := by
+    refine ⟨fun x => ?_⟩
+    have hx_int : IsIntegral K x := Algebra.IsIntegral.isIntegral x
+    have hpos : 1 ≤ (minpoly K x).natDegree := minpoly.natDegree_pos hx_int
+    have hdeg_dvd : (minpoly K x).natDegree ∣ Module.finrank K L := by
+      have hm := Module.finrank_mul_finrank K K⟮x⟯ L
+      rw [IntermediateField.adjoin.finrank hx_int] at hm
+      exact ⟨Module.finrank K⟮x⟯ L, hm.symm⟩
+    have hndvd_deg : ¬ (ringChar K ∣ (minpoly K x).natDegree) :=
+      fun hd => hchar (hd.trans hdeg_dvd)
+    have hcast_ne : ((minpoly K x).natDegree : K) ≠ 0 :=
+      (pos_and_natCast_ne_zero_of_not_ringChar_dvd hndvd_deg).2
+    have hderiv_ne : (minpoly K x).derivative ≠ 0 := by
+      intro hd0
+      have hc := congrArg (fun p : K[X] => p.coeff ((minpoly K x).natDegree - 1)) hd0
+      rw [Polynomial.coeff_derivative, Polynomial.coeff_zero] at hc
+      have hsub : (minpoly K x).natDegree - 1 + 1 = (minpoly K x).natDegree :=
+        Nat.sub_add_cancel hpos
+      rw [hsub, (minpoly.monic hx_int).coeff_natDegree, one_mul] at hc
+      have hcast_eq : (((minpoly K x).natDegree - 1 : ℕ) : K) + 1 = ((minpoly K x).natDegree : K) := by
+        calc (((minpoly K x).natDegree - 1 : ℕ) : K) + 1
+            = (((minpoly K x).natDegree - 1 : ℕ) : K) + ((1 : ℕ) : K) := by simp
+          _ = (((minpoly K x).natDegree - 1 + 1 : ℕ) : K) := (Nat.cast_add _ 1).symm
+          _ = ((minpoly K x).natDegree : K) := by rw [hsub]
+      rw [hcast_eq] at hc
+      exact hcast_ne hc
+    rcases (minpoly.irreducible hx_int).isCoprime_or_dvd (minpoly K x).derivative with hcop | hdvd
+    · exact hcop
+    · exfalso
+      have hle := Polynomial.natDegree_le_of_dvd hdvd hderiv_ne
+      have hlt := Polynomial.natDegree_derivative_lt (by omega : (minpoly K x).natDegree ≠ 0)
+      omega
+  rw [isGarlingGaloisExtension_iff]
+  exact ⟨inferInstance, @IsGalois.mk K _ L _ _ hsep hnorm⟩
+
+/-- Helper: an algebraically closed field `L` with `¬ (char L ∣ n)` contains a primitive `n`th root
+of unity. -/
+theorem exists_isPrimitiveRoot_of_isAlgClosed {L : Type u} [Field L] [IsAlgClosed L]
+    {n : ℕ} (hchar : ¬ (ringChar L ∣ n)) :
+    ∃ ω : L, IsPrimitiveRoot ω n := by
+  have hsp : GarlingSplitsOver L L (Polynomial.X ^ n - Polynomial.C (1 : L)) :=
+    (garlingSplitsOver_iff_splits L L _).mpr (IsAlgClosed.splits _)
+  have hsf : IsGarlingSplittingFieldExtension L L (Polynomial.X ^ n - Polynomial.C (1 : L)) :=
+    ⟨hsp, fun M hM _ => hM (Subsingleton.elim M ⊤)⟩
+  exact (section_16_1_root_factorization one_ne_zero hchar hsf).2.2.1
+
+/-- Helper: if a field `K` contains a primitive `m`th root of unity (`1 ≤ m`), then the `m`th
+cyclotomic polynomial `Φ_m` (`Polynomial.cyclotomic m K`) splits over `K`. -/
+theorem garlingSplitsOver_cyclotomic_of_isPrimitiveRoot {K : Type u} [Field K]
+    {m : ℕ} (hm : 1 ≤ m) {ω : K} (hω : IsPrimitiveRoot ω m) :
+    GarlingSplitsOver K K (Polynomial.cyclotomic m K) := by
+  rw [garlingSplitsOver_iff_splits, Algebra.algebraMap_self, Polynomial.map_id]
+  have hfac : (Polynomial.X ^ m - 1 : K[X]) =
+      ∏ k : Fin m, (Polynomial.X - Polynomial.C (ω ^ (k : ℕ))) := by
+    simpa [one_pow] using X_pow_sub_C_pow_eq_prod hm hω (1 : K)
+  have hsp_all : (Polynomial.X ^ m - 1 : K[X]).Splits := by
+    rw [hfac]
+    have hsp_s : ∀ s : Finset (Fin m),
+        (∏ k ∈ s, (Polynomial.X - Polynomial.C (ω ^ (k : ℕ)))).Splits := by
+      intro s
+      induction s using Finset.induction_on with
+      | empty => simp [Polynomial.Splits.one]
+      | insert a s ha ih =>
+        rw [Finset.prod_insert ha]
+        exact (Polynomial.Splits.X_sub_C _).mul ih
+    exact hsp_s Finset.univ
+  have hdvd : Polynomial.cyclotomic m K ∣ Polynomial.X ^ m - 1 := by
+    rw [← Polynomial.prod_cyclotomic_eq_X_pow_sub_one hm K]
+    exact Finset.dvd_prod_of_mem _ (Nat.mem_divisors_self m (Nat.ne_of_gt hm))
+  have hne : (Polynomial.X ^ m - 1 : K[X]) ≠ 0 := by
+    simpa using (Polynomial.monic_X_pow_sub_C (1 : K) (Nat.ne_of_gt hm)).ne_zero
+  exact Polynomial.Splits.of_dvd hsp_all hne hdvd
+
+/-- **Exercise 16.6 (i)** (§16.3, printed p. 127 / PDF p. 135):
+Under `[L : K] = p` prime, `p ≠ char K`, `L` algebraically closed, and `p > 2`, both `Φ_p` and
+`Φ_{p²}` split over `K` (and `K` contains primitive `p`th and `p²`th roots of unity). -/
+theorem exercise_16_6_i {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsAlgClosed L] {p : ℕ} (hp : Nat.Prime p) (hp2 : 2 < p)
+    (hdeg : Module.finrank K L = p) (hchar : ringChar K ≠ p) :
+    (∃ ω : K, IsPrimitiveRoot ω p) ∧
+    (∃ ζ : K, IsPrimitiveRoot ζ (p ^ 2)) ∧
+    GarlingSplitsOver K K (Polynomial.cyclotomic p K) ∧
+    GarlingSplitsOver K K (Polynomial.cyclotomic (p ^ 2) K) := by
+  have hcharL : ringChar L = ringChar K :=
+    (ringChar.eq_iff.mpr (charP_of_injective_algebraMap (algebraMap K L).injective (ringChar K)))
+  have hndvd_p : ¬ (ringChar K ∣ p) := by
+    intro hd
+    rcases CharP.char_is_prime_or_zero K (ringChar K) with hq | h0
+    · exact hchar ((Nat.prime_dvd_prime_iff_eq hq hp).mp hd)
+    · rw [h0] at hd; exact hp.ne_zero (zero_dvd_iff.mp hd)
+  have hndvd_p2 : ¬ (ringChar L ∣ p ^ 2) := by
+    rw [hcharL]
+    intro hd
+    rcases CharP.char_is_prime_or_zero K (ringChar K) with hq | h0
+    · exact hndvd_p (hq.dvd_of_dvd_pow hd)
+    · rw [h0] at hd; exact (pow_ne_zero 2 hp.ne_zero) (zero_dvd_iff.mp hd)
+  have hgal : IsGarlingGaloisExtension K L :=
+    isGarlingGalois_of_isAlgClosed_of_not_char_dvd_finrank (hdeg.symm ▸ hndvd_p)
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  obtain ⟨ζL, hζL⟩ := exists_isPrimitiveRoot_of_isAlgClosed (L := L) hndvd_p2
+  have hζL_ne : ζL ≠ 0 := hζL.ne_zero (pow_ne_zero 2 hp.ne_zero)
+  let ωL : L := ζL ^ p
+  have hωL : IsPrimitiveRoot ωL p := by
+    have hdiv : p ^ 2 / p = p := by rw [sq, Nat.mul_div_cancel _ hp.pos]
+    exact hdiv ▸ hζL.pow_of_dvd hp.ne_zero (dvd_pow_self p (by decide : 2 ≠ 0))
+  -- Step 1: ωL ∈ K since deg(minpoly K ωL) ≤ deg(Φ_p) = p - 1 < p and divides [L : K] = p
+  have hωL_in_K : ∃ ω : K, algebraMap K L ω = ωL := by
+    have hωL_int : IsIntegral K ωL := Algebra.IsIntegral.isIntegral ωL
+    have hdvd_cyc : minpoly K ωL ∣ Polynomial.cyclotomic p K := by
+      refine minpoly.dvd K ωL ?_
+      rw [Polynomial.aeval_def, ← Polynomial.eval_map, Polynomial.map_cyclotomic]
+      exact hωL.isRoot_cyclotomic hp.pos
+    have hle_deg : (minpoly K ωL).natDegree ≤ p - 1 := by
+      have h1 := Polynomial.natDegree_le_of_dvd hdvd_cyc (Polynomial.cyclotomic_ne_zero p K)
+      rwa [Polynomial.natDegree_cyclotomic, Nat.totient_prime hp] at h1
+    have hdvd_p : Module.finrank K K⟮ωL⟯ ∣ p := by
+      rw [← hdeg]
+      exact ⟨Module.finrank K⟮ωL⟯ L, (Module.finrank_mul_finrank K K⟮ωL⟯ L).symm⟩
+    have hfin1 : Module.finrank K K⟮ωL⟯ = 1 := by
+      rw [IntermediateField.adjoin.finrank hωL_int] at hdvd_p ⊢
+      rcases hp.eq_one_or_self_of_dvd _ hdvd_p with h1 | hp_eq
+      · exact h1
+      · omega
+    have hbot : (⊥ : IntermediateField K L) = K⟮ωL⟯ :=
+      IntermediateField.eq_of_le_of_finrank_eq bot_le (by rw [IntermediateField.finrank_bot, hfin1])
+    exact IntermediateField.mem_bot.mp (hbot ▸ IntermediateField.mem_adjoin_simple_self K ωL)
+  obtain ⟨ωK, hωK_eq⟩ := hωL_in_K
+  have hωK : IsPrimitiveRoot ωK p := by
+    rw [IsPrimitiveRoot.iff_def]
+    refine ⟨(algebraMap K L).injective (by rw [map_pow, hωK_eq, hωL.pow_eq_one, map_one]),
+      fun l hl => hωL.dvd_of_pow_eq_one l (by rw [← hωK_eq, ← map_pow, hl, map_one])⟩
+  -- Step 2: ζL ∈ K using η ∈ L with η^p = ζL and odd-prime cancellation p ∣ p(p-1)/2
+  have hζL_in_K : ∃ ζ : K, algebraMap K L ζ = ζL := by
+    by_contra hnotK
+    have hζ_not_bot : ζL ∉ (⊥ : IntermediateField K L) := fun h =>
+      hnotK (IntermediateField.mem_bot.mp h)
+    have hfin_gt1 : 1 < Module.finrank K K⟮ζL⟯ := by
+      have hpos : 0 < Module.finrank K K⟮ζL⟯ := Module.finrank_pos
+      by_contra hle
+      have h1 : Module.finrank K K⟮ζL⟯ = 1 := by omega
+      have hbot : (⊥ : IntermediateField K L) = K⟮ζL⟯ :=
+        IntermediateField.eq_of_le_of_finrank_eq bot_le (by rw [IntermediateField.finrank_bot, h1])
+      exact hζ_not_bot (hbot ▸ IntermediateField.mem_adjoin_simple_self K ζL)
+    have hdvd_p : Module.finrank K K⟮ζL⟯ ∣ p := by
+      rw [← hdeg]
+      exact ⟨Module.finrank K⟮ζL⟯ L, (Module.finrank_mul_finrank K K⟮ζL⟯ L).symm⟩
+    have hfin_eq_p : Module.finrank K K⟮ζL⟯ = p := by
+      rcases hp.eq_one_or_self_of_dvd _ hdvd_p with h1 | hp_eq
+      · omega
+      · exact hp_eq
+    have hKζ_top : K⟮ζL⟯ = ⊤ :=
+      IntermediateField.eq_of_le_of_finrank_eq le_top
+        (by rw [hfin_eq_p, LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, hdeg])
+    have hcardG : Nat.card (L ≃ₐ[K] L) = p := by
+      rw [IsGalois.card_aut_eq_finrank K L, hdeg]
+    have : Fact p.Prime := ⟨hp⟩
+    have hcycG : IsCyclic (L ≃ₐ[K] L) := isCyclic_of_prime_card hcardG
+    obtain ⟨σ, hσ_gen⟩ := hcycG.exists_generator
+    have hσ_zpow : Subgroup.zpowers σ = ⊤ := by
+      ext g; simp only [Subgroup.mem_zpowers_iff, Subgroup.mem_top, iff_true]; exact hσ_gen g
+    have hσ_ord : orderOf σ = p := by
+      rw [← Nat.card_zpowers, hσ_zpow, Nat.card_congr Subgroup.topEquiv.toEquiv, hcardG]
+    have hσp : σ ^ p = 1 := hσ_ord ▸ pow_orderOf_eq_one σ
+    have hσζ_ne : σ ζL ≠ ζL := by
+      intro hfix
+      exact hnotK (mem_range_algebraMap_of_forall_gal_fix (forall_gal_fix_of_gen_fix hσ_zpow hfix))
+    have hratio_p : (σ ζL * ζL⁻¹) ^ p = 1 := by
+      rw [mul_pow, inv_pow, ← map_pow]
+      change σ ωL * ωL⁻¹ = 1
+      rw [← hωK_eq, σ.commutes, hωK_eq, mul_inv_cancel₀ (hωL.ne_zero hp.ne_zero)]
+    obtain ⟨r, _, hr⟩ := hωL.eq_pow_of_pow_eq_one hratio_p
+    have hσζ : σ ζL = ωL ^ r * ζL := by
+      rw [hr, mul_assoc, inv_mul_cancel₀ hζL_ne, mul_one]
+    have hωr_ne1 : ωL ^ r ≠ 1 := by
+      intro h1; rw [h1, one_mul] at hσζ; exact hσζ_ne hσζ
+    -- Take η ∈ L with η^p = ζL (exists since L is algebraically closed)
+    have hdeg_η : (Polynomial.X ^ p - Polynomial.C ζL : L[X]).degree ≠ 0 := by
+      rw [Polynomial.degree_eq_natDegree (Polynomial.monic_X_pow_sub_C ζL hp.ne_zero).ne_zero,
+        Polynomial.natDegree_X_pow_sub_C]
+      exact Nat.cast_ne_zero.mpr hp.ne_zero
+    obtain ⟨η, hη_root⟩ := IsAlgClosed.exists_root (Polynomial.X ^ p - Polynomial.C ζL) hdeg_η
+    have hη_pow : η ^ p = ζL := by
+      simpa [Polynomial.IsRoot.def, sub_eq_zero] using hη_root
+    have hη_ne : η ≠ 0 := by
+      intro h0; rw [h0, zero_pow hp.ne_zero] at hη_pow; exact hζL_ne hη_pow.symm
+    let u : L := σ η * η⁻¹
+    have hu_p : u ^ p = ωL ^ r := by
+      rw [mul_pow, inv_pow, ← map_pow, hη_pow, ← hr]
+    have hu_p2 : u ^ (p ^ 2) = 1 := by
+      rw [sq, pow_mul, hu_p, ← pow_mul, mul_comm, pow_mul, hωL.pow_eq_one, one_pow]
+    obtain ⟨a, _, ha⟩ := hζL.eq_pow_of_pow_eq_one hu_p2
+    let c : L := ωL ^ (r * a)
+    have hσc : σ c = c := by
+      have hcK : c = algebraMap K L (ωK ^ (r * a)) := by simp [c, ← hωK_eq]
+      rw [hcK, σ.commutes]
+    have hcp : c ^ p = 1 := by
+      change (ωL ^ (r * a)) ^ p = 1
+      rw [← pow_mul, mul_comm (r * a) p, pow_mul, hωL.pow_eq_one, one_pow]
+    have hσu : σ u = c * u := by
+      rw [← ha, map_pow, hσζ, mul_pow, ← pow_mul, ha]
+    have hση : σ η = u * η := by
+      simp only [u, mul_assoc, inv_mul_cancel₀ hη_ne, mul_one]
+    have hσ_pow_η : ∀ k : ℕ, (σ ^ k) η = c ^ (k * (k - 1) / 2) * u ^ k * η := by
+      intro k
+      induction k with
+      | zero => simp
+      | succ k ih =>
+        rw [pow_succ', AlgEquiv.mul_apply, ih, map_mul, map_mul, map_pow σ c, map_pow σ u,
+          hσc, hσu, hση, mul_pow]
+        have htri : k * (k - 1) / 2 + k = (k + 1) * k / 2 := by
+          rcases k with _ | m
+          · rfl
+          · have heven : 2 ∣ (m + 1) * m := by
+              rcases Nat.even_or_odd m with ⟨t, rfl⟩ | ⟨t, rfl⟩
+              · exact ⟨(t + t + 1) * t, by ring⟩
+              · exact ⟨(t + 1) * (2 * t + 1), by ring⟩
+            rcases heven with ⟨q, hq⟩
+            have h1 : (m + 1) * (m + 1 - 1) = 2 * q := by simpa using hq
+            have h2 : (m + 1 + 1) * (m + 1) = 2 * (q + (m + 1)) := by linarith
+            rw [h1, h2, Nat.mul_div_right _ (by decide), Nat.mul_div_right _ (by decide)]
+        calc c ^ (k * (k - 1) / 2) * (c ^ k * u ^ k) * (u * η)
+            = c ^ (k * (k - 1) / 2 + k) * (u ^ k * u) * η := by rw [pow_add]; ring
+          _ = c ^ ((k + 1) * k / 2) * u ^ (k + 1) * η := by rw [htri, ← pow_succ]
+          _ = c ^ ((k + 1) * (k + 1 - 1) / 2) * u ^ (k + 1) * η := by simp
+    have hη_fix := hσ_pow_η p
+    rw [hσp, AlgEquiv.one_apply, hu_p] at hη_fix
+    have hp_odd : Odd p := hp.odd_of_ne_two (by omega)
+    rcases hp_odd with ⟨t, ht⟩
+    have hdiv_tri : p * (p - 1) / 2 = p * t := by
+      have hp1 : p - 1 = 2 * t := by omega
+      rw [hp1, show p * (2 * t) = 2 * (p * t) by ring, Nat.mul_div_right _ (by decide)]
+    rw [hdiv_tri, pow_mul, hcp, one_pow, one_mul] at hη_fix
+    have hωr_eq1 : ωL ^ r = 1 :=
+      mul_right_cancel₀ hη_ne (hη_fix.symm.trans (one_mul η).symm)
+    exact hωr_ne1 hωr_eq1
+  obtain ⟨ζK, hζK_eq⟩ := hζL_in_K
+  have hζK : IsPrimitiveRoot ζK (p ^ 2) := by
+    rw [IsPrimitiveRoot.iff_def]
+    refine ⟨(algebraMap K L).injective (by rw [map_pow, hζK_eq, hζL.pow_eq_one, map_one]),
+      fun l hl => hζL.dvd_of_pow_eq_one l (by rw [← hζK_eq, ← map_pow, hl, map_one])⟩
+  exact ⟨⟨ωK, hωK⟩, ⟨ζK, hζK⟩,
+    garlingSplitsOver_cyclotomic_of_isPrimitiveRoot hp.one_le hωK,
+    garlingSplitsOver_cyclotomic_of_isPrimitiveRoot (by have := hp.one_le; nlinarith) hζK⟩
+
+/-- **Exercise 16.6 (ii)** (§16.3, printed p. 127 / PDF p. 135):
+There exists `θ ∈ K` such that `x^p - θ` is irreducible over `K` and `L : K` is a splitting field
+extension for `x^p - θ`. -/
+theorem exercise_16_6_ii {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsAlgClosed L] {p : ℕ} (hp : Nat.Prime p) (hp2 : 2 < p)
+    (hdeg : Module.finrank K L = p) (hchar : ringChar K ≠ p) :
+    ∃ θ : K,
+      Irreducible (Polynomial.X ^ p - Polynomial.C θ : K[X]) ∧
+      IsGarlingSplittingFieldExtension K L (Polynomial.X ^ p - Polynomial.C θ) := by
+  have hndvd_p : ¬ (ringChar K ∣ p) := by
+    intro hd
+    rcases CharP.char_is_prime_or_zero K (ringChar K) with hq | h0
+    · exact hchar ((Nat.prime_dvd_prime_iff_eq hq hp).mp hd)
+    · rw [h0] at hd; exact hp.ne_zero (zero_dvd_iff.mp hd)
+  obtain ⟨⟨ωK, hωK⟩, _, _, _⟩ := exercise_16_6_i hp hp2 hdeg hchar
+  have hgal : IsGarlingGaloisExtension K L :=
+    isGarlingGalois_of_isAlgClosed_of_not_char_dvd_finrank (hdeg.symm ▸ hndvd_p)
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  have hcardG : Nat.card (L ≃ₐ[K] L) = p := by
+    rw [IsGalois.card_aut_eq_finrank K L, hdeg]
+  have : Fact p.Prime := ⟨hp⟩
+  have hcyc : IsGarlingCyclicExtension K L := ⟨hgal, isCyclic_of_prime_card hcardG⟩
+  obtain ⟨θ, hirr, hsf, _⟩ := theorem_16_4 hcyc hdeg hndvd_p hωK
+  exact ⟨θ, hirr, hsf⟩
+
+/-- **Exercise 16.6 (iii)** (§16.3, printed p. 127 / PDF p. 135):
+For any `θ ∈ K` with `x^p - θ` irreducible over `K` (under `[L : K] = p` prime, `IsAlgClosed L`),
+`f = x^{p²} - θ` has no roots in `K` and factors as `f = ∏ j : Fin p, f_j` where each `f_j ∈ K[x]`
+is monic and irreducible of degree `p`. -/
+theorem exercise_16_6_iii {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsAlgClosed L] {p : ℕ} (hp : Nat.Prime p)
+    (hdeg : Module.finrank K L = p) {θ : K}
+    (hirr : Irreducible (Polynomial.X ^ p - Polynomial.C θ : K[X])) :
+    (¬ ∃ c : K, (Polynomial.X ^ (p ^ 2) - Polynomial.C θ).eval c = 0) ∧
+    ∃ fs : Fin p → K[X],
+      (Polynomial.X ^ (p ^ 2) - Polynomial.C θ : K[X]) = ∏ j : Fin p, fs j ∧
+      ∀ j : Fin p, (fs j).Monic ∧ Irreducible (fs j) ∧ (fs j).natDegree = p := by
+  let f : K[X] := Polynomial.X ^ (p ^ 2) - Polynomial.C θ
+  have hf_monic : f.Monic := Polynomial.monic_X_pow_sub_C θ (pow_ne_zero 2 hp.ne_zero)
+  have hf_deg : f.natDegree = p ^ 2 := Polynomial.natDegree_X_pow_sub_C
+  have hnoroot : ¬ ∃ c : K, f.eval c = 0 := by
+    rintro ⟨c, hc⟩
+    have hc_pow : (c ^ p) ^ p = θ := by
+      rw [← pow_mul, ← sq]
+      simpa [f, sub_eq_zero] using hc
+    have hroot_p : (Polynomial.X ^ p - Polynomial.C θ).eval (c ^ p) = 0 := by
+      simp [hc_pow]
+    obtain ⟨q_fac, hq_fac⟩ := Polynomial.dvd_iff_isRoot.mpr hroot_p
+    rcases hirr.isUnit_or_isUnit hq_fac with hu1 | hu2
+    · rw [Polynomial.isUnit_iff_degree_eq_zero,
+        Polynomial.degree_eq_natDegree (Polynomial.X_sub_C_ne_zero _),
+        Polynomial.natDegree_X_sub_C] at hu1
+      exact absurd hu1 (by decide)
+    · have hq0 : q_fac ≠ 0 := fun h => by
+        rw [h, mul_zero] at hq_fac
+        exact (Polynomial.monic_X_pow_sub_C θ hp.ne_zero).ne_zero hq_fac
+      rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hq0] at hu2
+      have hqd : q_fac.natDegree = 0 := Nat.cast_injective hu2
+      have hdeg_eq := congrArg Polynomial.natDegree hq_fac
+      rw [Polynomial.natDegree_X_pow_sub_C,
+        Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero _) hq0,
+        Polynomial.natDegree_X_sub_C, hqd] at hdeg_eq
+      have := hp.two_le; omega
+  -- Every irreducible factor of f in K[X] has degree p!
+  have hirr_deg_p : ∀ g : K[X], g.Monic → Irreducible g → g ∣ f → g.natDegree = p := by
+    intro g hg_mon hg_irr hg_dvd
+    have hg_pos : 1 ≤ g.natDegree := Nat.pos_of_ne_zero fun h0 =>
+      hg_irr.not_isUnit (Polynomial.isUnit_iff_degree_eq_zero.mpr
+        (by rw [Polynomial.degree_eq_natDegree hg_mon.ne_zero, h0]; rfl))
+    have hdeg_map : (g.map (algebraMap K L)).degree ≠ 0 := by
+      rw [Polynomial.degree_eq_natDegree (Polynomial.map_ne_zero hg_mon.ne_zero),
+        Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective]
+      exact Nat.cast_ne_zero.mpr (by omega)
+    obtain ⟨γ, hγ⟩ := IsAlgClosed.exists_root (g.map (algebraMap K L)) hdeg_map
+    have hγ_aev : Polynomial.aeval γ g = 0 := by
+      rwa [Polynomial.aeval_def, ← Polynomial.eval_map]
+    have hmin_eq : minpoly K γ = g :=
+      (minpoly.eq_of_irreducible_of_monic hg_irr hγ_aev hg_mon).symm
+    have hdvd_p : g.natDegree ∣ p := by
+      have hm := Module.finrank_mul_finrank K K⟮γ⟯ L
+      rw [IntermediateField.adjoin.finrank (Algebra.IsIntegral.isIntegral γ), hmin_eq, hdeg] at hm
+      exact ⟨Module.finrank K⟮γ⟯ L, hm.symm⟩
+    rcases hp.eq_one_or_self_of_dvd _ hdvd_p with h1 | hp_eq
+    · exfalso
+      have hlin : g = Polynomial.X + Polynomial.C (g.coeff 0) := by
+        ext k
+        rcases k with _ | _ | m
+        · simp
+        · simp [show g.coeff 1 = 1 from h1 ▸ hg_mon.coeff_natDegree]
+        · have hgt : g.natDegree < m + 2 := by omega
+          rw [Polynomial.coeff_eq_zero_of_natDegree_lt hgt, Polynomial.coeff_add,
+            Polynomial.coeff_X, Polynomial.coeff_C]
+          simp
+      have hroot_g : g.eval (-g.coeff 0) = 0 := by rw [hlin]; simp
+      have hroot_f : f.eval (-g.coeff 0) = 0 := by
+        rcases hg_dvd with ⟨h, hh⟩
+        rw [hh, Polynomial.eval_mul, hroot_g, zero_mul]
+      exact hnoroot ⟨-g.coeff 0, hroot_f⟩
+    · exact hp_eq
+  -- Factor f into monic irreducibles by strong induction on degree of monic divisors of f
+  have hfac_div : ∀ (m : ℕ) (h : K[X]), h.Monic → h ∣ f → h.natDegree = m * p →
+      ∃ fs : Fin m → K[X], h = ∏ j : Fin m, fs j ∧
+        ∀ j : Fin m, (fs j).Monic ∧ Irreducible (fs j) ∧ (fs j).natDegree = p := by
+    intro m
+    induction m with
+    | zero =>
+      intro h hh_mon _ hh_deg
+      rw [zero_mul] at hh_deg
+      refine ⟨fun j => j.elim0, ?_, fun j => j.elim0⟩
+      rw [Finset.univ_eq_empty, Finset.prod_empty]
+      exact Polynomial.eq_one_of_monic_natDegree_zero hh_mon hh_deg
+    | succ m ih =>
+      intro h hh_mon hh_dvd hh_deg
+      have hh_not_unit : ¬ IsUnit h := by
+        rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hh_mon.ne_zero,
+          hh_deg]
+        exact Nat.cast_ne_zero.mpr (Nat.mul_ne_zero (Nat.succ_ne_zero m) hp.ne_zero)
+      obtain ⟨q_fac, hq_irr, hq_dvd⟩ :=
+        WfDvdMonoid.exists_irreducible_factor hh_not_unit hh_mon.ne_zero
+      have hlc_ne : q_fac.leadingCoeff ≠ 0 := Polynomial.leadingCoeff_ne_zero.mpr hq_irr.ne_zero
+      let g : K[X] := q_fac * Polynomial.C q_fac.leadingCoeff⁻¹
+      have hg_mon : g.Monic := by
+        rw [Polynomial.Monic, Polynomial.leadingCoeff_mul, Polynomial.leadingCoeff_C,
+          mul_inv_cancel₀ hlc_ne]
+      have hg_irr : Irreducible g :=
+        Associated.irreducible ⟨Units.mk (Polynomial.C q_fac.leadingCoeff⁻¹)
+          (Polynomial.C q_fac.leadingCoeff)
+          (by simp [← Polynomial.C_mul, inv_mul_cancel₀ hlc_ne])
+          (by simp [← Polynomial.C_mul, mul_inv_cancel₀ hlc_ne]), rfl⟩ hq_irr
+      have hg_dvd_h : g ∣ h := by
+        rcases hq_dvd with ⟨c, hc⟩
+        exact ⟨Polynomial.C q_fac.leadingCoeff * c, by
+          simp only [g]
+          rw [mul_assoc, ← mul_assoc (Polynomial.C q_fac.leadingCoeff⁻¹), ← Polynomial.C_mul,
+            inv_mul_cancel₀ hlc_ne, Polynomial.C_1, one_mul, ← hc]⟩
+      have hg_deg : g.natDegree = p := hirr_deg_p g hg_mon hg_irr (hg_dvd_h.trans hh_dvd)
+      rcases hg_dvd_h with ⟨h', hh'⟩
+      have hh'_ne : h' ≠ 0 := fun h0 => by rw [h0, mul_zero] at hh'; exact hh_mon.ne_zero hh'
+      have hh'_mon : h'.Monic := by
+        have hlc := congrArg Polynomial.leadingCoeff hh'
+        rw [hh_mon.leadingCoeff, Polynomial.leadingCoeff_mul, hg_mon.leadingCoeff, one_mul] at hlc
+        exact hlc.symm
+      have hh'_deg : h'.natDegree = m * p := by
+        have hd := congrArg Polynomial.natDegree hh'
+        rw [hh_deg, Polynomial.natDegree_mul hg_mon.ne_zero hh'_ne, hg_deg, Nat.succ_mul] at hd
+        omega
+      obtain ⟨fs', hfs'_eq, hfs'_spec⟩ := ih h' hh'_mon (dvd_trans ⟨g, by rw [hh', mul_comm]⟩ hh_dvd) hh'_deg
+      refine ⟨Fin.cons g fs', ?_, ?_⟩
+      · rw [Fin.prod_univ_succ, Fin.cons_zero]
+        simp only [Fin.cons_succ]
+        rw [← hfs'_eq, ← hh']
+      · intro j
+        refine Fin.cases ?_ ?_ j
+        · simpa using ⟨hg_mon, hg_irr, hg_deg⟩
+        · intro k; simpa using hfs'_spec k
+  obtain ⟨fs, hfs_eq, hfs_spec⟩ := hfac_div p f hf_monic (dvd_refl f) (by rw [hf_deg, sq])
+  exact ⟨hnoroot, fs, hfs_eq, hfs_spec⟩
+
+/-- **Exercise 16.6 (iv)** (§16.3, printed p. 127 / PDF p. 135; see `QUEUE.md` Flags 6–7):
+1. For *any* `p` roots `α₁, ..., α_p ∈ L` of `f₁` (where `f₁ ∣ x^{p²} - θ` and `θ ≠ 0`),
+   `α₁ ... α_p = ω * β` where `ω^{p²} = 1` (`ω` is a `p²`th root of unity) and `β^p = θ`.
+2. Taking the `p` roots of monic degree-`p` `f₁` (`f₁.map = ∏ (X - C (α i))`) gives
+   `ω * β = α₁ ... α_p = -f₁(0) ∈ K`; since `Φ_{p²}` splits over `K` by `(i)`, `ω ∈ Kˣ`, whence
+   `β ∈ K` with `β^p = θ`, contradicting `(ii)` (`Irreducible (x^p - θ)`). -/
+theorem exercise_16_6_iv {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsAlgClosed L] {p : ℕ} (hp : Nat.Prime p) (hp2 : 2 < p)
+    (hdeg : Module.finrank K L = p) (hchar : ringChar K ≠ p) {θ : K}
+    (hirr : Irreducible (Polynomial.X ^ p - Polynomial.C θ : K[X]))
+    {f₁ : K[X]} (hf₁_mon : f₁.Monic) (hf₁_deg : f₁.natDegree = p)
+    (hf₁_dvd : f₁ ∣ Polynomial.X ^ (p ^ 2) - Polynomial.C θ) :
+    (∀ α : Fin p → L, (∀ i : Fin p, Polynomial.aeval (α i) f₁ = 0) →
+      ∃ (ω β : L), ω ^ (p ^ 2) = 1 ∧ β ^ p = algebraMap K L θ ∧
+        ∏ i : Fin p, α i = ω * β) ∧
+    False := by
+  have hθ_ne : θ ≠ 0 := by
+    intro h0; subst h0
+    have hroot : (Polynomial.X ^ p - Polynomial.C (0 : K)).eval 0 = 0 := by
+      simp [zero_pow hp.ne_zero]
+    exact (theorem_16_2_part1_unconditional hp (0 : K) hchar).elim
+      (fun h => h.2 ⟨0, hroot⟩) (fun h => h.2 hirr)
+  have hpart_prod : ∀ α : Fin p → L, (∀ i : Fin p, Polynomial.aeval (α i) f₁ = 0) →
+      ∃ (ω β : L), ω ^ (p ^ 2) = 1 ∧ β ^ p = algebraMap K L θ ∧
+        ∏ i : Fin p, α i = ω * β := by
+    intro α hα
+    have hα_pow : ∀ i : Fin p, (α i) ^ (p ^ 2) = algebraMap K L θ := by
+      intro i
+      rcases hf₁_dvd with ⟨h, hh⟩
+      have hev : Polynomial.aeval (α i) (Polynomial.X ^ (p ^ 2) - Polynomial.C θ) = 0 := by
+        rw [hh, map_mul, hα i, zero_mul]
+      simpa [sub_eq_zero] using hev
+    let i₀ : Fin p := ⟨0, hp.pos⟩
+    have hα₀_ne : α i₀ ≠ 0 := by
+      intro h0
+      have h1 := hα_pow i₀
+      rw [h0, zero_pow (pow_ne_zero 2 hp.ne_zero)] at h1
+      exact hθ_ne ((algebraMap K L).injective (h1.symm.trans (map_zero _).symm))
+    let ωi : Fin p → L := fun i => α i * (α i₀)⁻¹
+    let ω : L := ∏ i : Fin p, ωi i
+    let β : L := (α i₀) ^ p
+    refine ⟨ω, β, ?_, ?_, ?_⟩
+    · simp only [ω]
+      rw [← Finset.prod_pow]
+      refine Finset.prod_eq_one fun i _ => ?_
+      simp only [ωi, mul_pow, inv_pow, hα_pow i, hα_pow i₀,
+        mul_inv_cancel₀ ((map_ne_zero (algebraMap K L)).mpr hθ_ne)]
+    · simp only [β, ← pow_mul, ← sq, hα_pow i₀]
+    · calc ∏ i : Fin p, α i
+          = ∏ i : Fin p, (ωi i * α i₀) :=
+            Finset.prod_congr rfl fun i _ => by
+              simp only [ωi, mul_assoc, inv_mul_cancel₀ hα₀_ne, mul_one]
+        _ = (∏ i : Fin p, ωi i) * (∏ _ : Fin p, α i₀) := Finset.prod_mul_distrib
+        _ = ω * β := by simp [ω, β, Finset.prod_const]
+  refine ⟨hpart_prod, ?_⟩
+  -- Derive the contradiction using the p roots of monic f₁ over algebraically closed L
+  have hf₁L_splits : (f₁.map (algebraMap K L)).Splits := IsAlgClosed.splits _
+  have hf₁L_mon : (f₁.map (algebraMap K L)).Monic := hf₁_mon.map _
+  have hcard_r : (f₁.map (algebraMap K L)).roots.card = p := by
+    rw [← Polynomial.Splits.natDegree_eq_card_roots hf₁L_splits,
+      Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective, hf₁_deg]
+  let rs := (f₁.map (algebraMap K L)).roots
+  have hprod_eq_eval : rs.prod = (-1 : L) ^ p * algebraMap K L (f₁.eval 0) := by
+    have hev0 := hf₁L_splits.eval_eq_prod_roots_of_monic hf₁L_mon 0
+    have hmap_ev : (f₁.map (algebraMap K L)).eval 0 = algebraMap K L (f₁.eval 0) := by
+      simp [Polynomial.eval_map, Polynomial.eval₂_at_zero, ← Polynomial.coeff_zero_eq_eval_zero]
+    rw [hmap_ev] at hev0
+    have hprod_neg : (rs.map (fun r => (0 : L) - r)).prod = (-1 : L) ^ p * rs.prod := by
+      have hfn : (fun r : L => (0 : L) - r) = fun r : L => (-1 : L) * r := by ext r; ring
+      rw [hfn, Multiset.prod_map_mul, Multiset.map_const', Multiset.prod_replicate,
+        Multiset.map_id', hcard_r]
+    rw [hprod_neg] at hev0
+    calc rs.prod = (-1 : L) ^ p * ((-1 : L) ^ p * rs.prod) := by
+          rw [← mul_assoc, ← mul_pow, neg_one_mul, neg_neg, one_pow, one_mul]
+      _ = (-1 : L) ^ p * algebraMap K L (f₁.eval 0) := by rw [← hev0]
+  -- Extract Fin p indexing of the multiset rs
+  obtain ⟨l, hl⟩ := Quotient.exists_rep rs
+  have hl_len : l.length = p := by
+    have h1 := congrArg Multiset.card hl
+    change l.length = rs.card at h1
+    rw [h1, hcard_r]
+  let α : Fin p → L := fun i => l.get (i.cast hl_len.symm)
+  have hα_roots : ∀ i : Fin p, Polynomial.aeval (α i) f₁ = 0 := by
+    intro i
+    have hmem : α i ∈ rs := by
+      rw [← hl]; exact Multiset.mem_coe.mpr (List.get_mem l _)
+    rw [Polynomial.mem_roots (Polynomial.map_ne_zero hf₁_mon.ne_zero),
+      Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def] at hmem
+    exact hmem
+  have hα_prod : (∏ i : Fin p, α i) = rs.prod := by
+    rw [← hl]
+    change (∏ i : Fin p, l.get (i.cast hl_len.symm)) = (l : Multiset L).prod
+    rw [Multiset.prod_coe]
+    have h1 : (∏ i : Fin p, l.get (i.cast hl_len.symm)) = (∏ i : Fin l.length, l.get i) :=
+      Fintype.prod_equiv (finCongr hl_len.symm) _ _ fun _ => rfl
+    have hlist_prod : ∀ l' : List L, (∏ i : Fin l'.length, l'.get i) = l'.prod := by
+      intro l'
+      induction l' with
+      | nil => simp
+      | cons a t ih =>
+        change (∏ i : Fin (t.length + 1), (a :: t).get i) = a * t.prod
+        rw [Fin.prod_univ_succ]
+        exact congrArg (a * ·) ih
+    rw [h1, hlist_prod]
+  obtain ⟨ω, β, hω_pow, hβ_pow, hprod_ωβ⟩ := hpart_prod α hα_roots
+  obtain ⟨_, ⟨ζK, hζK⟩, _, _⟩ := exercise_16_6_i hp hp2 hdeg hchar
+  have hζL : IsPrimitiveRoot (algebraMap K L ζK) (p ^ 2) :=
+    hζK.map_of_injective (algebraMap K L).injective
+  have : NeZero (p ^ 2) := ⟨pow_ne_zero 2 hp.ne_zero⟩
+  obtain ⟨k, _, hk⟩ := hζL.eq_pow_of_pow_eq_one hω_pow
+  let ωK : K := ζK ^ k
+  have hωK_eq : algebraMap K L ωK = ω := by simp [ωK, hk]
+  have hωK_ne : ωK ≠ 0 := by
+    intro h0
+    have h1 : ω = 0 := by rw [← hωK_eq, h0, map_zero]
+    rw [h1, zero_pow (pow_ne_zero 2 hp.ne_zero)] at hω_pow
+    exact zero_ne_one hω_pow
+  let βK : K := ωK⁻¹ * ((-1 : K) ^ p * f₁.eval 0)
+  have hβK_eq : algebraMap K L βK = β := by
+    have hω_ne : ω ≠ 0 := by
+      rw [← hωK_eq]; exact (map_ne_zero (algebraMap K L)).mpr hωK_ne
+    apply mul_left_cancel₀ hω_ne
+    rw [← hprod_ωβ, hα_prod, hprod_eq_eval]
+    simp only [βK, map_mul, map_inv₀, map_pow, map_neg, map_one, hωK_eq, ← mul_assoc,
+      mul_inv_cancel₀ hω_ne, one_mul]
+  have hβK_pow : βK ^ p = θ :=
+    (algebraMap K L).injective (by rw [map_pow, hβK_eq, hβ_pow])
+  have hroot_K : (Polynomial.X ^ p - Polynomial.C θ).eval βK = 0 := by simp [hβK_pow]
+  exact (theorem_16_2_part1_unconditional hp θ hchar).elim
+    (fun h => h.2 ⟨βK, hroot_K⟩) (fun h => h.2 hirr)
+
+/-- **Exercise 16.6** (§16.3, printed p. 127 / PDF p. 135):
+Bundles all four parts `(i)`–`(iv)` and the resulting impossibility `False` whenever
+`[L : K] = p > 2` is an odd prime with `p ≠ char K` and `L` algebraically closed. -/
+theorem exercise_16_6 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsAlgClosed L] {p : ℕ} (hp : Nat.Prime p) (hp2 : 2 < p)
+    (hdeg : Module.finrank K L = p) (hchar : ringChar K ≠ p) :
+    False := by
+  obtain ⟨θ, hirr, _⟩ := exercise_16_6_ii hp hp2 hdeg hchar
+  obtain ⟨_, fs, hfs_eq, hfs_spec⟩ := exercise_16_6_iii hp hdeg hirr
+  let i₀ : Fin p := ⟨0, hp.pos⟩
+  obtain ⟨hmon, _, hdeg1⟩ := hfs_spec i₀
+  have hdvd : fs i₀ ∣ Polynomial.X ^ (p ^ 2) - Polynomial.C θ := by
+    rw [hfs_eq]
+    exact Finset.dvd_prod_of_mem fs (Finset.mem_univ i₀)
+  exact (exercise_16_6_iv hp hp2 hdeg hchar hirr hmon hdeg1 hdvd).2
+
+/-- **Exercise 16.7 (Part 1 — Existence of `M`)** (§16.3, printed p. 127 / PDF p. 135):
+Suppose `[L : K] = 4`, `char K ≠ 2`, and `L` is algebraically closed. Then there exists an
+intermediate field `M` between `K` and `L` such that `[L : M] = 2` and `Φ₄` splits over `M`. -/
+theorem exercise_16_7_exists_M {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsAlgClosed L]
+    (hdeg : Module.finrank K L = 4) (hchar : ringChar K ≠ 2) :
+    ∃ M : IntermediateField K L,
+      Module.finrank M L = 2 ∧
+      GarlingSplitsOver M M (Polynomial.cyclotomic 4 M) := by
+  have hcharL : ringChar L = ringChar K :=
+    ringChar.eq_iff.mpr (charP_of_injective_algebraMap (algebraMap K L).injective (ringChar K))
+  have hndvd4 : ¬ (ringChar K ∣ 4) := by
+    intro hd
+    rcases CharP.char_is_prime_or_zero K (ringChar K) with hp | h0
+    · have h2 : ringChar K ∣ 2 := hp.dvd_of_dvd_pow (show ringChar K ∣ 2 ^ 2 by exact hd)
+      exact hchar ((Nat.prime_dvd_prime_iff_eq hp Nat.prime_two).mp h2)
+    · rw [h0] at hd; exact absurd (zero_dvd_iff.mp hd) (by decide)
+  have hgal : IsGarlingGaloisExtension K L :=
+    isGarlingGalois_of_isAlgClosed_of_not_char_dvd_finrank (hdeg.symm ▸ hndvd4)
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  obtain ⟨im, him⟩ := exists_isPrimitiveRoot_of_isAlgClosed (L := L) (n := 4) (hcharL.symm ▸ hndvd4)
+  have him_sq : im ^ 2 = -1 := by
+    have h4 : im ^ 4 = 1 := him.pow_eq_one
+    have hne2 : im ^ 2 ≠ 1 := fun h2 =>
+      absurd (Nat.le_of_dvd (by decide) (him.dvd_of_pow_eq_one 2 h2)) (by decide)
+    have hfac : (im ^ 2 - 1) * (im ^ 2 + 1) = 0 := by linear_combination h4
+    rcases mul_eq_zero.mp hfac with h1 | h2
+    · exact absurd (sub_eq_zero.mp h1) hne2
+    · linear_combination h2
+  by_cases him_in_K : im ∈ (⊥ : IntermediateField K L)
+  · -- Case 1: i ∈ K; take M = fixedField H for a subgroup H ≤ Gal(L/K) of order 2
+    have hcardG : Nat.card (L ≃ₐ[K] L) = 4 := by
+      rw [IsGalois.card_aut_eq_finrank K L, hdeg]
+    have : Fact (Nat.Prime 2) := ⟨Nat.prime_two⟩
+    obtain ⟨H, hH_card⟩ := Sylow.exists_subgroup_card_pow_prime (G := L ≃ₐ[K] L) 2 (n := 1)
+      (by rw [pow_one, hcardG]; decide)
+    let M : IntermediateField K L := IntermediateField.fixedField H
+    refine ⟨M, ?_, ?_⟩
+    · rw [IntermediateField.finrank_fixedField_eq_card, hH_card, pow_one]
+    · let imM : M := ⟨im, (bot_le : (⊥ : IntermediateField K L) ≤ M) him_in_K⟩
+      have himM : IsPrimitiveRoot imM 4 := by
+        rw [IsPrimitiveRoot.iff_def]
+        refine ⟨by ext; exact him.pow_eq_one,
+          fun l hl => him.dvd_of_pow_eq_one l (congrArg Subtype.val hl)⟩
+      exact garlingSplitsOver_cyclotomic_of_isPrimitiveRoot (by decide) himM
+  · -- Case 2: i ∉ K; take M = K⟮im⟯, which has [M : K] = 2 hence [L : M] = 2
+    let M : IntermediateField K L := K⟮im⟯
+    have him_int : IsIntegral K im := Algebra.IsIntegral.isIntegral im
+    have hdvd_x2 : minpoly K im ∣ (Polynomial.X ^ 2 + 1 : K[X]) := by
+      refine minpoly.dvd K im ?_
+      simp [him_sq]
+    have hdeg_le2 : (minpoly K im).natDegree ≤ 2 := by
+      have hne : (Polynomial.X ^ 2 + 1 : K[X]) ≠ 0 := by
+        simpa using (Polynomial.monic_X_pow_add_C (1 : K) (by decide)).ne_zero
+      have h1 := Polynomial.natDegree_le_of_dvd hdvd_x2 hne
+      simpa using h1
+    have hdeg_gt1 : 1 < Module.finrank K M := by
+      have hpos : 0 < Module.finrank K M := Module.finrank_pos
+      by_contra hle
+      have h1 : Module.finrank K M = 1 := by omega
+      have hbot : (⊥ : IntermediateField K L) = M :=
+        IntermediateField.eq_of_le_of_finrank_eq bot_le (by rw [IntermediateField.finrank_bot, h1])
+      exact him_in_K (hbot ▸ IntermediateField.mem_adjoin_simple_self K im)
+    have hfinM : Module.finrank K M = 2 := by
+      have hle : Module.finrank K M ≤ 2 := by
+        rw [IntermediateField.adjoin.finrank him_int]; exact hdeg_le2
+      omega
+    have hfinML : Module.finrank M L = 2 := by
+      have hm := Module.finrank_mul_finrank K M L
+      rw [hfinM, hdeg] at hm; omega
+    let imM : M := ⟨im, IntermediateField.mem_adjoin_simple_self K im⟩
+    have himM : IsPrimitiveRoot imM 4 := by
+      rw [IsPrimitiveRoot.iff_def]
+      refine ⟨by ext; exact him.pow_eq_one,
+        fun l hl => him.dvd_of_pow_eq_one l (congrArg Subtype.val hl)⟩
+    exact ⟨M, hfinML, garlingSplitsOver_cyclotomic_of_isPrimitiveRoot (by decide) himM⟩
+
+/-- **Exercise 16.7 (Part 2 — Degree-2 contradiction when `Φ₄` splits over `M`)** (§16.3, p. 127):
+If `[L : M] = 2`, `char M ≠ 2`, `L` is algebraically closed, and `Φ₄` splits over `M`, then `False`.
+*(Reused directly in both `Exercise 16.7` and `Exercise 16.8`!)* -/
+theorem exercise_16_7_contradiction {M : Type u} {L : Type v} [Field M] [Field L] [Algebra M L]
+    [FiniteDimensional M L] [IsAlgClosed L]
+    (hdeg : Module.finrank M L = 2) (hchar : ringChar M ≠ 2)
+    (hsplit4 : GarlingSplitsOver M M (Polynomial.cyclotomic 4 M)) :
+    False := by
+  have h2M_ne : (2 : M) ≠ 0 := by
+    intro h20
+    have hd : ringChar M ∣ 2 := (ringChar.spec M 2).mp h20
+    rcases CharP.char_is_prime_or_zero M (ringChar M) with hp | h0
+    · exact hchar ((Nat.prime_dvd_prime_iff_eq hp Nat.prime_two).mp hd)
+    · rw [h0] at hd; exact absurd (zero_dvd_iff.mp hd) (by decide)
+  have hndvd2 : ¬ (ringChar M ∣ 2) := fun hd => h2M_ne ((ringChar.spec M 2).mpr hd)
+  -- Extract i ∈ M with i^2 = -1 from splitting of Φ₄ = X^2 + 1 over M
+  have hΦ4_eq : Polynomial.cyclotomic 4 M = Polynomial.X ^ 2 + 1 := by
+    have hmul := Polynomial.prod_cyclotomic_eq_X_pow_sub_one (by decide : 0 < 4) M
+    have hdiv : (4 : ℕ).divisors = {1, 2, 4} := by decide
+    rw [hdiv] at hmul
+    simp only [Finset.prod_insert (by decide : (1 : ℕ) ∉ ({2, 4} : Finset ℕ)),
+      Finset.prod_insert (by decide : (2 : ℕ) ∉ ({4} : Finset ℕ)),
+      Finset.prod_singleton, Polynomial.cyclotomic_one, Polynomial.cyclotomic_two] at hmul
+    have h12_ne : ((Polynomial.X - 1) * (Polynomial.X + 1) : M[X]) ≠ 0 :=
+      mul_ne_zero (Polynomial.X_sub_C_ne_zero 1) (by simpa using Polynomial.X_sub_C_ne_zero (-1 : M))
+    apply mul_left_cancel₀ h12_ne
+    calc ((Polynomial.X - 1) * (Polynomial.X + 1)) * Polynomial.cyclotomic 4 M
+        = (Polynomial.X - 1) * ((Polynomial.X + 1) * Polynomial.cyclotomic 4 M) := by ring
+      _ = Polynomial.X ^ 4 - 1 := hmul
+      _ = ((Polynomial.X - 1) * (Polynomial.X + 1)) * (Polynomial.X ^ 2 + 1) := by ring
+  have hsp_ml : (Polynomial.X ^ 2 + 1 : M[X]).Splits := by
+    rw [← hΦ4_eq]
+    have h := (garlingSplitsOver_iff_splits M M _).mp hsplit4
+    rwa [Algebra.algebraMap_self, Polynomial.map_id] at h
+  have hne_r : (Polynomial.X ^ 2 + 1 : M[X]).roots ≠ 0 := by
+    intro h0
+    have hc := Polynomial.Splits.natDegree_eq_card_roots hsp_ml
+    rw [h0, Multiset.card_zero] at hc
+    have hd : (Polynomial.X ^ 2 + 1 : M[X]).natDegree = 2 := by simp
+    omega
+  obtain ⟨imM, himM⟩ := Multiset.exists_mem_of_ne_zero hne_r
+  have himM_sq : imM ^ 2 = -1 := by
+    have hne : (Polynomial.X ^ 2 + 1 : M[X]) ≠ 0 := by
+      simpa using (Polynomial.monic_X_pow_add_C (1 : M) (by decide)).ne_zero
+    rw [Polynomial.mem_roots hne, Polynomial.IsRoot.def] at himM
+    simp only [Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_X, Polynomial.eval_one] at himM
+    linear_combination himM
+  -- L : M is cyclic of degree 2 and -1 ∈ M is a primitive 2nd root of unity
+  have hgal : IsGarlingGaloisExtension M L :=
+    isGarlingGalois_of_isAlgClosed_of_not_char_dvd_finrank (hdeg.symm ▸ hndvd2)
+  have _ : IsGalois M L := (isGarlingGaloisExtension_iff M L).mp hgal |>.2
+  have hcardG : Nat.card (L ≃ₐ[M] L) = 2 := by
+    rw [IsGalois.card_aut_eq_finrank M L, hdeg]
+  have : Fact (Nat.Prime 2) := ⟨Nat.prime_two⟩
+  have hcyc : IsGarlingCyclicExtension M L := ⟨hgal, isCyclic_of_prime_card hcardG⟩
+  have hm1_prim : IsPrimitiveRoot (-1 : M) 2 := by
+    rw [IsPrimitiveRoot.iff_def]
+    refine ⟨by ring, fun l hl => ?_⟩
+    by_contra hndvd
+    have hodd : l % 2 = 1 := by omega
+    have hpow : (-1 : M) ^ (l % 2) = 1 := by
+      have hdiv := Nat.div_add_mod l 2
+      have h1 : (-1 : M) ^ (2 * (l / 2) + l % 2) = 1 := hdiv.symm ▸ hl
+      rw [pow_add, pow_mul, neg_one_sq, one_pow, one_mul] at h1
+      exact h1
+    rw [hodd, pow_one] at hpow
+    exact h2M_ne (by linear_combination -hpow)
+  obtain ⟨θ, hirr, hsf, hgen⟩ := theorem_16_4 hcyc hdeg hndvd2 hm1_prim
+  -- Let β ∈ L satisfy β^2 = θ, and α ∈ L satisfy α^2 = β; write α = a + b * β with a, b ∈ M
+  have hdeg_β : (Polynomial.X ^ 2 - Polynomial.C (algebraMap M L θ) : L[X]).degree ≠ 0 := by
+    rw [Polynomial.degree_eq_natDegree (Polynomial.monic_X_pow_sub_C _ (by decide)).ne_zero,
+      Polynomial.natDegree_X_pow_sub_C]
+    decide
+  obtain ⟨β, hβ_r⟩ := IsAlgClosed.exists_root _ hdeg_β
+  have hβ_pow : β ^ 2 = algebraMap M L θ := by simpa [Polynomial.IsRoot.def, sub_eq_zero] using hβ_r
+  have hβ_aev : Polynomial.aeval β (Polynomial.X ^ 2 - Polynomial.C θ) = 0 := by
+    simp [hβ_pow]
+  have hMβ_top : M⟮β⟯ = ⊤ := hgen β hβ_aev
+  have hdeg_α : (Polynomial.X ^ 2 - Polynomial.C β : L[X]).degree ≠ 0 := by
+    rw [Polynomial.degree_eq_natDegree (Polynomial.monic_X_pow_sub_C _ (by decide)).ne_zero,
+      Polynomial.natDegree_X_pow_sub_C]
+    decide
+  obtain ⟨α, hα_r⟩ := IsAlgClosed.exists_root _ hdeg_α
+  have hα_pow : α ^ 2 = β := by simpa [Polynomial.IsRoot.def, sub_eq_zero] using hα_r
+  -- Express α in basis {1, β} of L = M(β) via PowerBasis
+  let pb : PowerBasis M M⟮β⟯ := IntermediateField.adjoin.powerBasis (Algebra.IsIntegral.isIntegral β)
+  have hmin_β : minpoly M β = Polynomial.X ^ 2 - Polynomial.C θ :=
+    (minpoly.eq_of_irreducible_of_monic hirr hβ_aev (Polynomial.monic_X_pow_sub_C θ (by decide))).symm
+  have hpb_dim : pb.dim = 2 := by
+    rw [IntermediateField.adjoin.powerBasis_dim, hmin_β, Polynomial.natDegree_X_pow_sub_C]
+  have hα_mem : α ∈ M⟮β⟯ := hMβ_top.symm ▸ IntermediateField.mem_top
+  let c := pb.basis.repr ⟨α, hα_mem⟩
+  let a : M := c ⟨0, by omega⟩
+  let b : M := c ⟨1, by omega⟩
+  have hα_lin : α = algebraMap M L a + algebraMap M L b * β := by
+    have hsum := pb.basis.sum_repr ⟨α, hα_mem⟩
+    have hval := congrArg Subtype.val hsum
+    rw [AddSubmonoidClass.coe_finsetSum] at hval
+    have hterm : ∀ i : Fin pb.dim,
+        (((pb.basis.repr ⟨α, hα_mem⟩) i • pb.basis i : M⟮β⟯) : L) =
+          algebraMap M L (c i) * (pb.gen : L) ^ (i : ℕ) := by
+      intro i
+      rw [PowerBasis.coe_basis, Algebra.smul_def]
+      simp [c]
+    simp only [hterm] at hval
+    have hgen_eq : (pb.gen : L) = β := by rw [IntermediateField.adjoin.powerBasis_gen]; rfl
+    rw [← hval]
+    have hsum2 : (∑ i : Fin pb.dim, algebraMap M L (c i) * (pb.gen : L) ^ (i : ℕ)) =
+        ∑ i : Fin 2, algebraMap M L (c (i.cast hpb_dim.symm)) * (pb.gen : L) ^ (i : ℕ) :=
+      Fintype.sum_equiv (finCongr hpb_dim) _ _ fun _ => rfl
+    rw [hsum2, Fin.sum_univ_two, hgen_eq]
+    simp [a, b]
+    rfl
+  -- (a + b β)^2 = β ⇒ (a^2 + b^2 θ) + (2ab - 1) β = 0
+  have hβ_not_M : β ∉ Set.range (algebraMap M L) := by
+    rintro ⟨r, hr⟩
+    have hroot : (Polynomial.X ^ 2 - Polynomial.C θ).eval r = 0 := by
+      have hr2 : r ^ 2 = θ := (algebraMap M L).injective (by rw [map_pow, hr, hβ_pow])
+      simp [hr2]
+    exact (theorem_16_2_part1_unconditional Nat.prime_two θ hchar).elim
+      (fun h => h.2 ⟨r, hroot⟩) (fun h => h.2 hirr)
+  have hsq_eq : algebraMap M L (a ^ 2 + b ^ 2 * θ) + algebraMap M L (2 * a * b - 1) * β = 0 := by
+    have h1 : (algebraMap M L a + algebraMap M L b * β) ^ 2 = β := hα_lin ▸ hα_pow
+    simp only [map_add, map_sub, map_mul, map_pow, map_one, map_ofNat]
+    linear_combination h1 - algebraMap M L b ^ 2 * hβ_pow
+  have hcoeff1 : 2 * a * b - 1 = 0 := by
+    by_contra hne
+    have hneL : algebraMap M L (2 * a * b - 1) ≠ 0 := (map_ne_zero (algebraMap M L)).mpr hne
+    have hβ_eq : β = algebraMap M L (-(a ^ 2 + b ^ 2 * θ) / (2 * a * b - 1)) := by
+      simp only [map_div₀, map_neg]
+      apply mul_left_cancel₀ hneL
+      rw [mul_div_cancel₀ _ hneL]
+      linear_combination hsq_eq
+    exact hβ_not_M ⟨_, hβ_eq.symm⟩
+  have hcoeff0 : a ^ 2 + b ^ 2 * θ = 0 := by
+    rw [hcoeff1, map_zero, zero_mul, add_zero] at hsq_eq
+    exact (algebraMap M L).injective (hsq_eq.trans (map_zero _).symm)
+  have hb_ne : b ≠ 0 := by
+    intro hb0; rw [hb0, mul_zero, zero_sub] at hcoeff1
+    exact neg_ne_zero.mpr one_ne_zero hcoeff1
+  let r : M := imM * (a / b)
+  have hr_sq : r ^ 2 = θ := by
+    have h1 : b ^ 2 * (r ^ 2 - θ) = 0 := by
+      calc b ^ 2 * ((imM * (a / b)) ^ 2 - θ)
+          = imM ^ 2 * a ^ 2 - b ^ 2 * θ := by field_simp
+        _ = (-1) * a ^ 2 - b ^ 2 * θ := by rw [himM_sq]
+        _ = -(a ^ 2 + b ^ 2 * θ) := by ring
+        _ = 0 := by rw [hcoeff0, neg_zero]
+    exact sub_eq_zero.mp ((mul_eq_zero.mp h1).resolve_left (pow_ne_zero 2 hb_ne))
+  have hroot_θ : (Polynomial.X ^ 2 - Polynomial.C θ).eval r = 0 := by simp [hr_sq]
+  exact (theorem_16_2_part1_unconditional Nat.prime_two θ hchar).elim
+    (fun h => h.2 ⟨r, hroot_θ⟩) (fun h => h.2 hirr)
+
+/-- **Exercise 16.7** (§16.3, printed p. 127 / PDF p. 135):
+*"Suppose that `[L : K] = 4`, that `char K ≠ 2` and that `L` is algebraically closed. Show that
+there exists an intermediate field `M` such that `[L : M] = 2` and such that `Φ₄` splits over `M`.
+Show that this leads to a contradiction."* -/
+theorem exercise_16_7 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsAlgClosed L]
+    (hdeg : Module.finrank K L = 4) (hchar : ringChar K ≠ 2) :
+    False := by
+  obtain ⟨M, hML, hsp4⟩ := exercise_16_7_exists_M hdeg hchar
+  have _ : FiniteDimensional M L := Module.Finite.right K M L
+  have hcharM : ringChar M ≠ 2 := by
+    have hEq : ringChar M = ringChar K :=
+      ringChar.eq_iff.mpr (charP_of_injective_algebraMap (algebraMap K M).injective (ringChar K))
+    rwa [hEq]
+  exact exercise_16_7_contradiction hML hcharM hsp4
+
+/-- **Exercise 16.8** (§16.3, printed p. 127 / PDF p. 135):
+*"Suppose that `char K = 0`, that `1 < [L : K] < ∞` and that `L` is algebraically closed. Show that
+`[L : K] = 2` and that `L : K` is a splitting field extension for `x² + 1`."* -/
+theorem exercise_16_8 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [FiniteDimensional K L] [IsAlgClosed L]
+    (hchar : ringChar K = 0) (hdeg_gt1 : 1 < Module.finrank K L) :
+    Module.finrank K L = 2 ∧
+    extDegree K L = 2 ∧
+    IsGarlingSplittingFieldExtension K L (Polynomial.X ^ 2 + 1) := by
+  have hndvd : ¬ (ringChar K ∣ Module.finrank K L) := by
+    rw [hchar, zero_dvd_iff]; omega
+  have hgal : IsGarlingGaloisExtension K L :=
+    isGarlingGalois_of_isAlgClosed_of_not_char_dvd_finrank hndvd
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  have hcardG : Nat.card (L ≃ₐ[K] L) = Module.finrank K L :=
+    IsGalois.card_aut_eq_finrank K L
+  -- No odd prime p divides |Gal(L/K)| (by Cauchy/Sylow + Exercise 16.6)
+  have hno_odd : ∀ p : ℕ, Nat.Prime p → 2 < p → ¬ (p ∣ Module.finrank K L) := by
+    intro p hp hp2 hdvd
+    have : Fact p.Prime := ⟨hp⟩
+    obtain ⟨H, hH_card⟩ := Sylow.exists_subgroup_card_pow_prime (G := L ≃ₐ[K] L) p (n := 1)
+      (by rwa [pow_one, hcardG])
+    let M := IntermediateField.fixedField H
+    have _ : FiniteDimensional M L := Module.Finite.right K M L
+    have hML : Module.finrank M L = p := by
+      rw [IntermediateField.finrank_fixedField_eq_card, hH_card, pow_one]
+    have hcharM : ringChar M ≠ p := by
+      have hEq : ringChar M = ringChar K :=
+        ringChar.eq_iff.mpr (charP_of_injective_algebraMap (algebraMap K M).injective (ringChar K))
+      rw [hEq, hchar]; exact hp.ne_zero.symm
+    exact exercise_16_6 hp hp2 hML hcharM
+  -- 4 does not divide |Gal(L/K)| (by Sylow + Exercise 16.7)
+  have hno_4 : ¬ (4 ∣ Module.finrank K L) := by
+    intro hdvd
+    have : Fact (Nat.Prime 2) := ⟨Nat.prime_two⟩
+    obtain ⟨H, hH_card⟩ := Sylow.exists_subgroup_card_pow_prime (G := L ≃ₐ[K] L) 2 (n := 2)
+      (by rwa [hcardG])
+    let M := IntermediateField.fixedField H
+    have _ : FiniteDimensional M L := Module.Finite.right K M L
+    have hML : Module.finrank M L = 4 := by
+      rw [IntermediateField.finrank_fixedField_eq_card, hH_card]; norm_num
+    have hcharM : ringChar M ≠ 2 := by
+      have hEq : ringChar M = ringChar K :=
+        ringChar.eq_iff.mpr (charP_of_injective_algebraMap (algebraMap K M).injective (ringChar K))
+      rw [hEq, hchar]; decide
+    exact exercise_16_7 hML hcharM
+  -- Deduce [L : K] = 2
+  have hfin2 : Module.finrank K L = 2 := by
+    let n := Module.finrank K L
+    have hn_gt1 : 1 < n := hdeg_gt1
+    have h2_dvd : 2 ∣ n := by
+      let p := n.minFac
+      have hp : Nat.Prime p := Nat.minFac_prime (by omega)
+      have hpdvd : p ∣ n := Nat.minFac_dvd n
+      rcases eq_or_lt_of_le hp.two_le with hp2 | hp_gt2
+      · exact hp2 ▸ hpdvd
+      · exact absurd hpdvd (hno_odd p hp hp_gt2)
+    rcases h2_dvd with ⟨m, hm⟩
+    change Module.finrank K L = 2 * m at hm
+    have hm1 : m = 1 := by
+      by_contra hne1
+      have hm_gt1 : 1 < m := by omega
+      let p := m.minFac
+      have hp : Nat.Prime p := Nat.minFac_prime (by omega)
+      have hpdvd_m : p ∣ m := Nat.minFac_dvd m
+      rcases eq_or_lt_of_le hp.two_le with hp2 | hp_gt2
+      · rw [← hp2] at hpdvd_m
+        rcases hpdvd_m with ⟨k, rfl⟩
+        exact hno_4 ⟨k, by rw [hm]; ring⟩
+      · exact hno_odd p hp hp_gt2 (hpdvd_m.trans ⟨2, by rw [hm, mul_comm]⟩)
+    rw [hm, hm1, mul_one]
+  -- Show L : K is a splitting field extension for x^2 + 1
+  have hcharL : ringChar L = 0 := by
+    rw [ringChar.eq_iff.mpr (charP_of_injective_algebraMap (algebraMap K L).injective (ringChar K)), hchar]
+  obtain ⟨im, him⟩ := exists_isPrimitiveRoot_of_isAlgClosed (L := L) (n := 4)
+    (by rw [hcharL]; simp)
+  have him_sq : im ^ 2 = -1 := by
+    have h4 : im ^ 4 = 1 := him.pow_eq_one
+    have hne2 : im ^ 2 ≠ 1 := fun h2 =>
+      absurd (Nat.le_of_dvd (by decide) (him.dvd_of_pow_eq_one 2 h2)) (by decide)
+    have hfac : (im ^ 2 - 1) * (im ^ 2 + 1) = 0 := by linear_combination h4
+    rcases mul_eq_zero.mp hfac with h1 | h2
+    · exact absurd (sub_eq_zero.mp h1) hne2
+    · linear_combination h2
+  have him_not_K : im ∉ (⊥ : IntermediateField K L) := by
+    intro hmem
+    rcases IntermediateField.mem_bot.mp hmem with ⟨imK, himK_eq⟩
+    have himK : IsPrimitiveRoot imK 4 := by
+      rw [IsPrimitiveRoot.iff_def]
+      refine ⟨(algebraMap K L).injective (by rw [map_pow, himK_eq, him.pow_eq_one, map_one]),
+        fun l hl => him.dvd_of_pow_eq_one l (by rw [← himK_eq, ← map_pow, hl, map_one])⟩
+    exact exercise_16_7_contradiction hfin2 (by rw [hchar]; decide)
+      (garlingSplitsOver_cyclotomic_of_isPrimitiveRoot (by decide) himK)
+  have hKim_top : K⟮im⟯ = ⊤ := by
+    have hgt1 : 1 < Module.finrank K K⟮im⟯ := by
+      have hpos : 0 < Module.finrank K K⟮im⟯ := Module.finrank_pos
+      by_contra hle
+      have h1 : Module.finrank K K⟮im⟯ = 1 := by omega
+      have hbot : (⊥ : IntermediateField K L) = K⟮im⟯ :=
+        IntermediateField.eq_of_le_of_finrank_eq bot_le (by rw [IntermediateField.finrank_bot, h1])
+      exact him_not_K (hbot ▸ IntermediateField.mem_adjoin_simple_self K im)
+    have hle2 : Module.finrank K K⟮im⟯ ≤ 2 := by
+      have hm := Module.finrank_mul_finrank K K⟮im⟯ L
+      have hpos2 : 0 < Module.finrank K⟮im⟯ L := Module.finrank_pos
+      rw [hfin2] at hm; nlinarith
+    exact IntermediateField.eq_of_le_of_finrank_eq le_top
+      (by rw [LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, hfin2]; omega)
+  have hsf : IsGarlingSplittingFieldExtension K L (Polynomial.X ^ 2 + 1) := by
+    refine ⟨⟨2, 1, ![im, -im], ?_⟩, ?_⟩
+    · rw [GarlingSplitsExplicit, map_one, Polynomial.C_1, one_mul, Fin.prod_univ_two]
+      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Polynomial.map_add, Polynomial.map_pow,
+        Polynomial.map_X, Polynomial.map_one]
+      have hsub : (Polynomial.X - Polynomial.C im) * (Polynomial.X - Polynomial.C (-im)) =
+          Polynomial.X ^ 2 - Polynomial.C (im ^ 2) := by
+        rw [Polynomial.C_neg, map_pow]; ring
+      rw [hsub, him_sq, map_neg, map_one, sub_neg_eq_add]
+    · intro M hM hspM
+      have hsp_ml := (garlingSplitsOver_iff_splits K M _).mp hspM
+      have hne_r : ((Polynomial.X ^ 2 + 1 : K[X]).map (algebraMap K M)).roots ≠ 0 := by
+        intro h0
+        have hc := Polynomial.Splits.natDegree_eq_card_roots hsp_ml
+        rw [h0, Multiset.card_zero, Polynomial.natDegree_map_eq_of_injective (algebraMap K M).injective] at hc
+        have hd : (Polynomial.X ^ 2 + 1 : K[X]).natDegree = 2 := by simp
+        omega
+      obtain ⟨rM, hrM⟩ := Multiset.exists_mem_of_ne_zero hne_r
+      have hne2 : (Polynomial.X ^ 2 + 1 : K[X]) ≠ 0 := by
+        simpa using (Polynomial.monic_X_pow_add_C (1 : K) (by decide)).ne_zero
+      rw [Polynomial.mem_roots (Polynomial.map_ne_zero hne2), Polynomial.IsRoot.def,
+        Polynomial.eval_map, ← Polynomial.aeval_def] at hrM
+      have hrL_sq : (rM : L) ^ 2 = -1 := by
+        have h1 : rM ^ 2 + 1 = 0 := by simpa using hrM
+        have h2 := congrArg (algebraMap M L) h1
+        simp only [map_add, map_pow, map_one, map_zero] at h2
+        change (rM : L) ^ 2 + 1 = 0 at h2
+        linear_combination h2
+      have hfac : ((rM : L) - im) * ((rM : L) + im) = 0 := by linear_combination hrL_sq - him_sq
+      have him_M : im ∈ M := by
+        rcases mul_eq_zero.mp hfac with h1 | h2
+        · have heq : (rM : L) = im := sub_eq_zero.mp h1
+          exact heq ▸ rM.2
+        · have heq : im = -(rM : L) := by linear_combination h2
+          exact heq ▸ neg_mem rM.2
+      have htop_le : (⊤ : IntermediateField K L) ≤ M := by
+        rw [← hKim_top, IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]
+        exact him_M
+      exact hM (le_antisymm le_top htop_le)
+  exact ⟨hfin2, by rw [extDegree_eq_finrank K L, hfin2]; rfl, hsf⟩
+
+/-- **Characteristic-`0` counterexample to unguarded `Exercise 16.9`** (`QUEUE.md` Flag 5):
+When `p = 0` (`K = ℚ`, `char ℚ = 0`), `x^0 - x - α = 1 - x - α` has root `1 - α` (1 root, not `0`
+roots) and cannot have a cyclic extension of degree `0`, confirming `Exercise 16.9` implicitly
+assumes prime `p > 0` (matching the preceding prose sentence on p. 127 and §3.9 Theorem 3.16). -/
+theorem exercise_16_9_char_zero_counterexample :
+    ringChar ℚ = 0 ∧
+    (Polynomial.X ^ 0 - Polynomial.X - Polynomial.C (0 : ℚ)).eval 1 = 0 ∧
+    ¬ ∃ (L : Type) (_ : Field L) (_ : Algebra ℚ L) (_ : FiniteDimensional ℚ L),
+      Module.finrank ℚ L = 0 := by
+  refine ⟨ringChar.eq_zero, by simp, ?_⟩
+  rintro ⟨L, _, _, _, h0⟩
+  have hpos : 0 < Module.finrank ℚ L := Module.finrank_pos
+  omega
+
+/-- Helper: in characteristic `p` (prime), every natural cast `(j : R)` satisfies `(j : R) ^ p = j`. -/
+theorem natCast_pow_char {R : Type*} [CommRing R] {p : ℕ} (hp : Nat.Prime p) [CharP R p]
+    (j : ℕ) : (j : R) ^ p = (j : R) := by
+  have : Fact p.Prime := ⟨hp⟩
+  induction j with
+  | zero => simp [zero_pow hp.ne_zero]
+  | succ j ih => rw [Nat.cast_succ, add_pow_char, ih, one_pow]
+
+/-- **Exercise 16.9** (§16.3, printed p. 127 / PDF p. 135; prime `p` made explicit per `QUEUE.md`
+Flag 5):
+*"Suppose that `char K = p` [prime], that `f = x^p - x - α ∈ K[x]` and that `L : K` is a splitting
+field extension for `f`. Show that if `β` is a root of `f` then the roots of `f` are
+`β, β + 1, ..., β + p - 1`. Show that either `f` splits over `K` or `f` is irreducible over `K`
+and `L : K` is cyclic of degree `p`."* -/
+theorem exercise_16_9 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {p : ℕ} (hp : Nat.Prime p) (hchar : ringChar K = p) (α : K)
+    (hsf : IsGarlingSplittingFieldExtension K L (Polynomial.X ^ p - Polynomial.X - Polynomial.C α)) :
+    let f : K[X] := Polynomial.X ^ p - Polynomial.X - Polynomial.C α
+    (∀ β : L, Polynomial.aeval β f = 0 →
+      Function.Injective (fun j : Fin p => β + (j : L)) ∧
+      (∀ j : Fin p, Polynomial.aeval (β + (j : L)) f = 0) ∧
+      f.map (algebraMap K L) = ∏ j : Fin p, (Polynomial.X - Polynomial.C (β + (j : L))) ∧
+      (f.map (algebraMap K L)).roots.toFinset = Finset.univ.image (fun j : Fin p => β + (j : L))) ∧
+    Xor (GarlingSplitsOver K K f)
+      (Irreducible f ∧ IsGarlingCyclicExtension K L ∧ Module.finrank K L = p ∧ extDegree K L = p) := by
+  intro f
+  have _ : CharP K p := hchar ▸ ringChar.charP K
+  have _ : CharP L p := charP_of_injective_algebraMap (algebraMap K L).injective p
+  have : Fact p.Prime := ⟨hp⟩
+  have hf_deg : f.natDegree = p := by
+    have h1 : (Polynomial.X ^ p - Polynomial.X : K[X]).natDegree = p := by
+      rw [Polynomial.natDegree_sub_eq_left_of_natDegree_lt]
+      · exact Polynomial.natDegree_X_pow p
+      · rw [Polynomial.natDegree_X, Polynomial.natDegree_X_pow]; exact hp.one_lt
+    rw [show f = (Polynomial.X ^ p - Polynomial.X) - Polynomial.C α from rfl,
+      Polynomial.natDegree_sub_eq_left_of_natDegree_lt]
+    · exact h1
+    · rw [Polynomial.natDegree_C, h1]; exact hp.pos
+  have hf_monic : f.Monic := by
+    have h1 : (Polynomial.X ^ p - Polynomial.X : K[X]).Monic := by
+      refine Polynomial.Monic.sub_of_left (Polynomial.monic_X_pow p) ?_
+      rw [Polynomial.degree_X, Polynomial.degree_X_pow]
+      exact_mod_cast hp.one_lt
+    refine h1.sub_of_left ?_
+    rw [Polynomial.degree_eq_natDegree h1.ne_zero]
+    have hd1 : (Polynomial.X ^ p - Polynomial.X : K[X]).natDegree = p := by
+      rw [Polynomial.natDegree_sub_eq_left_of_natDegree_lt]
+      · exact Polynomial.natDegree_X_pow p
+      · rw [Polynomial.natDegree_X, Polynomial.natDegree_X_pow]; exact hp.one_lt
+    rw [hd1]
+    exact lt_of_le_of_lt Polynomial.degree_C_le (by exact_mod_cast hp.pos)
+  have hf_deriv : f.derivative = -1 := by
+    simp [f, Polynomial.derivative_X_pow, CharP.cast_eq_zero]
+  have hf_sep : f.Separable := by
+    rw [Polynomial.Separable, hf_deriv]
+    exact isCoprime_one_right.neg_right
+  have hf_gsep : IsGarlingSeparablePoly f :=
+    ((mathlib_separable_iff_squarefree_and_isGarlingSeparablePoly f).mp hf_sep).2.2
+  have hgal : IsGarlingGaloisExtension K L :=
+    isGarlingGalois_of_splittingField hf_monic.ne_zero hsf hf_gsep
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  -- Part 1: Root characterization
+  have hpart1 : ∀ β : L, Polynomial.aeval β f = 0 →
+      Function.Injective (fun j : Fin p => β + (j : L)) ∧
+      (∀ j : Fin p, Polynomial.aeval (β + (j : L)) f = 0) ∧
+      f.map (algebraMap K L) = ∏ j : Fin p, (Polynomial.X - Polynomial.C (β + (j : L))) ∧
+      (f.map (algebraMap K L)).roots.toFinset = Finset.univ.image (fun j : Fin p => β + (j : L)) := by
+    intro β hβ
+    have hβ_eq : β ^ p - β = algebraMap K L α := by
+      simpa [f, sub_eq_zero] using hβ
+    have hinj : Function.Injective (fun j : Fin p => β + (j : L)) := by
+      intro a b hab
+      have hcast : ((a : ℕ) : L) = ((b : ℕ) : L) := add_left_cancel hab
+      rcases le_total (a : ℕ) (b : ℕ) with hle | hle
+      · have hsub0 : (((b : ℕ) - (a : ℕ) : ℕ) : L) = 0 := by
+          rw [Nat.cast_sub hle, hcast, sub_self]
+        have hdvd : p ∣ (b : ℕ) - (a : ℕ) := (CharP.cast_eq_zero_iff L p _).mp hsub0
+        have hlt : (b : ℕ) - (a : ℕ) < p := by omega
+        have h0 : (b : ℕ) - (a : ℕ) = 0 := by
+          by_contra hne
+          exact not_lt_of_ge (Nat.le_of_dvd (Nat.pos_of_ne_zero hne) hdvd) hlt
+        exact Fin.ext (by omega)
+      · have hsub0 : (((a : ℕ) - (b : ℕ) : ℕ) : L) = 0 := by
+          rw [Nat.cast_sub hle, hcast, sub_self]
+        have hdvd : p ∣ (a : ℕ) - (b : ℕ) := (CharP.cast_eq_zero_iff L p _).mp hsub0
+        have hlt : (a : ℕ) - (b : ℕ) < p := by omega
+        have h0 : (a : ℕ) - (b : ℕ) = 0 := by
+          by_contra hne
+          exact not_lt_of_ge (Nat.le_of_dvd (Nat.pos_of_ne_zero hne) hdvd) hlt
+        exact Fin.ext (by omega)
+    have hroots : ∀ j : Fin p, Polynomial.aeval (β + (j : L)) f = 0 := by
+      intro j
+      simp only [f, map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C]
+      rw [add_pow_char, natCast_pow_char hp (j : ℕ)]
+      linear_combination hβ_eq
+    have hfac : f.map (algebraMap K L) = ∏ j : Fin p, (Polynomial.X - Polynomial.C (β + (j : L))) := by
+      let S : Finset L := Finset.univ.image (fun j : Fin p => β + (j : L))
+      have hdvd : (∏ x ∈ S, (Polynomial.X - Polynomial.C x)) ∣ f.map (algebraMap K L) := by
+        refine Finset.prod_dvd_of_coprime
+          (fun x _ y _ hxy => Polynomial.pairwise_coprime_X_sub_C Function.injective_id hxy) ?_
+        intro x hx
+        rw [Finset.mem_image] at hx
+        rcases hx with ⟨j, _, rfl⟩
+        rw [Polynomial.dvd_iff_isRoot, Polynomial.IsRoot.def, Polynomial.eval_map,
+          ← Polynomial.aeval_def]
+        exact hroots j
+      have hprodS : (∏ x ∈ S, (Polynomial.X - Polynomial.C x)) =
+          ∏ j : Fin p, (Polynomial.X - Polynomial.C (β + (j : L))) :=
+        Finset.prod_image fun a _ b _ hab => hinj hab
+      rw [hprodS] at hdvd
+      have hmonR : (∏ j : Fin p, (Polynomial.X - Polynomial.C (β + (j : L)))).Monic :=
+        Polynomial.monic_prod_of_monic _ _ fun j _ => Polynomial.monic_X_sub_C _
+      exact Polynomial.eq_of_monic_of_dvd_of_natDegree_le hmonR (hf_monic.map _) hdvd (by
+        rw [Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective, hf_deg,
+          Polynomial.natDegree_prod _ _ (fun j _ => Polynomial.X_sub_C_ne_zero _)]
+        simp only [Polynomial.natDegree_X_sub_C, Finset.sum_const, Finset.card_univ,
+          Fintype.card_fin, smul_eq_mul, mul_one, le_refl])
+    have hfinset : (f.map (algebraMap K L)).roots.toFinset =
+        Finset.univ.image (fun j : Fin p => β + (j : L)) := by
+      ext x
+      rw [Multiset.mem_toFinset, Polynomial.mem_roots (Polynomial.map_ne_zero hf_monic.ne_zero),
+        Polynomial.IsRoot.def, hfac, Polynomial.eval_prod, Finset.prod_eq_zero_iff]
+      simp only [Finset.mem_univ, true_and, Polynomial.eval_sub, Polynomial.eval_X,
+        Polynomial.eval_C, sub_eq_zero, Finset.mem_image, eq_comm]
+    exact ⟨hinj, hroots, hfac, hfinset⟩
+  -- Part 2: Dichotomy (splits over K) ⊻ (irreducible & cyclic of degree p)
+  have hnot_both : ¬ (GarlingSplitsOver K K f ∧ Irreducible f) := by
+    rintro ⟨hspK, hirr⟩
+    have hsp_ml := (garlingSplitsOver_iff_splits K K f).mp hspK
+    rw [Algebra.algebraMap_self, Polynomial.map_id] at hsp_ml
+    have hne_r : f.roots ≠ 0 := by
+      intro h0
+      have hc := Polynomial.Splits.natDegree_eq_card_roots hsp_ml
+      rw [h0, Multiset.card_zero, hf_deg] at hc; exact hp.ne_zero hc
+    obtain ⟨r, hr⟩ := Multiset.exists_mem_of_ne_zero hne_r
+    rw [Polynomial.mem_roots hf_monic.ne_zero, Polynomial.IsRoot.def] at hr
+    obtain ⟨q_fac, hq_fac⟩ := Polynomial.dvd_iff_isRoot.mpr hr
+    rcases hirr.isUnit_or_isUnit hq_fac with hu1 | hu2
+    · rw [Polynomial.isUnit_iff_degree_eq_zero,
+        Polynomial.degree_eq_natDegree (Polynomial.X_sub_C_ne_zero r),
+        Polynomial.natDegree_X_sub_C] at hu1
+      exact absurd hu1 (by decide)
+    · have hq0 : q_fac ≠ 0 := fun h => by rw [h, mul_zero] at hq_fac; exact hf_monic.ne_zero hq_fac
+      rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hq0] at hu2
+      have hqd : q_fac.natDegree = 0 := Nat.cast_injective hu2
+      have hd := congrArg Polynomial.natDegree hq_fac
+      rw [hf_deg, Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero r) hq0,
+        Polynomial.natDegree_X_sub_C, hqd] at hd
+      have := hp.two_le; omega
+  refine ⟨hpart1, ?_⟩
+  by_cases hspK : GarlingSplitsOver K K f
+  · exact Or.inl ⟨hspK, fun h => hnot_both ⟨hspK, h.1⟩⟩
+  · refine Or.inr ⟨?_, hspK⟩
+    -- Pick a root β ∈ L of f
+    have hspL := (garlingSplitsOver_iff_splits K L f).mp hsf.1
+    have hne_r : (f.map (algebraMap K L)).roots ≠ 0 := by
+      intro h0
+      have hc := Polynomial.Splits.natDegree_eq_card_roots hspL
+      rw [h0, Multiset.card_zero, Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective,
+        hf_deg] at hc
+      exact hp.ne_zero hc
+    obtain ⟨β, hβ_mem⟩ := Multiset.exists_mem_of_ne_zero hne_r
+    have hβ : Polynomial.aeval β f = 0 := by
+      rw [Polynomial.mem_roots (Polynomial.map_ne_zero hf_monic.ne_zero),
+        Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def] at hβ_mem
+      exact hβ_mem
+    obtain ⟨hinj_r, hroots_r, hfac_r, _⟩ := hpart1 β hβ
+    -- Show L = K⟮β⟯
+    have hKβ_top : K⟮β⟯ = ⊤ := by
+      by_contra hne
+      refine hsf.2 K⟮β⟯ hne ⟨p, 1, fun j => ⟨β + (j : L), add_mem (IntermediateField.mem_adjoin_simple_self K β) (natCast_mem K⟮β⟯ (j : ℕ))⟩, ?_⟩
+      unfold GarlingSplitsExplicit
+      apply Polynomial.map_injective (algebraMap K⟮β⟯ L) (algebraMap K⟮β⟯ L).injective
+      have hmc : (f.map (algebraMap K K⟮β⟯)).map (algebraMap K⟮β⟯ L) = f.map (algebraMap K L) := by
+        rw [Polynomial.map_map]; rfl
+      rw [hmc, hfac_r]
+      simp only [map_one, one_mul, Polynomial.map_prod]
+      exact Finset.prod_congr rfl fun j _ => by simp
+    -- Show β ∉ K (else f splits over K!)
+    have hβ_not_K : β ∉ Set.range (algebraMap K L) := by
+      rintro ⟨c, hc⟩
+      apply hspK
+      refine ⟨p, 1, fun j => c + (j : K), ?_⟩
+      unfold GarlingSplitsExplicit
+      apply Polynomial.map_injective (algebraMap K L) (algebraMap K L).injective
+      rw [Algebra.algebraMap_self, Polynomial.map_id, map_one, Polynomial.C_1, one_mul, hfac_r,
+        Polynomial.map_prod]
+      exact Finset.prod_congr rfl fun j _ => by simp [hc]
+    have hfin_gt1 : 1 < Module.finrank K L := by
+      have hpos : 0 < Module.finrank K L := Module.finrank_pos
+      by_contra hle
+      have h1 : Module.finrank K L = 1 := by omega
+      have hbot : (⊥ : IntermediateField K L) = ⊤ :=
+        IntermediateField.eq_of_le_of_finrank_eq bot_le
+          (by rw [IntermediateField.finrank_bot, LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, h1])
+      exact hβ_not_K (IntermediateField.mem_bot.mp (hbot.symm ▸ IntermediateField.mem_top))
+    -- Embed Additive (Gal(L/K)) injectively into ZMod p via σ(β) = β + c(σ)
+    have hact : ∀ σ : L ≃ₐ[K] L, ∃ j : Fin p, σ β = β + (j : L) := by
+      intro σ
+      have hσβ : Polynomial.aeval (σ β) f = 0 := by
+        rw [Polynomial.aeval_algHom_apply, hβ, map_zero]
+      have hev := congrArg (Polynomial.eval (σ β)) hfac_r
+      rw [Polynomial.eval_map, ← Polynomial.aeval_def, hσβ, Polynomial.eval_prod, eq_comm,
+        Finset.prod_eq_zero_iff] at hev
+      rcases hev with ⟨j, _, hj⟩
+      rw [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, sub_eq_zero] at hj
+      exact ⟨j, hj⟩
+    let cFun : (L ≃ₐ[K] L) → Fin p := fun σ => (hact σ).choose
+    have hcFun_spec : ∀ σ : L ≃ₐ[K] L, σ β = β + (cFun σ : L) := fun σ => (hact σ).choose_spec
+    let φ : (L ≃ₐ[K] L) →* Multiplicative (ZMod p) :=
+      { toFun := fun σ => Multiplicative.ofAdd ((cFun σ : ℕ) : ZMod p)
+        map_one' := by
+          have h1 := hcFun_spec 1
+          simp only [AlgEquiv.one_apply] at h1
+          have h0 : cFun 1 = ⟨0, hp.pos⟩ := hinj_r (by simpa using h1.symm)
+          simp [h0]
+        map_mul' := fun g₁ g₂ => by
+          apply congrArg Multiplicative.ofAdd
+          have h12 : (g₁ * g₂) β = β + ((cFun g₁ : ℕ) + (cFun g₂ : ℕ) : L) := by
+            rw [AlgEquiv.mul_apply, hcFun_spec g₂, map_add, map_natCast, hcFun_spec g₁,
+              add_assoc]
+          have h12' := hcFun_spec (g₁ * g₂)
+          have hcast_eq : ((cFun (g₁ * g₂) : ℕ) : L) = (((cFun g₁ : ℕ) + (cFun g₂ : ℕ) : ℕ) : L) := by
+            have := add_left_cancel (h12'.symm.trans h12)
+            simpa [Nat.cast_add] using this
+          have hmod : (cFun (g₁ * g₂) : ℕ) ≡ (cFun g₁ : ℕ) + (cFun g₂ : ℕ) [MOD p] := by
+            rcases le_total (cFun (g₁ * g₂) : ℕ) ((cFun g₁ : ℕ) + (cFun g₂ : ℕ)) with hle | hle
+            · have h0 : ((((cFun g₁ : ℕ) + (cFun g₂ : ℕ)) - (cFun (g₁ * g₂) : ℕ) : ℕ) : L) = 0 := by
+                rw [Nat.cast_sub hle, hcast_eq, sub_self]
+              exact (Nat.modEq_iff_dvd' hle).mpr ((CharP.cast_eq_zero_iff L p _).mp h0)
+            · have h0 : (((cFun (g₁ * g₂) : ℕ) - ((cFun g₁ : ℕ) + (cFun g₂ : ℕ)) : ℕ) : L) = 0 := by
+                rw [Nat.cast_sub hle, hcast_eq, sub_self]
+              exact ((Nat.modEq_iff_dvd' hle).mpr ((CharP.cast_eq_zero_iff L p _).mp h0)).symm
+          change ((cFun (g₁ * g₂) : ℕ) : ZMod p) = ((cFun g₁ : ℕ) : ZMod p) + ((cFun g₂ : ℕ) : ZMod p)
+          rw [← Nat.cast_add, ZMod.natCast_eq_natCast_iff]
+          exact hmod }
+    have hφ_inj : Function.Injective φ := by
+      intro a b hab
+      have hmod : (cFun a : ℕ) ≡ (cFun b : ℕ) [MOD p] :=
+        (ZMod.natCast_eq_natCast_iff _ _ _).mp (Multiplicative.ofAdd.injective hab)
+      rw [Nat.ModEq, Nat.mod_eq_of_lt (cFun _).isLt, Nat.mod_eq_of_lt (cFun _).isLt] at hmod
+      have hc_eq : cFun a = cFun b := Fin.ext hmod
+      have hβ_eq : a β = b β := by
+        rw [hcFun_spec, hcFun_spec, hc_eq]
+      let Eeq : IntermediateField K L :=
+        { (AlgHom.equalizer a.toAlgHom b.toAlgHom) with
+          inv_mem' := fun {x} hx => by
+            change a x⁻¹ = b x⁻¹
+            rw [map_inv₀, map_inv₀]; exact congrArg Inv.inv hx }
+      have htop_le : (⊤ : IntermediateField K L) ≤ Eeq := by
+        rw [← hKβ_top, IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]
+        exact hβ_eq
+      ext x; exact htop_le IntermediateField.mem_top
+    have hdvd_p : Nat.card (L ≃ₐ[K] L) ∣ p := by
+      let H : Subgroup (Multiplicative (ZMod p)) := φ.range
+      have hcardH : Nat.card H = Nat.card (L ≃ₐ[K] L) := by
+        let e : (L ≃ₐ[K] L) ≃* H :=
+          MulEquiv.ofBijective φ.rangeRestrict
+            ⟨fun x y hxy => hφ_inj (congrArg Subtype.val hxy), φ.rangeRestrict_surjective⟩
+        exact Nat.card_congr e.toEquiv.symm
+      have hd := H.card_subgroup_dvd_card
+      have hcz : Nat.card (ZMod p) = p := by rw [Nat.card_eq_fintype_card, ZMod.card]
+      rwa [hcardH, Nat.card_congr Multiplicative.toAdd, hcz] at hd
+    have hcardG : Nat.card (L ≃ₐ[K] L) = p := by
+      rw [IsGalois.card_aut_eq_finrank K L] at hdvd_p ⊢
+      rcases hp.eq_one_or_self_of_dvd _ hdvd_p with h1 | hp_eq
+      · omega
+      · exact hp_eq
+    have hfinL : Module.finrank K L = p := by
+      rwa [IsGalois.card_aut_eq_finrank K L] at hcardG
+    have hβ_int : IsIntegral K β := Algebra.IsIntegral.isIntegral β
+    have hmin_eq : minpoly K β = f := by
+      have hdeg_min : (minpoly K β).natDegree = p := by
+        rw [← IntermediateField.adjoin.finrank hβ_int, hKβ_top,
+          LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, hfinL]
+      exact (Polynomial.eq_of_monic_of_dvd_of_natDegree_le (minpoly.monic hβ_int) hf_monic
+        (minpoly.dvd K β hβ) (by rw [hf_deg, hdeg_min])).symm
+    have hirr : Irreducible f := hmin_eq ▸ minpoly.irreducible hβ_int
+    have hcyc : IsGarlingCyclicExtension K L :=
+      ⟨hgal, isCyclic_of_prime_card (by rw [IsGalois.card_aut_eq_finrank K L, hfinL])⟩
+    exact ⟨hirr, hcyc, hfinL, by rw [extDegree_eq_finrank K L, hfinL]⟩
+
+/-- Raw Galois trace sum `∑_{σ ∈ Γ(L : K)} σ(x)` valued in `L` (for finite Galois group `Γ(L : K)`). -/
+noncomputable def garlingTraceL {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [Finite (L ≃ₐ[K] L)] (x : L) : L :=
+  letI : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  ∑ σ : L ≃ₐ[K] L, σ x
+
+theorem garlingTraceL_eq_sum {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [Fintype (L ≃ₐ[K] L)] (x : L) :
+    garlingTraceL (K := K) x = ∑ σ : L ≃ₐ[K] L, σ x := by
+  unfold garlingTraceL
+  convert rfl
+
+theorem garlingTraceL_gal_fix {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [Finite (L ≃ₐ[K] L)] (τ : L ≃ₐ[K] L) (x : L) :
+    τ (garlingTraceL (K := K) x) = garlingTraceL (K := K) x := by
+  let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  rw [garlingTraceL_eq_sum, map_sum]
+  exact Equiv.sum_comp (Equiv.mulLeft τ) (fun σ : L ≃ₐ[K] L => σ x)
+
+theorem garlingTraceL_apply_gal {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [Finite (L ≃ₐ[K] L)] (τ : L ≃ₐ[K] L) (x : L) :
+    garlingTraceL (K := K) (τ x) = garlingTraceL (K := K) x := by
+  let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  rw [garlingTraceL_eq_sum, garlingTraceL_eq_sum]
+  exact Equiv.sum_comp (Equiv.mulRight τ) (fun σ : L ≃ₐ[K] L => σ x)
+
+/-- **Inline prose definition of Trace** (`Exercise 16.10`, §16.3, printed pp. 127–128 / PDF pp.
+135–136):
+For a Garling Galois extension `L : K` with Galois group `G = Γ(L : K)`, the trace
+`tr : L →ₗ[K] K` is the unique `K`-linear mapping satisfying
+`algebraMap K L (tr x) = ∑_{σ ∈ G} σ(x)` for all `x ∈ L`. -/
+noncomputable def garlingTrace (K : Type u) (L : Type v) [Field K] [Field L] [Algebra K L]
+    (hgal : IsGarlingGaloisExtension K L) : L →ₗ[K] K :=
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  have hmem : ∀ x : L, ∃ k : K, algebraMap K L k = garlingTraceL (K := K) x :=
+    fun x => mem_range_algebraMap_of_forall_gal_fix fun τ => garlingTraceL_gal_fix τ x
+  { toFun := fun x => (hmem x).choose
+    map_add' := fun x y => (algebraMap K L).injective (by
+      let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+      rw [map_add, (hmem (x + y)).choose_spec, (hmem x).choose_spec, (hmem y).choose_spec,
+        garlingTraceL_eq_sum, garlingTraceL_eq_sum, garlingTraceL_eq_sum, ← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun σ _ => map_add σ x y)
+    map_smul' := fun c x => (algebraMap K L).injective (by
+      let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+      simp only [RingHom.id_apply, smul_eq_mul, map_mul, Algebra.smul_def]
+      rw [(hmem _).choose_spec, (hmem x).choose_spec, garlingTraceL_eq_sum, garlingTraceL_eq_sum,
+        Finset.mul_sum]
+      exact Finset.sum_congr rfl fun σ _ => by rw [map_mul, σ.commutes]) }
+
+theorem garlingTrace_spec {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    (hgal : IsGarlingGaloisExtension K L) [Fintype (L ≃ₐ[K] L)] (x : L) :
+    algebraMap K L (garlingTrace K L hgal x) = ∑ σ : L ≃ₐ[K] L, σ x := by
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  unfold garlingTrace
+  dsimp only [LinearMap.coe_mk, AddHom.coe_mk]
+  rw [(mem_range_algebraMap_of_forall_gal_fix fun τ => garlingTraceL_gal_fix τ x).choose_spec,
+    garlingTraceL_eq_sum]
+
+theorem garlingTrace_apply_gal {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    (hgal : IsGarlingGaloisExtension K L) (τ : L ≃ₐ[K] L) (x : L) :
+    garlingTrace K L hgal (τ x) = garlingTrace K L hgal x := by
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  apply (algebraMap K L).injective
+  rw [garlingTrace_spec, garlingTrace_spec]
+  exact Equiv.sum_comp (Equiv.mulRight τ) (fun σ : L ≃ₐ[K] L => σ x)
+
+/-- **Exercise 16.10** (§16.3, printed pp. 127–128 / PDF pp. 135–136; `QUEUE.md` Flags 6–7):
+*"Suppose that `L : K` is a Galois extension with Galois group `G`. If `x ∈ L`, let
+`tr(x) = ∑_{σ ∈ G} σ(x)`. Show that `tr` is a `K`-linear mapping of `L` onto `K`. The mapping `tr`
+is the `trace`. What is the effect of `tr` on `K` if `char K ∣ |G|`?"*
+
+Proves:
+1. `garlingTrace K L hgal : L →ₗ[K] K` satisfies `tr(x) = ∑_{σ ∈ G} σ(x)` and is **surjective**
+   onto `K` (via the Corollary to Theorem 16.3);
+2. For all `k ∈ K`, `tr(k) = |G| · k`;
+3. When `char K ∣ |G|` (and indeed iff `char K ∣ |G|`), `tr|_K = 0` (`tr` vanishes identically on `K`). -/
+theorem exercise_16_10 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    (hgal : IsGarlingGaloisExtension K L) :
+    (∀ [Fintype (GarlingGaloisGroup K L)] (x : L),
+      algebraMap K L (garlingTrace K L hgal x) = ∑ σ : GarlingGaloisGroup K L, σ x) ∧
+    Function.Surjective (garlingTrace K L hgal) ∧
+    (∀ k : K, garlingTrace K L hgal (algebraMap K L k) =
+      (Nat.card (GarlingGaloisGroup K L) : K) * k) ∧
+    (ringChar K ∣ Nat.card (GarlingGaloisGroup K L) ↔
+      ∀ k : K, garlingTrace K L hgal (algebraMap K L k) = 0) := by
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  have hsurj : Function.Surjective (garlingTrace K L hgal) := by
+    let eFin : Fin (Fintype.card (L ≃ₐ[K] L)) ≃ (L ≃ₐ[K] L) := (Fintype.equivFin _).symm
+    have hpos : 0 < Fintype.card (L ≃ₐ[K] L) := Fintype.card_pos
+    obtain ⟨x₀, hx₀⟩ := exists_apply_sum_ne_zero_of_algEquiv
+      (fun i => eFin i) eFin.injective (fun _ => (1 : L)) ⟨⟨0, hpos⟩, one_ne_zero⟩
+    have htr0_ne : garlingTrace K L hgal x₀ ≠ 0 := by
+      intro h0
+      apply hx₀
+      have h1 : algebraMap K L (garlingTrace K L hgal x₀) = 0 := by rw [h0, map_zero]
+      rw [garlingTrace_spec] at h1
+      simpa [one_mul, Equiv.sum_comp eFin (fun σ : L ≃ₐ[K] L => σ x₀)] using h1
+    intro c
+    refine ⟨(c * (garlingTrace K L hgal x₀)⁻¹) • x₀, ?_⟩
+    rw [LinearMap.map_smul, smul_eq_mul, mul_assoc, inv_mul_cancel₀ htr0_ne, mul_one]
+  have honK : ∀ k : K, garlingTrace K L hgal (algebraMap K L k) =
+      (Nat.card (GarlingGaloisGroup K L) : K) * k := by
+    intro k
+    apply (algebraMap K L).injective
+    rw [garlingTrace_spec, map_mul, map_natCast]
+    have hsum : (∑ σ : L ≃ₐ[K] L, σ (algebraMap K L k)) =
+        (Fintype.card (L ≃ₐ[K] L) : L) * algebraMap K L k := by
+      simp [AlgEquiv.commutes]
+    rw [hsum, Nat.card_eq_fintype_card]
+  have hchar_iff : ringChar K ∣ Nat.card (GarlingGaloisGroup K L) ↔
+      ∀ k : K, garlingTrace K L hgal (algebraMap K L k) = 0 := by
+    constructor
+    · intro hdvd k
+      rw [honK, (ringChar.spec K _).mpr hdvd, zero_mul]
+    · intro hall
+      have h1 := hall 1
+      rw [honK, mul_one] at h1
+      exact (ringChar.spec K _).mp h1
+  exact ⟨fun [_] x => garlingTrace_spec hgal x, hsurj, honK, hchar_iff⟩
+
+/-- **Exercise 16.11** (§16.3, printed p. 128 / PDF p. 136):
+*"Suppose that `char K = p`, that `L : K` is a cyclic extension of degree `p` and that `τ` generates
+`Γ(L : K)`. Let `z` be an element of `L` with `tr(z) = 1`, and let
+`y = (p - 1)z + (p - 2)τ(z) + ... + 2τ^{p-3}(z) + τ^{p-2}(z)`.
+Show that `τ(y) - y = 1`, and that `α = y^p - y ∈ K`. Show that `f = x^p - x - α` is irreducible
+over `K`, that `L : K` is a splitting field extension for `f` and that `L = K(y)`."* -/
+theorem exercise_16_11 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {p : ℕ} (hchar : ringChar K = p) (hcyc : IsGarlingCyclicExtension K L)
+    (hdeg : Module.finrank K L = p) {τ : GarlingGaloisGroup K L}
+    (hgen : Subgroup.zpowers τ = ⊤) {z : L} (hz : garlingTrace K L hcyc.1 z = 1) :
+    let y : L := ∑ j : Fin p, ((p - 1 - (j : ℕ) : ℕ) : L) * (τ ^ (j : ℕ)) z
+    Nat.Prime p ∧
+    τ y - y = 1 ∧
+    ∃ α : K,
+      algebraMap K L α = y ^ p - y ∧
+      Irreducible (Polynomial.X ^ p - Polynomial.X - Polynomial.C α : K[X]) ∧
+      IsGarlingSplittingFieldExtension K L (Polynomial.X ^ p - Polynomial.X - Polynomial.C α) ∧
+      K⟮y⟯ = ⊤ := by
+  intro y
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hcyc.1 |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hcyc.1 |>.2
+  have hp_pos : 0 < p := hdeg ▸ Module.finrank_pos
+  have hp : Nat.Prime p := by
+    have _ : CharP K p := hchar ▸ ringChar.charP K
+    rcases CharP.char_is_prime_or_zero K p with hp | h0
+    · exact hp
+    · omega
+  have _ : CharP K p := hchar ▸ ringChar.charP K
+  have _ : CharP L p := charP_of_injective_algebraMap (algebraMap K L).injective p
+  have : Fact p.Prime := ⟨hp⟩
+  have hcardG : Nat.card (L ≃ₐ[K] L) = p := by
+    rw [IsGalois.card_aut_eq_finrank K L, hdeg]
+  have hτ_ord : orderOf τ = p := by
+    rw [← Nat.card_zpowers, hgen, Nat.card_congr Subgroup.topEquiv.toEquiv, hcardG]
+  have hτ_pow_bij : Function.Bijective (fun k : Fin p => τ ^ (k : ℕ)) := by
+    let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+    refine (Fintype.bijective_iff_injective_and_card _).mpr ⟨?_, by
+      rw [Fintype.card_fin, ← Nat.card_eq_fintype_card, hcardG]⟩
+    intro a b hab
+    have hmod : (a : ℕ) ≡ (b : ℕ) [MOD p] := by
+      have h1 := pow_eq_pow_iff_modEq.mp hab
+      rwa [hτ_ord] at h1
+    rw [Nat.ModEq, Nat.mod_eq_of_lt a.isLt, Nat.mod_eq_of_lt b.isLt] at hmod
+    exact Fin.ext hmod
+  have htr_z : ∑ k : Fin p, (τ ^ (k : ℕ)) z = 1 := by
+    let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+    have h1 := garlingTrace_spec hcyc.1 z
+    rw [hz, map_one] at h1
+    rw [h1]
+    exact Equiv.sum_comp (Equiv.ofBijective _ hτ_pow_bij) (fun σ : L ≃ₐ[K] L => σ z)
+  -- Show τ(y) - y = ∑ k, τ^k(z) = 1
+  have hτy : τ y - y = 1 := by
+    have h1 : τ y = ∑ j : Fin p, ((p - 1 - (j : ℕ) : ℕ) : L) * (τ ^ ((j : ℕ) + 1)) z := by
+      simp only [y, map_sum, map_mul, map_natCast]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [← AlgEquiv.mul_apply, ← pow_succ']
+    rw [h1]
+    let shift : Fin p ≃ Fin p := Equiv.addRight (1 : Fin p)
+    rw [← Equiv.sum_comp shift.symm, ← Finset.sum_sub_distrib, ← htr_z]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    have hsymm : shift.symm k = k - 1 := by simp [shift, sub_eq_add_neg]
+    rw [hsymm, fin_sub_one_val k]
+    rcases Nat.eq_zero_or_pos (k : ℕ) with hk0 | hkpos
+    · have hkz : k = 0 := Fin.ext hk0
+      subst hkz
+      simp only [Fin.val_zero, ↓reduceIte, Nat.sub_self, Nat.cast_zero, zero_mul, zero_sub,
+        Nat.sub_zero, pow_zero, AlgEquiv.one_apply]
+      have hpm1 : ((p - 1 : ℕ) : L) = -1 := by
+        have hsum : ((p - 1 : ℕ) : L) + 1 = 0 := by
+          calc ((p - 1 : ℕ) : L) + 1 = ((p - 1 : ℕ) : L) + ((1 : ℕ) : L) := by simp
+            _ = (((p - 1) + 1 : ℕ) : L) := (Nat.cast_add (p - 1) 1).symm
+            _ = (p : L) := by rw [Nat.sub_add_cancel hp.one_le]
+            _ = 0 := CharP.cast_eq_zero L p
+        linear_combination hsum
+      rw [hpm1]; ring
+    · simp only [Nat.ne_of_gt hkpos, ↓reduceIte]
+      rw [Nat.sub_add_cancel hkpos]
+      have hdiff : ((p - 1 - ((k : ℕ) - 1) : ℕ) : L) - ((p - 1 - (k : ℕ) : ℕ) : L) = 1 := by
+        have hlt : (k : ℕ) < p := k.isLt
+        have heq : p - 1 - ((k : ℕ) - 1) = (p - 1 - (k : ℕ)) + 1 := by omega
+        rw [heq, Nat.cast_add, Nat.cast_one]; ring
+      rw [← sub_mul, hdiff, one_mul]
+  -- Show α = y^p - y is fixed by τ, hence lies in K
+  have hτ_ypy : τ (y ^ p - y) = y ^ p - y := by
+    have hτy_eq : τ y = y + 1 := by linear_combination hτy
+    rw [map_sub, map_pow, hτy_eq, add_pow_char, one_pow]
+    ring
+  obtain ⟨α, hα_eq⟩ :=
+    mem_range_algebraMap_of_forall_gal_fix (forall_gal_fix_of_gen_fix hgen hτ_ypy)
+  let f : K[X] := Polynomial.X ^ p - Polynomial.X - Polynomial.C α
+  have hy_root : Polynomial.aeval y f = 0 := by
+    simp [f, hα_eq]
+  have hy_not_K : y ∉ Set.range (algebraMap K L) := by
+    rintro ⟨c, hc⟩
+    have hfix : τ y = y := by rw [← hc, τ.commutes]
+    rw [hfix, sub_self] at hτy
+    exact zero_ne_one hτy
+  have hKy_top : K⟮y⟯ = ⊤ := by
+    have hgt1 : 1 < Module.finrank K K⟮y⟯ := by
+      have hpos : 0 < Module.finrank K K⟮y⟯ := Module.finrank_pos
+      by_contra hle
+      have h1 : Module.finrank K K⟮y⟯ = 1 := by omega
+      have hbot : (⊥ : IntermediateField K L) = K⟮y⟯ :=
+        IntermediateField.eq_of_le_of_finrank_eq bot_le (by rw [IntermediateField.finrank_bot, h1])
+      exact hy_not_K (IntermediateField.mem_bot.mp (hbot ▸ IntermediateField.mem_adjoin_simple_self K y))
+    have hdvd_p : Module.finrank K K⟮y⟯ ∣ p := by
+      rw [← hdeg]
+      exact ⟨Module.finrank K⟮y⟯ L, (Module.finrank_mul_finrank K K⟮y⟯ L).symm⟩
+    have hfin_p : Module.finrank K K⟮y⟯ = p := by
+      rcases hp.eq_one_or_self_of_dvd _ hdvd_p with h1 | hp_eq
+      · omega
+      · exact hp_eq
+    exact IntermediateField.eq_of_le_of_finrank_eq le_top
+      (by rw [hfin_p, LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, hdeg])
+  -- Show f splits over L (as ∏ (X - (y + j))) and L : K is its splitting field extension
+  have hf_deg : f.natDegree = p := by
+    have h1 : (Polynomial.X ^ p - Polynomial.X : K[X]).natDegree = p := by
+      rw [Polynomial.natDegree_sub_eq_left_of_natDegree_lt]
+      · exact Polynomial.natDegree_X_pow p
+      · rw [Polynomial.natDegree_X, Polynomial.natDegree_X_pow]; exact hp.one_lt
+    rw [show f = (Polynomial.X ^ p - Polynomial.X) - Polynomial.C α from rfl,
+      Polynomial.natDegree_sub_eq_left_of_natDegree_lt]
+    · exact h1
+    · rw [Polynomial.natDegree_C, h1]; exact hp.pos
+  have hf_monic : f.Monic := by
+    have h1 : (Polynomial.X ^ p - Polynomial.X : K[X]).Monic := by
+      refine Polynomial.Monic.sub_of_left (Polynomial.monic_X_pow p) ?_
+      rw [Polynomial.degree_X, Polynomial.degree_X_pow]; exact_mod_cast hp.one_lt
+    refine h1.sub_of_left ?_
+    rw [Polynomial.degree_eq_natDegree h1.ne_zero]
+    have hd1 : (Polynomial.X ^ p - Polynomial.X : K[X]).natDegree = p := by
+      rw [Polynomial.natDegree_sub_eq_left_of_natDegree_lt]
+      · exact Polynomial.natDegree_X_pow p
+      · rw [Polynomial.natDegree_X, Polynomial.natDegree_X_pow]; exact hp.one_lt
+    rw [hd1]
+    exact lt_of_le_of_lt Polynomial.degree_C_le (by exact_mod_cast hp.pos)
+  have hfacL : f.map (algebraMap K L) = ∏ j : Fin p, (Polynomial.X - Polynomial.C (y + (j : L))) := by
+    have hinj : Function.Injective (fun j : Fin p => y + (j : L)) := by
+      intro a b hab
+      have hcast : ((a : ℕ) : L) = ((b : ℕ) : L) := add_left_cancel hab
+      rcases le_total (a : ℕ) (b : ℕ) with hle | hle
+      · have hdvd : p ∣ (b : ℕ) - (a : ℕ) :=
+          (CharP.cast_eq_zero_iff L p _).mp (by rw [Nat.cast_sub hle, hcast, sub_self])
+        have h0 : (b : ℕ) - (a : ℕ) = 0 := by
+          by_contra hne; exact not_lt_of_ge (Nat.le_of_dvd (Nat.pos_of_ne_zero hne) hdvd) (by omega)
+        exact Fin.ext (by omega)
+      · have hdvd : p ∣ (a : ℕ) - (b : ℕ) :=
+          (CharP.cast_eq_zero_iff L p _).mp (by rw [Nat.cast_sub hle, hcast, sub_self])
+        have h0 : (a : ℕ) - (b : ℕ) = 0 := by
+          by_contra hne; exact not_lt_of_ge (Nat.le_of_dvd (Nat.pos_of_ne_zero hne) hdvd) (by omega)
+        exact Fin.ext (by omega)
+    let S : Finset L := Finset.univ.image (fun j : Fin p => y + (j : L))
+    have hdvd : (∏ x ∈ S, (Polynomial.X - Polynomial.C x)) ∣ f.map (algebraMap K L) := by
+      refine Finset.prod_dvd_of_coprime
+        (fun x _ y' _ hxy => Polynomial.pairwise_coprime_X_sub_C Function.injective_id hxy) ?_
+      intro x hx
+      rw [Finset.mem_image] at hx
+      rcases hx with ⟨j, _, rfl⟩
+      rw [Polynomial.dvd_iff_isRoot, Polynomial.IsRoot.def, Polynomial.eval_map,
+        ← Polynomial.aeval_def]
+      simp only [f, map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C]
+      rw [add_pow_char, natCast_pow_char hp (j : ℕ)]
+      linear_combination hα_eq.symm
+    rw [Finset.prod_image fun a _ b _ hab => hinj hab] at hdvd
+    exact Polynomial.eq_of_monic_of_dvd_of_natDegree_le
+      (Polynomial.monic_prod_of_monic _ _ fun j _ => Polynomial.monic_X_sub_C _)
+      (hf_monic.map _) hdvd (by
+        rw [Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective, hf_deg,
+          Polynomial.natDegree_prod _ _ (fun j _ => Polynomial.X_sub_C_ne_zero _)]
+        simp only [Polynomial.natDegree_X_sub_C, Finset.sum_const, Finset.card_univ,
+          Fintype.card_fin, smul_eq_mul, mul_one, le_refl])
+  have hsf : IsGarlingSplittingFieldExtension K L f := by
+    refine ⟨⟨p, 1, fun j => y + (j : L), ?_⟩, ?_⟩
+    · rw [GarlingSplitsExplicit, map_one, Polynomial.C_1, one_mul]; exact hfacL
+    · intro M hM hspM
+      have hsp_ml := (garlingSplitsOver_iff_splits K M f).mp hspM
+      have hne_r : (f.map (algebraMap K M)).roots ≠ 0 := by
+        intro h0
+        have hc := Polynomial.Splits.natDegree_eq_card_roots hsp_ml
+        rw [h0, Multiset.card_zero, Polynomial.natDegree_map_eq_of_injective (algebraMap K M).injective,
+          hf_deg] at hc
+        exact hp.ne_zero hc
+      obtain ⟨rM, hrM⟩ := Multiset.exists_mem_of_ne_zero hne_r
+      rw [Polynomial.mem_roots (Polynomial.map_ne_zero hf_monic.ne_zero), Polynomial.IsRoot.def,
+        Polynomial.eval_map, ← Polynomial.aeval_def] at hrM
+      have hrL : Polynomial.aeval (rM : L) f = 0 := by
+        change Polynomial.aeval (M.val rM) f = 0
+        rw [Polynomial.aeval_algHom_apply, hrM, map_zero]
+      have hev := congrArg (Polynomial.eval (rM : L)) hfacL
+      rw [Polynomial.eval_map, ← Polynomial.aeval_def, hrL, Polynomial.eval_prod, eq_comm,
+        Finset.prod_eq_zero_iff] at hev
+      rcases hev with ⟨j, _, hj⟩
+      rw [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, sub_eq_zero] at hj
+      have hy_in_M : y ∈ M := by
+        have hy_eq : y = (rM : L) - (j : L) := by linear_combination -hj
+        rw [hy_eq]
+        exact sub_mem rM.2 (natCast_mem M (j : ℕ))
+      have htop_le : (⊤ : IntermediateField K L) ≤ M := by
+        rw [← hKy_top, IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]; exact hy_in_M
+      exact hM (le_antisymm le_top htop_le)
+  have hnot_spK : ¬ GarlingSplitsOver K K f := by
+    intro hspK
+    have hsp_ml := (garlingSplitsOver_iff_splits K K f).mp hspK
+    rw [Algebra.algebraMap_self, Polynomial.map_id] at hsp_ml
+    have hne_r : f.roots ≠ 0 := by
+      intro h0
+      have hc := Polynomial.Splits.natDegree_eq_card_roots hsp_ml
+      rw [h0, Multiset.card_zero, hf_deg] at hc; exact hp.ne_zero hc
+    obtain ⟨c, hc⟩ := Multiset.exists_mem_of_ne_zero hne_r
+    rw [Polynomial.mem_roots hf_monic.ne_zero, Polynomial.IsRoot.def] at hc
+    have hev := congrArg (Polynomial.eval (algebraMap K L c)) hfacL
+    rw [Polynomial.eval_map, Polynomial.eval₂_at_apply, hc, map_zero, Polynomial.eval_prod, eq_comm,
+      Finset.prod_eq_zero_iff] at hev
+    rcases hev with ⟨j, _, hj⟩
+    rw [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, sub_eq_zero] at hj
+    exact hy_not_K ⟨c - (j : K), by rw [map_sub, map_natCast]; linear_combination hj⟩
+  have hirr : Irreducible f := by
+    rcases (exercise_16_9 hp hchar α hsf).2 with ⟨hsp, _⟩ | ⟨hi, _⟩
+    · exact (hnot_spK hsp).elim
+    · exact hi.1
+  exact ⟨hp, hτy, α, hα_eq, hirr, hsf, hKy_top⟩
+
+/-- Raw Galois norm product `∏_{σ ∈ Γ(L : K)} σ(x)` valued in `L`. -/
+noncomputable def garlingNormL {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [Finite (L ≃ₐ[K] L)] (x : L) : L :=
+  letI : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  ∏ σ : L ≃ₐ[K] L, σ x
+
+theorem garlingNormL_eq_prod {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [Fintype (L ≃ₐ[K] L)] (x : L) :
+    garlingNormL (K := K) x = ∏ σ : L ≃ₐ[K] L, σ x := by
+  unfold garlingNormL
+  convert rfl
+
+theorem garlingNormL_gal_fix {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    [Finite (L ≃ₐ[K] L)] (τ : L ≃ₐ[K] L) (x : L) :
+    τ (garlingNormL (K := K) x) = garlingNormL (K := K) x := by
+  let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  rw [garlingNormL_eq_prod, map_prod]
+  exact Equiv.prod_comp (Equiv.mulLeft τ) (fun σ : L ≃ₐ[K] L => σ x)
+
+/-- **Inline prose definition of Norm** (`Exercise 16.12`, §16.3, printed p. 128 / PDF p. 136):
+For a Garling Galois extension `L : K` with Galois group `G = Γ(L : K)`, the norm
+`N : L →* K` is the unique multiplicative monoid homomorphism satisfying
+`algebraMap K L (N x) = ∏_{σ ∈ G} σ(x)` for all `x ∈ L`. -/
+noncomputable def garlingNorm (K : Type u) (L : Type v) [Field K] [Field L] [Algebra K L]
+    (hgal : IsGarlingGaloisExtension K L) : L →* K :=
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  have hmem : ∀ x : L, ∃ k : K, algebraMap K L k = garlingNormL (K := K) x :=
+    fun x => mem_range_algebraMap_of_forall_gal_fix fun τ => garlingNormL_gal_fix τ x
+  { toFun := fun x => (hmem x).choose
+    map_one' := (algebraMap K L).injective (by
+      let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+      rw [(hmem 1).choose_spec, map_one, garlingNormL_eq_prod]
+      simp)
+    map_mul' := fun x y => (algebraMap K L).injective (by
+      let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+      rw [map_mul, (hmem (x * y)).choose_spec, (hmem x).choose_spec, (hmem y).choose_spec,
+        garlingNormL_eq_prod, garlingNormL_eq_prod, garlingNormL_eq_prod, ← Finset.prod_mul_distrib]
+      exact Finset.prod_congr rfl fun σ _ => map_mul σ x y) }
+
+theorem garlingNorm_spec {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    (hgal : IsGarlingGaloisExtension K L) [Fintype (L ≃ₐ[K] L)] (x : L) :
+    algebraMap K L (garlingNorm K L hgal x) = ∏ σ : L ≃ₐ[K] L, σ x := by
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  unfold garlingNorm
+  dsimp only [MonoidHom.coe_mk, OneHom.coe_mk]
+  rw [(mem_range_algebraMap_of_forall_gal_fix fun τ => garlingNormL_gal_fix τ x).choose_spec,
+    garlingNormL_eq_prod]
+
+theorem garlingNorm_apply_gal {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    (hgal : IsGarlingGaloisExtension K L) (τ : L ≃ₐ[K] L) (x : L) :
+    garlingNorm K L hgal (τ x) = garlingNorm K L hgal x := by
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  apply (algebraMap K L).injective
+  rw [garlingNorm_spec, garlingNorm_spec]
+  exact Equiv.prod_comp (Equiv.mulRight τ) (fun σ : L ≃ₐ[K] L => σ x)
+
+theorem garlingNorm_zero {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    (hgal : IsGarlingGaloisExtension K L) :
+    garlingNorm K L hgal 0 = 0 := by
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  apply (algebraMap K L).injective
+  rw [garlingNorm_spec, map_zero]
+  exact Finset.prod_eq_zero (Finset.mem_univ (1 : L ≃ₐ[K] L)) (by simp)
+
+theorem garlingNorm_div {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    (hgal : IsGarlingGaloisExtension K L) {x y : L} (hy : y ≠ 0) :
+    garlingNorm K L hgal (x / y) = garlingNorm K L hgal x / garlingNorm K L hgal y := by
+  have hyN : garlingNorm K L hgal y ≠ 0 := by
+    intro h0
+    have h1 := map_mul (garlingNorm K L hgal) y y⁻¹
+    rw [mul_inv_cancel₀ hy, map_one, h0, zero_mul] at h1
+    exact one_ne_zero h1
+  apply mul_right_cancel₀ hyN
+  rw [← map_mul, div_mul_cancel₀ _ hy, div_mul_cancel₀ _ hyN]
+
+/-- **Exercise 16.12** (§16.3, printed p. 128 / PDF p. 136; exact integer quotient `((n / r : ℕ) : K)`
+per `QUEUE.md` Flag 4):
+*"Suppose that `L : K` is a Galois extension of degree `n` with Galois group `G`. If `x ∈ L`, let
+`tr(x) = ∑_{σ ∈ G} σ(x)`, `N(x) = ∏_{σ ∈ G} σ(x)`. The mapping `N` is the `norm`. Suppose that
+`α ∈ L` has minimal polynomial `x^r - a₁ x^{r-1} + ... + (-1)^r a_r` Show that
+`tr(α) = (n/r) a₁` and `N(α) = a_r^{n/r}`."* -/
+theorem exercise_16_12 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {n : ℕ} (hgal : IsGarlingGaloisExtension K L) (hdeg : Module.finrank K L = n) (α : L) :
+    let m : K[X] := minpoly K α
+    let r : ℕ := m.natDegree
+    let a₁ : K := -(m.coeff (r - 1))
+    let a_r : K := (-1) ^ r * m.coeff 0
+    1 ≤ r ∧
+    r ∣ n ∧
+    garlingTrace K L hgal α = ((n / r : ℕ) : K) * a₁ ∧
+    garlingNorm K L hgal α = a_r ^ (n / r) := by
+  intro m r a₁ a_r
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  have hα_int : IsIntegral K α := Algebra.IsIntegral.isIntegral α
+  have hr_pos : 1 ≤ r := minpoly.natDegree_pos hα_int
+  have hfin_Kα : Module.finrank K K⟮α⟯ = r := IntermediateField.adjoin.finrank hα_int
+  have hmul_deg : r * Module.finrank K⟮α⟯ L = n := by
+    rw [← hfin_Kα, Module.finrank_mul_finrank K K⟮α⟯ L, hdeg]
+  have hr_dvd : r ∣ n := ⟨Module.finrank K⟮α⟯ L, hmul_deg.symm⟩
+  have hq_eq : Module.finrank K⟮α⟯ L = n / r := by
+    rw [← hmul_deg, Nat.mul_div_cancel_left _ hr_pos]
+  -- Let H = fixingSubgroup K⟮α⟯; |H| = n / r and orbit {σ α | σ ∈ G} has cardinality r
+  let H : Subgroup (L ≃ₐ[K] L) := IntermediateField.fixingSubgroup K⟮α⟯
+  have hH_card : Nat.card H = n / r := by
+    rw [IsGalois.card_fixingSubgroup_eq_finrank, hq_eq]
+  let orbit : Finset L := Finset.univ.image (fun σ : L ≃ₐ[K] L => σ α)
+  -- Every fiber {σ | σ α = x} for x ∈ orbit has cardinality |H| = n / r
+  have hfiber_card : ∀ x ∈ orbit,
+      (Finset.univ.filter fun σ : L ≃ₐ[K] L => σ α = x).card = n / r := by
+    intro x hx
+    rw [Finset.mem_image] at hx
+    rcases hx with ⟨σ₀, _, rfl⟩
+    let _ : Fintype H := Fintype.ofFinite H
+    have hbij : Finset.univ.filter (fun σ : L ≃ₐ[K] L => σ α = σ₀ α) =
+        Finset.univ.image (fun h : H => σ₀ * h.1) := by
+      ext σ
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_image]
+      constructor
+      · intro hσ
+        have hmemH : σ₀⁻¹ * σ ∈ H := by
+          rw [IntermediateField.mem_fixingSubgroup_iff]
+          let Eeq : IntermediateField K L :=
+            { (AlgHom.equalizer (σ₀⁻¹ * σ).toAlgHom (1 : L ≃ₐ[K] L).toAlgHom) with
+              inv_mem' := fun {y} hy => by
+                change (σ₀⁻¹ * σ) y⁻¹ = y⁻¹; rw [map_inv₀]; exact congrArg Inv.inv hy }
+          have hle : K⟮α⟯ ≤ Eeq := by
+            rw [IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]
+            change (σ₀⁻¹ * σ) α = α
+            rw [AlgEquiv.mul_apply, hσ, ← AlgEquiv.mul_apply, inv_mul_cancel, AlgEquiv.one_apply]
+          intro y hy; exact hle hy
+        exact ⟨⟨σ₀⁻¹ * σ, hmemH⟩, by simp⟩
+      · rintro ⟨h, rfl⟩
+        rw [AlgEquiv.mul_apply]
+        have hhα : h.1 α = α :=
+          (IntermediateField.mem_fixingSubgroup_iff _ _).mp h.2 α
+            (IntermediateField.mem_adjoin_simple_self K α)
+        rw [hhα]
+    rw [hbij, Finset.card_image_of_injective _ fun a b hab =>
+      Subtype.ext (mul_left_cancel hab), Finset.card_univ, ← Nat.card_eq_fintype_card, hH_card]
+  -- Count |G| = ∑_{x ∈ orbit} |fiber x| = orbit.card * (n / r) ⇒ orbit.card = r
+  have horbit_card : orbit.card = r := by
+    have hcardG : (Finset.univ : Finset (L ≃ₐ[K] L)).card = n := by
+      rw [Finset.card_univ, ← Nat.card_eq_fintype_card, IsGalois.card_aut_eq_finrank K L, hdeg]
+    have hsum_card : (Finset.univ : Finset (L ≃ₐ[K] L)).card =
+        ∑ x ∈ orbit, (Finset.univ.filter fun σ : L ≃ₐ[K] L => σ α = x).card := by
+      rw [← Finset.card_biUnion]
+      · congr 1; ext σ
+        simp [orbit]
+      · intro x _ y _ hxy
+        change Disjoint _ _
+        rw [Finset.disjoint_left]
+        intro σ h1 h2
+        simp only [Finset.mem_filter] at h1 h2
+        exact hxy (h1.2.symm.trans h2.2)
+    rw [hcardG, Finset.sum_congr rfl hfiber_card, Finset.sum_const, smul_eq_mul] at hsum_card
+    have hq_pos : 0 < n / r := by rw [← hq_eq]; exact Module.finrank_pos
+    have hmul_eq : orbit.card * (n / r) = r * (n / r) := by
+      rw [← hsum_card, Nat.mul_div_cancel' hr_dvd]
+    exact Nat.eq_of_mul_eq_mul_right hq_pos hmul_eq
+  -- Identify m.map (algebraMap K L) = ∏ x ∈ orbit, (X - C x)
+  have hm_fac : m.map (algebraMap K L) = ∏ x ∈ orbit, (Polynomial.X - Polynomial.C x) := by
+    have hdvd : (∏ x ∈ orbit, (Polynomial.X - Polynomial.C x)) ∣ m.map (algebraMap K L) := by
+      refine Finset.prod_dvd_of_coprime
+        (fun x _ y _ hxy => Polynomial.pairwise_coprime_X_sub_C Function.injective_id hxy) ?_
+      intro x hx
+      rw [Finset.mem_image] at hx
+      rcases hx with ⟨σ, _, rfl⟩
+      rw [Polynomial.dvd_iff_isRoot, Polynomial.IsRoot.def, Polynomial.eval_map,
+        ← Polynomial.aeval_def, Polynomial.aeval_algHom_apply, minpoly.aeval, map_zero]
+    exact Polynomial.eq_of_monic_of_dvd_of_natDegree_le
+      (Polynomial.monic_prod_of_monic _ _ fun x _ => Polynomial.monic_X_sub_C x)
+      ((minpoly.monic hα_int).map _) hdvd (by
+        rw [Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective,
+          Polynomial.natDegree_prod _ _ (fun x _ => Polynomial.X_sub_C_ne_zero x)]
+        simp only [Polynomial.natDegree_X_sub_C, Finset.sum_const, smul_eq_mul, mul_one,
+          horbit_card]
+        exact le_rfl)
+  -- Vieta identities on ∏ x ∈ orbit, (X - C x): sum of roots = a₁, product of roots = a_r
+  have hvieta_sum : ∀ (s : Finset L), 1 ≤ s.card →
+      (∏ x ∈ s, (Polynomial.X - Polynomial.C x)).coeff (s.card - 1) = - ∑ x ∈ s, x := by
+    intro s
+    induction s using Finset.induction_on with
+    | empty => intro h; simp at h
+    | insert a s ha ih =>
+      intro _
+      rw [Finset.card_insert_of_notMem ha, Finset.prod_insert ha, Finset.sum_insert ha,
+        Nat.add_sub_cancel]
+      rcases Finset.eq_empty_or_nonempty s with rfl | hne
+      · simp
+      · have hs1 : 1 ≤ s.card := Finset.card_pos.mpr hne
+        have hih := ih hs1
+        let P : L[X] := ∏ x ∈ s, (Polynomial.X - Polynomial.C x)
+        have hP_mon : P.Monic :=
+          Polynomial.monic_prod_of_monic _ _ fun x _ => Polynomial.monic_X_sub_C x
+        have hP_deg : P.natDegree = s.card := by
+          rw [Polynomial.natDegree_prod _ _ (fun x _ => Polynomial.X_sub_C_ne_zero x)]
+          simp only [Polynomial.natDegree_X_sub_C, Finset.sum_const, smul_eq_mul, mul_one]
+        have hP_top : P.coeff s.card = 1 := by
+          rw [← hP_mon.coeff_natDegree]; congr 1; exact hP_deg.symm
+        rw [sub_mul, Polynomial.coeff_sub, Polynomial.coeff_C_mul, hP_top, mul_one]
+        have hidx : s.card - 1 + 1 = s.card := Nat.sub_add_cancel hs1
+        have hXP : (Polynomial.X * P).coeff s.card = P.coeff (s.card - 1) := by
+          conv_lhs => arg 2; rw [← hidx]
+          exact Polynomial.coeff_X_mul P (s.card - 1)
+        rw [hXP, hih]
+        ring
+  have horbit_sum : ∑ x ∈ orbit, x = algebraMap K L a₁ := by
+    have h1 := congrArg (fun p : L[X] => p.coeff (r - 1)) hm_fac
+    rw [Polynomial.coeff_map] at h1
+    have h2 := hvieta_sum orbit (horbit_card.symm ▸ hr_pos)
+    rw [horbit_card] at h2
+    rw [h2] at h1
+    simp only [a₁, map_neg]
+    linear_combination h1
+  have horbit_prod : ∏ x ∈ orbit, x = algebraMap K L a_r := by
+    have h1 := congrArg (Polynomial.eval (0 : L)) hm_fac
+    rw [Polynomial.eval_map, Polynomial.eval₂_at_zero, Polynomial.eval_prod] at h1
+    have h2 : (∏ x ∈ orbit, (Polynomial.X - Polynomial.C x).eval (0 : L)) =
+        (-1 : L) ^ r * ∏ x ∈ orbit, x := by
+      calc (∏ x ∈ orbit, (Polynomial.X - Polynomial.C x).eval (0 : L))
+          = ∏ x ∈ orbit, ((-1 : L) * x) := Finset.prod_congr rfl fun x _ => by simp
+        _ = (∏ _ ∈ orbit, (-1 : L)) * ∏ x ∈ orbit, x := Finset.prod_mul_distrib
+        _ = (-1 : L) ^ r * ∏ x ∈ orbit, x := by rw [Finset.prod_const, horbit_card]
+    rw [h2] at h1
+    simp only [a_r, map_mul, map_pow, map_neg, map_one]
+    calc ∏ x ∈ orbit, x
+        = (-1 : L) ^ r * ((-1 : L) ^ r * ∏ x ∈ orbit, x) := by
+          rw [← mul_assoc, ← mul_pow, neg_one_mul, neg_neg, one_pow, one_mul]
+      _ = (-1 : L) ^ r * algebraMap K L (m.coeff 0) := by rw [← h1]
+  -- Sum and product over G via fiberwise partition over orbit
+  have htr : garlingTrace K L hgal α = ((n / r : ℕ) : K) * a₁ := by
+    apply (algebraMap K L).injective
+    rw [garlingTrace_spec, map_mul, map_natCast, ← horbit_sum]
+    have hfib := Finset.sum_fiberwise_of_maps_to
+      (s := (Finset.univ : Finset (L ≃ₐ[K] L))) (t := orbit) (g := fun σ => σ α)
+      (fun σ _ => Finset.mem_image_of_mem _ (Finset.mem_univ σ)) (fun σ => σ α)
+    rw [← hfib, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun x hx => ?_
+    have hconst : (∑ σ ∈ Finset.univ.filter (fun σ : L ≃ₐ[K] L => σ α = x), σ α) =
+        ∑ _ ∈ Finset.univ.filter (fun σ : L ≃ₐ[K] L => σ α = x), x :=
+      Finset.sum_congr rfl fun σ hσ => (Finset.mem_filter.mp hσ).2
+    rw [hconst, Finset.sum_const, hfiber_card x hx, nsmul_eq_mul]
+  have hnorm : garlingNorm K L hgal α = a_r ^ (n / r) := by
+    apply (algebraMap K L).injective
+    rw [garlingNorm_spec, map_pow, ← horbit_prod]
+    have hfib := Finset.prod_fiberwise_of_maps_to
+      (s := (Finset.univ : Finset (L ≃ₐ[K] L))) (t := orbit) (g := fun σ => σ α)
+      (fun σ _ => Finset.mem_image_of_mem _ (Finset.mem_univ σ)) (fun σ => σ α)
+    rw [← hfib, ← Finset.prod_pow]
+    refine Finset.prod_congr rfl fun x hx => ?_
+    have hconst : (∏ σ ∈ Finset.univ.filter (fun σ : L ≃ₐ[K] L => σ α = x), σ α) =
+        ∏ _ ∈ Finset.univ.filter (fun σ : L ≃ₐ[K] L => σ α = x), x :=
+      Finset.prod_congr rfl fun σ hσ => (Finset.mem_filter.mp hσ).2
+    rw [hconst, Finset.prod_const, hfiber_card x hx]
+  exact ⟨hr_pos, hr_dvd, htr, hnorm⟩
+
+/-- **Field-division counterexample for `Exercise 16.12` in positive characteristic** (`QUEUE.md`
+Flag 4):
+Over `K = ZMod 2`, `f = X^2 + X + 1` is irreducible; in `L = AdjoinRoot f` (`n = r = 2`), the root
+`α` has `a₁ = 1` and `tr(α) = 1 = ((2 / 2 : ℕ) : ZMod 2) * 1`, whereas field division
+`((2 : ZMod 2) / (2 : ZMod 2)) * 1 = 0 ≠ 1`. -/
+theorem exercise_16_12_field_division_counterexample :
+    ((2 / 2 : ℕ) : ZMod 2) * (1 : ZMod 2) = 1 ∧
+    ((2 : ZMod 2) / (2 : ZMod 2)) * (1 : ZMod 2) = 0 ∧
+    ((2 / 2 : ℕ) : ZMod 2) * (1 : ZMod 2) ≠ ((2 : ZMod 2) / (2 : ZMod 2)) * (1 : ZMod 2) := by
+  have h2 : (2 : ZMod 2) = 0 := by decide
+  have hdiv : ((2 / 2 : ℕ) : ZMod 2) = 1 := by norm_num
+  rw [h2, div_zero, zero_mul, hdiv, one_mul]
+  exact ⟨rfl, rfl, one_ne_zero⟩
+
+/-- Recursive cocycle sequence `c₀ = α`, `c_{k+1} = α * τ(c_k)` from `Exercise 16.13 (ii)`
+(printed p. 128 / PDF p. 136). -/
+def hilbert90Coeff {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    (τ : L ≃ₐ[K] L) (α : L) : ℕ → L
+  | 0 => α
+  | k + 1 => α * τ (hilbert90Coeff τ α k)
+
+theorem hilbert90Coeff_eq_prod {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    (τ : L ≃ₐ[K] L) (α : L) (k : ℕ) :
+    hilbert90Coeff τ α k = ∏ j ∈ Finset.range (k + 1), (τ ^ j) α := by
+  induction k with
+  | zero => simp [hilbert90Coeff]
+  | succ k ih =>
+    rw [hilbert90Coeff, ih, map_prod]
+    conv_rhs => rw [Finset.prod_range_succ']
+    rw [pow_zero, AlgEquiv.one_apply, mul_comm α]
+    exact congrArg (· * α) (Finset.prod_congr rfl fun j _ => by
+      rw [← AlgEquiv.mul_apply, ← pow_succ'])
+
+/-- **Counterexample to unguarded `Exercise 16.13 (i)` at `β = 0` under Lean total division**
+(`QUEUE.md` Flag 4):
+In any Galois extension `L : K`, `β = 0` and `α = 0 / τ(0) = 0` satisfy `α = β / τ(β)` under total
+division `0 / 0 = 0`, yet `N(0) = 0 ≠ 1`. -/
+theorem exercise_16_13_i_zero_counterexample {K : Type u} {L : Type v}
+    [Field K] [Field L] [Algebra K L] (hgal : IsGarlingGaloisExtension K L)
+    (τ : GarlingGaloisGroup K L) :
+    (0 : L) = (0 : L) / τ 0 ∧ garlingNorm K L hgal 0 ≠ 1 := by
+  rw [map_zero, div_zero, garlingNorm_zero]
+  exact ⟨rfl, zero_ne_one⟩
+
+/-- **Exercise 16.13 (i)** (§16.3, printed p. 128 / PDF p. 136; implicit `β ≠ 0` made explicit per
+`QUEUE.md` Flag 4):
+If `α = β / τ(β)` with `β ≠ 0`, then `N(α) = 1`. -/
+theorem exercise_16_13_i {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    (hgal : IsGarlingGaloisExtension K L) (τ : GarlingGaloisGroup K L)
+    {α β : L} (hβ : β ≠ 0) (hα : α = β / τ β) :
+    garlingNorm K L hgal α = 1 := by
+  have hτβ_ne : τ β ≠ 0 := (map_ne_zero τ).mpr hβ
+  have hNβ_ne : garlingNorm K L hgal β ≠ 0 := by
+    intro h0
+    have h1 := map_mul (garlingNorm K L hgal) β β⁻¹
+    rw [mul_inv_cancel₀ hβ, map_one, h0, zero_mul] at h1
+    exact one_ne_zero h1
+  rw [hα, garlingNorm_div hgal hτβ_ne, garlingNorm_apply_gal hgal τ β, div_self hNβ_ne]
+
+/-- **Exercise 16.13 (ii) — Hilbert's Theorem 90** (§16.3, printed p. 128 / PDF p. 136):
+*"Suppose that `L : K` is a Galois extension of degree `n` with cyclic Galois group generated by
+`τ`, say. (ii) Suppose that `N(α) = 1`. Let `c₀ = α, c₁ = ατ(c₀), c₂ = ατ(c₁), ...,
+c_{n-1} = ατ(c_{n-2})`. Show that there exists `γ` in `L` such that
+`β = c₀γ + c₁τ(γ) + ... + c_{n-1}τ^{n-1}(γ) ≠ 0`. Show that `α = β/τ(β)`."*
+
+*(OCR warning verified against 200 DPI scan PDF p. 136: `garling1986_pages.txt` ll. 4784–4785
+corrupts Greek `γ` to `y` four times.)* -/
+theorem exercise_16_13_ii {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {n : ℕ} (hgal : IsGarlingGaloisExtension K L) (hdeg : Module.finrank K L = n)
+    {τ : GarlingGaloisGroup K L} (hgen : Subgroup.zpowers τ = ⊤)
+    {α : L} (hN : garlingNorm K L hgal α = 1) :
+    ∃ γ : L,
+      let β : L := ∑ k : Fin n, hilbert90Coeff τ α (k : ℕ) * (τ ^ (k : ℕ)) γ
+      β ≠ 0 ∧ α = β / τ β := by
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  have hn : 1 ≤ n := hdeg ▸ Module.finrank_pos
+  have hcardG : Nat.card (L ≃ₐ[K] L) = n := by
+    rw [IsGalois.card_aut_eq_finrank K L, hdeg]
+  have hτ_ord : orderOf τ = n := by
+    rw [← Nat.card_zpowers, hgen, Nat.card_congr Subgroup.topEquiv.toEquiv, hcardG]
+  have hτ_pow_inj : Function.Injective (fun k : Fin n => τ ^ (k : ℕ)) := by
+    intro a b hab
+    have hmod : (a : ℕ) ≡ (b : ℕ) [MOD n] := by
+      have h1 := pow_eq_pow_iff_modEq.mp hab
+      rwa [hτ_ord] at h1
+    rw [Nat.ModEq, Nat.mod_eq_of_lt a.isLt, Nat.mod_eq_of_lt b.isLt] at hmod
+    exact Fin.ext hmod
+  have hτ_pow_bij : Function.Bijective (fun k : Fin n => τ ^ (k : ℕ)) :=
+    (Fintype.bijective_iff_injective_and_card _).mpr
+      ⟨hτ_pow_inj, by rw [Fintype.card_fin, ← Nat.card_eq_fintype_card, hcardG]⟩
+  have hα_ne : α ≠ 0 := by
+    intro h0; rw [h0, garlingNorm_zero] at hN; exact zero_ne_one hN
+  -- Show c_{n-1} = N(α) = 1
+  have hc_last : hilbert90Coeff τ α (n - 1) = 1 := by
+    rw [hilbert90Coeff_eq_prod, Nat.sub_add_cancel hn]
+    have hprod_fin : (∏ j ∈ Finset.range n, (τ ^ j) α) = ∏ k : Fin n, (τ ^ (k : ℕ)) α :=
+      (Fin.prod_univ_eq_prod_range (fun j => (τ ^ j) α) n).symm
+    rw [hprod_fin]
+    change (∏ i : Fin n, (Equiv.ofBijective _ hτ_pow_bij i) α) = 1
+    rw [Equiv.prod_comp (Equiv.ofBijective _ hτ_pow_bij) (fun σ : L ≃ₐ[K] L => σ α),
+      ← garlingNorm_spec hgal α, hN, map_one]
+  -- Apply Corollary to Theorem 16.3 to get γ with β ≠ 0
+  obtain ⟨γ, hβ_ne⟩ := exists_apply_sum_ne_zero_of_algEquiv
+    (fun k : Fin n => τ ^ (k : ℕ)) hτ_pow_inj
+    (fun k : Fin n => hilbert90Coeff τ α (k : ℕ))
+    ⟨⟨0, hn⟩, by simpa [hilbert90Coeff] using hα_ne⟩
+  refine ⟨γ, hβ_ne, ?_⟩
+  let β : L := ∑ k : Fin n, hilbert90Coeff τ α (k : ℕ) * (τ ^ (k : ℕ)) γ
+  change β ≠ 0 at hβ_ne
+  -- Compute α * τ(β) = β by cyclic shift on Fin n
+  have hα_mul_τβ : α * τ β = β := by
+    have h1 : α * τ β =
+        ∑ k : Fin n, (α * τ (hilbert90Coeff τ α (k : ℕ))) * (τ ^ ((k : ℕ) + 1)) γ := by
+      simp only [β, map_sum, map_mul, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      rw [← mul_assoc, ← AlgEquiv.mul_apply, ← pow_succ']
+    rw [h1]
+    have : NeZero n := ⟨Nat.ne_of_gt hn⟩
+    let shift : Fin n ≃ Fin n := Equiv.addRight (1 : Fin n)
+    rw [← Equiv.sum_comp shift.symm]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    have hsymm : shift.symm k = k - 1 := by simp [shift, sub_eq_add_neg]
+    rw [hsymm, fin_sub_one_val k]
+    rcases Nat.eq_zero_or_pos (k : ℕ) with hk0 | hkpos
+    · have hkz : k = 0 := Fin.ext hk0
+      subst hkz
+      simp only [Fin.val_zero, ↓reduceIte, hc_last, map_one, mul_one, Nat.sub_add_cancel hn,
+        show τ ^ n = 1 from hτ_ord ▸ pow_orderOf_eq_one τ]
+      simp [hilbert90Coeff]
+    · simp only [Nat.ne_of_gt hkpos, ↓reduceIte]
+      rw [Nat.sub_add_cancel hkpos]
+      change (hilbert90Coeff τ α (((k : ℕ) - 1) + 1)) * (τ ^ (k : ℕ)) γ =
+        hilbert90Coeff τ α (k : ℕ) * (τ ^ (k : ℕ)) γ
+      rw [Nat.sub_add_cancel hkpos]
+  have hτβ_ne : τ β ≠ 0 := (map_ne_zero τ).mpr hβ_ne
+  exact (eq_div_iff hτβ_ne).mpr hα_mul_τβ
+
+/-- **Exercise 16.13 (Hilbert's theorem 90)** — bundled `(i)` + `(ii)` (§16.3, printed p. 128 /
+PDF p. 136; `β ≠ 0` guard in `(i)` made explicit per `QUEUE.md` Flag 4). -/
+theorem exercise_16_13 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {n : ℕ} (hgal : IsGarlingGaloisExtension K L) (hdeg : Module.finrank K L = n)
+    {τ : GarlingGaloisGroup K L} (hgen : Subgroup.zpowers τ = ⊤) (α : L) :
+    garlingNorm K L hgal α = 1 ↔ ∃ β : L, β ≠ 0 ∧ α = β / τ β := by
+  constructor
+  · intro hN
+    obtain ⟨γ, hβ_ne, hα_eq⟩ := exercise_16_13_ii hgal hdeg hgen hN
+    exact ⟨_, hβ_ne, hα_eq⟩
+  · rintro ⟨β, hβ_ne, hα_eq⟩
+    exact exercise_16_13_i hgal τ hβ_ne hα_eq
+
+/-- **Exercise 16.14 (Additive Hilbert's Theorem 90 — Repaired `τ(β)` form)** (§16.3, printed p. 128
+/ PDF p. 136; repairs printed typo `σβ` for `τ(β)` per `QUEUE.md` Flag 3):
+*"Suppose that `L : K` is a Galois extension of degree `n` with cyclic Galois group generated by
+`τ`, say, and that `α ∈ L`. Show that `tr(α) = 0` if and only if there exists `β` in `L` such that
+`α = β - τ(β)`."* -/
+theorem exercise_16_14_repaired {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {n : ℕ} (hgal : IsGarlingGaloisExtension K L) (hdeg : Module.finrank K L = n)
+    {τ : GarlingGaloisGroup K L} (hgen : Subgroup.zpowers τ = ⊤) (α : L) :
+    garlingTrace K L hgal α = 0 ↔ ∃ β : L, α = β - τ β := by
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+  constructor
+  · intro htr0
+    have hn : 1 ≤ n := hdeg ▸ Module.finrank_pos
+    have hcardG : Nat.card (L ≃ₐ[K] L) = n := by
+      rw [IsGalois.card_aut_eq_finrank K L, hdeg]
+    have hτ_ord : orderOf τ = n := by
+      rw [← Nat.card_zpowers, hgen, Nat.card_congr Subgroup.topEquiv.toEquiv, hcardG]
+    have hτ_pow_bij : Function.Bijective (fun k : Fin n => τ ^ (k : ℕ)) := by
+      refine (Fintype.bijective_iff_injective_and_card _).mpr ⟨?_, by
+        rw [Fintype.card_fin, ← Nat.card_eq_fintype_card, hcardG]⟩
+      intro a b hab
+      have hmod : (a : ℕ) ≡ (b : ℕ) [MOD n] := by
+        have h1 := pow_eq_pow_iff_modEq.mp hab
+        rwa [hτ_ord] at h1
+      rw [Nat.ModEq, Nat.mod_eq_of_lt a.isLt, Nat.mod_eq_of_lt b.isLt] at hmod
+      exact Fin.ext hmod
+    -- Pick z ∈ L with tr(z) = 1 via Exercise 16.10
+    obtain ⟨z, hz⟩ := (exercise_16_10 hgal).2.1 1
+    have htr_z : ∑ k : Fin n, (τ ^ (k : ℕ)) z = 1 := by
+      have h1 := garlingTrace_spec hgal z
+      rw [hz, map_one] at h1
+      rw [h1]
+      exact Equiv.sum_comp (Equiv.ofBijective _ hτ_pow_bij) (fun σ : L ≃ₐ[K] L => σ z)
+    let s : ℕ → L := fun k => ∑ i ∈ Finset.range (k + 1), (τ ^ i) α
+    have hs_succ : ∀ k : ℕ, s (k + 1) = α + τ (s k) := by
+      intro k
+      simp only [s]
+      conv_lhs => rw [Finset.sum_range_succ']
+      rw [pow_zero, AlgEquiv.one_apply, map_sum, add_comm]
+      congr 1
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [← AlgEquiv.mul_apply, ← pow_succ']
+    have hs_last : s (n - 1) = 0 := by
+      simp only [s, Nat.sub_add_cancel hn]
+      have hsum_fin : (∑ i ∈ Finset.range n, (τ ^ i) α) = ∑ k : Fin n, (τ ^ (k : ℕ)) α :=
+        (Fin.sum_univ_eq_sum_range (fun i => (τ ^ i) α) n).symm
+      rw [hsum_fin]
+      change (∑ i : Fin n, (Equiv.ofBijective _ hτ_pow_bij i) α) = 0
+      rw [Equiv.sum_comp (Equiv.ofBijective _ hτ_pow_bij) (fun σ : L ≃ₐ[K] L => σ α),
+        ← garlingTrace_spec hgal α, htr0, map_zero]
+    let β : L := ∑ k : Fin n, s (k : ℕ) * (τ ^ (k : ℕ)) z
+    refine ⟨β, ?_⟩
+    have hτβ : τ β = ∑ k : Fin n, τ (s (k : ℕ)) * (τ ^ ((k : ℕ) + 1)) z := by
+      simp only [β, map_sum, map_mul]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      rw [← AlgEquiv.mul_apply, ← pow_succ']
+    have hβ_sub : β - τ β = ∑ k : Fin n, α * (τ ^ (k : ℕ)) z := by
+      rw [hτβ]
+      have : NeZero n := ⟨Nat.ne_of_gt hn⟩
+      let shift : Fin n ≃ Fin n := Equiv.addRight (1 : Fin n)
+      rw [← Equiv.sum_comp shift.symm (fun k : Fin n => τ (s (k : ℕ)) * (τ ^ ((k : ℕ) + 1)) z),
+        ← Finset.sum_sub_distrib]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      have hsymm : shift.symm k = k - 1 := by simp [shift, sub_eq_add_neg]
+      rw [hsymm, fin_sub_one_val k]
+      rcases Nat.eq_zero_or_pos (k : ℕ) with hk0 | hkpos
+      · have hkz : k = 0 := Fin.ext hk0
+        subst hkz
+        simp only [Fin.val_zero, ↓reduceIte, hs_last, map_zero, zero_mul, sub_zero]
+        simp [s]
+      · simp only [Nat.ne_of_gt hkpos, ↓reduceIte]
+        rw [Nat.sub_add_cancel hkpos, ← sub_mul]
+        have hdiff : s (k : ℕ) - τ (s ((k : ℕ) - 1)) = α := by
+          have hstep := hs_succ ((k : ℕ) - 1)
+          rw [Nat.sub_add_cancel hkpos] at hstep
+          linear_combination hstep
+        rw [hdiff]
+    rw [hβ_sub, ← Finset.mul_sum, htr_z, mul_one]
+  · rintro ⟨β, rfl⟩
+    rw [map_sub, garlingTrace_apply_gal hgal τ β, sub_self]
+
+/-- **Counterexample to non-generator `σ` in literal `Exercise 16.14`** (`QUEUE.md` Flag 3):
+In `ℂ : ℝ` (cyclic Galois extension of degree `2` generated by complex conjugation), `tr(i) = 0`,
+yet for the non-generator `σ = 1 ∈ Γ(ℂ : ℝ)` there is **no** `β ∈ ℂ` with `i = β - σ(β) = 0`. -/
+theorem exercise_16_14_unbound_sigma_counterexample :
+    IsGarlingGaloisExtension ℝ ℂ ∧
+    Module.finrank ℝ ℂ = 2 ∧
+    ∀ hgal : IsGarlingGaloisExtension ℝ ℂ,
+      garlingTrace ℝ ℂ hgal Complex.I = 0 ∧
+      ¬ ∃ β : ℂ, Complex.I = β - (1 : GarlingGaloisGroup ℝ ℂ) β := by
+  have hgal : IsGarlingGaloisExtension ℝ ℂ :=
+    isGarlingGalois_of_isAlgClosed_of_not_char_dvd_finrank
+      (by rw [ringChar.eq_zero, Complex.finrank_real_complex]; simp)
+  refine ⟨hgal, Complex.finrank_real_complex, fun hgal' => ?_⟩
+  have htrI : garlingTrace ℝ ℂ hgal' Complex.I = 0 := by
+    have hconj : Complex.conjAe Complex.I = -Complex.I := by simp
+    have heq := garlingTrace_apply_gal hgal' Complex.conjAe Complex.I
+    rw [hconj, map_neg] at heq
+    linarith
+  refine ⟨htrI, ?_⟩
+  rintro ⟨β, hβ⟩
+  simp only [AlgEquiv.one_apply, sub_self] at hβ
+  exact Complex.I_ne_zero hβ
+
+/-! ## §16.4 Kummer extensions (printed pp. 128–130 / PDF pp. 136–138) -/
+
+/-- Helper: for `1 ≤ d`, `x^d - 1` has `d` distinct roots in `K` iff `char K ∤ d` and `K` contains
+a primitive `d`th root of unity. -/
+theorem has_d_distinct_roots_X_pow_sub_one_iff {K : Type u} [Field K] {d : ℕ} (hd : 1 ≤ d) :
+    (Polynomial.X ^ d - 1 : K[X]).roots.toFinset.card = d ↔
+      (¬ (ringChar K ∣ d) ∧ ∃ ω : K, IsPrimitiveRoot ω d) := by
+  have hXd_ne : (Polynomial.X ^ d - 1 : K[X]) ≠ 0 := by
+    simpa [Polynomial.C_1] using (Polynomial.monic_X_pow_sub_C (1 : K) (Nat.ne_of_gt hd)).ne_zero
+  constructor
+  · intro hcard
+    have hndvd : ¬ (ringChar K ∣ d) := by
+      intro hdvd
+      rcases CharP.char_is_prime_or_zero K (ringChar K) with hp | h0
+      · have _ : CharP K (ringChar K) := ringChar.charP K
+        have : Fact (ringChar K).Prime := ⟨hp⟩
+        rcases hdvd with ⟨m, hm⟩
+        have hm_pos : 1 ≤ m := by
+          rcases Nat.eq_zero_or_pos m with rfl | hpos
+          · rw [mul_zero] at hm; omega
+          · exact hpos
+        have hm_lt : m < d := by have hp2 := hp.two_le; nlinarith
+        have hXm_ne : (Polynomial.X ^ m - 1 : K[X]) ≠ 0 := by
+          simpa [Polynomial.C_1] using
+            (Polynomial.monic_X_pow_sub_C (1 : K) (Nat.ne_of_gt hm_pos)).ne_zero
+        have hsub : (Polynomial.X ^ d - 1 : K[X]).roots.toFinset ⊆
+            (Polynomial.X ^ m - 1 : K[X]).roots.toFinset := by
+          intro r hr
+          rw [Multiset.mem_toFinset, Polynomial.mem_roots hXd_ne, Polynomial.IsRoot.def] at hr
+          have hr_pow : r ^ d = 1 := by simpa [sub_eq_zero] using hr
+          have hpow : (r ^ m - 1) ^ (ringChar K) = 0 := by
+            have h1 : ((r ^ m - 1) + 1) ^ (ringChar K) = (r ^ m - 1) ^ (ringChar K) + 1 := by
+              rw [add_pow_char, one_pow]
+            have h2 : ((r ^ m - 1) + 1) ^ (ringChar K) = 1 := by
+              rw [sub_add_cancel, ← pow_mul, mul_comm, ← hm, hr_pow]
+            linear_combination h2 - h1
+          have hrm : r ^ m = 1 := sub_eq_zero.mp (eq_zero_of_pow_eq_zero hpow)
+          rw [Multiset.mem_toFinset, Polynomial.mem_roots hXm_ne, Polynomial.IsRoot.def]
+          simp [hrm]
+        have hle1 : d ≤ (Polynomial.X ^ m - 1 : K[X]).roots.toFinset.card :=
+          hcard ▸ Finset.card_le_card hsub
+        have hle2 : (Polynomial.X ^ m - 1 : K[X]).roots.toFinset.card ≤
+            (Polynomial.X ^ m - 1 : K[X]).roots.card := Multiset.toFinset_card_le _
+        have hle3 : (Polynomial.X ^ m - 1 : K[X]).roots.card ≤ m := by
+          have h := Polynomial.card_roots' (Polynomial.X ^ m - 1 : K[X])
+          have hdegm : (Polynomial.X ^ m - 1 : K[X]).natDegree = m := by
+            simpa [Polynomial.C_1] using (Polynomial.natDegree_X_pow_sub_C (n := m) (r := (1 : K)))
+          rwa [hdegm] at h
+        omega
+      · rw [h0] at hdvd
+        have := zero_dvd_iff.mp hdvd
+        omega
+    refine ⟨hndvd, ?_⟩
+    -- The d-th roots of unity in K form a finite subgroup U ≤ Kˣ of order d, hence cyclic
+    let U : Subgroup Kˣ :=
+      { carrier := { u : Kˣ | u ^ d = 1 }
+        mul_mem' := fun {a b} ha hb => show (a * b) ^ d = 1 by rw [mul_pow, ha, hb, mul_one]
+        one_mem' := one_pow d
+        inv_mem' := fun {a} ha => show a⁻¹ ^ d = 1 by rw [inv_pow, ha, inv_one] }
+    let eU : U ≃ (Polynomial.X ^ d - 1 : K[X]).roots.toFinset :=
+      { toFun := fun u => ⟨(u.1 : K), by
+          rw [Multiset.mem_toFinset, Polynomial.mem_roots hXd_ne, Polynomial.IsRoot.def]
+          have h1 : (u.1 : K) ^ d = 1 := by
+            rw [← Units.val_pow_eq_pow_val, u.2, Units.val_one]
+          simp [h1]⟩
+        invFun := fun r =>
+          have hr_pow : (r.1 : K) ^ d = 1 := by
+            have h := r.2
+            rw [Multiset.mem_toFinset, Polynomial.mem_roots hXd_ne, Polynomial.IsRoot.def] at h
+            simpa [sub_eq_zero] using h
+          have hr_ne : (r.1 : K) ≠ 0 := fun h0 => by
+            rw [h0, zero_pow (Nat.ne_of_gt hd)] at hr_pow; exact zero_ne_one hr_pow
+          ⟨Units.mk0 r.1 hr_ne, by ext; simpa using hr_pow⟩
+        left_inv := fun u => Subtype.ext (Units.ext rfl)
+        right_inv := fun r => Subtype.ext rfl }
+    have _ : Finite U := Finite.of_equiv _ eU.symm
+    have hcardU : Nat.card U = d := by
+      rw [Nat.card_congr eU, Nat.card_eq_fintype_card, Fintype.card_coe, hcard]
+    have hcycU : IsCyclic U :=
+      isCyclic_of_injective_ringHom ((Units.coeHom K).comp U.subtype)
+        (Units.val_injective.comp Subtype.val_injective)
+    obtain ⟨u, hu_gen⟩ := hcycU.exists_generator
+    have hu_zpow : Subgroup.zpowers u = ⊤ :=
+      eq_top_iff.mpr fun x _ => hu_gen x
+    have hu_ord : orderOf u = d := by
+      rw [← Nat.card_zpowers, hu_zpow, Nat.card_congr Subgroup.topEquiv.toEquiv, hcardU]
+    refine ⟨(u.1 : K), ?_⟩
+    rw [IsPrimitiveRoot.iff_def]
+    refine ⟨by rw [← Units.val_pow_eq_pow_val, u.2, Units.val_one], fun l hl => ?_⟩
+    have hul : u ^ l = 1 := Subtype.ext (Units.ext (by simpa using hl))
+    rw [← hu_ord]
+    exact orderOf_dvd_of_pow_eq_one hul
+  · rintro ⟨_, ω, hω⟩
+    have hfac : (Polynomial.X ^ d - 1 : K[X]) = ∏ k : Fin d, (Polynomial.X - Polynomial.C (ω ^ (k : ℕ))) := by
+      have h := X_pow_sub_C_pow_eq_prod hd hω (1 : K)
+      simpa [one_pow, Polynomial.C_1, mul_one] using h
+    have hset : (Polynomial.X ^ d - 1 : K[X]).roots.toFinset =
+        Finset.univ.image (fun k : Fin d => ω ^ (k : ℕ)) := by
+      ext x
+      rw [Multiset.mem_toFinset, Polynomial.mem_roots hXd_ne, Polynomial.IsRoot.def, hfac,
+        Polynomial.eval_prod, Finset.prod_eq_zero_iff]
+      simp only [Finset.mem_univ, true_and, Polynomial.eval_sub, Polynomial.eval_X,
+        Polynomial.eval_C, sub_eq_zero, Finset.mem_image, eq_comm]
+    rw [hset, Finset.card_image_of_injective _ fun a b hab => Fin.ext (hω.pow_inj a.isLt b.isLt hab),
+      Finset.card_fin]
+
+/-- **Theorem 16.5** (§16.4, printed pp. 128–129 / PDF pp. 136–137):
+*"Suppose that `L : K` is a Galois extension, that `Γ(L : K)` is an abelian group of exponent `d`
+and that `x^d - 1` has `d` distinct roots in `K`. Then there exist `θ₁, ..., θ_r` in `K` such that
+`L : K` is a splitting field extension for `(x^d - θ₁)...(x^d - θ_r)`."* -/
+theorem theorem_16_5 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {d : ℕ} (hgal : IsGarlingGaloisExtension K L)
+    (hcomm : ∀ σ τ : GarlingGaloisGroup K L, σ * τ = τ * σ)
+    (hexp : ∀ [Finite (GarlingGaloisGroup K L)], garlingExponent (GarlingGaloisGroup K L) = d)
+    (hroots : (Polynomial.X ^ d - 1 : K[X]).roots.toFinset.card = d) :
+    ∃ (r : ℕ) (θ : Fin r → K),
+      1 ≤ r ∧
+      IsGarlingSplittingFieldExtension K L (∏ j : Fin r, (Polynomial.X ^ d - Polynomial.C (θ j))) := by
+  have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+  have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+  have hexp_eq : garlingExponent (L ≃ₐ[K] L) = d := hexp
+  have hexp_props := garlingExponent_and_elemOrder_properties (L ≃ₐ[K] L)
+  have hd_pos : 1 ≤ d := hexp_eq ▸ hexp_props.1
+  have hpow_d : ∀ σ : L ≃ₐ[K] L, σ ^ d = 1 := hexp_eq ▸ hexp_props.2.1
+  obtain ⟨hndvd_d, ω, hω⟩ := (has_d_distinct_roots_X_pow_sub_one_iff hd_pos).mp hroots
+  have hωL : IsPrimitiveRoot (algebraMap K L ω) d :=
+    hω.map_of_injective (algebraMap K L).injective
+  have hωL_ne : algebraMap K L ω ≠ 0 := hωL.ne_zero (Nat.ne_of_gt hd_pos)
+  -- Decompose abelian G = Γ(L : K) via Theorem 12.2
+  let addCommInst : AddCommGroup (Additive (L ≃ₐ[K] L)) :=
+    { (inferInstance : AddGroup (Additive (L ≃ₐ[K] L))) with
+      add_comm := fun a b => hcomm (Additive.toMul a) (Additive.toMul b) }
+  obtain ⟨s, e, he_gt1, _, ⟨eG⟩, _, _, _, _⟩ := @theorem_12_2 (Additive (L ≃ₐ[K] L)) addCommInst _
+  rcases Nat.eq_zero_or_pos s with rfl | hs_pos
+  · -- Trivial Galois group: L = K, take r = 1, θ = fun _ => 1
+    have hcardG : Nat.card (L ≃ₐ[K] L) = 1 := by
+      have hsub : Subsingleton (L ≃ₐ[K] L) :=
+        ⟨fun a b => Additive.ofMul.injective (eG.injective (funext fun j => j.elim0))⟩
+      exact Nat.card_unique
+    have hfin1 : Module.finrank K L = 1 := by
+      rw [← IsGalois.card_aut_eq_finrank K L, hcardG]
+    have hbot_top : (⊥ : IntermediateField K L) = ⊤ :=
+      IntermediateField.eq_of_le_of_finrank_eq bot_le
+        (by rw [IntermediateField.finrank_bot,
+          LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, hfin1])
+    refine ⟨1, fun _ => 1, le_rfl, ?_, fun M hM _ => hM (le_antisymm le_top (hbot_top ▸ bot_le))⟩
+    rw [Fin.prod_univ_one]
+    refine ⟨d, 1, fun k => (algebraMap K L ω) ^ (k : ℕ), ?_⟩
+    simp only [GarlingSplitsExplicit, map_one, one_mul,
+      Polynomial.map_sub, Polynomial.map_pow, Polynomial.map_X, Polynomial.map_one]
+    have h := X_pow_sub_C_pow_eq_prod hd_pos hωL (1 : L)
+    simpa [one_pow, Polynomial.C_1, mul_one] using h
+  · -- Nontrivial decomposition: apply Theorem 16.4 to each cyclic quotient M_j = fixedField (ker π_j)
+    have hcomp : ∀ j : Fin s,
+        ∃ (θj : K) (βj : L),
+          βj ≠ 0 ∧
+          βj ^ d = algebraMap K L θj ∧
+          ∀ (E : IntermediateField K L), βj ∈ E →
+            ∀ σ ∈ E.fixingSubgroup, eG (Additive.ofMul σ) j = 0 := by
+      intro j
+      have _ : NeZero (e j) := ⟨by have := he_gt1 j; omega⟩
+      -- Map G →* Multiplicative (ZMod (e j)) via the j-th coordinate of eG and znAddEquivZMod
+      let π : (L ≃ₐ[K] L) →* Multiplicative (ZMod (e j)) :=
+        { toFun := fun σ => Multiplicative.ofAdd (znAddEquivZMod (e j) (eG (Additive.ofMul σ) j))
+          map_one' := by
+            change Multiplicative.ofAdd (znAddEquivZMod (e j) (eG 0 j)) = Multiplicative.ofAdd 0
+            rw [map_zero, Pi.zero_apply, map_zero]
+          map_mul' := fun σ τ => by
+            apply congrArg Multiplicative.ofAdd
+            change (znAddEquivZMod (e j)) (eG (Additive.ofMul σ + Additive.ofMul τ) j) = _
+            rw [map_add, Pi.add_apply, map_add]
+            rfl }
+      have hπ_surj : Function.Surjective π := by
+        intro y
+        let z : Zn (e j) := (znAddEquivZMod (e j)).symm (Multiplicative.toAdd y)
+        refine ⟨Additive.toMul (eG.symm (Pi.single j z)), ?_⟩
+        change Multiplicative.ofAdd (znAddEquivZMod (e j) (eG (eG.symm (Pi.single j z)) j)) = y
+        rw [eG.apply_symm_apply, Pi.single_eq_same, AddEquiv.apply_symm_apply]
+        rfl
+      -- Show e j ∣ d
+      have hej_dvd_d : e j ∣ d := by
+        obtain ⟨σ₁, hσ₁⟩ := hπ_surj (Multiplicative.ofAdd (1 : ZMod (e j)))
+        have h1 : π (σ₁ ^ d) = 1 := by rw [hpow_d σ₁, map_one]
+        rw [map_pow, hσ₁] at h1
+        change d • (1 : ZMod (e j)) = 0 at h1
+        rw [nsmul_eq_mul, mul_one] at h1
+        exact (ZMod.natCast_eq_zero_iff d (e j)).mp h1
+      -- Fixed field M_j of H_j = ker π is cyclic Galois over K of degree e j
+      let H : Subgroup (L ≃ₐ[K] L) := π.ker
+      have _ : H.Normal := MonoidHom.normal_ker π
+      let M : IntermediateField K L := IntermediateField.fixedField H
+      have _ : IsGalois K M := IsGalois.of_fixedField_normal_subgroup H
+      have hgalM : IsGarlingGaloisExtension K M :=
+        (isGarlingGaloisExtension_iff K M).mpr ⟨inferInstance, inferInstance⟩
+      let eAut : (M ≃ₐ[K] M) ≃* Multiplicative (ZMod (e j)) :=
+        (IsGalois.normalAutEquivQuotient H).symm.trans
+          (QuotientGroup.quotientKerEquivOfSurjective π hπ_surj)
+      have hcycZM : IsCyclic (Multiplicative (ZMod (e j))) := by
+        refine ⟨Multiplicative.ofAdd (1 : ZMod (e j)), fun x => ?_⟩
+        refine ⟨((Multiplicative.toAdd x).val : ℤ), ?_⟩
+        change (Multiplicative.ofAdd (1 : ZMod (e j))) ^ ((Multiplicative.toAdd x).val : ℤ) = x
+        rw [zpow_natCast]
+        change ((Multiplicative.toAdd x).val : ℕ) • (1 : ZMod (e j)) = Multiplicative.toAdd x
+        rw [nsmul_eq_mul, mul_one, ZMod.natCast_zmod_val]
+      have hcycM : IsGarlingCyclicExtension K M := by
+        refine ⟨hgalM, ?_⟩
+        obtain ⟨g, hg⟩ := hcycZM.exists_generator
+        refine ⟨eAut.symm g, fun x => ?_⟩
+        obtain ⟨k, hk⟩ := Subgroup.mem_zpowers_iff.mp (hg (eAut x))
+        exact ⟨k, by change (eAut.symm g) ^ k = x; rw [← map_zpow, hk, eAut.symm_apply_apply]⟩
+      have hfinM : Module.finrank K M = e j := by
+        rw [← IsGalois.card_aut_eq_finrank K M, Nat.card_congr eAut.toEquiv,
+          Nat.card_congr Multiplicative.toAdd, Nat.card_eq_fintype_card, ZMod.card]
+      have hndvd_ej : ¬ (ringChar K ∣ e j) := fun hd => hndvd_d (hd.trans hej_dvd_d)
+      -- Primitive (e j)-th root of unity in K: ω ^ (d / e j)
+      have hωj : IsPrimitiveRoot (ω ^ (d / e j)) (e j) := by
+        rw [IsPrimitiveRoot.iff_def]
+        refine ⟨by rw [← pow_mul, Nat.div_mul_cancel hej_dvd_d, hω.pow_eq_one], fun l hl => ?_⟩
+        rw [← pow_mul] at hl
+        have hd_dvd : d ∣ (d / e j) * l := hω.dvd_of_pow_eq_one _ hl
+        have hq_pos : 0 < d / e j := Nat.div_pos (Nat.le_of_dvd hd_pos hej_dvd_d) (by have := he_gt1 j; omega)
+        have hmul : (d / e j) * e j ∣ (d / e j) * l := by rwa [Nat.div_mul_cancel hej_dvd_d]
+        exact (mul_dvd_mul_iff_left (Nat.ne_of_gt hq_pos)).mp hmul
+      -- Apply Theorem 16.4 to M : K
+      obtain ⟨ψ, hirr_ψ, hsf_ψ, _⟩ := theorem_16_4 hcycM hfinM hndvd_ej hωj
+      have hsp_ψ := (garlingSplitsOver_iff_splits K M _).mp hsf_ψ.1
+      have hne_r : ((Polynomial.X ^ (e j) - Polynomial.C ψ).map (algebraMap K M)).roots ≠ 0 := by
+        intro h0
+        have hc := Polynomial.Splits.natDegree_eq_card_roots hsp_ψ
+        rw [h0, Multiset.card_zero,
+          Polynomial.natDegree_map_eq_of_injective (algebraMap K M).injective,
+          Polynomial.natDegree_X_pow_sub_C] at hc
+        have := he_gt1 j; omega
+      obtain ⟨βM, hβM⟩ := Multiset.exists_mem_of_ne_zero hne_r
+      rw [Polynomial.mem_roots (Polynomial.map_ne_zero
+          (Polynomial.monic_X_pow_sub_C ψ (by have := he_gt1 j; omega)).ne_zero),
+        Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def] at hβM
+      let βL : L := (βM : L)
+      have hβL_aev : Polynomial.aeval βL (Polynomial.X ^ (e j) - Polynomial.C ψ) = 0 := by
+        change Polynomial.aeval (M.val βM) _ = 0
+        rw [Polynomial.aeval_algHom_apply, hβM, map_zero]
+      have hβL_pow : βL ^ (e j) = algebraMap K L ψ := by
+        simpa [sub_eq_zero] using hβL_aev
+      have hψ_ne : ψ ≠ 0 := by
+        intro h0; subst h0
+        have hroot : (Polynomial.X ^ (e j) - Polynomial.C (0 : K)).eval 0 = 0 := by
+          simp [zero_pow (by have := he_gt1 j; omega : e j ≠ 0)]
+        obtain ⟨q_fac, hq_fac⟩ := Polynomial.dvd_iff_isRoot.mpr hroot
+        rcases hirr_ψ.isUnit_or_isUnit hq_fac with hu1 | hu2
+        · rw [Polynomial.isUnit_iff_degree_eq_zero,
+            Polynomial.degree_eq_natDegree (Polynomial.X_sub_C_ne_zero _),
+            Polynomial.natDegree_X_sub_C] at hu1
+          exact absurd hu1 (by decide)
+        · have hq0 : q_fac ≠ 0 := fun h => by
+            rw [h, mul_zero] at hq_fac
+            exact (Polynomial.monic_X_pow_sub_C (0 : K) (by have := he_gt1 j; omega)).ne_zero hq_fac
+          rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hq0] at hu2
+          have hqd : q_fac.natDegree = 0 := Nat.cast_injective hu2
+          have hdeg := congrArg Polynomial.natDegree hq_fac
+          rw [Polynomial.natDegree_X_pow_sub_C,
+            Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero _) hq0,
+            Polynomial.natDegree_X_sub_C, hqd] at hdeg
+          have := he_gt1 j; omega
+      have hβL_ne : βL ≠ 0 := by
+        intro h0
+        rw [h0, zero_pow (by have := he_gt1 j; omega)] at hβL_pow
+        exact hψ_ne ((algebraMap K L).injective (hβL_pow.symm.trans (map_zero _).symm))
+      have hKβ_eq_M : K⟮βL⟯ = M := by
+        have hle : K⟮βL⟯ ≤ M := by
+          rw [IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]
+          exact βM.2
+        have hmin_eq : minpoly K βL = Polynomial.X ^ (e j) - Polynomial.C ψ :=
+          (minpoly.eq_of_irreducible_of_monic hirr_ψ hβL_aev
+            (Polynomial.monic_X_pow_sub_C ψ (by have := he_gt1 j; omega))).symm
+        refine IntermediateField.eq_of_le_of_finrank_eq hle ?_
+        rw [IntermediateField.adjoin.finrank (Algebra.IsIntegral.isIntegral βL), hmin_eq,
+          Polynomial.natDegree_X_pow_sub_C, hfinM]
+      refine ⟨ψ ^ (d / e j), βL, hβL_ne, ?_, ?_⟩
+      · rw [map_pow, ← hβL_pow, ← pow_mul, Nat.mul_div_cancel' hej_dvd_d]
+      · intro E hβE σ hσE
+        have hM_le_E : M ≤ E := by
+          rw [← hKβ_eq_M, IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]
+          exact hβE
+        have hσH : σ ∈ H := by
+          rw [← IntermediateField.fixingSubgroup_fixedField H,
+            IntermediateField.mem_fixingSubgroup_iff]
+          intro x hx
+          exact (IntermediateField.mem_fixingSubgroup_iff _ _).mp hσE x (hM_le_E hx)
+        have hπ0 : π σ = 1 := hσH
+        exact (znAddEquivZMod (e j)).injective
+          ((Multiplicative.ofAdd.injective hπ0).trans (map_zero _).symm)
+    let θ : Fin s → K := fun j => (hcomp j).choose
+    let β : Fin s → L := fun j => (hcomp j).choose_spec.choose
+    have hβ_ne : ∀ j : Fin s, β j ≠ 0 := fun j => (hcomp j).choose_spec.choose_spec.1
+    have hβ_pow : ∀ j : Fin s, (β j) ^ d = algebraMap K L (θ j) :=
+      fun j => (hcomp j).choose_spec.choose_spec.2.1
+    have hβ_fix : ∀ j : Fin s, ∀ (E : IntermediateField K L), β j ∈ E →
+        ∀ σ ∈ E.fixingSubgroup, eG (Additive.ofMul σ) j = 0 :=
+      fun j => (hcomp j).choose_spec.choose_spec.2.2
+    let f : K[X] := ∏ j : Fin s, (Polynomial.X ^ d - Polynomial.C (θ j))
+    have hf_monic : f.Monic :=
+      Polynomial.monic_prod_of_monic _ _ fun j _ => Polynomial.monic_X_pow_sub_C (θ j) (Nat.ne_of_gt hd_pos)
+    refine ⟨s, θ, hs_pos, ?_, ?_⟩
+    · -- f splits over L because each X^d - θ_j = ∏_k (X - ω^k β_j) splits over L
+      rw [garlingSplitsOver_iff_splits]
+      rw [Polynomial.map_prod]
+      refine Polynomial.Splits.prod fun j _ => ?_
+      have hfac_j : (Polynomial.X ^ d - Polynomial.C (θ j)).map (algebraMap K L) =
+          ∏ k : Fin d, (Polynomial.X - Polynomial.C ((algebraMap K L ω) ^ (k : ℕ) * β j)) := by
+        rw [Polynomial.map_sub, Polynomial.map_pow, Polynomial.map_X, Polynomial.map_C, ← hβ_pow j]
+        exact X_pow_sub_C_pow_eq_prod hd_pos hωL (β j)
+      rw [hfac_j]
+      exact Polynomial.Splits.prod fun k _ => Polynomial.Splits.X_sub_C _
+    · -- No proper intermediate field E splits f
+      intro E hE hspE
+      have hsp_ml := (garlingSplitsOver_iff_splits K E f).mp hspE
+      have hβ_mem_E : ∀ j : Fin s, β j ∈ E := by
+        intro j
+        have hdvd_j : (Polynomial.X ^ d - Polynomial.C (θ j)) ∣ f :=
+          Finset.dvd_prod_of_mem _ (Finset.mem_univ j)
+        have hsp_j : ((Polynomial.X ^ d - Polynomial.C (θ j)).map (algebraMap K E)).Splits :=
+          hsp_ml.of_dvd (Polynomial.map_ne_zero hf_monic.ne_zero) (Polynomial.map_dvd _ hdvd_j)
+        have hne_r : ((Polynomial.X ^ d - Polynomial.C (θ j)).map (algebraMap K E)).roots ≠ 0 := by
+          intro h0
+          have hc := Polynomial.Splits.natDegree_eq_card_roots hsp_j
+          rw [h0, Multiset.card_zero,
+            Polynomial.natDegree_map_eq_of_injective (algebraMap K E).injective,
+            Polynomial.natDegree_X_pow_sub_C] at hc
+          omega
+        obtain ⟨γE, hγE⟩ := Multiset.exists_mem_of_ne_zero hne_r
+        rw [Polynomial.mem_roots (Polynomial.map_ne_zero
+            (Polynomial.monic_X_pow_sub_C (θ j) (Nat.ne_of_gt hd_pos)).ne_zero),
+          Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def,
+          map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, sub_eq_zero] at hγE
+        have hγL_pow : (γE : L) ^ d = (β j) ^ d := by
+          rw [hβ_pow j]
+          simpa using congrArg (algebraMap E L) hγE
+        have hratio_pow : ((γE : L) * (β j)⁻¹) ^ d = 1 := by
+          rw [mul_pow, inv_pow, hγL_pow, mul_inv_cancel₀ (pow_ne_zero d (hβ_ne j))]
+        have : NeZero d := ⟨Nat.ne_of_gt hd_pos⟩
+        obtain ⟨k, _, hk⟩ := hωL.eq_pow_of_pow_eq_one hratio_pow
+        have hβ_eq : β j = ((algebraMap K L ω) ^ k)⁻¹ * (γE : L) := by
+          have h1 : (γE : L) = (algebraMap K L ω) ^ k * β j := by
+            rw [hk, mul_assoc, inv_mul_cancel₀ (hβ_ne j), mul_one]
+          rw [h1, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero k hωL_ne), one_mul]
+        rw [hβ_eq]
+        exact mul_mem (inv_mem (pow_mem (E.algebraMap_mem ω) k)) γE.2
+      have hfix_bot : E.fixingSubgroup = ⊥ := by
+        rw [eq_bot_iff]
+        intro σ hσ
+        rw [Subgroup.mem_bot]
+        apply Additive.ofMul.injective
+        apply eG.injective
+        ext j
+        rw [hβ_fix j E (hβ_mem_E j) σ hσ]
+        change 0 = eG 0 j
+        rw [map_zero, Pi.zero_apply]
+      have hE_top : E = ⊤ := by
+        rw [← IsGalois.fixedField_fixingSubgroup E, hfix_bot, IntermediateField.fixedField_bot]
+      exact hE hE_top
+
+/-- **Inline prose definition of Kummer extension of exponent `d`** (§16.4, printed p. 129 / PDF p.
+137; `1 ≤ d` made explicit per `QUEUE.md` Flag 5):
+*"An extension `L : K` is called a `Kummer extension of exponent d` if it is a splitting field
+extension of a polynomial of the form `(x^d - θ₁)...(x^d - θ_r)` (where `θ₁, ..., θ_r` are in `K`)
+and if `x^d - 1` has `d` distinct roots in `K`."* -/
+def IsGarlingKummerExtension (K : Type u) (L : Type v) [Field K] [Field L] [Algebra K L]
+    (d : ℕ) : Prop :=
+  1 ≤ d ∧
+  (Polynomial.X ^ d - 1 : K[X]).roots.toFinset.card = d ∧
+  ∃ (r : ℕ) (θ : Fin r → K),
+    IsGarlingSplittingFieldExtension K L (∏ j : Fin r, (Polynomial.X ^ d - Polynomial.C (θ j)))
+
+/-- **Zero-exponent Mathlib roots trap for `IsGarlingKummerExtension` / `Theorem 16.6`**
+(`QUEUE.md` Flag 5):
+At `d = 0`, `X ^ 0 - 1 = 0 : ℚ[X]` evaluates to `0` at every element of `ℚ` (infinitely many
+roots), yet Mathlib's junk value `(0 : ℚ[X]).roots = 0` gives
+`(X ^ 0 - 1 : ℚ[X]).roots.toFinset.card = 0 = d`, confirming `1 ≤ d` must be stated explicitly. -/
+theorem theorem_16_6_zero_exponent_mathlib_trap :
+    (Polynomial.X ^ 0 - 1 : ℚ[X]) = 0 ∧
+    (Polynomial.X ^ 0 - 1 : ℚ[X]).roots.toFinset.card = 0 ∧
+    ∀ x : ℚ, (Polynomial.X ^ 0 - 1 : ℚ[X]).eval x = 0 := by
+  refine ⟨by simp, by simp, fun x => by simp⟩
+
+/-- **Theorem 16.6** (§16.4, printed pp. 129–130 / PDF pp. 137–138):
+*"Suppose that `L : K` is a Kummer extension of exponent `d`. Then `Γ(L : K)` is abelian, and its
+exponent divides `d`."* -/
+theorem theorem_16_6 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {d : ℕ} (hkum : IsGarlingKummerExtension K L d) :
+    IsGarlingGaloisExtension K L ∧
+    (∀ σ τ : GarlingGaloisGroup K L, σ * τ = τ * σ) ∧
+    ∀ [Finite (GarlingGaloisGroup K L)], garlingExponent (GarlingGaloisGroup K L) ∣ d := by
+  rcases hkum with ⟨hd_pos, hroots, r, θ, hsf⟩
+  obtain ⟨hndvd_d, ω, hω⟩ := (has_d_distinct_roots_X_pow_sub_one_iff hd_pos).mp hroots
+  have hωL : IsPrimitiveRoot (algebraMap K L ω) d :=
+    hω.map_of_injective (algebraMap K L).injective
+  have hd_cast_ne : (d : K) ≠ 0 :=
+    (pos_and_natCast_ne_zero_of_not_ringChar_dvd hndvd_d).2
+  let f : K[X] := ∏ j : Fin r, (Polynomial.X ^ d - Polynomial.C (θ j))
+  -- Step 1: Deduplicate nonzero θ_j to obtain a separable polynomial f₁ with the same splitting fields
+  let S : Finset K := (Finset.univ.image θ).erase 0
+  let f₁ : K[X] := ∏ a ∈ S, (Polynomial.X ^ d - Polynomial.C a)
+  have hf₁_monic : f₁.Monic :=
+    Polynomial.monic_prod_of_monic _ _ fun a _ => Polynomial.monic_X_pow_sub_C a (Nat.ne_of_gt hd_pos)
+  have hf_monic : f.Monic :=
+    Polynomial.monic_prod_of_monic _ _ fun j _ => Polynomial.monic_X_pow_sub_C (θ j) (Nat.ne_of_gt hd_pos)
+  have hXd_sep : ∀ a : K, a ≠ 0 → (Polynomial.X ^ d - Polynomial.C a : K[X]).Separable := by
+    intro a ha
+    rw [Polynomial.Separable]
+    refine ⟨Polynomial.C (-a⁻¹), Polynomial.C (a⁻¹ * (d : K)⁻¹) * Polynomial.X, ?_⟩
+    rw [Polynomial.derivative_sub, Polynomial.derivative_X_pow, Polynomial.derivative_C, sub_zero]
+    have hX : Polynomial.X * ((d : K[X]) * Polynomial.X ^ (d - 1)) =
+        Polynomial.C (d : K) * Polynomial.X ^ d := by
+      rw [Polynomial.C_eq_natCast]
+      calc Polynomial.X * ((d : K[X]) * Polynomial.X ^ (d - 1))
+          = (d : K[X]) * (Polynomial.X ^ (d - 1) * Polynomial.X) := by ring
+        _ = (d : K[X]) * Polynomial.X ^ (d - 1 + 1) := by rw [← pow_succ]
+        _ = (d : K[X]) * Polynomial.X ^ d := by rw [Nat.sub_add_cancel hd_pos]
+    calc Polynomial.C (-a⁻¹) * (Polynomial.X ^ d - Polynomial.C a) +
+          Polynomial.C (a⁻¹ * (d : K)⁻¹) * Polynomial.X * ((d : K[X]) * Polynomial.X ^ (d - 1))
+        = Polynomial.C (-a⁻¹) * Polynomial.X ^ d - Polynomial.C (-a⁻¹ * a) +
+          Polynomial.C (a⁻¹ * (d : K)⁻¹) * (Polynomial.X * ((d : K[X]) * Polynomial.X ^ (d - 1))) := by
+            rw [show Polynomial.C (-a⁻¹ * a) = Polynomial.C (-a⁻¹) * Polynomial.C a from Polynomial.C_mul]
+            ring
+      _ = Polynomial.C (-a⁻¹) * Polynomial.X ^ d - Polynomial.C (-a⁻¹ * a) +
+          Polynomial.C (a⁻¹ * (d : K)⁻¹ * (d : K)) * Polynomial.X ^ d := by
+            rw [hX, ← mul_assoc, ← Polynomial.C_mul]
+      _ = Polynomial.C (-a⁻¹ + a⁻¹ * (d : K)⁻¹ * (d : K)) * Polynomial.X ^ d -
+          Polynomial.C (-a⁻¹ * a) := by rw [Polynomial.C_add]; ring
+      _ = 1 := by
+            rw [mul_assoc a⁻¹, inv_mul_cancel₀ hd_cast_ne, mul_one, neg_add_cancel,
+              Polynomial.C_0, zero_mul, zero_sub, neg_mul, inv_mul_cancel₀ ha, map_neg,
+              Polynomial.C_1, neg_neg]
+  have hf₁_sep : f₁.Separable := by
+    have hgen : ∀ T : Finset K, (∀ a ∈ T, a ≠ 0) →
+        (∏ a ∈ T, (Polynomial.X ^ d - Polynomial.C a : K[X])).Separable := by
+      intro T
+      induction T using Finset.induction_on with
+      | empty => intro _; simp [Polynomial.separable_one]
+      | insert a T haT ih =>
+        intro hne
+        rw [Finset.prod_insert haT]
+        refine Polynomial.Separable.mul (hXd_sep a (hne a (Finset.mem_insert_self a T)))
+          (ih fun b hb => hne b (Finset.mem_insert_of_mem hb)) ?_
+        refine IsCoprime.prod_right fun b hb => ?_
+        have hab : b - a ≠ 0 := sub_ne_zero.mpr fun h => haT (h ▸ hb)
+        refine ⟨Polynomial.C (b - a)⁻¹, Polynomial.C (-(b - a)⁻¹), ?_⟩
+        calc Polynomial.C (b - a)⁻¹ * (Polynomial.X ^ d - Polynomial.C a) +
+              Polynomial.C (-(b - a)⁻¹) * (Polynomial.X ^ d - Polynomial.C b)
+            = Polynomial.C ((b - a)⁻¹ * (b - a)) := by
+              simp only [map_neg, map_sub, map_mul]; ring
+          _ = 1 := by rw [inv_mul_cancel₀ hab, Polynomial.C_1]
+    exact hgen S fun a ha => (Finset.mem_erase.mp ha).1
+  have hsp_iff : ∀ M : IntermediateField K L, GarlingSplitsOver K M f ↔ GarlingSplitsOver K M f₁ := by
+    intro M
+    rw [garlingSplitsOver_iff_splits, garlingSplitsOver_iff_splits]
+    constructor
+    · intro hsp
+      rw [Polynomial.map_prod]
+      refine Polynomial.Splits.prod fun a ha => ?_
+      have ha_img := (Finset.mem_erase.mp ha).2
+      rw [Finset.mem_image] at ha_img
+      rcases ha_img with ⟨j, _, rfl⟩
+      exact hsp.of_dvd (Polynomial.map_ne_zero hf_monic.ne_zero)
+        (Polynomial.map_dvd _ (Finset.dvd_prod_of_mem _ (Finset.mem_univ j)))
+    · intro hsp₁
+      rw [Polynomial.map_prod]
+      refine Polynomial.Splits.prod fun j _ => ?_
+      by_cases hθ0 : θ j = 0
+      · rw [hθ0, Polynomial.C_0, sub_zero, Polynomial.map_pow, Polynomial.map_X]
+        exact Polynomial.Splits.pow Polynomial.Splits.X d
+      · have hmemS : θ j ∈ S := Finset.mem_erase.mpr ⟨hθ0, Finset.mem_image_of_mem _ (Finset.mem_univ j)⟩
+        exact hsp₁.of_dvd (Polynomial.map_ne_zero hf₁_monic.ne_zero)
+          (Polynomial.map_dvd _ (Finset.dvd_prod_of_mem _ hmemS))
+  have hsf₁ : IsGarlingSplittingFieldExtension K L f₁ := by
+    have hsp_top : GarlingSplitsOver K (⊤ : IntermediateField K L) f₁ :=
+      (hsp_iff ⊤).mp (by
+        have h1 := hsf.1
+        rw [garlingSplitsOver_iff_splits] at h1 ⊢
+        have hmap : f.map (algebraMap K (⊤ : IntermediateField K L)) =
+            (f.map (algebraMap K L)).map IntermediateField.topEquiv.symm.toRingHom := by
+          rw [Polynomial.map_map]; congr 1
+        rw [hmap]
+        exact h1.map _)
+    have hsp_L : GarlingSplitsOver K L f₁ := by
+      rw [garlingSplitsOver_iff_splits] at hsp_top ⊢
+      have hmap : f₁.map (algebraMap K L) =
+          (f₁.map (algebraMap K (⊤ : IntermediateField K L))).map IntermediateField.topEquiv.toRingHom := by
+        rw [Polynomial.map_map]; congr 1
+      rw [hmap]
+      exact hsp_top.map _
+    exact ⟨hsp_L, fun M hM hspM => hsf.2 M hM ((hsp_iff M).mpr hspM)⟩
+  have hgal : IsGarlingGaloisExtension K L :=
+    isGarlingGalois_of_splittingField hf₁_monic.ne_zero hsf₁
+      ((mathlib_separable_iff_squarefree_and_isGarlingSeparablePoly f₁).mp hf₁_sep).2.2
+  -- Step 2: Action of Γ(L : K) on every root β of f multiplies by a power of ω (Garling pp. 129–130)
+  have hact : ∀ (σ : L ≃ₐ[K] L) (β : garlingRootSet K L f),
+      ∃ n : ℕ, σ β.1 = (algebraMap K L ω) ^ n * β.1 := by
+    intro σ β
+    by_cases hβ0 : β.1 = 0
+    · exact ⟨0, by rw [hβ0, map_zero, mul_zero]⟩
+    · have hβ_ev : Polynomial.aeval β.1 f = 0 := β.2
+      simp only [f, map_prod, Finset.prod_eq_zero_iff, Finset.mem_univ, true_and, map_sub,
+        map_pow, Polynomial.aeval_X, Polynomial.aeval_C, sub_eq_zero] at hβ_ev
+      rcases hβ_ev with ⟨j, hβ_pow⟩
+      have hσ_pow : (σ β.1) ^ d = β.1 ^ d := by
+        rw [← map_pow, hβ_pow, σ.commutes]
+      have hratio : (σ β.1 * β.1⁻¹) ^ d = 1 := by
+        rw [mul_pow, inv_pow, hσ_pow, mul_inv_cancel₀ (pow_ne_zero d hβ0)]
+      have : NeZero d := ⟨Nat.ne_of_gt hd_pos⟩
+      obtain ⟨n, _, hn⟩ := hωL.eq_pow_of_pow_eq_one hratio
+      refine ⟨n, ?_⟩
+      rw [hn, mul_assoc, inv_mul_cancel₀ hβ0, mul_one]
+  have hinj := theorem_11_6 hsf
+  have hcomm : ∀ σ τ : L ≃ₐ[K] L, σ * τ = τ * σ := by
+    intro σ τ
+    apply hinj
+    ext β
+    change (σ * τ) β.1 = (τ * σ) β.1
+    obtain ⟨n₁, hn₁⟩ := hact σ β
+    obtain ⟨n₂, hn₂⟩ := hact τ β
+    rw [AlgEquiv.mul_apply, AlgEquiv.mul_apply, hn₂, hn₁, map_mul, map_mul, map_pow, map_pow,
+      σ.commutes, τ.commutes, hn₁, hn₂]
+    ring
+  have hpow_d : ∀ σ : L ≃ₐ[K] L, σ ^ d = 1 := by
+    intro σ
+    apply hinj
+    ext β
+    change (σ ^ d) β.1 = (1 : L ≃ₐ[K] L) β.1
+    obtain ⟨n, hn⟩ := hact σ β
+    have hpow_k : ∀ k : ℕ, (σ ^ k) β.1 = ((algebraMap K L ω) ^ n) ^ k * β.1 := by
+      intro k
+      induction k with
+      | zero => simp
+      | succ k ih =>
+        rw [pow_succ', AlgEquiv.mul_apply, ih, map_mul, map_pow, map_pow, σ.commutes, hn,
+          ← mul_assoc, ← pow_succ]
+    rw [hpow_k d, ← pow_mul, mul_comm n d, pow_mul, hωL.pow_eq_one, one_pow, one_mul,
+      AlgEquiv.one_apply]
+  refine ⟨hgal, hcomm, fun [_] => ?_⟩
+  exact (garlingExponent_and_elemOrder_properties (L ≃ₐ[K] L)).2.2.2.1 d |>.mp hpow_d
+
+/-- **Exercise 16.15** (§16.4, printed p. 130 / PDF p. 138):
+*"Suppose that `K` is a field which contains a primitive `n`th root of unity and that `x^n - a` and
+`x^n - b` are irreducible over `K`. Show that if `b = a^r c^n` for some `r` which is prime to `n`
+and some `c` in `K`, then `x^n - a` and `x^n - b` have the same splitting field extension over
+`K`."* -/
+theorem exercise_16_15 {K : Type u} [Field K] {n r : ℕ} {ω a b c : K}
+    (hω : IsPrimitiveRoot ω n)
+    (hirr_a : Irreducible (Polynomial.X ^ n - Polynomial.C a : K[X]))
+    (hirr_b : Irreducible (Polynomial.X ^ n - Polynomial.C b : K[X]))
+    (hcop : Nat.Coprime r n) (hb : b = a ^ r * c ^ n) :
+    ∀ (L : Type v) [Field L] [Algebra K L],
+      IsGarlingSplittingFieldExtension K L (Polynomial.X ^ n - Polynomial.C a) ↔
+      IsGarlingSplittingFieldExtension K L (Polynomial.X ^ n - Polynomial.C b) := by
+  have hn : 1 ≤ n := by
+    rcases Nat.eq_zero_or_pos n with rfl | hpos
+    · exfalso
+      have hconst : (Polynomial.X ^ 0 - Polynomial.C a : K[X]) = Polynomial.C (1 - a) := by
+        simp [Polynomial.C_sub]
+      rw [hconst] at hirr_a
+      by_cases h0 : 1 - a = 0
+      · rw [h0, map_zero] at hirr_a; exact hirr_a.ne_zero rfl
+      · exact hirr_a.not_isUnit (Polynomial.isUnit_C.mpr (isUnit_iff_ne_zero.mpr h0))
+    · exact hpos
+  -- Core one-way lemma for n ≥ 2: if b = a^r * c^n (with both X^n - a, X^n - b irreducible), then
+  -- any splitting field of X^n - a is also a splitting field of X^n - b.
+  have hfwd : ∀ (a' b' c' : K) (r' : ℕ),
+      2 ≤ n →
+      Irreducible (Polynomial.X ^ n - Polynomial.C a' : K[X]) →
+      Irreducible (Polynomial.X ^ n - Polynomial.C b' : K[X]) →
+      b' = a' ^ r' * c' ^ n →
+      ∀ (L : Type v) [Field L] [Algebra K L],
+        IsGarlingSplittingFieldExtension K L (Polynomial.X ^ n - Polynomial.C a') →
+        IsGarlingSplittingFieldExtension K L (Polynomial.X ^ n - Polynomial.C b') := by
+    intro a' b' c' r' hn2 hirr_a' hirr_b' hb' L _ _ hsf_a'
+    have hωL : IsPrimitiveRoot (algebraMap K L ω) n :=
+      hω.map_of_injective (algebraMap K L).injective
+    have hωL_ne : algebraMap K L ω ≠ 0 := hωL.ne_zero (by omega)
+    have hne_zero_of_irr : ∀ u : K, Irreducible (Polynomial.X ^ n - Polynomial.C u : K[X]) → u ≠ 0 := by
+      intro u hu h0; subst h0
+      have hroot : (Polynomial.X ^ n - Polynomial.C (0 : K)).eval 0 = 0 := by
+        simp [zero_pow (by omega : n ≠ 0)]
+      obtain ⟨q_fac, hq_fac⟩ := Polynomial.dvd_iff_isRoot.mpr hroot
+      rcases hu.isUnit_or_isUnit hq_fac with hu1 | hu2
+      · rw [Polynomial.isUnit_iff_degree_eq_zero,
+          Polynomial.degree_eq_natDegree (Polynomial.X_sub_C_ne_zero _),
+          Polynomial.natDegree_X_sub_C] at hu1
+        exact absurd hu1 (by decide)
+      · have hq0 : q_fac ≠ 0 := fun h => by
+          rw [h, mul_zero] at hq_fac
+          exact (Polynomial.monic_X_pow_sub_C (0 : K) (by omega)).ne_zero hq_fac
+        rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hq0] at hu2
+        have hqd : q_fac.natDegree = 0 := Nat.cast_injective hu2
+        have hdeg := congrArg Polynomial.natDegree hq_fac
+        rw [Polynomial.natDegree_X_pow_sub_C,
+          Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero _) hq0,
+          Polynomial.natDegree_X_sub_C, hqd] at hdeg
+        omega
+    have ha'_ne : a' ≠ 0 := hne_zero_of_irr a' hirr_a'
+    have hb'_ne : b' ≠ 0 := hne_zero_of_irr b' hirr_b'
+    -- Pick a root α ∈ L of X^n - a'
+    have hsp_a' := (garlingSplitsOver_iff_splits K L _).mp hsf_a'.1
+    have hne_r : ((Polynomial.X ^ n - Polynomial.C a').map (algebraMap K L)).roots ≠ 0 := by
+      intro h0
+      have hc := Polynomial.Splits.natDegree_eq_card_roots hsp_a'
+      rw [h0, Multiset.card_zero,
+        Polynomial.natDegree_map_eq_of_injective (algebraMap K L).injective,
+        Polynomial.natDegree_X_pow_sub_C] at hc
+      omega
+    obtain ⟨α, hα⟩ := Multiset.exists_mem_of_ne_zero hne_r
+    rw [Polynomial.mem_roots (Polynomial.map_ne_zero (Polynomial.monic_X_pow_sub_C a' (by omega)).ne_zero),
+      Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def] at hα
+    have hα_pow : α ^ n = algebraMap K L a' := by simpa [sub_eq_zero] using hα
+    have hα_ne : α ≠ 0 := fun h0 => by
+      rw [h0, zero_pow (by omega)] at hα_pow
+      exact ha'_ne ((algebraMap K L).injective (hα_pow.symm.trans (map_zero _).symm))
+    -- L = K⟮α⟯ and [L : K] = n
+    have hKα_top : K⟮α⟯ = ⊤ := by
+      by_contra hne
+      refine hsf_a'.2 K⟮α⟯ hne ?_
+      rw [garlingSplitsOver_iff_splits]
+      have hω_Kα : IsPrimitiveRoot (algebraMap K K⟮α⟯ ω) n :=
+        hω.map_of_injective (algebraMap K K⟮α⟯).injective
+      have hfac := X_pow_sub_C_pow_eq_prod hn hω_Kα (⟨α, IntermediateField.mem_adjoin_simple_self K α⟩ : K⟮α⟯)
+      have hpow_Kα : (⟨α, IntermediateField.mem_adjoin_simple_self K α⟩ : K⟮α⟯) ^ n =
+          algebraMap K K⟮α⟯ a' := Subtype.ext (by simpa using hα_pow)
+      rw [Polynomial.map_sub, Polynomial.map_pow, Polynomial.map_X, Polynomial.map_C, ← hpow_Kα, hfac]
+      exact Polynomial.Splits.prod fun k _ => Polynomial.Splits.X_sub_C _
+    have hα_int : IsIntegral K α := ⟨Polynomial.X ^ n - Polynomial.C a',
+      Polynomial.monic_X_pow_sub_C a' (by omega), hα⟩
+    have hmin_α : minpoly K α = Polynomial.X ^ n - Polynomial.C a' :=
+      (minpoly.eq_of_irreducible_of_monic hirr_a' hα (Polynomial.monic_X_pow_sub_C a' (by omega))).symm
+    have hfinL : Module.finrank K L = n := by
+      rw [← LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, ← hKα_top,
+        IntermediateField.adjoin.finrank hα_int, hmin_α, Polynomial.natDegree_X_pow_sub_C]
+    -- Construct root β = α^r' * c' ∈ L of X^n - b'
+    let β : L := α ^ r' * algebraMap K L c'
+    have hβ_pow : β ^ n = algebraMap K L b' := by
+      show (α ^ r' * algebraMap K L c') ^ n = algebraMap K L b'
+      rw [mul_pow, ← pow_mul, mul_comm r' n, pow_mul, hα_pow, ← map_pow, ← map_pow, ← map_mul, hb']
+    have hβ_aev : Polynomial.aeval β (Polynomial.X ^ n - Polynomial.C b') = 0 := by
+      simp [hβ_pow]
+    have hβ_ne : β ≠ 0 := fun h0 => by
+      rw [h0, zero_pow (by omega)] at hβ_pow
+      exact hb'_ne ((algebraMap K L).injective (hβ_pow.symm.trans (map_zero _).symm))
+    have hβ_int : IsIntegral K β := ⟨Polynomial.X ^ n - Polynomial.C b',
+      Polynomial.monic_X_pow_sub_C b' (by omega), hβ_aev⟩
+    have hmin_β : minpoly K β = Polynomial.X ^ n - Polynomial.C b' :=
+      (minpoly.eq_of_irreducible_of_monic hirr_b' hβ_aev (Polynomial.monic_X_pow_sub_C b' (by omega))).symm
+    have _ : FiniteDimensional K L := by
+      have : FiniteDimensional K K⟮α⟯ := IntermediateField.adjoin.finiteDimensional hα_int
+      exact LinearEquiv.finiteDimensional (IntermediateField.topEquiv.symm.trans
+        (IntermediateField.equivOfEq hKα_top.symm)).symm.toLinearEquiv
+    have hKβ_top : K⟮β⟯ = ⊤ :=
+      IntermediateField.eq_of_le_of_finrank_eq le_top (by
+        rw [IntermediateField.adjoin.finrank hβ_int, hmin_β, Polynomial.natDegree_X_pow_sub_C,
+          LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, hfinL])
+    refine ⟨?_, ?_⟩
+    · rw [garlingSplitsOver_iff_splits, Polynomial.map_sub, Polynomial.map_pow, Polynomial.map_X,
+        Polynomial.map_C, ← hβ_pow, X_pow_sub_C_pow_eq_prod hn hωL β]
+      exact Polynomial.Splits.prod fun k _ => Polynomial.Splits.X_sub_C _
+    · intro M hM hspM
+      have hsp_ml := (garlingSplitsOver_iff_splits K M _).mp hspM
+      have hne_rM : ((Polynomial.X ^ n - Polynomial.C b').map (algebraMap K M)).roots ≠ 0 := by
+        intro h0
+        have hc := Polynomial.Splits.natDegree_eq_card_roots hsp_ml
+        rw [h0, Multiset.card_zero,
+          Polynomial.natDegree_map_eq_of_injective (algebraMap K M).injective,
+          Polynomial.natDegree_X_pow_sub_C] at hc
+        omega
+      obtain ⟨γM, hγM⟩ := Multiset.exists_mem_of_ne_zero hne_rM
+      rw [Polynomial.mem_roots (Polynomial.map_ne_zero (Polynomial.monic_X_pow_sub_C b' (by omega)).ne_zero),
+        Polynomial.IsRoot.def, Polynomial.eval_map, ← Polynomial.aeval_def,
+        map_sub, map_pow, Polynomial.aeval_X, Polynomial.aeval_C, sub_eq_zero] at hγM
+      have hγL_pow : (γM : L) ^ n = β ^ n := by
+        rw [hβ_pow]; simpa using congrArg (algebraMap M L) hγM
+      have hratio : ((γM : L) * β⁻¹) ^ n = 1 := by
+        rw [mul_pow, inv_pow, hγL_pow, mul_inv_cancel₀ (pow_ne_zero n hβ_ne)]
+      have : NeZero n := ⟨by omega⟩
+      obtain ⟨k, _, hk⟩ := hωL.eq_pow_of_pow_eq_one hratio
+      have hβ_mem_M : β ∈ M := by
+        have hβ_eq : β = ((algebraMap K L ω) ^ k)⁻¹ * (γM : L) := by
+          have h1 : (γM : L) = (algebraMap K L ω) ^ k * β := by
+            rw [hk, mul_assoc, inv_mul_cancel₀ hβ_ne, mul_one]
+          rw [h1, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero k hωL_ne), one_mul]
+        rw [hβ_eq]
+        exact mul_mem (inv_mem (pow_mem (M.algebraMap_mem ω) k)) γM.2
+      have htop_le : (⊤ : IntermediateField K L) ≤ M := by
+        rw [← hKβ_top, IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]; exact hβ_mem_M
+      exact hM (le_antisymm le_top htop_le)
+  intro L _ _
+  rcases eq_or_lt_of_le hn with rfl | hn2
+  · -- n = 1: both X - a and X - b split over every intermediate field, so both hold iff ⊥ = ⊤
+    have hsf_lin : ∀ u : K,
+        IsGarlingSplittingFieldExtension K L (Polynomial.X ^ 1 - Polynomial.C u) ↔
+          (⊥ : IntermediateField K L) = ⊤ := by
+      intro u
+      have hsp_all : ∀ M : IntermediateField K L, GarlingSplitsOver K M (Polynomial.X ^ 1 - Polynomial.C u) := by
+        intro M
+        rw [garlingSplitsOver_iff_splits, pow_one, Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C]
+        exact Polynomial.Splits.X_sub_C _
+      constructor
+      · intro hsf
+        by_contra hne
+        exact hsf.2 ⊥ hne (hsp_all ⊥)
+      · intro hbot
+        refine ⟨?_, fun M hM _ => hM (le_antisymm le_top (hbot ▸ bot_le))⟩
+        rw [garlingSplitsOver_iff_splits, pow_one, Polynomial.map_sub, Polynomial.map_X, Polynomial.map_C]
+        exact Polynomial.Splits.X_sub_C _
+    rw [hsf_lin a, hsf_lin b]
+  · -- n ≥ 2: invert r mod n via ZMod.unitOfCoprime to get a = b^s * d^n
+    constructor
+    · exact hfwd a b c r hn2 hirr_a hirr_b hb L
+    · have : NeZero n := ⟨by omega⟩
+      let u : (ZMod n)ˣ := ZMod.unitOfCoprime r hcop
+      let s : ℕ := ((u⁻¹ : (ZMod n)ˣ) : ZMod n).val
+      have hrs_mod : r * s ≡ 1 [MOD n] := by
+        rw [← ZMod.natCast_eq_natCast_iff]
+        push_cast
+        have h1 : (r : ZMod n) * (s : ZMod n) = 1 := by
+          change (u : ZMod n) * (((u⁻¹ : (ZMod n)ˣ) : ZMod n).val : ZMod n) = 1
+          rw [ZMod.natCast_zmod_val, Units.mul_inv]
+        simpa using h1
+      have hrs_pos : 1 ≤ r * s := by
+        by_contra h0
+        have hzero : r * s = 0 := by omega
+        rw [hzero, Nat.ModEq, Nat.zero_mod, Nat.mod_eq_of_lt hn2] at hrs_mod
+        omega
+      have hdvd_rs : n ∣ r * s - 1 := (Nat.modEq_iff_dvd' hrs_pos).mp hrs_mod.symm
+      rcases hdvd_rs with ⟨t, ht⟩
+      have hrs_eq : r * s = 1 + n * t := by omega
+      have ha_ne : a ≠ 0 := by
+        intro h0; subst h0
+        have hroot : (Polynomial.X ^ n - Polynomial.C (0 : K)).eval 0 = 0 := by
+          simp [zero_pow (by omega : n ≠ 0)]
+        obtain ⟨q_fac, hq_fac⟩ := Polynomial.dvd_iff_isRoot.mpr hroot
+        rcases hirr_a.isUnit_or_isUnit hq_fac with hu1 | hu2
+        · rw [Polynomial.isUnit_iff_degree_eq_zero,
+            Polynomial.degree_eq_natDegree (Polynomial.X_sub_C_ne_zero _),
+            Polynomial.natDegree_X_sub_C] at hu1
+          exact absurd hu1 (by decide)
+        · have hq0 : q_fac ≠ 0 := fun h => by
+            rw [h, mul_zero] at hq_fac
+            exact (Polynomial.monic_X_pow_sub_C (0 : K) (by omega)).ne_zero hq_fac
+          rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hq0] at hu2
+          have hqd : q_fac.natDegree = 0 := Nat.cast_injective hu2
+          have hdeg := congrArg Polynomial.natDegree hq_fac
+          rw [Polynomial.natDegree_X_pow_sub_C,
+            Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero _) hq0,
+            Polynomial.natDegree_X_sub_C, hqd] at hdeg
+          omega
+      have hb_ne : b ≠ 0 := by
+        intro h0; subst h0
+        have hroot : (Polynomial.X ^ n - Polynomial.C (0 : K)).eval 0 = 0 := by
+          simp [zero_pow (by omega : n ≠ 0)]
+        obtain ⟨q_fac, hq_fac⟩ := Polynomial.dvd_iff_isRoot.mpr hroot
+        rcases hirr_b.isUnit_or_isUnit hq_fac with hu1 | hu2
+        · rw [Polynomial.isUnit_iff_degree_eq_zero,
+            Polynomial.degree_eq_natDegree (Polynomial.X_sub_C_ne_zero _),
+            Polynomial.natDegree_X_sub_C] at hu1
+          exact absurd hu1 (by decide)
+        · have hq0 : q_fac ≠ 0 := fun h => by
+            rw [h, mul_zero] at hq_fac
+            exact (Polynomial.monic_X_pow_sub_C (0 : K) (by omega)).ne_zero hq_fac
+          rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hq0] at hu2
+          have hqd : q_fac.natDegree = 0 := Nat.cast_injective hu2
+          have hdeg := congrArg Polynomial.natDegree hq_fac
+          rw [Polynomial.natDegree_X_pow_sub_C,
+            Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero _) hq0,
+            Polynomial.natDegree_X_sub_C, hqd] at hdeg
+          omega
+      have hc_ne : c ≠ 0 := by
+        intro h0; rw [h0, zero_pow (by omega), mul_zero] at hb; exact hb_ne hb
+      let dK : K := (a ^ t * c ^ s)⁻¹
+      have ha_eq : a = b ^ s * dK ^ n := by
+        have hdenom_ne : a ^ t * c ^ s ≠ 0 := mul_ne_zero (pow_ne_zero t ha_ne) (pow_ne_zero s hc_ne)
+        have hbs : b ^ s = a * (a ^ t * c ^ s) ^ n := by
+          rw [hb, mul_pow, ← pow_mul, hrs_eq, pow_add, pow_one, mul_pow, ← pow_mul, ← pow_mul,
+            mul_comm t n, mul_comm n s]
+          ring
+        simp only [dK, inv_pow, hbs, mul_assoc, mul_inv_cancel₀ (pow_ne_zero n hdenom_ne), mul_one]
+      exact hfwd b a dK s hn2 hirr_b hirr_a ha_eq L
+
+/-- **Edge-case counterexample to requiring positive `r ≥ 1` in `Exercise 16.16` at `n = 1`**
+(`QUEUE.md` Flag 5):
+Over `K = ℚ`, `1` is a primitive `1`st root of unity, `x - 0` and `x - 1` are irreducible with the
+same splitting field `ℚ : ℚ`, yet there is **no** positive `r ≥ 1` and `c ∈ ℚ` with
+`1 = 0 ^ r * c ^ 1` (whereas `r = 0`, which satisfies `Nat.Coprime 0 1`, gives `1 = 0 ^ 0 * 1 ^ 1`). -/
+theorem exercise_16_16_n1_pos_r_counterexample :
+    IsPrimitiveRoot (1 : ℚ) 1 ∧
+    Irreducible (Polynomial.X ^ 1 - Polynomial.C (0 : ℚ)) ∧
+    Irreducible (Polynomial.X ^ 1 - Polynomial.C (1 : ℚ)) ∧
+    ¬ ∃ (r : ℕ) (c : ℚ), 1 ≤ r ∧ (1 : ℚ) = (0 : ℚ) ^ r * c ^ 1 := by
+  refine ⟨IsPrimitiveRoot.one, ?_, ?_, ?_⟩
+  · simpa using Polynomial.irreducible_X_sub_C (0 : ℚ)
+  · simpa using Polynomial.irreducible_X_sub_C (1 : ℚ)
+  · rintro ⟨r, c, hr, heq⟩
+    rw [zero_pow (by omega), zero_mul] at heq
+    exact one_ne_zero heq
+
+/-- **Exercise 16.16** (§16.4, printed p. 130 / PDF p. 138; unconditional for all `n` with `r : ℕ`,
+`Nat.Coprime r n` — see `exercise_16_16_pos_r` for `1 ≤ r < n` when `2 ≤ n` and
+`exercise_16_16_n1_pos_r_counterexample` for the `n = 1, a = 0` boundary per `QUEUE.md` Flag 5):
+*"Suppose `K` is a field which contains a primitive `n`th root of unity, and that `x^n - a` and
+`x^n - b` are irreducible polynomials over `K` with the same splitting field extension `L : K`. Let
+`α` be a root of `x^n - a` in `L`, `β` a root of `x^n - b`. By considering the action of `Γ(L : K)`
+on `α` and `β`, show that there exists `r`, prime to `n`, such that `β α^{-r} ∈ K`. Show that
+`b = a^r c^n` for some `c` in `K`."* -/
+theorem exercise_16_16 {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {n : ℕ} {ω a b : K} (hω : IsPrimitiveRoot ω n)
+    (hirr_a : Irreducible (Polynomial.X ^ n - Polynomial.C a : K[X]))
+    (hirr_b : Irreducible (Polynomial.X ^ n - Polynomial.C b : K[X]))
+    (hsf_a : IsGarlingSplittingFieldExtension K L (Polynomial.X ^ n - Polynomial.C a))
+    (hsf_b : IsGarlingSplittingFieldExtension K L (Polynomial.X ^ n - Polynomial.C b))
+    {α β : L} (hα : Polynomial.aeval α (Polynomial.X ^ n - Polynomial.C a) = 0)
+    (hβ : Polynomial.aeval β (Polynomial.X ^ n - Polynomial.C b) = 0) :
+    ∃ (r : ℕ) (c : K),
+      Nat.Coprime r n ∧
+      algebraMap K L c = β * (α ^ r)⁻¹ ∧
+      b = a ^ r * c ^ n := by
+  have hn : 1 ≤ n := by
+    rcases Nat.eq_zero_or_pos n with rfl | hpos
+    · exfalso
+      have hconst : (Polynomial.X ^ 0 - Polynomial.C a : K[X]) = Polynomial.C (1 - a) := by
+        simp [Polynomial.C_sub]
+      rw [hconst] at hirr_a
+      by_cases h0 : 1 - a = 0
+      · rw [h0, map_zero] at hirr_a; exact hirr_a.ne_zero rfl
+      · exact hirr_a.not_isUnit (Polynomial.isUnit_C.mpr (isUnit_iff_ne_zero.mpr h0))
+    · exact hpos
+  rcases eq_or_lt_of_le hn with rfl | hn2
+  · -- n = 1: r = 0, c = b works unconditionally (even when a = 0)
+    have hβ_eq : β = algebraMap K L b := by simpa [sub_eq_zero] using hβ
+    refine ⟨0, b, (Nat.coprime_zero_left 1).mpr rfl, ?_, by simp⟩
+    simp [hβ_eq]
+  · -- n ≥ 2: Galois action of Γ(L : K) on α and β
+    have hndvd : ¬ (ringChar K ∣ n) := not_ringChar_dvd_of_isPrimitiveRoot hn hω
+    have hn_cast_ne : (n : K) ≠ 0 := (pos_and_natCast_ne_zero_of_not_ringChar_dvd hndvd).2
+    have hne_zero_of_irr : ∀ u : K, Irreducible (Polynomial.X ^ n - Polynomial.C u : K[X]) → u ≠ 0 := by
+      intro u hu h0; subst h0
+      have hroot : (Polynomial.X ^ n - Polynomial.C (0 : K)).eval 0 = 0 := by
+        simp [zero_pow (by omega : n ≠ 0)]
+      obtain ⟨q_fac, hq_fac⟩ := Polynomial.dvd_iff_isRoot.mpr hroot
+      rcases hu.isUnit_or_isUnit hq_fac with hu1 | hu2
+      · rw [Polynomial.isUnit_iff_degree_eq_zero,
+          Polynomial.degree_eq_natDegree (Polynomial.X_sub_C_ne_zero _),
+          Polynomial.natDegree_X_sub_C] at hu1
+        exact absurd hu1 (by decide)
+      · have hq0 : q_fac ≠ 0 := fun h => by
+          rw [h, mul_zero] at hq_fac
+          exact (Polynomial.monic_X_pow_sub_C (0 : K) (by omega)).ne_zero hq_fac
+        rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hq0] at hu2
+        have hqd : q_fac.natDegree = 0 := Nat.cast_injective hu2
+        have hdeg := congrArg Polynomial.natDegree hq_fac
+        rw [Polynomial.natDegree_X_pow_sub_C,
+          Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero _) hq0,
+          Polynomial.natDegree_X_sub_C, hqd] at hdeg
+        omega
+    have ha_ne : a ≠ 0 := hne_zero_of_irr a hirr_a
+    have hb_ne : b ≠ 0 := hne_zero_of_irr b hirr_b
+    have hα_pow : α ^ n = algebraMap K L a := by simpa [sub_eq_zero] using hα
+    have hβ_pow : β ^ n = algebraMap K L b := by simpa [sub_eq_zero] using hβ
+    have hα_ne : α ≠ 0 := fun h0 => by
+      rw [h0, zero_pow (by omega)] at hα_pow
+      exact ha_ne ((algebraMap K L).injective (hα_pow.symm.trans (map_zero _).symm))
+    have hβ_ne : β ≠ 0 := fun h0 => by
+      rw [h0, zero_pow (by omega)] at hβ_pow
+      exact hb_ne ((algebraMap K L).injective (hβ_pow.symm.trans (map_zero _).symm))
+    have hωL : IsPrimitiveRoot (algebraMap K L ω) n :=
+      hω.map_of_injective (algebraMap K L).injective
+    have hωL_ne : algebraMap K L ω ≠ 0 := hωL.ne_zero (by omega)
+    -- Show L : K is Galois of degree n, with K⟮α⟯ = ⊤ and K⟮β⟯ = ⊤
+    have hkum : IsGarlingKummerExtension K L n :=
+      ⟨hn, (has_d_distinct_roots_X_pow_sub_one_iff hn).mpr ⟨hndvd, ω, hω⟩,
+        1, fun _ => a, by simpa [Fin.prod_univ_one] using hsf_a⟩
+    have hgal : IsGarlingGaloisExtension K L := (theorem_16_6 hkum).1
+    have _ : FiniteDimensional K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.1
+    have _ : IsGalois K L := (isGarlingGaloisExtension_iff K L).mp hgal |>.2
+    have hKα_top : K⟮α⟯ = ⊤ := by
+      by_contra hne
+      refine hsf_a.2 K⟮α⟯ hne ?_
+      rw [garlingSplitsOver_iff_splits]
+      have hω_Kα : IsPrimitiveRoot (algebraMap K K⟮α⟯ ω) n :=
+        hω.map_of_injective (algebraMap K K⟮α⟯).injective
+      have hpow_Kα : (⟨α, IntermediateField.mem_adjoin_simple_self K α⟩ : K⟮α⟯) ^ n =
+          algebraMap K K⟮α⟯ a := Subtype.ext (by simpa using hα_pow)
+      rw [Polynomial.map_sub, Polynomial.map_pow, Polynomial.map_X, Polynomial.map_C, ← hpow_Kα,
+        X_pow_sub_C_pow_eq_prod hn hω_Kα _]
+      exact Polynomial.Splits.prod fun k _ => Polynomial.Splits.X_sub_C _
+    have hKβ_top : K⟮β⟯ = ⊤ := by
+      by_contra hne
+      refine hsf_b.2 K⟮β⟯ hne ?_
+      rw [garlingSplitsOver_iff_splits]
+      have hω_Kβ : IsPrimitiveRoot (algebraMap K K⟮β⟯ ω) n :=
+        hω.map_of_injective (algebraMap K K⟮β⟯).injective
+      have hpow_Kβ : (⟨β, IntermediateField.mem_adjoin_simple_self K β⟩ : K⟮β⟯) ^ n =
+          algebraMap K K⟮β⟯ b := Subtype.ext (by simpa using hβ_pow)
+      rw [Polynomial.map_sub, Polynomial.map_pow, Polynomial.map_X, Polynomial.map_C, ← hpow_Kβ,
+        X_pow_sub_C_pow_eq_prod hn hω_Kβ _]
+      exact Polynomial.Splits.prod fun k _ => Polynomial.Splits.X_sub_C _
+    have hfinL : Module.finrank K L = n := by
+      have hmin_α : minpoly K α = Polynomial.X ^ n - Polynomial.C a :=
+        (minpoly.eq_of_irreducible_of_monic hirr_a hα (Polynomial.monic_X_pow_sub_C a (by omega))).symm
+      rw [← LinearEquiv.finrank_eq IntermediateField.topEquiv.toLinearEquiv, ← hKα_top,
+        IntermediateField.adjoin.finrank (Algebra.IsIntegral.isIntegral α), hmin_α,
+        Polynomial.natDegree_X_pow_sub_C]
+    have hcardG : Nat.card (L ≃ₐ[K] L) = n := by
+      rw [IsGalois.card_aut_eq_finrank K L, hfinL]
+    -- Define isomorphism φ : Γ(L : K) ≃* Multiplicative (ZMod n) via σ(α) = ω^{k(σ)} α
+    have : NeZero n := ⟨by omega⟩
+    have hact_α : ∀ σ : L ≃ₐ[K] L, ∃ k : ℕ, k < n ∧ σ α = (algebraMap K L ω) ^ k * α := by
+      intro σ
+      have hratio : (σ α * α⁻¹) ^ n = 1 := by
+        rw [mul_pow, inv_pow, ← map_pow, hα_pow, σ.commutes,
+          mul_inv_cancel₀ ((map_ne_zero (algebraMap K L)).mpr ha_ne)]
+      obtain ⟨k, hk_lt, hk⟩ := hωL.eq_pow_of_pow_eq_one hratio
+      exact ⟨k, hk_lt, by rw [hk, mul_assoc, inv_mul_cancel₀ hα_ne, mul_one]⟩
+    let kα : (L ≃ₐ[K] L) → ℕ := fun σ => (hact_α σ).choose
+    have hkα_lt : ∀ σ, kα σ < n := fun σ => (hact_α σ).choose_spec.1
+    have hkα_spec : ∀ σ, σ α = (algebraMap K L ω) ^ (kα σ) * α := fun σ => (hact_α σ).choose_spec.2
+    let φ : (L ≃ₐ[K] L) →* Multiplicative (ZMod n) :=
+      { toFun := fun σ => Multiplicative.ofAdd ((kα σ : ZMod n))
+        map_one' := by
+          have h1 := hkα_spec 1
+          rw [AlgEquiv.one_apply] at h1
+          have hpow1 : (algebraMap K L ω) ^ kα 1 = 1 :=
+            mul_right_cancel₀ hα_ne (h1.symm.trans (one_mul α).symm)
+          have hk0 : kα 1 = 0 := by
+            have hd := hωL.dvd_of_pow_eq_one _ hpow1
+            by_contra hne
+            exact not_lt_of_ge (Nat.le_of_dvd (Nat.pos_of_ne_zero hne) hd) (hkα_lt 1)
+          simp [hk0]
+        map_mul' := fun σ₁ σ₂ => by
+          apply congrArg Multiplicative.ofAdd
+          have h12 : (σ₁ * σ₂) α = (algebraMap K L ω) ^ (kα σ₁ + kα σ₂) * α := by
+            rw [AlgEquiv.mul_apply, hkα_spec σ₂, map_mul, map_pow, σ₁.commutes, hkα_spec σ₁,
+              ← mul_assoc, mul_comm ((algebraMap K L ω) ^ kα σ₂), ← pow_add]
+          have hpow_eq : (algebraMap K L ω) ^ kα (σ₁ * σ₂) =
+              (algebraMap K L ω) ^ (kα σ₁ + kα σ₂) :=
+            mul_right_cancel₀ hα_ne ((hkα_spec (σ₁ * σ₂)).symm.trans h12)
+          have hmod : kα (σ₁ * σ₂) ≡ kα σ₁ + kα σ₂ [MOD n] := by
+            rcases le_total (kα (σ₁ * σ₂)) (kα σ₁ + kα σ₂) with hle | hle
+            · have hdiff : (algebraMap K L ω) ^ (kα σ₁ + kα σ₂ - kα (σ₁ * σ₂)) = 1 := by
+                apply mul_left_cancel₀ (pow_ne_zero (kα (σ₁ * σ₂)) hωL_ne)
+                rw [← pow_add, Nat.add_sub_of_le hle, mul_one, hpow_eq]
+              exact (Nat.modEq_iff_dvd' hle).mpr (hωL.dvd_of_pow_eq_one _ hdiff)
+            · have hdiff : (algebraMap K L ω) ^ (kα (σ₁ * σ₂) - (kα σ₁ + kα σ₂)) = 1 := by
+                apply mul_left_cancel₀ (pow_ne_zero (kα σ₁ + kα σ₂) hωL_ne)
+                rw [← pow_add, Nat.add_sub_of_le hle, mul_one, hpow_eq.symm]
+              exact ((Nat.modEq_iff_dvd' hle).mpr (hωL.dvd_of_pow_eq_one _ hdiff)).symm
+          change ((kα (σ₁ * σ₂) : ℕ) : ZMod n) = ((kα σ₁ : ℕ) : ZMod n) + ((kα σ₂ : ℕ) : ZMod n)
+          rw [← Nat.cast_add, ZMod.natCast_eq_natCast_iff]
+          exact hmod }
+    have hφ_inj : Function.Injective φ := by
+      intro σ₁ σ₂ hEq
+      have hmod : kα σ₁ ≡ kα σ₂ [MOD n] :=
+        (ZMod.natCast_eq_natCast_iff _ _ _).mp (Multiplicative.ofAdd.injective hEq)
+      rw [Nat.ModEq, Nat.mod_eq_of_lt (hkα_lt σ₁), Nat.mod_eq_of_lt (hkα_lt σ₂)] at hmod
+      have hα_eq : σ₁ α = σ₂ α := by rw [hkα_spec σ₁, hkα_spec σ₂, hmod]
+      let Eeq : IntermediateField K L :=
+        { (AlgHom.equalizer σ₁.toAlgHom σ₂.toAlgHom) with
+          inv_mem' := fun {x} hx => by
+            change σ₁ x⁻¹ = σ₂ x⁻¹; rw [map_inv₀, map_inv₀]; exact congrArg Inv.inv hx }
+      have htop_le : (⊤ : IntermediateField K L) ≤ Eeq := by
+        rw [← hKα_top, IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]; exact hα_eq
+      ext x; exact htop_le IntermediateField.mem_top
+    have hφ_bij : Function.Bijective φ := by
+      let _ : Fintype (L ≃ₐ[K] L) := Fintype.ofFinite _
+      refine (Fintype.bijective_iff_injective_and_card _).mpr ⟨hφ_inj, ?_⟩
+      rw [← Nat.card_eq_fintype_card, hcardG, ← Nat.card_eq_fintype_card,
+        Nat.card_congr Multiplicative.toAdd, Nat.card_eq_fintype_card, ZMod.card]
+    let eφ : (L ≃ₐ[K] L) ≃* Multiplicative (ZMod n) := MulEquiv.ofBijective φ hφ_bij
+    -- Generator τ = eφ⁻¹(1) satisfies τ(α) = ω * α and generates Γ(L : K)
+    let τ : L ≃ₐ[K] L := eφ.symm (Multiplicative.ofAdd (1 : ZMod n))
+    have hτ_α : τ α = algebraMap K L ω * α := by
+      have h1 : (kα τ : ZMod n) = 1 := Multiplicative.ofAdd.injective (eφ.apply_symm_apply _)
+      have hmod : kα τ ≡ 1 [MOD n] := (ZMod.natCast_eq_natCast_iff (kα τ) 1 n).mp (by simpa using h1)
+      rw [Nat.ModEq, Nat.mod_eq_of_lt (hkα_lt τ), Nat.mod_eq_of_lt hn2] at hmod
+      rw [hkα_spec τ, hmod, pow_one]
+    have hτ_gen : Subgroup.zpowers τ = ⊤ := by
+      rw [eq_top_iff]
+      intro σ _
+      rw [Subgroup.mem_zpowers_iff]
+      refine ⟨((Multiplicative.toAdd (eφ σ)).val : ℤ), ?_⟩
+      apply eφ.injective
+      rw [map_zpow, eφ.apply_symm_apply, zpow_natCast]
+      change ((Multiplicative.toAdd (eφ σ)).val : ℕ) • (1 : ZMod n) = Multiplicative.toAdd (eφ σ)
+      rw [nsmul_eq_mul, mul_one, ZMod.natCast_zmod_val]
+    have hτ_ord : orderOf τ = n := by
+      rw [← Nat.card_zpowers, hτ_gen, Nat.card_congr Subgroup.topEquiv.toEquiv, hcardG]
+    -- Action of τ on β: τ(β) = ω^r * β with r < n
+    have hratio_β : (τ β * β⁻¹) ^ n = 1 := by
+      rw [mul_pow, inv_pow, ← map_pow, hβ_pow, τ.commutes,
+        mul_inv_cancel₀ ((map_ne_zero (algebraMap K L)).mpr hb_ne)]
+    obtain ⟨r, hr_lt, hr_eq⟩ := hωL.eq_pow_of_pow_eq_one hratio_β
+    have hτ_β : τ β = (algebraMap K L ω) ^ r * β := by
+      rw [hr_eq, mul_assoc, inv_mul_cancel₀ hβ_ne, mul_one]
+    -- Show Nat.Coprime r n using K⟮β⟯ = ⊤
+    have hcop : Nat.Coprime r n := by
+      let g := Nat.gcd r n
+      have hg_pos : 0 < g := Nat.gcd_pos_of_pos_right r (by omega)
+      have hg_dvd_r : g ∣ r := Nat.gcd_dvd_left r n
+      have hg_dvd_n : g ∣ n := Nat.gcd_dvd_right r n
+      let m := n / g
+      have hrm_dvd : n ∣ r * m := by
+        rcases hg_dvd_r with ⟨r', hr'⟩
+        refine ⟨r', ?_⟩
+        calc r * m = (g * r') * (n / g) := by rw [hr']
+          _ = (g * (n / g)) * r' := by ring
+          _ = n * r' := by rw [Nat.mul_div_cancel' hg_dvd_n]
+      have hτm_β : (τ ^ m) β = β := by
+        have hpow_k : ∀ k : ℕ, (τ ^ k) β = ((algebraMap K L ω) ^ r) ^ k * β := by
+          intro k
+          induction k with
+          | zero => simp
+          | succ k ih =>
+            rw [pow_succ', AlgEquiv.mul_apply, ih, map_mul, map_pow, map_pow, τ.commutes, hτ_β,
+              ← mul_assoc, ← pow_succ]
+        rw [hpow_k m, ← pow_mul]
+        rcases hrm_dvd with ⟨q, hq⟩
+        rw [hq, pow_mul, hωL.pow_eq_one, one_pow, one_mul]
+      have hτm_eq1 : τ ^ m = 1 := by
+        let Eeq : IntermediateField K L :=
+          { (AlgHom.equalizer (τ ^ m).toAlgHom (1 : L ≃ₐ[K] L).toAlgHom) with
+            inv_mem' := fun {x} hx => by
+              change (τ ^ m) x⁻¹ = x⁻¹; rw [map_inv₀]; exact congrArg Inv.inv hx }
+        have htop_le : (⊤ : IntermediateField K L) ≤ Eeq := by
+          rw [← hKβ_top, IntermediateField.adjoin_le_iff, Set.singleton_subset_iff]; exact hτm_β
+        ext x; exact htop_le IntermediateField.mem_top
+      have hn_dvd_m : n ∣ m := hτ_ord ▸ orderOf_dvd_of_pow_eq_one hτm_eq1
+      have hm_pos : 0 < m := Nat.div_pos (Nat.le_of_dvd (by omega) hg_dvd_n) hg_pos
+      have hn_le_m : n ≤ m := Nat.le_of_dvd hm_pos hn_dvd_m
+      have hg_eq1 : g = 1 := by
+        have hgm : g * m = n := Nat.mul_div_cancel' hg_dvd_n
+        nlinarith
+      exact hg_eq1
+    -- Show β * (α ^ r)⁻¹ is fixed by τ, hence equals algebraMap K L c for some c ∈ K
+    have hfix : τ (β * (α ^ r)⁻¹) = β * (α ^ r)⁻¹ := by
+      rw [map_mul, map_inv₀, map_pow, hτ_β, hτ_α, mul_pow, mul_inv]
+      calc (algebraMap K L ω) ^ r * β * (((algebraMap K L ω) ^ r)⁻¹ * (α ^ r)⁻¹)
+          = ((algebraMap K L ω) ^ r * ((algebraMap K L ω) ^ r)⁻¹) * (β * (α ^ r)⁻¹) := by ring
+        _ = β * (α ^ r)⁻¹ := by rw [mul_inv_cancel₀ (pow_ne_zero r hωL_ne), one_mul]
+    obtain ⟨c, hc⟩ :=
+      mem_range_algebraMap_of_forall_gal_fix (forall_gal_fix_of_gen_fix hτ_gen hfix)
+    refine ⟨r, c, hcop, hc, ?_⟩
+    apply (algebraMap K L).injective
+    rw [map_mul, map_pow, map_pow, hc, mul_pow, inv_pow, ← pow_mul, mul_comm r n, pow_mul,
+      hα_pow, hβ_pow, ← map_pow]
+    have ha_r_ne : algebraMap K L (a ^ r) ≠ 0 :=
+      (map_ne_zero (algebraMap K L)).mpr (pow_ne_zero r ha_ne)
+    rw [mul_comm (algebraMap K L b), ← mul_assoc, mul_inv_cancel₀ ha_r_ne, one_mul]
+
+/-- Positive-`r` companion to **`Exercise 16.16`** for `2 ≤ n` (§16.4, printed p. 130 / PDF p. 138):
+whenever `2 ≤ n`, `r` can be chosen with `1 ≤ r`, `r < n`, and `Nat.Coprime r n`. -/
+theorem exercise_16_16_pos_r {K : Type u} {L : Type v} [Field K] [Field L] [Algebra K L]
+    {n : ℕ} (hn2 : 2 ≤ n) {ω a b : K} (hω : IsPrimitiveRoot ω n)
+    (hirr_a : Irreducible (Polynomial.X ^ n - Polynomial.C a : K[X]))
+    (hirr_b : Irreducible (Polynomial.X ^ n - Polynomial.C b : K[X]))
+    (hsf_a : IsGarlingSplittingFieldExtension K L (Polynomial.X ^ n - Polynomial.C a))
+    (hsf_b : IsGarlingSplittingFieldExtension K L (Polynomial.X ^ n - Polynomial.C b))
+    {α β : L} (hα : Polynomial.aeval α (Polynomial.X ^ n - Polynomial.C a) = 0)
+    (hβ : Polynomial.aeval β (Polynomial.X ^ n - Polynomial.C b) = 0) :
+    ∃ (r : ℕ) (c : K),
+      1 ≤ r ∧ r < n ∧ Nat.Coprime r n ∧
+      algebraMap K L c = β * (α ^ r)⁻¹ ∧
+      b = a ^ r * c ^ n := by
+  obtain ⟨r₀, c₀, hcop₀, hc₀, hb₀⟩ := exercise_16_16 hω hirr_a hirr_b hsf_a hsf_b hα hβ
+  let r := r₀ % n
+  let q := r₀ / n
+  have hr_lt : r < n := Nat.mod_lt r₀ (by omega)
+  have hr0_eq : r₀ = r + n * q := by
+    simpa [r, q, add_comm] using (Nat.div_add_mod r₀ n).symm
+  have hcop : Nat.Coprime r n := by
+    rw [Nat.coprime_iff_gcd_eq_one]
+    have hdvd1 : Nat.gcd r n ∣ r₀ := by
+      rw [hr0_eq]
+      exact dvd_add (Nat.gcd_dvd_left r n) (dvd_mul_of_dvd_left (Nat.gcd_dvd_right r n) q)
+    have hdvd2 : Nat.gcd r n ∣ Nat.gcd r₀ n := Nat.dvd_gcd hdvd1 (Nat.gcd_dvd_right r n)
+    rw [hcop₀.gcd_eq_one] at hdvd2
+    exact Nat.eq_one_of_dvd_one hdvd2
+  have hr_pos : 1 ≤ r := by
+    by_contra h0
+    have hr0 : r = 0 := by omega
+    rw [hr0, Nat.coprime_zero_left] at hcop
+    omega
+  have ha_ne : a ≠ 0 := by
+    intro h0; subst h0
+    have hroot : (Polynomial.X ^ n - Polynomial.C (0 : K)).eval 0 = 0 := by
+      simp [zero_pow (by omega : n ≠ 0)]
+    obtain ⟨q_fac, hq_fac⟩ := Polynomial.dvd_iff_isRoot.mpr hroot
+    rcases hirr_a.isUnit_or_isUnit hq_fac with hu1 | hu2
+    · rw [Polynomial.isUnit_iff_degree_eq_zero,
+        Polynomial.degree_eq_natDegree (Polynomial.X_sub_C_ne_zero _),
+        Polynomial.natDegree_X_sub_C] at hu1
+      exact absurd hu1 (by decide)
+    · have hq0 : q_fac ≠ 0 := fun h => by
+        rw [h, mul_zero] at hq_fac
+        exact (Polynomial.monic_X_pow_sub_C (0 : K) (by omega)).ne_zero hq_fac
+      rw [Polynomial.isUnit_iff_degree_eq_zero, Polynomial.degree_eq_natDegree hq0] at hu2
+      have hqd : q_fac.natDegree = 0 := Nat.cast_injective hu2
+      have hdeg := congrArg Polynomial.natDegree hq_fac
+      rw [Polynomial.natDegree_X_pow_sub_C,
+        Polynomial.natDegree_mul (Polynomial.X_sub_C_ne_zero _) hq0,
+        Polynomial.natDegree_X_sub_C, hqd] at hdeg
+      omega
+  have hα_pow : α ^ n = algebraMap K L a := by simpa [sub_eq_zero] using hα
+  let c : K := a ^ q * c₀
+  refine ⟨r, c, hr_pos, hr_lt, hcop, ?_, ?_⟩
+  · have hα_nq : α ^ (n * q) = algebraMap K L (a ^ q) := by
+      rw [pow_mul, hα_pow, map_pow]
+    have hα_nq_ne : algebraMap K L (a ^ q) ≠ 0 :=
+      (map_ne_zero (algebraMap K L)).mpr (pow_ne_zero q ha_ne)
+    rw [show c = a ^ q * c₀ from rfl, map_mul, hc₀, hr0_eq, pow_add, mul_inv, hα_nq]
+    calc algebraMap K L (a ^ q) * (β * ((α ^ r)⁻¹ * (algebraMap K L (a ^ q))⁻¹))
+        = (algebraMap K L (a ^ q) * (algebraMap K L (a ^ q))⁻¹) * (β * (α ^ r)⁻¹) := by ring
+      _ = β * (α ^ r)⁻¹ := by rw [mul_inv_cancel₀ hα_nq_ne, one_mul]
+  · simp only [c, mul_pow, ← pow_mul, mul_comm q n]
+    rw [hb₀, hr0_eq, pow_add]
+    ring
 
 end Garling.Chapter16
 
