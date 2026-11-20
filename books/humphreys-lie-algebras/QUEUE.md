@@ -2,10 +2,10 @@
 
 Ticket: `derekblair/formalize-everything#69`.
 
-## Current Milestone (`PIN-LATTICE-VARIATION-27-3`)
+## Current Milestone (`PIN-SQUARE-IDENTITY-25-2C`)
 
-- **Proved, crossed review PASS (`carbon-review-fe-pr132-20261116`):** Ch. VII, §27.3 & Ch. VI, Ex. 21.6 (`Humphreys/Ch7/LatticeVariation27_3.lean`) — Exercise 21.6, `D27.3` dual/minimal/maximal lattices, sharpness of `M_max`, and Proposition 27.3(a)–(b) (3 definitions + 5 theorems, 0 `sorry`).
-- **Landed upstream §27 base:** Ch. VII, §27.1 (`Humphreys/Ch7/AdmissibleLattice27_1.lean`, merged in FE PR #129, `a790602f`) and Ch. VII, §27.2 (`Humphreys/Ch7/StabilizerLattice27_2.lean`, merged in FE PR #131, `b9b927dd`).
+- **Proved, pending crossed review (`coordinator/humphreys-25-2c-proof-20261120`):** Ch. VII, §25.1(c) & §25.2(c) (`Humphreys/Ch7/SquareIdentity25_2c.lean`) — Proposition 25.1(c) (abstract `RootPairing.InvariantForm` & Killing-form `(L, H)` squared-length ratio), universal Proposition 25.2(c) (under `IsSl2System` + scalar `(b)`), `(r + 1)²` reduction, `IsChevalleySystem` specialization, and unconditional Proposition 25.2(a)–(b)–(c) (6 theorems, 0 `sorry`).
+- **Landed Ch. VII foundations:** Ch. VII, §25.2(a)–(b) (`Humphreys/Ch7/ChevalleyBasis25_2.lean`, PR #122), §26.4 (`Humphreys/Ch7/KostantTheorem26_4.lean`, PR #124), §27.1 (`Humphreys/Ch7/AdmissibleLattice27_1.lean`, PR #129), §27.2 (`Humphreys/Ch7/StabilizerLattice27_2.lean`, PR #131), §27.3 (`Humphreys/Ch7/LatticeVariation27_3.lean`, PR #132).
 - **Fidelity holds:** None (`0`).
 
 - **Remaining chapters/nodes of GTM 9:** Tracked on `derekblair/formalize-everything#69`.

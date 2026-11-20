@@ -17,6 +17,7 @@
 | `PIN-ADMISSIBLE-LATTICE-27-1` | Ch. VII, §27.1, Lemma 27.1 & Theorem 27.1(a)–(b) (pp. 157–159) | `Humphreys/Ch7/AdmissibleLattice27_1.lean` | 15 / 15 (7 defs + 8 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #129 (`a790602f`) |
 | `PIN-STABILIZER-27-2` | Ch. VII, §27.2, Lemma 27.2, Ex. 21.5(1) & Prop. 27.2 (pp. 159–160, 116) | `Humphreys/Ch7/StabilizerLattice27_2.lean` | 9 / 9 (4 defs + 5 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #131 (`b9b927dd`) |
 | `PIN-LATTICE-VARIATION-27-3` | Ch. VII, §27.3, Proposition 27.3(a)–(b) & Ch. VI, Ex. 21.6 (pp. 161–162, 116) | `Humphreys/Ch7/LatticeVariation27_3.lean` | 8 / 8 (3 defs + 5 theorems) | `[propext, Classical.choice, Quot.sound]` | Merged in FE PR #132 |
+| `PIN-SQUARE-IDENTITY-25-2C` | Ch. VII, §25.1(c) & §25.2(c) (pp. 145–148) | `Humphreys/Ch7/SquareIdentity25_2c.lean` | 6 / 6 (6 theorems) | `[propext, Classical.choice, Quot.sound]` | Proved (draft PR pending crossed review) |
 
 ## `PIN-CHEVALLEY-14-3` Declarations (`Humphreys/Ch4/ChevalleyInvolution14_3.lean`)
 
@@ -70,3 +71,12 @@ The module also contains three `private theorem` proof-script helpers (`mem_one_
 3. `Humphreys27_3.dualMinAdmissibleLattice`, `Humphreys27_3.maxAdmissibleLattice` (`D27.3`, pp. 161–162), and `Humphreys27_3.exists_dualHighestWeightGenerator_and_isAdmissibleLattice_maxAdmissibleLattice` — Canonical `𝔘_ℤ`-orbit `(M*)_min`, maximal lattice `M_max = ((M*)_min)*`, existence of a dual highest-weight generator `f⁺` of weight `-w₀ λ` with `(M_min)* ∩ (V*)_{-w₀ λ} = ℤ · f⁺` and `(M*)_min = 𝔘_ℤ · f⁺`, and sharpness (`M_max` is admissible with `M_max ∩ V_λ = ℤ · v`).
 4. `Humphreys27_3.minAdmissibleLattice_le_and_le_maxAdmissibleLattice` — Proposition 27.3(a)–(b) (p. 162, general irreducible highest-weight form): `M_min ≤ M ∧ M ≤ M_max` for every admissible lattice `M ⊂ V` satisfying `M ∩ V_λ = ℤ · v`.
 5. `Humphreys27_3.minAdmissibleLattice_le_and_le_maxAdmissibleLattice_irreducibleQuotient` — Proposition 27.3(a)–(b) (p. 162, verbatim at `V = V(λ) = TauCeti.irreducibleQuotient b lam` with `v⁺ = TauCeti.irreducibleQuotientGenerator b lam`).
+
+## `PIN-SQUARE-IDENTITY-25-2C` Declarations (`Humphreys/Ch7/SquareIdentity25_2c.lean`)
+
+1. `Humphreys25_2c.rootPairing_length_ratio_25_1c` — Proposition 25.1(c) (p. 145, abstract root-system form): `r + 1 = q * B(γ, γ) / B(β, β)` for linearly independent roots `α, β` with `γ = α + β` in any finite reduced crystallographic `RootPairing` over a characteristic-zero field `K` and any `B : P.InvariantForm`.
+2. `Humphreys25_2c.rootString_length_ratio_25_1c` — Proposition 25.1(c) (p. 145, Killing-form `(L, H)` specialization): `r + 1 = q * (γ, γ) / (β, β)` for linearly independent nonzero roots `α, β, γ` with `γ = α + β` and transferred Killing form `TauCeti.invForm`.
+3. `Humphreys25_2c.structureConstant_sq_eq_mul_length_ratio` — Proposition 25.2(c) (pp. 146–147, verbatim universal form): for any `hx : TauCeti.IsSl2System x` and linearly independent nonzero roots `α, β, γ` with `γ = α + β` satisfying scalar opposite-root symmetry `c(-α, -β) = -c(α, β)`, `c(α, β)² = q(r + 1) * (γ, γ) / (β, β)` (no ambient Lie endomorphism assumed).
+4. `Humphreys25_2c.structureConstant_sq_eq_natCast_sq` — Proposition 25.2(c) + Proposition 25.1(c) reduction (pp. 147–148): under the same hypotheses, `c(α, β)² = (r + 1)²`.
+5. `Humphreys25_2c.isChevalleySystem_structureConstant_sq_eq` — `IsChevalleySystem` specialization of Proposition 25.2(c): automatic `K`-linear independence of `α, β` plus both `c(α, β)² = q(r + 1) * (γ, γ) / (β, β)` and `c(α, β)² = (r + 1)²`.
+6. `Humphreys25_2c.exists_rootVectors_chevalley_abc` — Complete unconditional Proposition 25.2(a)–(b)–(c) (pp. 146–147), composing landed `Humphreys25_2.exists_rootVectors_chevalley_ab` (`ChevalleyBasis25_2.lean` L75) with Proposition 25.2(c) and Proposition 25.1(c).
