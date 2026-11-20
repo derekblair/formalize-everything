@@ -1,0 +1,8 @@
+$ git rev-parse HEAD REBASE_HEAD ORIG_HEAD refs/heads/books/rca-holomorphic origin/main origin/books/rca-holomorphic
+0f1ff40798052f33d1de64cce3ffc5ca9460c766
+50584052c55c8546d9837a3297fa0f38aa7d3bdd
+a0538ea8a84843ad36bd1eb96cc9453ee723b7a1
+a0538ea8a84843ad36bd1eb96cc9453ee723b7a1
+3cd1541c5970c0f099cac2c2626be1ba8381c588
+a0538ea8a84843ad36bd1eb96cc9453ee723b7a1
+[exit_status=0]

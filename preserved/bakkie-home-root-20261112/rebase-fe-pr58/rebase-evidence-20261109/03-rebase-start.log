@@ -1,0 +1,16 @@
+$ git rebase origin/main
+Rebasing (1/7)
+Auto-merging books/rudin-real-and-complex-analysis/PROGRESS.md
+CONFLICT (content): Merge conflict in books/rudin-real-and-complex-analysis/PROGRESS.md
+Auto-merging books/rudin-real-and-complex-analysis/QUEUE.md
+CONFLICT (content): Merge conflict in books/rudin-real-and-complex-analysis/QUEUE.md
+error: could not apply d530d1e... Rudin RCA E: inventory all 90 nodes and check pinned Mathlib claims
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Recorded preimage for 'books/rudin-real-and-complex-analysis/PROGRESS.md'
+Recorded preimage for 'books/rudin-real-and-complex-analysis/QUEUE.md'
+Could not apply d530d1e... # Rudin RCA E: inventory all 90 nodes and check pinned Mathlib claims
+[exit_status=1]

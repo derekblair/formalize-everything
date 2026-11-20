@@ -1,0 +1,25 @@
+{
+  "start_head": "a0538ea8a84843ad36bd1eb96cc9453ee723b7a1",
+  "start_main": "3cd1541c5970c0f099cac2c2626be1ba8381c588",
+  "start_merge_base": "b7593a842e03c909f50dda6388697a23cda18766",
+  "start_remote_head": "a0538ea8a84843ad36bd1eb96cc9453ee723b7a1",
+  "main_moves": 0,
+  "owner": "Derek Blair",
+  "task": "PR 58 rebase only",
+  "model": "gpt-6-astra",
+  "effort": "ultra",
+  "service_tier": "fast",
+  "outputs": [
+    "REBASE-REPORT.md",
+    "rebase-evidence-20261109/"
+  ],
+  "status": "STOPPED_NO_PUSH",
+  "stop_reason": "Lean conflict while replaying commit 5 of 7",
+  "stop_utc": "2026-11-10T02:06:59.540564+00:00",
+  "partial_head": "0f1ff40798052f33d1de64cce3ffc5ca9460c766",
+  "conflicting_commit": "50584052c55c8546d9837a3297fa0f38aa7d3bdd",
+  "conflict_path": "books/rudin-real-and-complex-analysis/RudinRCA.lean",
+  "build_run": false,
+  "cache_run": false,
+  "push_run": false
+}

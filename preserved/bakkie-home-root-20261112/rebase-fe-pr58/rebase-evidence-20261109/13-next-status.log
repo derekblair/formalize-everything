@@ -1,0 +1,9 @@
+$ git status --short --branch
+## HEAD (no branch)
+UU books/rudin-real-and-complex-analysis/RudinRCA.lean
+A  books/rudin-real-and-complex-analysis/RudinRCA/AuditE.lean
+M  books/rudin-real-and-complex-analysis/RudinRCA/Chapter10.lean
+A  books/rudin-real-and-complex-analysis/RudinRCA/Chapter11.lean
+M  books/rudin-real-and-complex-analysis/inventory/Chapter11.md
+?? rebase-evidence-20261109/
+[exit_status=0]

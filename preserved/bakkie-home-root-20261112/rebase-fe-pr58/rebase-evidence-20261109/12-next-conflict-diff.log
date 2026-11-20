@@ -1,0 +1,50 @@
+$ git diff --cc
+diff --cc books/rudin-real-and-complex-analysis/RudinRCA.lean
+index 49a6716,c81d08e..0000000
+--- i/books/rudin-real-and-complex-analysis/RudinRCA.lean
++++ w/books/rudin-real-and-complex-analysis/RudinRCA.lean
+@@@ -1,19 -1,23 +1,41 @@@
+ +import RudinRCA.Chapter01
+ +import RudinRCA.Chapter02
+ +import RudinRCA.Chapter03
+  import RudinRCA.Chapter04
+  import RudinRCA.Chapter05
+++<<<<<<< HEAD
+ +import RudinRCA.Chapter08
+ +import RudinRCA.Chapter13
+ +import RudinRCA.Chapter15
+++=======
++ import RudinRCA.Chapter10
++ import RudinRCA.Chapter11
++ import RudinRCA.Chapter12
++ import RudinRCA.AuditE
+++>>>>>>> 5058405 (Rudin RCA E: recover harmonic foundations and transitive axiom audit)
+  
+ -/-
+ -  Rudin, *Real and Complex Analysis* (3rd edition, McGraw-Hill, 1987).
+ +/-!
+ +Rudin, *Real and Complex Analysis*, third edition.
+ +Chapter coverage and remaining numbered nodes are tracked in PROGRESS.md and SCOPING-D.md.
+  
+++<<<<<<< HEAD
+ +Rudin, Real and Complex Analysis (third edition, 1987).
+ +This umbrella imports the current partial Cluster A development.
+ +Inventory, precise coverage and fidelity holds are recorded in PROGRESS.md,
+ +the chapter inventories, SCOPING-A.md and QUEUE.md.
+ +The independently built AuditA module audits this entire import graph.
+++=======
++   The programme target is a complete formalization: every numbered node of
++   Chapters 1–20, zero sorries, axioms only propext / Classical.choice /
++   Quot.sound, statements faithful to the printed text.
++ 
++   Novelty gate (2026-10-27): PARTIAL — the only prior formalization of any
++   part of the book is Hirata's AFP entry (Isabelle/HOL, 2024) proving the
++   Riesz–Markov–Kakutani fragment of Chapter 2. No book development exists
++   in any proof assistant. Record:
++   research/prior-art-rca.md in the programme's files (ticket umbrella).
++ 
++   Current coverage is partial; see PROGRESS.md and inventory/README.md.
++   Chapter modules are added under RudinRCA/ as their lanes land them.
+++>>>>>>> 5058405 (Rudin RCA E: recover harmonic foundations and transitive axiom audit)
+  -/
+[exit_status=0]

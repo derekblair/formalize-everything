@@ -1,0 +1,2 @@
+pick bd73b485fa5d06217aa70382eedb72752fca7faf # Rudin RCA E: complete components, isolated zeros, and joint divided differences
+pick a0538ea8a84843ad36bd1eb96cc9453ee723b7a1 # Rudin RCA E: prove 12.9 sharpness

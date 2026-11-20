@@ -1,0 +1,137 @@
+[
+  {
+    "file": "14-stop-refs.log",
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD",
+      "REBASE_HEAD",
+      "ORIG_HEAD",
+      "refs/heads/books/rca-holomorphic",
+      "origin/main",
+      "origin/books/rca-holomorphic"
+    ],
+    "exit_status": 0,
+    "output_bytes": 246,
+    "output_lines": 6,
+    "sha256": "c876b48b6d9b8a00cc5aee8bc10ac02a9b03d30a596dd2473be242ca9254892c"
+  },
+  {
+    "file": "15-stop-merge-base.log",
+    "command": [
+      "git",
+      "merge-base",
+      "HEAD",
+      "origin/main"
+    ],
+    "exit_status": 0,
+    "output_bytes": 41,
+    "output_lines": 1,
+    "sha256": "4ea61a5536591c242b6971f066c4b877a5c6b76b6c726aa1d0fb2d6db991d878"
+  },
+  {
+    "file": "16-diff-stat.log",
+    "command": [
+      "git",
+      "diff",
+      "a0538ea8..HEAD",
+      "--stat"
+    ],
+    "exit_status": 0,
+    "output_bytes": 17036,
+    "output_lines": 270,
+    "sha256": "78ab5b666edc65abece492a779336e56bf2db479788057953142890adf4773d1"
+  },
+  {
+    "file": "17-lean-diff.log",
+    "command": [
+      "git",
+      "diff",
+      "a0538ea8..HEAD",
+      "--",
+      "*.lean"
+    ],
+    "exit_status": 0,
+    "output_bytes": 2090640,
+    "output_lines": 31972,
+    "sha256": "f06471514f78c904315246fd7ffabf24c7083735b62777a985786535da1ca693"
+  },
+  {
+    "file": "18-inventory-diff.log",
+    "command": [
+      "git",
+      "diff",
+      "a0538ea8..HEAD",
+      "--",
+      "books/rudin-real-and-complex-analysis/inventory/"
+    ],
+    "exit_status": 0,
+    "output_bytes": 14299,
+    "output_lines": 181,
+    "sha256": "b505f0c2bcfd8b911c3507a8b3f3bfacf4da1e55af16c850c67818c849247c87"
+  },
+  {
+    "file": "19-diff-check.log",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_status": 2,
+    "output_bytes": 485,
+    "output_lines": 6,
+    "sha256": "cbcbc74202d52ddd3ffcb271195b31651316caa4f21ff4bb668def8cc744ce6f"
+  },
+  {
+    "file": "20-remote-at-stop.log",
+    "command": [
+      "git",
+      "ls-remote",
+      "origin",
+      "refs/heads/main",
+      "refs/heads/books/rca-holomorphic"
+    ],
+    "exit_status": 0,
+    "output_bytes": 131,
+    "output_lines": 2,
+    "sha256": "3f059f5adb178dc997c473f15e89fbfdff93602369ab127b081440c752c2cf4a"
+  },
+  {
+    "file": "21-partial-replay-log.log",
+    "command": [
+      "git",
+      "log",
+      "--oneline",
+      "--reverse",
+      "origin/main..HEAD"
+    ],
+    "exit_status": 0,
+    "output_bytes": 292,
+    "output_lines": 4,
+    "sha256": "8df9ebc9535b68da6452923b064131cee29de7a00ac617e1467a7dca9d7cd0db"
+  },
+  {
+    "file": "22-main-only-name-status.log",
+    "command": [
+      "git",
+      "diff",
+      "--name-status",
+      "b7593a842e03c909f50dda6388697a23cda18766..origin/main"
+    ],
+    "exit_status": 0,
+    "output_bytes": 17342,
+    "output_lines": 260,
+    "sha256": "ee51f74160a3fb2bb414273b6374170eb108e114be7c8d78367110997b9699de"
+  },
+  {
+    "file": "23-rebase-status.log",
+    "command": [
+      "git",
+      "status"
+    ],
+    "exit_status": 0,
+    "output_bytes": 1450,
+    "output_lines": 30,
+    "sha256": "d14c940397c2ad1d89df255c904642e657445d333f912cbcdcfbcf4ec4928b02"
+  }
+]

@@ -1,0 +1,26 @@
+$ git add books/rudin-real-and-complex-analysis/PROGRESS.md books/rudin-real-and-complex-analysis/QUEUE.md
+[exit_status=0]
+$ GIT_EDITOR=true git rebase --continue
+Recorded resolution for 'books/rudin-real-and-complex-analysis/PROGRESS.md'.
+Recorded resolution for 'books/rudin-real-and-complex-analysis/QUEUE.md'.
+[detached HEAD b1b2909] Rudin RCA E: inventory all 90 nodes and check pinned Mathlib claims
+ 6 files changed, 404 insertions(+), 3 deletions(-)
+ create mode 100644 books/rudin-real-and-complex-analysis/inventory/Chapter10.md
+ create mode 100644 books/rudin-real-and-complex-analysis/inventory/Chapter11.md
+ create mode 100644 books/rudin-real-and-complex-analysis/inventory/Chapter12.md
+ create mode 100644 books/rudin-real-and-complex-analysis/inventory/README.md
+Rebasing (2/7)
+Rebasing (3/7)
+Rebasing (4/7)
+Rebasing (5/7)
+Auto-merging books/rudin-real-and-complex-analysis/RudinRCA.lean
+CONFLICT (content): Merge conflict in books/rudin-real-and-complex-analysis/RudinRCA.lean
+error: could not apply 5058405... Rudin RCA E: recover harmonic foundations and transitive axiom audit
+hint: Resolve all conflicts manually, mark them as resolved with
+hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
+hint: You can instead skip this commit: run "git rebase --skip".
+hint: To abort and get back to the state before "git rebase", run "git rebase --abort".
+hint: Disable this message with "git config set advice.mergeConflict false"
+Recorded preimage for 'books/rudin-real-and-complex-analysis/RudinRCA.lean'
+Could not apply 5058405... # Rudin RCA E: recover harmonic foundations and transitive axiom audit
+[exit_status=1]

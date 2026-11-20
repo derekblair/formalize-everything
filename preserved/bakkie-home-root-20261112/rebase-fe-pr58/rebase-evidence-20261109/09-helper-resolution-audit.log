@@ -1,0 +1,7 @@
+Read-only helper independently verified first-commit bookkeeping resolution.
+PASS: PROGRESS equals stage2 except rows 10/11/12 replaced by verbatim stage3 rows, then blank separator plus verbatim E suffix.
+PASS: QUEUE equals stage2 plus blank separator plus verbatim E suffix.
+Conflict counts: PROGRESS 2, QUEUE 1; no markers remain.
+SHA256 PROGRESS: 1bcc2c08b6f17888984b5cd7ce1668a7bb73bb5dd683adc0ca283dc36d5d8dae (8688 bytes)
+SHA256 QUEUE: f684067e3b706742afad94c3ed6ef50f4888533a9f12318cd3971509a04a52bd (5869 bytes)
+Scope: first-commit bookkeeping only; not crossed mathematical review.

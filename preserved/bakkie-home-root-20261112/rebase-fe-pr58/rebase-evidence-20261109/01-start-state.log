@@ -1,0 +1,35 @@
+UTC 2026-11-10T02:05:27.013391+00:00
+$ codex --version
+codex-cli 0.167.0
+[exit_status=0]
+$ git status --short --branch
+## books/rca-holomorphic...origin/books/rca-holomorphic
+?? rebase-evidence-20261109/
+[exit_status=0]
+$ git remote -v
+origin	https://github.com/derekblair/formalize-everything.git (fetch)
+origin	https://github.com/derekblair/formalize-everything.git (push)
+[exit_status=0]
+$ git rev-parse HEAD origin/main
+a0538ea8a84843ad36bd1eb96cc9453ee723b7a1
+3cd1541c5970c0f099cac2c2626be1ba8381c588
+[exit_status=0]
+$ git merge-base HEAD origin/main
+b7593a842e03c909f50dda6388697a23cda18766
+[exit_status=0]
+$ git log --oneline --reverse b7593a842e03c909f50dda6388697a23cda18766..HEAD
+d530d1e Rudin RCA E: inventory all 90 nodes and check pinned Mathlib claims
+24160eb Rudin RCA E: green Chapter 10 analytic foundations checkpoint
+39a95e4 Rudin RCA E: green Schwarz lemma and strip estimate checkpoint
+1cbb883 Rudin RCA E: prove power-series calculus and maximum modulus cases
+5058405 Rudin RCA E: recover harmonic foundations and transitive axiom audit
+bd73b48 Rudin RCA E: complete components, isolated zeros, and joint divided differences
+a0538ea Rudin RCA E: prove 12.9 sharpness
+[exit_status=0]
+Selected native config fields:
+{
+  "model": "gpt-6-astra",
+  "model_reasoning_effort": "ultra",
+  "service_tier": "fast",
+  "profile": null
+}
