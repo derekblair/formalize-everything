@@ -1135,3 +1135,58 @@ Chapter 17 (*Solution by radicals*) contains **7** main-text theorem/corollary i
   - `Garling.Chapter17.exercise_17_7_witness`: proves that `ex177Poly` has degree $3$, is irreducible over $\mathbb{Q}$ (via shift $x \mapsto x + 1$ to $x^3 + 3x^2 - 3$, Eisenstein at $p = 3$), has discriminant $81 > 0$ and three real roots (by `Exercise 17.4`), is solvable by radicals (`IsGarlingSolvableByRadicals ex177Poly` via Chapter 14's `cubic_solvable_by_radicals`), and yet for **every** splitting field `L` of `ex177Poly` over $\mathbb{Q}$ (in any universe `u`), `¬ IsGarlingExtensionByRadicals ℚ L` (by transporting into the real splitting field inside $\mathbb{R}$ and applying `Exercise 17.6`).
   - `Garling.Chapter17.exercise_17_7`: packages the existential statement `∃ f : ℚ[X], IsGarlingSolvableByRadicals f ∧ ∀ (L : Type u) [Field L] [Algebra ℚ L], IsGarlingSplittingFieldExtension ℚ L f → ¬ IsGarlingExtensionByRadicals ℚ L`.
 - **Status:** Held pending coordinator ruling on whether `exercise_17_7` + `exercise_17_7_witness` close Exercise 17.7.
+
+
+---
+
+# Chapter 18 — Fidelity Holds (Printed pp. 139–146 / PDF pp. 147–154)
+
+Chapter 18 (*Transcendental elements and algebraic independence*) contains **11** main-text theorem/corollary items (`Theorem 18.1`–`Theorem 18.9` + 2 unnumbered `Corollary` blocks [to `Theorem 18.6` and to `Theorem 18.8`]; `0` numbered definitions, `0` numbered lemmas) and **7** numbered exercises (`Exercise 18.1`–`Exercise 18.7`), for **18** scope-of-record items total (plus inline prose definitions — multivariate evaluation map $E_A$, *algebraically independent* finite sets and arbitrary subsets, *transcendence basis*, *transcendence degree*, *purely transcendental* — and unnumbered prose results in §§18.1–18.5). Among these **18** items, **14 / 18** (`11 / 11` main-text: all theorems and corollaries; + `3 / 7` exercises: `Exercise 18.1`, `Exercise 18.2`, `Exercise 18.5`) are proved literally as printed, while **4 / 18** (`0 / 11` main-text; `4 / 7` exercises: `Exercise 18.3`, `Exercise 18.4`, `Exercise 18.6`, `Exercise 18.7`) are held below as source-fidelity holds covering non-propositional *"determine the fixed field"* prompts (`Exercise 18.3`, `Exercise 18.4`), a genuine textbook omission (`Exercise 18.6`: omits `char K ≠ 2`, false in every characteristic-2 field), and a corrupted printed hypothesis (`Exercise 18.7`: prints `K(x, y) = s` for `K(x, y) = K(s)`). Every held item has its full determination, counterexample(s), and repaired theorem(s) kernel-proved in `Garling/Chapter18.lean`; none is silently weakened or counted as literally closed prior to coordinator ruling.
+
+---
+
+## Ch. 18, Exercise 18.3 (§18.1, printed p. 141 / PDF p. 149) — Non-propositional *"determine the fixed field of $\sigma$"* prompt (fidelity hold)
+
+- **Printed statement (p. 141, verified on 160 DPI scan; OCR `garling1986_pages.txt` across Exercises 18.1–18.4, ll. 5242–5258, corrupts $\sigma$ to `a` and $\sigma^3$ to `a 3`):** *"Suppose that $K(\alpha):K$ is a simple extension and that $\alpha$ is transcendental over $K$. Let $\sigma$ be the automorphism of $K(\alpha)$ which fixes $K$ and sends $\alpha$ to $1/(1 - \alpha)$. Verify that $\sigma^3$ is the identity, and determine the fixed field of $\sigma$."*
+- **Exact blocker:** Non-propositional *"determine the fixed field of $\sigma$"* prompt (the printed text does not name the generator $w = (\alpha^3 - 3\alpha + 1)/(\alpha^2 - \alpha)$ of the fixed field).
+- **Kernel-proved declarations in `Garling/Chapter18.lean`:**
+  - `Garling.Chapter18.exercise_18_3`: proves unconditionally over **every** field $K$ (including characteristics $2$ and $3$, via the universal polynomial Bézout identities $(-x^2 + 3)x + (x^3 - 3x + 1) = 1$ and $(x^2 + x - 2)(x - 1) - (x^3 - 3x + 1) = 1$) that there exists a unique $K$-automorphism $\sigma : L \simeq_a[K] L$ with $\sigma(\alpha) = 1/(1 - \alpha)$, that $\sigma^3 = 1$ and $\operatorname{orderOf} \sigma = 3$, and that the fixed field equals $K((\alpha^3 - 3\alpha + 1)/(\alpha^2 - \alpha))$ in both Chapter 11's `garlingPhi {σ.toRingEquiv}` subfield form and Mathlib's `IntermediateField.fixedField (Subgroup.zpowers σ)` form.
+- **Status:** Held pending coordinator ruling on whether `exercise_18_3` closes Exercise 18.3.
+
+---
+
+## Ch. 18, Exercise 18.4 (§18.1, printed p. 141 / PDF p. 149) — Non-propositional *"Determine the fixed field of $\tau$"* prompt (fidelity hold)
+
+- **Printed statement (p. 141, verified on 160 DPI scan; OCR `garling1986_pages.txt` across Exercises 18.1–18.4, ll. 5242–5258, corrupts $\tau$ to `r`):** *"Suppose that $K(\alpha):K$ is a simple extension, that $\alpha$ is transcendental over $K$, and that $\operatorname{char} K$ is an odd prime $p$. Suppose that $1 < n < p$. Let $\tau$ be the automorphism of $K(\alpha)$ which fixes $K$ and sends $\alpha$ to $n\alpha$. Determine the fixed field of $\tau$."*
+- **Exact blocker:** Non-propositional *"Determine the fixed field of $\tau$"* prompt (note that the fixed field is $K(\alpha^d)$ where $d = \operatorname{ord}_p(n)$ is the multiplicative order of $n$ modulo $p$, **not** $K(\alpha^{p-1})$ unless $n$ is a primitive root modulo $p$).
+- **Kernel-proved declarations in `Garling/Chapter18.lean`:**
+  - `Garling.Chapter18.exercise_18_4`: proves for every odd prime $p = \operatorname{ringChar} K$ and $1 < n < p$ that $d := \operatorname{orderOf} (n : K) = \operatorname{orderOf} (n : \operatorname{ZMod} p)$ satisfies $2 \le d$ and $d \mid p - 1$, that there exists a unique $K$-automorphism $\tau : L \simeq_a[K] L$ with $\tau(\alpha) = n\alpha$, that $\operatorname{orderOf} \tau = d$, and that the fixed field equals $K(\alpha^d)$ in both `garlingPhi {τ.toRingEquiv}` and `IntermediateField.fixedField (Subgroup.zpowers τ)` forms.
+  - `Garling.Chapter18.exercise_18_4_non_primitive_root_witness`: proves $p = 5$ is an odd prime, $1 < 4 < 5$, and $\operatorname{orderOf} (4 : \operatorname{ZMod} 5) = 2 < 4 = p - 1$ (so the fixed field is $K(\alpha^2)$, not $K(\alpha^4)$).
+- **Status:** Held pending coordinator ruling on whether `exercise_18_4` closes Exercise 18.4.
+
+---
+
+## Ch. 18, Exercise 18.6 (§18.5, printed p. 146 / PDF p. 154) — Genuine textbook omission of `char K ≠ 2` (fidelity hold)
+
+- **Printed statement (p. 146, verified on 160 DPI scan):** *"Suppose that $K(x, y):K$ is an extension with $x$ transcendental over $K$ and $x^2 + y^2 = 1$. Show that $K(x, y) = K(u)$, where $u = (1 + y)/x$."*
+- **Exact blocker:** The printed statement omits the hypothesis $\operatorname{char} K \ne 2$ and is **mathematically false in every field $K$ of characteristic $2$**. Whenever $\operatorname{char} K = 2$, $x^2 + y^2 = 1$ implies $(1 + y + x)^2 = 1 + x^2 + y^2 = 1 + 1 = 0$, hence $1 + y = x$ and $u = (1 + y)/x = 1 \in K$, so $K(u) = K \subsetneq K(x, y)$ (since $x \notin K$ is transcendental over $K$).
+- **Kernel-proved declarations in `Garling/Chapter18.lean`:**
+  - `Garling.Chapter18.exercise_18_6_fails_every_char_two`: proves for **every** field $K$ with `ringChar K = 2`, every extension $L:K$, and every $x, y \in L$ with `IsGarlingTranscendental K x` and $x^2 + y^2 = 1$ that $(1 + y)/x = 1$, $K((1+y)/x) = \bot$, and $K(x, y) \ne K((1+y)/x)$.
+  - `Garling.Chapter18.exercise_18_6_char_two_counterexample`: exhibits the concrete counterexample $K = \operatorname{ZMod} 2$, $L = \operatorname{RatFunc} (\operatorname{ZMod} 2)$, $x = X$, $y = 1 + X$ satisfying all printed hypotheses while $(1+y)/x = 1$ and $K(x, y) \ne K((1+y)/x)$.
+  - `Garling.Chapter18.exercise_18_6_repaired`: proves under `ringChar K ≠ 2` that $1 + u^2 \ne 0$, $x = 2u/(1 + u^2)$, $y = (u^2 - 1)/(1 + u^2)$, and $K(x, y) = K(u)$.
+  - `Garling.Chapter18.exercise_18_6_iff`: proves the exact biconditional $K(x, y) = K((1+y)/x) \iff \operatorname{ringChar} K \ne 2$.
+- **Status:** Held in `QUEUE.md` as a genuine omitted-`char K ≠ 2` textbook error; universal refutation, concrete counterexample, repaired theorem, and exact biconditional are all kernel-proved.
+
+---
+
+## Ch. 18, Exercise 18.7 (§18.5, printed p. 146 / PDF p. 154) — Corrupted printed hypothesis `K(x, y) = s` for `K(x, y) = K(s)` (fidelity hold)
+
+- **Printed statement (p. 146, verified on 160 DPI scan; OCR `garling1986_pages.txt` ll. 5447–5454 corrupts $n \geqslant 3$ to `n;-;::3`, exponents $n$ to `"`, and $f^{n-1} \mid (h\mathrm{D}g - g\mathrm{D}h)$ and $g^{n-1} \mid (h\mathrm{D}f - f\mathrm{D}h)$ to `f"- 1 1(hDg -gDh) and gn-ll(hDf- fDh)`):** *"Suppose that $n \geqslant 3$, that $K(x, y):K$ is an extension with $x$ transcendental over $K$ and $x^n + y^n = 1$ and that $\operatorname{char} K$ does not divide $n$. Suppose if possible that $K(x, y) = s$. (i) Show that there are relatively prime polynomials $f, g$ and $h$ in $K[x]$ such that $\max(\operatorname{degree} f, \operatorname{degree} g, \operatorname{degree} h) \geqslant 1$ and $f^n + g^n = h^n$. (ii) Show that $f^{n-1} \mid (h\mathrm{D}g - g\mathrm{D}h)$ and $g^{n-1} \mid (h\mathrm{D}f - f\mathrm{D}h)$, and show (by considering degrees) that this is not possible."* *(Thus $K(x, y):K$ is not purely transcendental.)*
+- **Exact blocker:** The printed hypothesis `Suppose if possible that K(x, y) = s.` is ill-typed (equating the field $K(x, y)$ to an element $s$) — clearly a textbook misprint for `K(x, y) = K(s)` for some $s \in K(x, y)$ (matching §18.5's definition of *purely transcendental* on p. 145). Note also that in part `(ii)`, when $0 < \operatorname{char} K = p \nmid n$, the Wronskian $hDg - gDh$ can vanish identically ($Df = Dg = Dh = 0$), requiring descent on $\max(\deg f, \deg g, \deg h)$ via $p$-th-root extraction $f = f_1^p, g = g_1^p, h = h_1^p$ over `AlgebraicClosure K`.
+- **Kernel-proved declarations in `Garling/Chapter18.lean`:**
+  - `Garling.Chapter18.exercise_18_7_i`: proves part `(i)` under `K(x, y) = K(s)` (yielding relatively prime non-zero $f, g, h \in K[X]$ with $1 \le \max(\deg f, \deg g, \deg h)$ and $f^n + g^n = h^n$).
+  - `Garling.Chapter18.exercise_18_7_ii_dvd`: proves pairwise coprimality and the exact Chapter 10 formal-derivative divisibilities $f^{n-1} \mid (h \cdot \mathrm{garlingDeriv}\ g - g \cdot \mathrm{garlingDeriv}\ h)$ and $g^{n-1} \mid (h \cdot \mathrm{garlingDeriv}\ f - f \cdot \mathrm{garlingDeriv}\ h)$.
+  - `Garling.Chapter18.exercise_18_7_ii_impossible`: proves polynomial Fermat impossibility over **every** field $K$ with `3 ≤ n` and `¬ ringChar K ∣ n` (handling both characteristic $0$ and positive prime characteristic $p \nmid n$ via `AlgebraicClosure K` and $p$-th-root descent).
+  - `Garling.Chapter18.exercise_18_7_repaired`: proves `¬ ∃ s : L, IntermediateField.adjoin K {x, y} = IntermediateField.adjoin K {s}`.
+  - `Garling.Chapter18.exercise_18_7_not_purelyTranscendental`: proves `transcendenceDegree K K(x, y) = 1`, `¬ IsGarlingPurelyTranscendental K K(x, y)`, and `¬ IsPurelyTranscendental K K(x, y)`.
+- **Status:** Held in `QUEUE.md` for the corrupted printed hypothesis `K(x, y) = s` (intended `K(x, y) = K(s)`); all repaired parts `(i)`, `(ii)`, non-simplicity, and non-pure-transcendence are kernel-proved.
