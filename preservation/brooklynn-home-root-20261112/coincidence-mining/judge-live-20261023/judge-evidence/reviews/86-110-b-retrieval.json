@@ -1,0 +1,389 @@
+[
+  {
+    "id": "A359162",
+    "url": "https://oeis.org/A359162/b359162.txt",
+    "rows": 100000,
+    "first_index": 1,
+    "last_index": 100000,
+    "sha256": "4ee5366ea8224b93f423ad5fe650b97fc08f4939e19294d3cd37d7cbaefc113a",
+    "retrieved_utc": "2026-10-23T16:15:44.165299+00:00"
+  },
+  {
+    "id": "A360111",
+    "url": "https://oeis.org/A360111/b360111.txt",
+    "rows": 100000,
+    "first_index": 1,
+    "last_index": 100000,
+    "sha256": "b242aaec0cc1ac0289a6943b17bddf5a36366817dfb7df3ea1554bfc25fccc88",
+    "retrieved_utc": "2026-10-23T16:15:44.436770+00:00"
+  },
+  {
+    "id": "A321538",
+    "url": "https://oeis.org/A321538/b321538.txt",
+    "rows": 10001,
+    "first_index": 0,
+    "last_index": 10000,
+    "sha256": "3794cf61b9b7cbe7df7a612c62f2e13b9589ea106843cbb43d154a7333c54d52",
+    "retrieved_utc": "2026-10-23T16:15:45.503578+00:00"
+  },
+  {
+    "id": "A335324",
+    "url": "https://oeis.org/A335324/b335324.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "8709f4cf814502786b77fa6fab5bb9a4028db99175fcbd784eaee2d6e7e7d7ab",
+    "retrieved_utc": "2026-10-23T16:15:45.674881+00:00"
+  },
+  {
+    "id": "A366245",
+    "url": "https://oeis.org/A366245/b366245.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "51a5669ef6a8f617f9e5528fa7ac64010f21953c67b068c52553ceb33de2c599",
+    "retrieved_utc": "2026-10-23T16:15:45.716482+00:00"
+  },
+  {
+    "id": "A296073",
+    "url": "https://oeis.org/A296073/b296073.txt",
+    "rows": 65536,
+    "first_index": 1,
+    "last_index": 65536,
+    "sha256": "a9f976f8a365d7b8bddf5aa6edb98cbada9dde29bde6119ad981f9d88706b4ad",
+    "retrieved_utc": "2026-10-23T16:15:46.215919+00:00"
+  },
+  {
+    "id": "A373491",
+    "url": "https://oeis.org/A373491/b373491.txt",
+    "rows": 100000,
+    "first_index": 1,
+    "last_index": 100000,
+    "sha256": "16b0e1707f5429ae2ae174be370db4e6826f57546c84eaeae382d97d9debb74b",
+    "retrieved_utc": "2026-10-23T16:15:46.469798+00:00"
+  },
+  {
+    "id": "A374134",
+    "url": "https://oeis.org/A374134/b374134.txt",
+    "rows": 100000,
+    "first_index": 1,
+    "last_index": 100000,
+    "sha256": "0726a05f7f5f28d6019eefedfcfd4a72901c9fdeb05681ea53968cdbf7b84aee",
+    "retrieved_utc": "2026-10-23T16:15:46.545330+00:00"
+  },
+  {
+    "id": "A373588",
+    "url": "https://oeis.org/A373588/b373588.txt",
+    "rows": 100000,
+    "first_index": 1,
+    "last_index": 100000,
+    "sha256": "b33127eb22cbe60de9c878f383a46e71a928e8165a8cb69ac1d8f0027e34a7f4",
+    "retrieved_utc": "2026-10-23T16:15:46.581086+00:00"
+  },
+  {
+    "id": "A305800",
+    "url": "https://oeis.org/A305800/b305800.txt",
+    "rows": 100000,
+    "first_index": 1,
+    "last_index": 100000,
+    "sha256": "eaf03197a7b60243423eb5ee92d83fbaf90cc9ac3030b9cae35c7c51abf81f59",
+    "retrieved_utc": "2026-10-23T16:15:46.679493+00:00"
+  },
+  {
+    "id": "A374136",
+    "url": "https://oeis.org/A374136/b374136.txt",
+    "rows": 100000,
+    "first_index": 1,
+    "last_index": 100000,
+    "sha256": "c871bf449e2f4b45df9888a6982c4d5e446816cba902aa6f4bc30f63f4e4f46d",
+    "retrieved_utc": "2026-10-23T16:15:46.789270+00:00"
+  },
+  {
+    "id": "A319707",
+    "url": "https://oeis.org/A319707/b319707.txt",
+    "rows": 100000,
+    "first_index": 1,
+    "last_index": 100000,
+    "sha256": "b26ce7087b534732ef9e5e669630efdb40d53adfe7fc5f585ff0d40a204b52f4",
+    "retrieved_utc": "2026-10-23T16:15:46.832654+00:00"
+  },
+  {
+    "id": "A072411",
+    "url": "https://oeis.org/A072411/b072411.txt",
+    "rows": 10080,
+    "first_index": 1,
+    "last_index": 10080,
+    "sha256": "a213eeaecb94fa51ee9e299ea461bebd4da46a769fce510cd2c3fd1ff4e0f0bd",
+    "retrieved_utc": "2026-10-23T16:15:46.953411+00:00"
+  },
+  {
+    "id": "A290107",
+    "url": "https://oeis.org/A290107/b290107.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "47c35785a37a1ce859b331967d3acb6a06fcb0849c3549fb3a29bebb65d9ac72",
+    "retrieved_utc": "2026-10-23T16:15:47.095889+00:00"
+  },
+  {
+    "id": "A319717",
+    "url": "https://oeis.org/A319717/b319717.txt",
+    "rows": 100000,
+    "first_index": 1,
+    "last_index": 100000,
+    "sha256": "b3a871cae09d0d245f49357cb45e05a0569a258ebe0ea390746b8cff5833a679",
+    "retrieved_utc": "2026-10-23T16:15:47.415339+00:00"
+  },
+  {
+    "id": "A129251",
+    "url": "https://oeis.org/A129251/b129251.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "efba40a6413de56184315866967c2e6e376e991ce594de4ae5c1fb1324070266",
+    "retrieved_utc": "2026-10-23T16:15:47.653237+00:00"
+  },
+  {
+    "id": "A276077",
+    "url": "https://oeis.org/A276077/b276077.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "62c9c23472f2686b506b602488a755b6b338afc1270a566009d2a93be9285d01",
+    "retrieved_utc": "2026-10-23T16:15:48.005179+00:00"
+  },
+  {
+    "id": "A055642",
+    "url": "https://oeis.org/A055642/b055642.txt",
+    "rows": 10001,
+    "first_index": 0,
+    "last_index": 10000,
+    "sha256": "25db98a312992d131ca31c629d0a615cda7dc6f712b5b028ba02f668029ecd2b",
+    "retrieved_utc": "2026-10-23T16:15:48.326050+00:00"
+  },
+  {
+    "id": "A134452",
+    "url": "https://oeis.org/A134452/b134452.txt",
+    "rows": 10001,
+    "first_index": 0,
+    "last_index": 10000,
+    "sha256": "f5bf40fea51b3f8d8586feab94847ce3fa0f03a208ad80b68dcc1910d7da3a4e",
+    "retrieved_utc": "2026-10-23T16:15:48.398235+00:00"
+  },
+  {
+    "id": "A348674",
+    "url": "https://oeis.org/A348674/b348674.txt",
+    "rows": 20001,
+    "first_index": 0,
+    "last_index": 20000,
+    "sha256": "193614fedb613923a5016d8c030a512b5832cb6df0f44e7690829c1e598122dc",
+    "retrieved_utc": "2026-10-23T16:15:48.499963+00:00"
+  },
+  {
+    "id": "A294936",
+    "url": "https://oeis.org/A294936/b294936.txt",
+    "rows": 100000,
+    "first_index": 1,
+    "last_index": 100000,
+    "sha256": "e1a36b280747ced57d16f6f24804789e0352e27a07bf29db8247129ad02e806d",
+    "retrieved_utc": "2026-10-23T16:15:48.686332+00:00"
+  },
+  {
+    "id": "A353675",
+    "url": "https://oeis.org/A353675/b353675.txt",
+    "rows": 65537,
+    "first_index": 1,
+    "last_index": 65537,
+    "sha256": "a930ad4ae4cd46da1739fa81831492242d63318dc46eb2f689548392a8d1da31",
+    "retrieved_utc": "2026-10-23T16:15:48.720900+00:00"
+  },
+  {
+    "id": "A353676",
+    "url": "https://oeis.org/A353676/b353676.txt",
+    "rows": 65537,
+    "first_index": 1,
+    "last_index": 65537,
+    "sha256": "efb789b9d1d07000b58eb301ca1b4914f705de7287943662946e5835740cc6c0",
+    "retrieved_utc": "2026-10-23T16:15:48.835284+00:00"
+  },
+  {
+    "id": "A378539",
+    "url": "https://oeis.org/A378539/b378539.txt",
+    "rows": 108045,
+    "first_index": 1,
+    "last_index": 108045,
+    "sha256": "9e75be07d5be45503ca6050b789cc0f8d736ab746695d291c078e6ea3b3a67cb",
+    "retrieved_utc": "2026-10-23T16:15:48.870899+00:00"
+  },
+  {
+    "id": "A322437",
+    "url": "https://oeis.org/A322437/b322437.txt",
+    "rows": 65537,
+    "first_index": 1,
+    "last_index": 65537,
+    "sha256": "b59625f13f44bae678f35d8a37dda6ba530fdcd6be0f1d5ceba89dd86b321e82",
+    "retrieved_utc": "2026-10-23T16:15:49.066760+00:00"
+  },
+  {
+    "id": "A322438",
+    "url": "https://oeis.org/A322438/b322438.txt",
+    "rows": 65537,
+    "first_index": 1,
+    "last_index": 65537,
+    "sha256": "e0fd2691e9163f57e1591e83077a9fd33ac09b15e2deecdde0439cb739b0cd06",
+    "retrieved_utc": "2026-10-23T16:15:49.511418+00:00"
+  },
+  {
+    "id": "A114112",
+    "url": "https://oeis.org/A114112/b114112.txt",
+    "rows": 2000,
+    "first_index": 1,
+    "last_index": 2000,
+    "sha256": "7cbb466263a4bd6b36ad021d346bcc367bc2575601025e342e74241d3df4bd82",
+    "retrieved_utc": "2026-10-23T16:15:50.027121+00:00"
+  },
+  {
+    "id": "A347246",
+    "url": "https://oeis.org/A347246/b347246.txt",
+    "rows": 65537,
+    "first_index": 1,
+    "last_index": 65537,
+    "sha256": "4eaace59be9b95a40d152cdb62edf6a6d864773c90f1ee5a4e0ed14671f3d544",
+    "retrieved_utc": "2026-10-23T16:15:50.027252+00:00"
+  },
+  {
+    "id": "A284580",
+    "url": "https://oeis.org/A284580/b284580.txt",
+    "rows": 10923,
+    "first_index": 0,
+    "last_index": 10922,
+    "sha256": "28d642f70ce4625ceb980ae46e84f05fc8c38c9fd5db7fc9e56023b8516ee429",
+    "retrieved_utc": "2026-10-23T16:15:50.077263+00:00"
+  },
+  {
+    "id": "A227349",
+    "url": "https://oeis.org/A227349/b227349.txt",
+    "rows": 8193,
+    "first_index": 0,
+    "last_index": 8192,
+    "sha256": "f850509d4509430d38a293c7a9013cf8691b90b6570992850719ada4c63bb078",
+    "retrieved_utc": "2026-10-23T16:15:50.115293+00:00"
+  },
+  {
+    "id": "A353626",
+    "url": "https://oeis.org/A353626/b353626.txt",
+    "rows": 65537,
+    "first_index": 1,
+    "last_index": 65537,
+    "sha256": "243b71084cd8084f5bf3bf6b64234459ea68548692ec22692e5c2c009c3600c8",
+    "retrieved_utc": "2026-10-23T16:15:50.302870+00:00"
+  },
+  {
+    "id": "A270418",
+    "url": "https://oeis.org/A270418/b270418.txt",
+    "rows": 12167,
+    "first_index": 1,
+    "last_index": 12167,
+    "sha256": "5954da5ded3fa0b3fa7783c7cc96bb49b0814757283994e43c9405fd5146f870",
+    "retrieved_utc": "2026-10-23T16:15:50.356948+00:00"
+  },
+  {
+    "id": "A367168",
+    "url": "https://oeis.org/A367168/b367168.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "8f2a92546ccd4b2fe162cd9bc5aa890fe86f28c1407b8a3a62f6759f9bf02077",
+    "retrieved_utc": "2026-10-23T16:15:50.394817+00:00"
+  },
+  {
+    "id": "A353480",
+    "url": "https://oeis.org/A353480/b353480.txt",
+    "rows": 65537,
+    "first_index": 1,
+    "last_index": 65537,
+    "sha256": "9967e06aafc46c22536ade4c17c12a29f204d62489a42cc59c390e20f2dd5b68",
+    "retrieved_utc": "2026-10-23T16:15:50.455678+00:00"
+  },
+  {
+    "id": "A206074",
+    "url": "https://oeis.org/A206074/b206074.txt",
+    "rows": 21692,
+    "first_index": 1,
+    "last_index": 21692,
+    "sha256": "37a36c0aabfd78d933f663f67b6286bcdf2c843016c1d7898cefe07bc71be10e",
+    "retrieved_utc": "2026-10-23T16:15:51.286380+00:00"
+  },
+  {
+    "id": "A085971",
+    "url": "https://oeis.org/A085971/b085971.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "172204c8c96aeca66ed5ace20ad8f53ade783f00cf39b1a59cd3e9d9c06ac308",
+    "retrieved_utc": "2026-10-23T16:15:51.603850+00:00"
+  },
+  {
+    "id": "A387421",
+    "url": "https://oeis.org/A387421/b387421.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "819e86f87cf138b2398e75a30173865801a462bea209191d6fc4ab68526fa404",
+    "retrieved_utc": "2026-10-23T16:15:51.761844+00:00"
+  },
+  {
+    "id": "A366242",
+    "url": "https://oeis.org/A366242/b366242.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "d2ecd2420423b6c2113c7d5003b3e454e0aa6fafa58cf7131a7aa8522595ea38",
+    "retrieved_utc": "2026-10-23T16:15:51.808503+00:00"
+  },
+  {
+    "id": "A393981",
+    "url": "https://oeis.org/A393981/b393981.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "5817ebed348ec5b6cceed0feed208a2c4bc865158b26b340c7e638d17a480ae3",
+    "retrieved_utc": "2026-10-23T16:15:51.819310+00:00"
+  },
+  {
+    "id": "A252895",
+    "url": "https://oeis.org/A252895/b252895.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "50e8aa4e623b16af455a494a6af27c0fd6d45f3d67d9ee192c63a64c39911599",
+    "retrieved_utc": "2026-10-23T16:15:51.831582+00:00"
+  },
+  {
+    "id": "A325559",
+    "url": "https://oeis.org/A325559/b325559.txt",
+    "rows": 25000,
+    "first_index": 1,
+    "last_index": 25000,
+    "sha256": "cd17445f682e7aac53c577f72e562d79aa20dd138564d3c55e2aa1707d60c284",
+    "retrieved_utc": "2026-10-23T16:15:51.833372+00:00"
+  },
+  {
+    "id": "A389215",
+    "url": "https://oeis.org/A389215/b389215.txt",
+    "rows": 10000,
+    "first_index": 1,
+    "last_index": 10000,
+    "sha256": "b44ca98d0d548647860c78612cfe4b1fd1b8ef4f24b7efa5263588a13493cdbe",
+    "retrieved_utc": "2026-10-23T16:15:51.898554+00:00"
+  },
+  {
+    "id": "A359595",
+    "url": "https://oeis.org/A359595/b359595.txt",
+    "rows": 100000,
+    "first_index": 1,
+    "last_index": 100000,
+    "sha256": "fa96a0a703adc58a0a8e284642de5759840f156b97b3552505e3ba4f00846a8c",
+    "retrieved_utc": "2026-10-23T16:16:09.728786+00:00"
+  }
+]

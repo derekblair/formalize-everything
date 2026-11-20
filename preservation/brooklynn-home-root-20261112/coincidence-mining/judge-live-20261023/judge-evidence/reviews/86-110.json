@@ -1,0 +1,2415 @@
+[
+  {
+    "rank": 86,
+    "a": "A296073",
+    "b": "A305800",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. Exactly 124 terms agree at n=1..124; n=125 is 33 versus 96, already visible in both data sections and confirmed by the b-files.",
+    "novelty": "Both records explicitly publish the failure at n=125; A296073 also says it is not the restricted-growth transform defining A305800. No equality is asserted.",
+    "integrity": "The packet stopped one term before a listed counterexample. A296073 reuses the class of 46 at 125, while A305800 assigns every composite its next distinct class. No record-term/b-file inconsistency found. Separately, A305800's notation comment prints S(i)=S(i) => T(i)=T(j); the antecedent should compare S(i) with S(j). The literal tautology would force T to be constant, contrary to its nonconstant data. This exposition typo is not used to infer equality.",
+    "metrics": {
+      "rank": 86,
+      "a": "A296073",
+      "b": "A305800",
+      "score": 85.6,
+      "claimed": 124,
+      "variant": "raw",
+      "family_size": 63,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 125,
+      "length_b": 125,
+      "native": {
+        "count": 124,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 125,
+          "b_index": 125,
+          "a": 33,
+          "b": 96
+        }
+      },
+      "ordinal": {
+        "count": 124,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 125,
+          "b_index": 125,
+          "a": 33,
+          "b": 96
+        }
+      },
+      "packet_variant": {
+        "count": 124,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 125,
+          "b_index": 125,
+          "a": 33,
+          "b": 96
+        }
+      },
+      "best_small_shift": [
+        {
+          "count": 124,
+          "available": 125,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "mismatch": {
+            "a_index": 125,
+            "b_index": 125,
+            "a": 33,
+            "b": 96
+          }
+        },
+        {
+          "count": 123,
+          "available": 124,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "mismatch": {
+            "a_index": 125,
+            "b_index": 125,
+            "a": 33,
+            "b": 96
+          }
+        },
+        {
+          "count": 122,
+          "available": 123,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "mismatch": {
+            "a_index": 125,
+            "b_index": 125,
+            "a": 33,
+            "b": 96
+          }
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 65536,
+      "first_mismatches": [
+        {
+          "n": 125,
+          "a": 33,
+          "b": 96
+        },
+        {
+          "n": 126,
+          "a": 96,
+          "b": 97
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A296073",
+      "https://oeis.org/A305800"
+    ]
+  },
+  {
+    "rank": 87,
+    "a": "A321538",
+    "b": "A321803",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 0. The 124 common listed terms are n=0..123. Independent evaluation of the definitions agrees for all 11,011 indices n=0..11010, then gives 111 versus 1111 at n=11011.",
+    "novelty": "A321803 explicitly publishes n=11011 as the first disagreement with A321538; this is a known near-match, not an asserted identity.",
+    "integrity": "A321538 first shortens each decimal run by one and then lengthens the resulting runs: 11011 -> 11 -> 111. A321803 retains the two original double-1 runs and deletes the isolated zero, giving 1111. The short listing hides this structural difference.",
+    "metrics": {
+      "rank": 87,
+      "a": "A321538",
+      "b": "A321803",
+      "score": 85.6,
+      "claimed": 124,
+      "variant": "raw",
+      "family_size": 3,
+      "offset_a": 0,
+      "offset_b": 0,
+      "length_a": 124,
+      "length_b": 200,
+      "native": {
+        "count": 124,
+        "available": 124,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 124,
+        "available": 124,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 124,
+        "available": 124,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 124,
+          "available": 124,
+          "a_start": 0,
+          "b_start": 0,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 123,
+          "available": 123,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 122,
+          "available": 122,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": null,
+    "sources": [
+      "https://oeis.org/A321538",
+      "https://oeis.org/A321803",
+      "https://oeis.org/A321536",
+      "https://oeis.org/A321537"
+    ]
+  },
+  {
+    "rank": 88,
+    "a": "A373491",
+    "b": "A373588",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. There are 125 equal listed terms, or 124 at n=2..125 under drop1. The b-files agree at n=1..342 and first differ at n=343: 1 versus 0; the transformed prefix therefore lasts 341 terms.",
+    "novelty": "A373588 explicitly states that it first differs from A373491 at n=343, including both values. No equality is asserted.",
+    "integrity": "For 343=7^3, the two tests in A373491 give 3(7-1)=18 and numerator(3/7)=3, both divisible by 3. A373588 rejects it because 7 is not 2 modulo 3. This independently confirms the counterexample.",
+    "metrics": {
+      "rank": 88,
+      "a": "A373491",
+      "b": "A373588",
+      "score": 85.6,
+      "claimed": 124,
+      "variant": "drop1",
+      "family_size": 3,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 125,
+      "length_b": 125,
+      "native": {
+        "count": 125,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 125,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 124,
+        "available": 124,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 125,
+          "available": 125,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 124,
+          "available": 124,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 123,
+          "available": 123,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 100000,
+      "first_mismatches": [
+        {
+          "n": 343,
+          "a": 1,
+          "b": 0
+        },
+        {
+          "n": 637,
+          "a": 1,
+          "b": 0
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A373491",
+      "https://oeis.org/A373588"
+    ]
+  },
+  {
+    "rank": 89,
+    "a": "A374134",
+    "b": "A374136",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. The 125 listed terms agree; drop1 leaves 124. The b-files agree at n=1..254, then give 1 versus 0 at n=255, so drop1 agrees for 253 terms before failing.",
+    "novelty": "Both records explicitly give the first mutual disagreement at n=255. They separately describe agreement with parity only up to n=104.",
+    "integrity": "2*phi(255)=256>255, so A374134(255)=1. A374136 reports that the cyclotomic polynomial at 255 is not flat, giving 0. Neither the long parity-like stretch nor the shared zero at 105 makes the definitions equal.",
+    "metrics": {
+      "rank": 89,
+      "a": "A374134",
+      "b": "A374136",
+      "score": 85.6,
+      "claimed": 124,
+      "variant": "drop1",
+      "family_size": 4,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 125,
+      "length_b": 125,
+      "native": {
+        "count": 125,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 125,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 124,
+        "available": 124,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 125,
+          "available": 125,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 124,
+          "available": 124,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 123,
+          "available": 123,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 100000,
+      "first_mismatches": [
+        {
+          "n": 255,
+          "a": 1,
+          "b": 0
+        },
+        {
+          "n": 273,
+          "a": 1,
+          "b": 0
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A374134",
+      "https://oeis.org/A374136"
+    ]
+  },
+  {
+    "rank": 90,
+    "a": "A335324",
+    "b": "A366245",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. All 85 common listed terms agree. The b-files extend agreement through n=255, then give A335324(256)=1 and A366245(256)=256.",
+    "novelty": "A366245 explicitly states that the first difference from A335324 is n=256. No equality is asserted.",
+    "integrity": "At 256=2^8, the fourth-power-free square part is 1. A366245 retains the exponent bit of weight 8 in its infinitary divisor construction, so its value is 256. The prefix lacks a prime exponent large enough to expose that difference.",
+    "metrics": {
+      "rank": 90,
+      "a": "A335324",
+      "b": "A366245",
+      "score": 85.0,
+      "claimed": 85,
+      "variant": "raw",
+      "family_size": 2,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 85,
+      "length_b": 85,
+      "native": {
+        "count": 85,
+        "available": 85,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 85,
+        "available": 85,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 85,
+        "available": 85,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 85,
+          "available": 85,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 84,
+          "available": 84,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 83,
+          "available": 83,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 10000,
+      "first_mismatches": [
+        {
+          "n": 256,
+          "a": 1,
+          "b": 256
+        },
+        {
+          "n": 512,
+          "a": 1,
+          "b": 256
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A335324",
+      "https://oeis.org/A366245"
+    ]
+  },
+  {
+    "rank": 91,
+    "a": "A359162",
+    "b": "A360111",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. The native listing agrees for 123 terms at n=1..123, and drop1 for 122. Both b-files and an independent scan of the definitions first differ at n=135: 1 versus 0. Native agreement is 134 terms; drop1 agreement is 133.",
+    "novelty": "No assertion of equality between these two sequences was found in either record. Their relationships to A353479 concern characteristic functions and first differences, not a mutual identity. A counterexample makes further novelty hunting unnecessary.",
+    "integrity": "135=3^3*5 is 3 modulo 4 and has four prime factors with multiplicity, so A359162(135)=1. A360111(135)=0 because 3^3 divides 135. Separately, A360111 has an erroneous cross-reference saying it differs from A353479 at 158 while printing 1 for both values; the asserted difference cannot follow from those equal numbers. The direct calculation and b-files do not rely on this typo.",
+    "metrics": {
+      "rank": 91,
+      "a": "A359162",
+      "b": "A360111",
+      "score": 84.2,
+      "claimed": 122,
+      "variant": "drop1",
+      "family_size": 4,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 135,
+      "length_b": 123,
+      "native": {
+        "count": 123,
+        "available": 123,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 123,
+        "available": 123,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 122,
+        "available": 122,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 123,
+          "available": 123,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 122,
+          "available": 122,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 121,
+          "available": 121,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 100000,
+      "first_mismatches": [
+        {
+          "n": 135,
+          "a": 1,
+          "b": 0
+        },
+        {
+          "n": 158,
+          "a": 0,
+          "b": 1
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A359162",
+      "https://oeis.org/A360111"
+    ]
+  },
+  {
+    "rank": 92,
+    "a": "A319707",
+    "b": "A319717",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. The 121 common listed terms agree. The b-files agree through n=142 and first differ at n=143: 113 versus 51.",
+    "novelty": "A319717 explicitly publishes the first difference from A319707 at 143. The implication about equality classes in A319707 is a filter-refinement statement, not equality of the sequences.",
+    "integrity": "A319707 gives every composite its own new class. A319717 can identify different composites sharing the stated divisor/residue data. The b-files confirm the published collision at 143; the lists simply stop too soon.",
+    "metrics": {
+      "rank": 92,
+      "a": "A319707",
+      "b": "A319717",
+      "score": 83.5,
+      "claimed": 121,
+      "variant": "raw",
+      "family_size": 6,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 121,
+      "length_b": 121,
+      "native": {
+        "count": 121,
+        "available": 121,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 121,
+        "available": 121,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 121,
+        "available": 121,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 121,
+          "available": 121,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 120,
+          "available": 120,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 119,
+          "available": 119,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 100000,
+      "first_mismatches": [
+        {
+          "n": 143,
+          "a": 113,
+          "b": 51
+        },
+        {
+          "n": 144,
+          "a": 114,
+          "b": 113
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A319707",
+      "https://oeis.org/A319717"
+    ]
+  },
+  {
+    "rank": 93,
+    "a": "A072411",
+    "b": "A290107",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. The 120 listed terms agree. B-files and independent factorization calculations agree for n=1..143, then give 4 versus 8 at n=144.",
+    "novelty": "Both records explicitly state the first mutual difference is at n=144; no equality is asserted.",
+    "integrity": "144=2^4*3^2: lcm(4,2)=4, whereas the product of the distinct exponents is 4*2=8. Repeated or coprime small exponents conceal the distinction in the displayed prefix.",
+    "metrics": {
+      "rank": 93,
+      "a": "A072411",
+      "b": "A290107",
+      "score": 82.8,
+      "claimed": 120,
+      "variant": "raw",
+      "family_size": 51,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 120,
+      "length_b": 120,
+      "native": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 120,
+          "available": 120,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 119,
+          "available": 119,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 118,
+          "available": 118,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 10000,
+      "first_mismatches": [
+        {
+          "n": 144,
+          "a": 4,
+          "b": 8
+        },
+        {
+          "n": 324,
+          "a": 4,
+          "b": 8
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A072411",
+      "https://oeis.org/A290107"
+    ]
+  },
+  {
+    "rank": 94,
+    "a": "A129251",
+    "b": "A276077",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. The 120 common listed terms agree. B-files and independent calculations agree for n=1..624, then give 0 versus 1 at n=625.",
+    "novelty": "Both records explicitly publish n=625 and the unequal values as their first difference. No equality is asserted.",
+    "integrity": "625=5^4 fails the exponent threshold e>=p=5 for A129251, but meets e>=1+primepi(5)=4 for A276077. Agreement at the primes 2 and 3 does not continue to prime 5.",
+    "metrics": {
+      "rank": 94,
+      "a": "A129251",
+      "b": "A276077",
+      "score": 82.8,
+      "claimed": 120,
+      "variant": "raw",
+      "family_size": 4,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 120,
+      "length_b": 120,
+      "native": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 120,
+          "available": 120,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 119,
+          "available": 119,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 118,
+          "available": 118,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 10000,
+      "first_mismatches": [
+        {
+          "n": 625,
+          "a": 0,
+          "b": 1
+        },
+        {
+          "n": 1250,
+          "a": 0,
+          "b": 1
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A129251",
+      "https://oeis.org/A276077"
+    ]
+  },
+  {
+    "rank": 95,
+    "a": "A294936",
+    "b": "A378539",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. The 120 common listed terms agree. The b-files agree for n=1..747 and first differ at n=748: 1 versus 0.",
+    "novelty": "A378539 explicitly lists 748 as the first disagreement with A294936 and labels itself different from A294936. No equality is asserted.",
+    "integrity": "Independent subset-sum enumeration over the divisors of each divisor of 748 finds no Zumkeller divisor, while sigma(748)=1512>=1496=2*748. Thus the nondeficiency predicate is true and the Zumkeller-divisor predicate is false.",
+    "metrics": {
+      "rank": 95,
+      "a": "A294936",
+      "b": "A378539",
+      "score": 82.8,
+      "claimed": 120,
+      "variant": "raw",
+      "family_size": 6,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 120,
+      "length_b": 126,
+      "native": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 120,
+          "available": 120,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 119,
+          "available": 119,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 118,
+          "available": 118,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 100000,
+      "first_mismatches": [
+        {
+          "n": 748,
+          "a": 1,
+          "b": 0
+        },
+        {
+          "n": 7544,
+          "a": 1,
+          "b": 0
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A294936",
+      "https://oeis.org/A378539"
+    ]
+  },
+  {
+    "rank": 96,
+    "a": "A353675",
+    "b": "A353676",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. Native equality fails immediately at n=1: 1 versus 0. Removing the first entry gives the claimed 120 listed matches at n=2..121. The b-files and definitions extend this tail to n=1154, for 1,153 matches, then differ at 1155: 1 versus 0.",
+    "novelty": "Both records explicitly publish the exception at 1 and the next difference at 1155. The inequality A353675>=A353676 is not equality.",
+    "integrity": "1155=3*5*7*11 has an even number (four) of distinct prime factors, but does not have exactly two. Deleting the initial exception cannot repair the proposed identity.",
+    "metrics": {
+      "rank": 96,
+      "a": "A353675",
+      "b": "A353676",
+      "score": 82.8,
+      "claimed": 120,
+      "variant": "drop1",
+      "family_size": 3,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 121,
+      "length_b": 121,
+      "native": {
+        "count": 0,
+        "available": 121,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 1,
+          "b_index": 1,
+          "a": 1,
+          "b": 0
+        }
+      },
+      "ordinal": {
+        "count": 0,
+        "available": 121,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 1,
+          "b_index": 1,
+          "a": 1,
+          "b": 0
+        }
+      },
+      "packet_variant": {
+        "count": 120,
+        "available": 120,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 120,
+          "available": 120,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 119,
+          "available": 119,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 118,
+          "available": 118,
+          "a_start": 4,
+          "b_start": 4,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 65537,
+      "first_mismatches": [
+        {
+          "n": 1,
+          "a": 1,
+          "b": 0
+        },
+        {
+          "n": 1155,
+          "a": 1,
+          "b": 0
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A353675",
+      "https://oeis.org/A353676"
+    ]
+  },
+  {
+    "rank": 97,
+    "a": "A055642",
+    "b": "A348674",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 0. Native agreement is exactly 120 terms at n=0..119; drop1 yields 119 at n=1..119. Both records already include n=120, where the values are 3 and 4. B-files and independent enumeration confirm this.",
+    "novelty": "A348674 explicitly identifies n=120 as its first difference from A055642 and gives both values. No equality is asserted.",
+    "integrity": "The four distinct split sums of 120 are {3,12,21,120}, whereas 120 has three decimal digits. Also, A055642 contains a defective Common Lisp program: its positive branch floor(log(n,10)) omits +1 and gives 0 at n=1, contradicting the definition and listed value 1. The b-file and other implementations agree with the definition.",
+    "metrics": {
+      "rank": 97,
+      "a": "A055642",
+      "b": "A348674",
+      "score": 82.1,
+      "claimed": 119,
+      "variant": "drop1",
+      "family_size": 8,
+      "offset_a": 0,
+      "offset_b": 0,
+      "length_a": 121,
+      "length_b": 121,
+      "native": {
+        "count": 120,
+        "available": 121,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 120,
+          "b_index": 120,
+          "a": 3,
+          "b": 4
+        }
+      },
+      "ordinal": {
+        "count": 120,
+        "available": 121,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 120,
+          "b_index": 120,
+          "a": 3,
+          "b": 4
+        }
+      },
+      "packet_variant": {
+        "count": 119,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 120,
+          "b_index": 120,
+          "a": 3,
+          "b": 4
+        }
+      },
+      "best_small_shift": [
+        {
+          "count": 120,
+          "available": 121,
+          "a_start": 0,
+          "b_start": 0,
+          "absolute": false,
+          "mismatch": {
+            "a_index": 120,
+            "b_index": 120,
+            "a": 3,
+            "b": 4
+          }
+        },
+        {
+          "count": 119,
+          "available": 120,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "mismatch": {
+            "a_index": 120,
+            "b_index": 120,
+            "a": 3,
+            "b": 4
+          }
+        },
+        {
+          "count": 118,
+          "available": 119,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "mismatch": {
+            "a_index": 120,
+            "b_index": 120,
+            "a": 3,
+            "b": 4
+          }
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 0,
+      "end_available": 10000,
+      "first_mismatches": [
+        {
+          "n": 120,
+          "a": 3,
+          "b": 4
+        },
+        {
+          "n": 121,
+          "a": 3,
+          "b": 4
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A055642",
+      "https://oeis.org/A348674"
+    ]
+  },
+  {
+    "rank": 98,
+    "a": "A131734",
+    "b": "A134452",
+    "verdict": "DROP",
+    "primary_gate": "novelty",
+    "agreement": "Both offsets are 0. Untransformed values agree only at n=0..10 (11 terms), then are -1 versus 1 at n=11. Taking absolute values gives the claimed 119 listed matches at n=0..118.",
+    "novelty": "This transformed identity is already published: A131734 states abs(a(n))=A000035(n), and A134452 states the identical formula. Equality through the shared parity sequence is explicit, not inferred from a bare cross-reference.",
+    "integrity": "The absolute-value transformation erases the only differing information; both become the period-2 sequence n mod 2. This also fails interestingness as a trivial absolute-value transform and short-period pattern. The signed original sequences are unequal.",
+    "metrics": {
+      "rank": 98,
+      "a": "A131734",
+      "b": "A134452",
+      "score": 82.1,
+      "claimed": 119,
+      "variant": "abs",
+      "family_size": 9,
+      "offset_a": 0,
+      "offset_b": 0,
+      "length_a": 119,
+      "length_b": 121,
+      "native": {
+        "count": 11,
+        "available": 119,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 11,
+          "b_index": 11,
+          "a": -1,
+          "b": 1
+        }
+      },
+      "ordinal": {
+        "count": 11,
+        "available": 119,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 11,
+          "b_index": 11,
+          "a": -1,
+          "b": 1
+        }
+      },
+      "packet_variant": {
+        "count": 119,
+        "available": 119,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 119,
+          "available": 119,
+          "a_start": 0,
+          "b_start": 0,
+          "absolute": true,
+          "censored_by_listing": true
+        },
+        {
+          "count": 119,
+          "available": 119,
+          "a_start": 0,
+          "b_start": 2,
+          "absolute": true,
+          "censored_by_listing": true
+        },
+        {
+          "count": 118,
+          "available": 118,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": true,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": null,
+    "sources": [
+      "https://oeis.org/A131734",
+      "https://oeis.org/A134452"
+    ]
+  },
+  {
+    "rank": 99,
+    "a": "A184582",
+    "b": "A184734",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. All 120 listed terms agree, or 119 after drop1. Independent 70-digit evaluation of the published floor formulas agrees at n=1..136, then gives 221 versus 222 at n=137; drop1 therefore agrees for 135 terms before failing.",
+    "novelty": "A184734 explicitly states that the first difference from A184582 is at index 137. No equality is asserted.",
+    "integrity": "The intercepts are phi/5 and 1/3, which are unequal. Their small separation explains a long shared floor-function prefix but cannot produce a global equality. At n=137 the two real arguments fall on opposite sides of 222.",
+    "metrics": {
+      "rank": 99,
+      "a": "A184582",
+      "b": "A184734",
+      "score": 82.1,
+      "claimed": 119,
+      "variant": "drop1",
+      "family_size": 3,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 120,
+      "length_b": 120,
+      "native": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 119,
+        "available": 119,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 120,
+          "available": 120,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 119,
+          "available": 119,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 118,
+          "available": 118,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": null,
+    "sources": [
+      "https://oeis.org/A184582",
+      "https://oeis.org/A184734"
+    ]
+  },
+  {
+    "rank": 100,
+    "a": "A322437",
+    "b": "A322438",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. The 120 common listed terms agree; drop1 leaves 119. B-files agree at n=1..143 and first give 3 versus 4 at n=144, so the transformed prefix has 142 matching terms.",
+    "novelty": "Both records explicitly state the first mutual difference at n=144 and give the values 3 and 4. No equality is asserted.",
+    "integrity": "Independent enumeration finds the extra pair (4*4*9, 4*6*6) for 144. Equal factors 4 are permitted when only proper divisibility is forbidden (A322438), but forbidden when any divisibility is prohibited (A322437). This is a substantive difference hidden by truncation.",
+    "metrics": {
+      "rank": 100,
+      "a": "A322437",
+      "b": "A322438",
+      "score": 82.1,
+      "claimed": 119,
+      "variant": "drop1",
+      "family_size": 186,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 120,
+      "length_b": 144,
+      "native": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 119,
+        "available": 119,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 120,
+          "available": 120,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 119,
+          "available": 119,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 118,
+          "available": 118,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 65537,
+      "first_mismatches": [
+        {
+          "n": 144,
+          "a": 3,
+          "b": 4
+        },
+        {
+          "n": 180,
+          "a": 5,
+          "b": 6
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A322437",
+      "https://oeis.org/A322438"
+    ]
+  },
+  {
+    "rank": 101,
+    "a": "A347246",
+    "b": "A353626",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. Native equality already fails at n=1: 1 versus 0. drop2 gives 119 listed matches at n=3..121. B-files and independent definitions agree from n=2 through 152, then give 0 versus 1 at 153; the drop2 prefix has 150 matches.",
+    "novelty": "A353626 explicitly names the initial exception and the next difference from A347246 at n=153. No equality is asserted.",
+    "integrity": "153=3^2*17 has a repeated odd prime factor, so A353626=1. The sum of its odd divisors is sigma(153)=13*18=234, whose greatest prime factor is 13<17, so A347246=0.",
+    "metrics": {
+      "rank": 101,
+      "a": "A347246",
+      "b": "A353626",
+      "score": 82.1,
+      "claimed": 119,
+      "variant": "drop2",
+      "family_size": 4,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 121,
+      "length_b": 125,
+      "native": {
+        "count": 0,
+        "available": 121,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 1,
+          "b_index": 1,
+          "a": 1,
+          "b": 0
+        }
+      },
+      "ordinal": {
+        "count": 0,
+        "available": 121,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 1,
+          "b_index": 1,
+          "a": 1,
+          "b": 0
+        }
+      },
+      "packet_variant": {
+        "count": 119,
+        "available": 119,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 120,
+          "available": 120,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 119,
+          "available": 119,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 118,
+          "available": 118,
+          "a_start": 4,
+          "b_start": 4,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 65537,
+      "first_mismatches": [
+        {
+          "n": 1,
+          "a": 1,
+          "b": 0
+        },
+        {
+          "n": 153,
+          "a": 0,
+          "b": 1
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A347246",
+      "https://oeis.org/A353626"
+    ]
+  },
+  {
+    "rank": 102,
+    "a": "A353480",
+    "b": "A359595",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. Native equality fails at n=1: 0 versus 1. drop2 gives 119 listed matches at n=3..121. The b-files agree from n=2 through 134, then give 0 versus 1 at 135; drop2 agreement is 132 terms.",
+    "novelty": "A359595 explicitly lists the disagreement set via A359597 and says the next difference after 1 is 135. Its bounding inequality involving A353480 does not assert equality.",
+    "integrity": "135=3^3*5 has four prime factors with multiplicity, so it is not semiprime. Independent Dirichlet inversion of the stated characteristic function gives inverse value 1 at 135, hence odd parity. This confirms the b-file counterexample.",
+    "metrics": {
+      "rank": 102,
+      "a": "A353480",
+      "b": "A359595",
+      "score": 82.1,
+      "claimed": 119,
+      "variant": "drop2",
+      "family_size": 3,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 121,
+      "length_b": 135,
+      "native": {
+        "count": 0,
+        "available": 121,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 1,
+          "b_index": 1,
+          "a": 0,
+          "b": 1
+        }
+      },
+      "ordinal": {
+        "count": 0,
+        "available": 121,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 1,
+          "b_index": 1,
+          "a": 0,
+          "b": 1
+        }
+      },
+      "packet_variant": {
+        "count": 119,
+        "available": 119,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 120,
+          "available": 120,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 119,
+          "available": 119,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 118,
+          "available": 118,
+          "a_start": 4,
+          "b_start": 4,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 65537,
+      "first_mismatches": [
+        {
+          "n": 1,
+          "a": 0,
+          "b": 1
+        },
+        {
+          "n": 135,
+          "a": 0,
+          "b": 1
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A353480",
+      "https://oeis.org/A359595"
+    ]
+  },
+  {
+    "rank": 103,
+    "a": "A227349",
+    "b": "A284580",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 0. Native agreement is 119 terms at n=0..118; drop1 produces 118 at n=1..118. The first disagreement at n=119 is 9 versus 5, present in the listed terms and confirmed by the b-files and computation.",
+    "novelty": "Both records explicitly publish this first disagreement at n=119. No equality is asserted.",
+    "integrity": "119 has binary expansion 1110111, with run lengths 3 and 3. Ordinary multiplication gives 9; carryless binary multiplication gives (x+1)^2=x^2+1 over GF(2), encoded as 5. The packet stops at the first counterexample.",
+    "metrics": {
+      "rank": 103,
+      "a": "A227349",
+      "b": "A284580",
+      "score": 81.4,
+      "claimed": 118,
+      "variant": "drop1",
+      "family_size": 7,
+      "offset_a": 0,
+      "offset_b": 0,
+      "length_a": 121,
+      "length_b": 121,
+      "native": {
+        "count": 119,
+        "available": 121,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 119,
+          "b_index": 119,
+          "a": 9,
+          "b": 5
+        }
+      },
+      "ordinal": {
+        "count": 119,
+        "available": 121,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 119,
+          "b_index": 119,
+          "a": 9,
+          "b": 5
+        }
+      },
+      "packet_variant": {
+        "count": 118,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 119,
+          "b_index": 119,
+          "a": 9,
+          "b": 5
+        }
+      },
+      "best_small_shift": [
+        {
+          "count": 119,
+          "available": 121,
+          "a_start": 0,
+          "b_start": 0,
+          "absolute": false,
+          "mismatch": {
+            "a_index": 119,
+            "b_index": 119,
+            "a": 9,
+            "b": 5
+          }
+        },
+        {
+          "count": 118,
+          "available": 120,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "mismatch": {
+            "a_index": 119,
+            "b_index": 119,
+            "a": 9,
+            "b": 5
+          }
+        },
+        {
+          "count": 117,
+          "available": 119,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "mismatch": {
+            "a_index": 119,
+            "b_index": 119,
+            "a": 9,
+            "b": 5
+          }
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 0,
+      "end_available": 8192,
+      "first_mismatches": [
+        {
+          "n": 119,
+          "a": 9,
+          "b": 5
+        },
+        {
+          "n": 231,
+          "a": 9,
+          "b": 5
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A227349",
+      "https://oeis.org/A284580"
+    ]
+  },
+  {
+    "rank": 104,
+    "a": "A103889",
+    "b": "A114112",
+    "verdict": "DROP",
+    "primary_gate": "novelty",
+    "agreement": "Both offsets are 1. Native equality fails at n=1 (2 versus 1) and also n=2 (1 versus 2). After drop2, the 70 displayed terms at n=3..72 agree; the published formulas establish the same tail for every n>=3.",
+    "novelty": "A114112 explicitly groups A103889 and itself as essentially the same sequence. Its name already gives the common formula n-(-1)^n for n>2, and its comments publish the induction reducing the original greedy definition to that formula.",
+    "integrity": "This is a known two-entry modification of a simple odd/even swap, also failing interestingness. The A114112 induction paragraph has transcription errors: it assigns both 2i+1 and 2i-1 to a(2i) and gives two different A(2i) formulas. The name, data, and final formula consistently specify the simple tail, so these prose errors do not rescue novelty.",
+    "metrics": {
+      "rank": 104,
+      "a": "A103889",
+      "b": "A114112",
+      "score": 80.5,
+      "claimed": 70,
+      "variant": "drop2",
+      "family_size": 4,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 72,
+      "length_b": 72,
+      "native": {
+        "count": 0,
+        "available": 72,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 1,
+          "b_index": 1,
+          "a": 2,
+          "b": 1
+        }
+      },
+      "ordinal": {
+        "count": 0,
+        "available": 72,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 1,
+          "b_index": 1,
+          "a": 2,
+          "b": 1
+        }
+      },
+      "packet_variant": {
+        "count": 70,
+        "available": 70,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 70,
+          "available": 70,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 69,
+          "available": 69,
+          "a_start": 4,
+          "b_start": 4,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 1,
+          "available": 71,
+          "a_start": 1,
+          "b_start": 2,
+          "absolute": false,
+          "mismatch": {
+            "a_index": 2,
+            "b_index": 3,
+            "a": 1,
+            "b": 4
+          }
+        }
+      ]
+    },
+    "extended_bfile_comparison": null,
+    "sources": [
+      "https://oeis.org/A103889",
+      "https://oeis.org/A114112"
+    ]
+  },
+  {
+    "rank": 105,
+    "a": "A270418",
+    "b": "A367168",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. All 70 common listed terms agree. The b-files agree for n=1..127 and first differ at 128: 8 versus 1.",
+    "novelty": "A367168 explicitly states that its first difference from A270418 is at n=128. No equality is asserted.",
+    "integrity": "For 128=2^7, the alternating binary sum of exponent 7=111_2 is 4-2+1=3, giving A270418(128)=2^3=8. A367168 gives 1, as confirmed by its b-file. The prime-power formulas are different.",
+    "metrics": {
+      "rank": 105,
+      "a": "A270418",
+      "b": "A367168",
+      "score": 80.5,
+      "claimed": 70,
+      "variant": "raw",
+      "family_size": 10,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 81,
+      "length_b": 70,
+      "native": {
+        "count": 70,
+        "available": 70,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 70,
+        "available": 70,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 70,
+        "available": 70,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 70,
+          "available": 70,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 69,
+          "available": 69,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 68,
+          "available": 68,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 10000,
+      "first_mismatches": [
+        {
+          "n": 128,
+          "a": 8,
+          "b": 1
+        },
+        {
+          "n": 384,
+          "a": 24,
+          "b": 3
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A270418",
+      "https://oeis.org/A367168"
+    ]
+  },
+  {
+    "rank": 106,
+    "a": "A206074",
+    "b": "A325559",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. The 69 common listed terms agree. The b-files agree for the first 172 terms, then A206074(173)=557 while A325559(173)=555.",
+    "novelty": "A325559 explicitly publishes this first disagreement, says 555 is absent from A206074, and gives examples excluded in the opposite direction. This is already a documented near-match.",
+    "integrity": "The binary polynomial encoded by 555 is x^9+x^5+x^3+x+1, divisible over Q by x^2-x+1, so it is excluded from A206074. Independent GF(2) remainder tests show that among integer divisors d of 555 only d=1 and d=555 have encoded polynomials dividing it; thus 555 satisfies A325559. The two irreducibility/divisor notions genuinely differ.",
+    "metrics": {
+      "rank": 106,
+      "a": "A206074",
+      "b": "A325559",
+      "score": 79.3,
+      "claimed": 69,
+      "variant": "raw",
+      "family_size": 6,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 69,
+      "length_b": 70,
+      "native": {
+        "count": 69,
+        "available": 69,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 69,
+        "available": 69,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 69,
+        "available": 69,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 69,
+          "available": 69,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 68,
+          "available": 68,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 67,
+          "available": 67,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 21692,
+      "first_mismatches": [
+        {
+          "n": 173,
+          "a": 557,
+          "b": 555
+        },
+        {
+          "n": 174,
+          "a": 559,
+          "b": 557
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A206074",
+      "https://oeis.org/A325559"
+    ]
+  },
+  {
+    "rank": 107,
+    "a": "A085971",
+    "b": "A387421",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. The 68 common listed terms agree. The b-files agree for the first 209 terms, then give 225 versus 226 at sequence index 210.",
+    "novelty": "Both records explicitly publish the first mutual disagreement at index 210, including 225 and 226. The separate >= versus > conjecture in A387421 concerns another characterization and does not assert equality with A085971.",
+    "integrity": "225=3^2*5^2 is not a prime power, so it belongs to A085971. Its powerful part is 225 but sigma(225)=403<450, so it is excluded from A387421. This directly validates the first missing value.",
+    "metrics": {
+      "rank": 107,
+      "a": "A085971",
+      "b": "A387421",
+      "score": 78.2,
+      "claimed": 68,
+      "variant": "raw",
+      "family_size": 14,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 68,
+      "length_b": 80,
+      "native": {
+        "count": 68,
+        "available": 68,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 68,
+        "available": 68,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 68,
+        "available": 68,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 68,
+          "available": 68,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 67,
+          "available": 67,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 66,
+          "available": 66,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 10000,
+      "first_mismatches": [
+        {
+          "n": 210,
+          "a": 225,
+          "b": 226
+        },
+        {
+          "n": 211,
+          "a": 226,
+          "b": 227
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A085971",
+      "https://oeis.org/A387421"
+    ]
+  },
+  {
+    "rank": 108,
+    "a": "A252895",
+    "b": "A366242",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. The 67 common listed terms agree. The b-files agree for the first 171 terms, then give 256 versus 257 at sequence index 172.",
+    "novelty": "A366242 explicitly describes itself as a subsequence of A252895 and identifies the first difference at 172, with 256 missing. The subsequence statement does not assert equality.",
+    "integrity": "256=2^8 has five square divisors and is included in A252895. Its prime exponent 8 has base-4 digits 20, which violate the allowed 0/1 digits in the Moser-de Bruijn exponent condition defining A366242.",
+    "metrics": {
+      "rank": 108,
+      "a": "A252895",
+      "b": "A366242",
+      "score": 77.0,
+      "claimed": 67,
+      "variant": "raw",
+      "family_size": 13,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 67,
+      "length_b": 67,
+      "native": {
+        "count": 67,
+        "available": 67,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 67,
+        "available": 67,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 67,
+        "available": 67,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 67,
+          "available": 67,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 66,
+          "available": 66,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 65,
+          "available": 65,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 10000,
+      "first_mismatches": [
+        {
+          "n": 172,
+          "a": 256,
+          "b": 257
+        },
+        {
+          "n": 173,
+          "a": 257,
+          "b": 258
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A252895",
+      "https://oeis.org/A366242"
+    ]
+  },
+  {
+    "rank": 109,
+    "a": "A389215",
+    "b": "A393981",
+    "verdict": "DROP",
+    "primary_gate": "data integrity",
+    "agreement": "Both offsets are 1. The 67 common listed terms agree. B-files and independent generation from the definitions agree for the first 184 terms, then give 240 versus 241 at index 185.",
+    "novelty": "A393981 explicitly identifies A389215(185)=240 as absent from its own sequence. No equality is asserted; the cross-reference is accompanied by a counterexample.",
+    "integrity": "At 240, the unitary-divisor sum is 408 and the squarefree-divisor sum is 72, totaling 480=2*240, so A389215 includes it. A393981 excludes it since 240/rad(240)=8 is not <7. Also flag two internal A393981 comment errors: for p^j the ratio is p^(j-1), not always p; and the claimed union containing A246547\\{4} includes 8, contradicting its own intersection claim, definition, and listed terms. A246547 explicitly lists 8 among proper prime powers. The principal definition and b-file consistently exclude 8 and 240.",
+    "metrics": {
+      "rank": 109,
+      "a": "A389215",
+      "b": "A393981",
+      "score": 77.0,
+      "claimed": 67,
+      "variant": "raw",
+      "family_size": 7,
+      "offset_a": 1,
+      "offset_b": 1,
+      "length_a": 80,
+      "length_b": 67,
+      "native": {
+        "count": 67,
+        "available": 67,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "ordinal": {
+        "count": 67,
+        "available": 67,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "packet_variant": {
+        "count": 67,
+        "available": 67,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 67,
+          "available": 67,
+          "a_start": 1,
+          "b_start": 1,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 66,
+          "available": 66,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 65,
+          "available": 65,
+          "a_start": 3,
+          "b_start": 3,
+          "absolute": false,
+          "censored_by_listing": true
+        }
+      ]
+    },
+    "extended_bfile_comparison": {
+      "start": 1,
+      "end_available": 10000,
+      "first_mismatches": [
+        {
+          "n": 185,
+          "a": 240,
+          "b": 241
+        },
+        {
+          "n": 186,
+          "a": 241,
+          "b": 244
+        }
+      ]
+    },
+    "sources": [
+      "https://oeis.org/A389215",
+      "https://oeis.org/A393981",
+      "https://oeis.org/A246547"
+    ]
+  },
+  {
+    "rank": 110,
+    "a": "A188658",
+    "b": "A248803",
+    "verdict": "DROP",
+    "primary_gate": "novelty",
+    "agreement": "The cons offsets 1 and 2 place the decimal points differently. As ordinal digit strings, only the first digit agrees before the second digit differs (1 versus 0); deleting the first two digits from each gives the claimed 128 matches at digit positions 3..130. Same stored indices instead give only two initial matches before 4 versus 0; neither comparison makes the original constants equal.",
+    "novelty": "A248803 explicitly states that its digits differ from A188658 in only one digit. More decisively, the published names give x=(1+sqrt(101))/10 and y=sqrt(101), so y=10*x-1. The observed tail relation is already specified algebraically and in the comment.",
+    "integrity": "Independent high-precision evaluation confirms the 128-digit tail. This is a decimal-point shift plus a change in a leading digit, also failing interestingness as a trivial transform. The constants and full digit strings are different; offset metadata must not be mistaken for identical decimal places.",
+    "metrics": {
+      "rank": 110,
+      "a": "A188658",
+      "b": "A248803",
+      "score": 76.8,
+      "claimed": 128,
+      "variant": "drop2",
+      "family_size": 2,
+      "offset_a": 1,
+      "offset_b": 2,
+      "length_a": 130,
+      "length_b": 135,
+      "native": {
+        "count": 2,
+        "available": 129,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 4,
+          "b_index": 4,
+          "a": 4,
+          "b": 0
+        }
+      },
+      "ordinal": {
+        "count": 1,
+        "available": 130,
+        "a_start": 1,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 2,
+          "b_index": 3,
+          "a": 1,
+          "b": 0
+        }
+      },
+      "packet_variant": {
+        "count": 128,
+        "available": 128,
+        "a_start": 3,
+        "b_start": 4,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      "best_small_shift": [
+        {
+          "count": 128,
+          "available": 128,
+          "a_start": 3,
+          "b_start": 4,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 127,
+          "available": 127,
+          "a_start": 4,
+          "b_start": 5,
+          "absolute": false,
+          "censored_by_listing": true
+        },
+        {
+          "count": 2,
+          "available": 129,
+          "a_start": 2,
+          "b_start": 2,
+          "absolute": false,
+          "mismatch": {
+            "a_index": 4,
+            "b_index": 4,
+            "a": 4,
+            "b": 0
+          }
+        }
+      ]
+    },
+    "extended_bfile_comparison": null,
+    "sources": [
+      "https://oeis.org/A188658",
+      "https://oeis.org/A248803"
+    ]
+  }
+]

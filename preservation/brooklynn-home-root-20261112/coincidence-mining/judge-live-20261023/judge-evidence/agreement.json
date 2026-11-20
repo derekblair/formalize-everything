@@ -1,0 +1,7197 @@
+[
+  {
+    "rank": 61,
+    "a": "A353812",
+    "b": "A353813",
+    "score": 125.0,
+    "claimed": 125,
+    "variant": "raw",
+    "family_size": 2,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 125,
+    "length_b": 125,
+    "native": {
+      "count": 125,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 125,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 125,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 125,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 124,
+        "available": 124,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 123,
+        "available": 123,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 62,
+    "a": "A118822",
+    "b": "A230075",
+    "score": 124.2,
+    "claimed": 108,
+    "variant": "abs",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 0,
+    "length_a": 108,
+    "length_b": 110,
+    "native": {
+      "count": 0,
+      "available": 108,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 2,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 108,
+      "a_start": 1,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 1,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 108,
+      "available": 108,
+      "a_start": 1,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 108,
+        "available": 108,
+        "a_start": 1,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 107,
+        "available": 107,
+        "a_start": 2,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 106,
+        "available": 106,
+        "a_start": 3,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 63,
+    "a": "A295884",
+    "b": "A380397",
+    "score": 119.6,
+    "claimed": 104,
+    "variant": "drop1",
+    "family_size": 6,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 120,
+    "length_b": 105,
+    "native": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 104,
+      "available": 104,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 64,
+    "a": "A036453",
+    "b": "A040000",
+    "score": 118.4,
+    "claimed": 103,
+    "variant": "drop2",
+    "family_size": 11,
+    "offset_a": 1,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 0,
+      "available": 104,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": 2
+      }
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 103,
+      "available": 103,
+      "a_start": 3,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 65,
+    "a": "A323152",
+    "b": "A323153",
+    "score": 118.0,
+    "claimed": 118,
+    "variant": "drop1",
+    "family_size": 2,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 120,
+    "length_b": 120,
+    "native": {
+      "count": 0,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": 0
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": 0
+      }
+    },
+    "packet_variant": {
+      "count": 118,
+      "available": 119,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 120,
+        "b_index": 120,
+        "a": 1,
+        "b": 0
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 118,
+        "available": 119,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 120,
+          "b_index": 120,
+          "a": 1,
+          "b": 0
+        }
+      },
+      {
+        "count": 117,
+        "available": 118,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 120,
+          "b_index": 120,
+          "a": 1,
+          "b": 0
+        }
+      },
+      {
+        "count": 116,
+        "available": 117,
+        "a_start": 4,
+        "b_start": 4,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 120,
+          "b_index": 120,
+          "a": 1,
+          "b": 0
+        }
+      }
+    ]
+  },
+  {
+    "rank": 66,
+    "a": "A061486",
+    "b": "A264600",
+    "score": 116.1,
+    "claimed": 101,
+    "variant": "raw",
+    "family_size": 4,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 102,
+    "length_b": 102,
+    "native": {
+      "count": 101,
+      "available": 102,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 101,
+        "b_index": 101,
+        "a": 3,
+        "b": 12
+      }
+    },
+    "ordinal": {
+      "count": 101,
+      "available": 102,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 101,
+        "b_index": 101,
+        "a": 3,
+        "b": 12
+      }
+    },
+    "packet_variant": {
+      "count": 101,
+      "available": 102,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 101,
+        "b_index": 101,
+        "a": 3,
+        "b": 12
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 101,
+        "available": 102,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 101,
+          "b_index": 101,
+          "a": 3,
+          "b": 12
+        }
+      },
+      {
+        "count": 100,
+        "available": 101,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 101,
+          "b_index": 101,
+          "a": 3,
+          "b": 12
+        }
+      },
+      {
+        "count": 99,
+        "available": 100,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 101,
+          "b_index": 101,
+          "a": 3,
+          "b": 12
+        }
+      }
+    ]
+  },
+  {
+    "rank": 67,
+    "a": "A132272",
+    "b": "A179051",
+    "score": 113.8,
+    "claimed": 99,
+    "variant": "drop1",
+    "family_size": 5,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 100,
+    "length_b": 100,
+    "native": {
+      "count": 100,
+      "available": 100,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 100,
+      "available": 100,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 99,
+      "available": 99,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 100,
+        "available": 100,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 99,
+        "available": 99,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 98,
+        "available": 98,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 68,
+    "a": "A305900",
+    "b": "A374478",
+    "score": 108.1,
+    "claimed": 94,
+    "variant": "raw",
+    "family_size": 4,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 98,
+    "length_b": 101,
+    "native": {
+      "count": 94,
+      "available": 98,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 95,
+        "b_index": 95,
+        "a": 74,
+        "b": 39
+      }
+    },
+    "ordinal": {
+      "count": 94,
+      "available": 98,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 95,
+        "b_index": 95,
+        "a": 74,
+        "b": 39
+      }
+    },
+    "packet_variant": {
+      "count": 94,
+      "available": 98,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 95,
+        "b_index": 95,
+        "a": 74,
+        "b": 39
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 94,
+        "available": 98,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 95,
+          "b_index": 95,
+          "a": 74,
+          "b": 39
+        }
+      },
+      {
+        "count": 93,
+        "available": 97,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 95,
+          "b_index": 95,
+          "a": 74,
+          "b": 39
+        }
+      },
+      {
+        "count": 92,
+        "available": 96,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 95,
+          "b_index": 95,
+          "a": 74,
+          "b": 39
+        }
+      }
+    ]
+  },
+  {
+    "rank": 69,
+    "a": "A323077",
+    "b": "A334201",
+    "score": 105.0,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 2,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 70,
+    "a": "A052382",
+    "b": "A209931",
+    "score": 104.6,
+    "claimed": 91,
+    "variant": "raw",
+    "family_size": 43,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 93,
+    "length_b": 91,
+    "native": {
+      "count": 91,
+      "available": 91,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 91,
+      "available": 91,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 91,
+      "available": 91,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 91,
+        "available": 91,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 90,
+        "available": 90,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 89,
+        "available": 89,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 71,
+    "a": "A358678",
+    "b": "A359150",
+    "score": 103.0,
+    "claimed": 103,
+    "variant": "drop1",
+    "family_size": 2,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 121,
+    "length_b": 128,
+    "native": {
+      "count": 104,
+      "available": 121,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 105,
+        "b_index": 105,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 104,
+      "available": 121,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 105,
+        "b_index": 105,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 103,
+      "available": 120,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 105,
+        "b_index": 105,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 104,
+        "available": 121,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 105,
+          "b_index": 105,
+          "a": 0,
+          "b": 1
+        }
+      },
+      {
+        "count": 103,
+        "available": 120,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 105,
+          "b_index": 105,
+          "a": 0,
+          "b": 1
+        }
+      },
+      {
+        "count": 102,
+        "available": 119,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 105,
+          "b_index": 105,
+          "a": 0,
+          "b": 1
+        }
+      }
+    ]
+  },
+  {
+    "rank": 72,
+    "a": "A256608",
+    "b": "A279186",
+    "score": 98.9,
+    "claimed": 86,
+    "variant": "raw",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 86,
+    "length_b": 88,
+    "native": {
+      "count": 86,
+      "available": 86,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 86,
+      "available": 86,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 86,
+      "available": 86,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 86,
+        "available": 86,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 85,
+        "available": 85,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 84,
+        "available": 84,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 73,
+    "a": "A327517",
+    "b": "A376504",
+    "score": 98.9,
+    "claimed": 86,
+    "variant": "drop1",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 87,
+    "length_b": 87,
+    "native": {
+      "count": 0,
+      "available": 87,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": 0
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 87,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": 0
+      }
+    },
+    "packet_variant": {
+      "count": 86,
+      "available": 86,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 86,
+        "available": 86,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 85,
+        "available": 85,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 84,
+        "available": 84,
+        "a_start": 4,
+        "b_start": 4,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 74,
+    "a": "A064459",
+    "b": "A342696",
+    "score": 97.0,
+    "claimed": 97,
+    "variant": "raw",
+    "family_size": 2,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 101,
+    "length_b": 97,
+    "native": {
+      "count": 97,
+      "available": 97,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 97,
+      "available": 97,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 97,
+      "available": 97,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 97,
+        "available": 97,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 96,
+        "available": 96,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 95,
+        "available": 95,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 75,
+    "a": "A001462",
+    "b": "A377862",
+    "score": 96.6,
+    "claimed": 84,
+    "variant": "raw",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 84,
+    "length_b": 85,
+    "native": {
+      "count": 84,
+      "available": 84,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 84,
+      "available": 84,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 84,
+      "available": 84,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 84,
+        "available": 84,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 83,
+        "available": 83,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 82,
+        "available": 82,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 76,
+    "a": "A031955",
+    "b": "A288040",
+    "score": 95.4,
+    "claimed": 83,
+    "variant": "raw",
+    "family_size": 7,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 102,
+    "length_b": 83,
+    "native": {
+      "count": 83,
+      "available": 83,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 83,
+      "available": 83,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 83,
+      "available": 83,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 83,
+        "available": 83,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 82,
+        "available": 82,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 81,
+        "available": 81,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 77,
+    "a": "A108045",
+    "b": "A127672",
+    "score": 90.0,
+    "claimed": 90,
+    "variant": "drop1",
+    "family_size": 2,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 91,
+    "length_b": 95,
+    "native": {
+      "count": 0,
+      "available": 91,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 0,
+        "b_index": 0,
+        "a": 1,
+        "b": 2
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 91,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 0,
+        "b_index": 0,
+        "a": 1,
+        "b": 2
+      }
+    },
+    "packet_variant": {
+      "count": 90,
+      "available": 90,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 90,
+        "available": 90,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 89,
+        "available": 89,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 88,
+        "available": 88,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 78,
+    "a": "A277998",
+    "b": "A289288",
+    "score": 90.0,
+    "claimed": 90,
+    "variant": "raw",
+    "family_size": 2,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 106,
+    "length_b": 111,
+    "native": {
+      "count": 90,
+      "available": 106,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 91,
+        "b_index": 91,
+        "a": 101,
+        "b": 111
+      }
+    },
+    "ordinal": {
+      "count": 90,
+      "available": 106,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 91,
+        "b_index": 91,
+        "a": 101,
+        "b": 111
+      }
+    },
+    "packet_variant": {
+      "count": 90,
+      "available": 106,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 91,
+        "b_index": 91,
+        "a": 101,
+        "b": 111
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 90,
+        "available": 106,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 91,
+          "b_index": 91,
+          "a": 101,
+          "b": 111
+        }
+      },
+      {
+        "count": 89,
+        "available": 105,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 91,
+          "b_index": 91,
+          "a": 101,
+          "b": 111
+        }
+      },
+      {
+        "count": 88,
+        "available": 104,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 91,
+          "b_index": 91,
+          "a": 101,
+          "b": 111
+        }
+      }
+    ]
+  },
+  {
+    "rank": 79,
+    "a": "A188734",
+    "b": "A188941",
+    "score": 88.3,
+    "claimed": 128,
+    "variant": "drop2",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 130,
+    "length_b": 130,
+    "native": {
+      "count": 0,
+      "available": 130,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 3,
+        "b": 4
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 130,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 3,
+        "b": 4
+      }
+    },
+    "packet_variant": {
+      "count": 128,
+      "available": 128,
+      "a_start": 3,
+      "b_start": 3,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 128,
+        "available": 128,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 127,
+        "available": 127,
+        "a_start": 4,
+        "b_start": 4,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 0,
+        "available": 130,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 1,
+          "b_index": 1,
+          "a": 3,
+          "b": 4
+        }
+      }
+    ]
+  },
+  {
+    "rank": 80,
+    "a": "A355824",
+    "b": "A355826",
+    "score": 87.6,
+    "claimed": 127,
+    "variant": "abs",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 128,
+    "length_b": 128,
+    "native": {
+      "count": 127,
+      "available": 128,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 128,
+        "b_index": 128,
+        "a": -3,
+        "b": -4
+      }
+    },
+    "ordinal": {
+      "count": 127,
+      "available": 128,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 128,
+        "b_index": 128,
+        "a": -3,
+        "b": -4
+      }
+    },
+    "packet_variant": {
+      "count": 127,
+      "available": 128,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": true,
+      "mismatch": {
+        "a_index": 128,
+        "b_index": 128,
+        "a": -3,
+        "b": -4
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 127,
+        "available": 128,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "mismatch": {
+          "a_index": 128,
+          "b_index": 128,
+          "a": -3,
+          "b": -4
+        }
+      },
+      {
+        "count": 126,
+        "available": 127,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "mismatch": {
+          "a_index": 128,
+          "b_index": 128,
+          "a": -3,
+          "b": -4
+        }
+      },
+      {
+        "count": 125,
+        "available": 126,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": true,
+        "mismatch": {
+          "a_index": 128,
+          "b_index": 128,
+          "a": -3,
+          "b": -4
+        }
+      }
+    ]
+  },
+  {
+    "rank": 81,
+    "a": "A374130",
+    "b": "A374466",
+    "score": 87.6,
+    "claimed": 127,
+    "variant": "raw",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 128,
+    "length_b": 128,
+    "native": {
+      "count": 127,
+      "available": 128,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 128,
+        "b_index": 128,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 127,
+      "available": 128,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 128,
+        "b_index": 128,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 127,
+      "available": 128,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 128,
+        "b_index": 128,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 127,
+        "available": 128,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 128,
+          "b_index": 128,
+          "a": 0,
+          "b": 1
+        }
+      },
+      {
+        "count": 126,
+        "available": 127,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 128,
+          "b_index": 128,
+          "a": 0,
+          "b": 1
+        }
+      },
+      {
+        "count": 125,
+        "available": 126,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 128,
+          "b_index": 128,
+          "a": 0,
+          "b": 1
+        }
+      }
+    ]
+  },
+  {
+    "rank": 82,
+    "a": "A298735",
+    "b": "A384916",
+    "score": 87.0,
+    "claimed": 87,
+    "variant": "raw",
+    "family_size": 2,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 87,
+    "native": {
+      "count": 87,
+      "available": 87,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 87,
+      "available": 87,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 87,
+      "available": 87,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 87,
+        "available": 87,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 86,
+        "available": 86,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 85,
+        "available": 85,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 83,
+    "a": "A185014",
+    "b": "A240467",
+    "score": 86.2,
+    "claimed": 75,
+    "variant": "drop1",
+    "family_size": 3,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 86,
+    "length_b": 87,
+    "native": {
+      "count": 0,
+      "available": 86,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 0,
+        "b_index": 0,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 86,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 0,
+        "b_index": 0,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 75,
+      "available": 85,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 76,
+        "b_index": 76,
+        "a": 0,
+        "b": -1
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 75,
+        "available": 85,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 76,
+          "b_index": 76,
+          "a": 0,
+          "b": -1
+        }
+      },
+      {
+        "count": 74,
+        "available": 84,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 76,
+          "b_index": 76,
+          "a": 0,
+          "b": -1
+        }
+      },
+      {
+        "count": 73,
+        "available": 83,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 76,
+          "b_index": 76,
+          "a": 0,
+          "b": -1
+        }
+      }
+    ]
+  },
+  {
+    "rank": 84,
+    "a": "A359466",
+    "b": "A359467",
+    "score": 86.2,
+    "claimed": 125,
+    "variant": "raw",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 125,
+    "length_b": 125,
+    "native": {
+      "count": 125,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 125,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 125,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 125,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 124,
+        "available": 124,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 123,
+        "available": 123,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 85,
+    "a": "A046951",
+    "b": "A159631",
+    "score": 85.6,
+    "claimed": 124,
+    "variant": "raw",
+    "family_size": 13,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 125,
+    "length_b": 125,
+    "native": {
+      "count": 124,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 125,
+        "b_index": 125,
+        "a": 2,
+        "b": 3
+      }
+    },
+    "ordinal": {
+      "count": 124,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 125,
+        "b_index": 125,
+        "a": 2,
+        "b": 3
+      }
+    },
+    "packet_variant": {
+      "count": 124,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 125,
+        "b_index": 125,
+        "a": 2,
+        "b": 3
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 124,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 125,
+          "b_index": 125,
+          "a": 2,
+          "b": 3
+        }
+      },
+      {
+        "count": 123,
+        "available": 124,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 125,
+          "b_index": 125,
+          "a": 2,
+          "b": 3
+        }
+      },
+      {
+        "count": 122,
+        "available": 123,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 125,
+          "b_index": 125,
+          "a": 2,
+          "b": 3
+        }
+      }
+    ]
+  },
+  {
+    "rank": 86,
+    "a": "A296073",
+    "b": "A305800",
+    "score": 85.6,
+    "claimed": 124,
+    "variant": "raw",
+    "family_size": 63,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 125,
+    "length_b": 125,
+    "native": {
+      "count": 124,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 125,
+        "b_index": 125,
+        "a": 33,
+        "b": 96
+      }
+    },
+    "ordinal": {
+      "count": 124,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 125,
+        "b_index": 125,
+        "a": 33,
+        "b": 96
+      }
+    },
+    "packet_variant": {
+      "count": 124,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 125,
+        "b_index": 125,
+        "a": 33,
+        "b": 96
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 124,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 125,
+          "b_index": 125,
+          "a": 33,
+          "b": 96
+        }
+      },
+      {
+        "count": 123,
+        "available": 124,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 125,
+          "b_index": 125,
+          "a": 33,
+          "b": 96
+        }
+      },
+      {
+        "count": 122,
+        "available": 123,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 125,
+          "b_index": 125,
+          "a": 33,
+          "b": 96
+        }
+      }
+    ]
+  },
+  {
+    "rank": 87,
+    "a": "A321538",
+    "b": "A321803",
+    "score": 85.6,
+    "claimed": 124,
+    "variant": "raw",
+    "family_size": 3,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 124,
+    "length_b": 200,
+    "native": {
+      "count": 124,
+      "available": 124,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 124,
+      "available": 124,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 124,
+      "available": 124,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 124,
+        "available": 124,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 123,
+        "available": 123,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 122,
+        "available": 122,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 88,
+    "a": "A373491",
+    "b": "A373588",
+    "score": 85.6,
+    "claimed": 124,
+    "variant": "drop1",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 125,
+    "length_b": 125,
+    "native": {
+      "count": 125,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 125,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 124,
+      "available": 124,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 125,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 124,
+        "available": 124,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 123,
+        "available": 123,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 89,
+    "a": "A374134",
+    "b": "A374136",
+    "score": 85.6,
+    "claimed": 124,
+    "variant": "drop1",
+    "family_size": 4,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 125,
+    "length_b": 125,
+    "native": {
+      "count": 125,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 125,
+      "available": 125,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 124,
+      "available": 124,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 125,
+        "available": 125,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 124,
+        "available": 124,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 123,
+        "available": 123,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 90,
+    "a": "A335324",
+    "b": "A366245",
+    "score": 85.0,
+    "claimed": 85,
+    "variant": "raw",
+    "family_size": 2,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 85,
+    "length_b": 85,
+    "native": {
+      "count": 85,
+      "available": 85,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 85,
+      "available": 85,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 85,
+      "available": 85,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 85,
+        "available": 85,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 84,
+        "available": 84,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 83,
+        "available": 83,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 91,
+    "a": "A359162",
+    "b": "A360111",
+    "score": 84.2,
+    "claimed": 122,
+    "variant": "drop1",
+    "family_size": 4,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 135,
+    "length_b": 123,
+    "native": {
+      "count": 123,
+      "available": 123,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 123,
+      "available": 123,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 122,
+      "available": 122,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 123,
+        "available": 123,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 122,
+        "available": 122,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 121,
+        "available": 121,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 92,
+    "a": "A319707",
+    "b": "A319717",
+    "score": 83.5,
+    "claimed": 121,
+    "variant": "raw",
+    "family_size": 6,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 121,
+    "length_b": 121,
+    "native": {
+      "count": 121,
+      "available": 121,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 121,
+      "available": 121,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 121,
+      "available": 121,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 121,
+        "available": 121,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 120,
+        "available": 120,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 93,
+    "a": "A072411",
+    "b": "A290107",
+    "score": 82.8,
+    "claimed": 120,
+    "variant": "raw",
+    "family_size": 51,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 120,
+    "length_b": 120,
+    "native": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 118,
+        "available": 118,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 94,
+    "a": "A129251",
+    "b": "A276077",
+    "score": 82.8,
+    "claimed": 120,
+    "variant": "raw",
+    "family_size": 4,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 120,
+    "length_b": 120,
+    "native": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 118,
+        "available": 118,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 95,
+    "a": "A294936",
+    "b": "A378539",
+    "score": 82.8,
+    "claimed": 120,
+    "variant": "raw",
+    "family_size": 6,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 120,
+    "length_b": 126,
+    "native": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 118,
+        "available": 118,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 96,
+    "a": "A353675",
+    "b": "A353676",
+    "score": 82.8,
+    "claimed": 120,
+    "variant": "drop1",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 121,
+    "length_b": 121,
+    "native": {
+      "count": 0,
+      "available": 121,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": 0
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 121,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": 0
+      }
+    },
+    "packet_variant": {
+      "count": 120,
+      "available": 120,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 120,
+        "available": 120,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 118,
+        "available": 118,
+        "a_start": 4,
+        "b_start": 4,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 97,
+    "a": "A055642",
+    "b": "A348674",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "drop1",
+    "family_size": 8,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 121,
+    "length_b": 121,
+    "native": {
+      "count": 120,
+      "available": 121,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 120,
+        "b_index": 120,
+        "a": 3,
+        "b": 4
+      }
+    },
+    "ordinal": {
+      "count": 120,
+      "available": 121,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 120,
+        "b_index": 120,
+        "a": 3,
+        "b": 4
+      }
+    },
+    "packet_variant": {
+      "count": 119,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 120,
+        "b_index": 120,
+        "a": 3,
+        "b": 4
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 120,
+        "available": 121,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 120,
+          "b_index": 120,
+          "a": 3,
+          "b": 4
+        }
+      },
+      {
+        "count": 119,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 120,
+          "b_index": 120,
+          "a": 3,
+          "b": 4
+        }
+      },
+      {
+        "count": 118,
+        "available": 119,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 120,
+          "b_index": 120,
+          "a": 3,
+          "b": 4
+        }
+      }
+    ]
+  },
+  {
+    "rank": 98,
+    "a": "A131734",
+    "b": "A134452",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "abs",
+    "family_size": 9,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 119,
+    "length_b": 121,
+    "native": {
+      "count": 11,
+      "available": 119,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 11,
+        "b_index": 11,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 11,
+      "available": 119,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 11,
+        "b_index": 11,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 119,
+      "available": 119,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 0,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 118,
+        "available": 118,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 99,
+    "a": "A184582",
+    "b": "A184734",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "drop1",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 120,
+    "length_b": 120,
+    "native": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 119,
+      "available": 119,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 118,
+        "available": 118,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 100,
+    "a": "A322437",
+    "b": "A322438",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "drop1",
+    "family_size": 186,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 120,
+    "length_b": 144,
+    "native": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 120,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 119,
+      "available": 119,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 120,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 118,
+        "available": 118,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 101,
+    "a": "A347246",
+    "b": "A353626",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "drop2",
+    "family_size": 4,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 121,
+    "length_b": 125,
+    "native": {
+      "count": 0,
+      "available": 121,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": 0
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 121,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": 0
+      }
+    },
+    "packet_variant": {
+      "count": 119,
+      "available": 119,
+      "a_start": 3,
+      "b_start": 3,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 120,
+        "available": 120,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 118,
+        "available": 118,
+        "a_start": 4,
+        "b_start": 4,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 102,
+    "a": "A353480",
+    "b": "A359595",
+    "score": 82.1,
+    "claimed": 119,
+    "variant": "drop2",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 121,
+    "length_b": 135,
+    "native": {
+      "count": 0,
+      "available": 121,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 121,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 119,
+      "available": 119,
+      "a_start": 3,
+      "b_start": 3,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 120,
+        "available": 120,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 118,
+        "available": 118,
+        "a_start": 4,
+        "b_start": 4,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 103,
+    "a": "A227349",
+    "b": "A284580",
+    "score": 81.4,
+    "claimed": 118,
+    "variant": "drop1",
+    "family_size": 7,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 121,
+    "length_b": 121,
+    "native": {
+      "count": 119,
+      "available": 121,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 119,
+        "b_index": 119,
+        "a": 9,
+        "b": 5
+      }
+    },
+    "ordinal": {
+      "count": 119,
+      "available": 121,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 119,
+        "b_index": 119,
+        "a": 9,
+        "b": 5
+      }
+    },
+    "packet_variant": {
+      "count": 118,
+      "available": 120,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 119,
+        "b_index": 119,
+        "a": 9,
+        "b": 5
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 119,
+        "available": 121,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 119,
+          "b_index": 119,
+          "a": 9,
+          "b": 5
+        }
+      },
+      {
+        "count": 118,
+        "available": 120,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 119,
+          "b_index": 119,
+          "a": 9,
+          "b": 5
+        }
+      },
+      {
+        "count": 117,
+        "available": 119,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 119,
+          "b_index": 119,
+          "a": 9,
+          "b": 5
+        }
+      }
+    ]
+  },
+  {
+    "rank": 104,
+    "a": "A103889",
+    "b": "A114112",
+    "score": 80.5,
+    "claimed": 70,
+    "variant": "drop2",
+    "family_size": 4,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 72,
+    "length_b": 72,
+    "native": {
+      "count": 0,
+      "available": 72,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 2,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 72,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 2,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 70,
+      "available": 70,
+      "a_start": 3,
+      "b_start": 3,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 70,
+        "available": 70,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 69,
+        "available": 69,
+        "a_start": 4,
+        "b_start": 4,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 1,
+        "available": 71,
+        "a_start": 1,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 2,
+          "b_index": 3,
+          "a": 1,
+          "b": 4
+        }
+      }
+    ]
+  },
+  {
+    "rank": 105,
+    "a": "A270418",
+    "b": "A367168",
+    "score": 80.5,
+    "claimed": 70,
+    "variant": "raw",
+    "family_size": 10,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 81,
+    "length_b": 70,
+    "native": {
+      "count": 70,
+      "available": 70,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 70,
+      "available": 70,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 70,
+      "available": 70,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 70,
+        "available": 70,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 69,
+        "available": 69,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 68,
+        "available": 68,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 106,
+    "a": "A206074",
+    "b": "A325559",
+    "score": 79.3,
+    "claimed": 69,
+    "variant": "raw",
+    "family_size": 6,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 69,
+    "length_b": 70,
+    "native": {
+      "count": 69,
+      "available": 69,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 69,
+      "available": 69,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 69,
+      "available": 69,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 69,
+        "available": 69,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 68,
+        "available": 68,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 67,
+        "available": 67,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 107,
+    "a": "A085971",
+    "b": "A387421",
+    "score": 78.2,
+    "claimed": 68,
+    "variant": "raw",
+    "family_size": 14,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 68,
+    "length_b": 80,
+    "native": {
+      "count": 68,
+      "available": 68,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 68,
+      "available": 68,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 68,
+      "available": 68,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 68,
+        "available": 68,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 67,
+        "available": 67,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 66,
+        "available": 66,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 108,
+    "a": "A252895",
+    "b": "A366242",
+    "score": 77.0,
+    "claimed": 67,
+    "variant": "raw",
+    "family_size": 13,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 67,
+    "length_b": 67,
+    "native": {
+      "count": 67,
+      "available": 67,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 67,
+      "available": 67,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 67,
+      "available": 67,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 67,
+        "available": 67,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 66,
+        "available": 66,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 65,
+        "available": 65,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 109,
+    "a": "A389215",
+    "b": "A393981",
+    "score": 77.0,
+    "claimed": 67,
+    "variant": "raw",
+    "family_size": 7,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 80,
+    "length_b": 67,
+    "native": {
+      "count": 67,
+      "available": 67,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 67,
+      "available": 67,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 67,
+      "available": 67,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 67,
+        "available": 67,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 66,
+        "available": 66,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 65,
+        "available": 65,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 110,
+    "a": "A188658",
+    "b": "A248803",
+    "score": 76.8,
+    "claimed": 128,
+    "variant": "drop2",
+    "family_size": 2,
+    "offset_a": 1,
+    "offset_b": 2,
+    "length_a": 130,
+    "length_b": 135,
+    "native": {
+      "count": 2,
+      "available": 129,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 4,
+        "b_index": 4,
+        "a": 4,
+        "b": 0
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 130,
+      "a_start": 1,
+      "b_start": 2,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 3,
+        "a": 1,
+        "b": 0
+      }
+    },
+    "packet_variant": {
+      "count": 128,
+      "available": 128,
+      "a_start": 3,
+      "b_start": 4,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 128,
+        "available": 128,
+        "a_start": 3,
+        "b_start": 4,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 127,
+        "available": 127,
+        "a_start": 4,
+        "b_start": 5,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 2,
+        "available": 129,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 4,
+          "b_index": 4,
+          "a": 4,
+          "b": 0
+        }
+      }
+    ]
+  },
+  {
+    "rank": 111,
+    "a": "A025446",
+    "b": "A373972",
+    "score": 76.2,
+    "claimed": 127,
+    "variant": "raw",
+    "family_size": 2,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 127,
+    "length_b": 127,
+    "native": {
+      "count": 127,
+      "available": 127,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 127,
+      "available": 127,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 127,
+      "available": 127,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 127,
+        "available": 127,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 126,
+        "available": 126,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 125,
+        "available": 125,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 112,
+    "a": "A004772",
+    "b": "A319371",
+    "score": 75.9,
+    "claimed": 66,
+    "variant": "drop1",
+    "family_size": 6,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 68,
+    "length_b": 67,
+    "native": {
+      "count": 0,
+      "available": 67,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 67,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 66,
+      "available": 66,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 66,
+        "available": 66,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 65,
+        "available": 65,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 64,
+        "available": 64,
+        "a_start": 4,
+        "b_start": 4,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 113,
+    "a": "A249407",
+    "b": "A360305",
+    "score": 75.9,
+    "claimed": 66,
+    "variant": "raw",
+    "family_size": 10,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 66,
+    "length_b": 67,
+    "native": {
+      "count": 66,
+      "available": 66,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 66,
+      "available": 66,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 66,
+      "available": 66,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 66,
+        "available": 66,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 65,
+        "available": 65,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 64,
+        "available": 64,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 114,
+    "a": "A355823",
+    "b": "A355825",
+    "score": 75.0,
+    "claimed": 125,
+    "variant": "drop2",
+    "family_size": 2,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 128,
+    "length_b": 128,
+    "native": {
+      "count": 127,
+      "available": 128,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 128,
+        "b_index": 128,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 127,
+      "available": 128,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 128,
+        "b_index": 128,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 125,
+      "available": 126,
+      "a_start": 3,
+      "b_start": 3,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 128,
+        "b_index": 128,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 127,
+        "available": 128,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 128,
+          "b_index": 128,
+          "a": 0,
+          "b": 1
+        }
+      },
+      {
+        "count": 126,
+        "available": 127,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 128,
+          "b_index": 128,
+          "a": 0,
+          "b": 1
+        }
+      },
+      {
+        "count": 125,
+        "available": 126,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 128,
+          "b_index": 128,
+          "a": 0,
+          "b": 1
+        }
+      }
+    ]
+  },
+  {
+    "rank": 115,
+    "a": "A035930",
+    "b": "A347470",
+    "score": 74.5,
+    "claimed": 108,
+    "variant": "raw",
+    "family_size": 15,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 108,
+    "length_b": 113,
+    "native": {
+      "count": 108,
+      "available": 108,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 108,
+      "available": 108,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 108,
+      "available": 108,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 108,
+        "available": 108,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 107,
+        "available": 107,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 106,
+        "available": 106,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 116,
+    "a": "A087003",
+    "b": "A091069",
+    "score": 74.5,
+    "claimed": 108,
+    "variant": "abs",
+    "family_size": 5,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 113,
+    "length_b": 108,
+    "native": {
+      "count": 6,
+      "available": 108,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 7,
+        "b_index": 7,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 6,
+      "available": 108,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 7,
+        "b_index": 7,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 108,
+      "available": 108,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 108,
+        "available": 108,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 107,
+        "available": 107,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 106,
+        "available": 106,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 117,
+    "a": "A193304",
+    "b": "A240370",
+    "score": 74.5,
+    "claimed": 108,
+    "variant": "raw",
+    "family_size": 27,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 109,
+    "length_b": 109,
+    "native": {
+      "count": 108,
+      "available": 109,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 109,
+        "b_index": 109,
+        "a": 170,
+        "b": 169
+      }
+    },
+    "ordinal": {
+      "count": 108,
+      "available": 109,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 109,
+        "b_index": 109,
+        "a": 170,
+        "b": 169
+      }
+    },
+    "packet_variant": {
+      "count": 108,
+      "available": 109,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 109,
+        "b_index": 109,
+        "a": 170,
+        "b": 169
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 108,
+        "available": 109,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 109,
+          "b_index": 109,
+          "a": 170,
+          "b": 169
+        }
+      },
+      {
+        "count": 107,
+        "available": 108,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 109,
+          "b_index": 109,
+          "a": 170,
+          "b": 169
+        }
+      },
+      {
+        "count": 106,
+        "available": 107,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 109,
+          "b_index": 109,
+          "a": 170,
+          "b": 169
+        }
+      }
+    ]
+  },
+  {
+    "rank": 118,
+    "a": "A052928",
+    "b": "A346663",
+    "score": 74.0,
+    "claimed": 74,
+    "variant": "raw",
+    "family_size": 2,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 74,
+    "length_b": 74,
+    "native": {
+      "count": 74,
+      "available": 74,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 74,
+      "available": 74,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 74,
+      "available": 74,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 74,
+        "available": 74,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 73,
+        "available": 73,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 72,
+        "available": 72,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 119,
+    "a": "A025657",
+    "b": "A025686",
+    "score": 73.8,
+    "claimed": 107,
+    "variant": "raw",
+    "family_size": 5,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 107,
+    "length_b": 107,
+    "native": {
+      "count": 107,
+      "available": 107,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 107,
+      "available": 107,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 107,
+      "available": 107,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 107,
+        "available": 107,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 106,
+        "available": 106,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 120,
+    "a": "A038189",
+    "b": "A089013",
+    "score": 73.8,
+    "claimed": 107,
+    "variant": "drop1",
+    "family_size": 3,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 108,
+    "length_b": 108,
+    "native": {
+      "count": 0,
+      "available": 108,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 0,
+        "b_index": 0,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 108,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 0,
+        "b_index": 0,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 107,
+      "available": 107,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 107,
+        "available": 107,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 106,
+        "available": 106,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 121,
+    "a": "A118828",
+    "b": "A118831",
+    "score": 73.8,
+    "claimed": 107,
+    "variant": "abs",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 108,
+    "length_b": 107,
+    "native": {
+      "count": 0,
+      "available": 107,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 107,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "packet_variant": {
+      "count": 107,
+      "available": 107,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 107,
+        "available": 107,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 106,
+        "available": 106,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 122,
+    "a": "A344696",
+    "b": "A389087",
+    "score": 73.8,
+    "claimed": 107,
+    "variant": "raw",
+    "family_size": 5,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 108,
+    "length_b": 108,
+    "native": {
+      "count": 107,
+      "available": 108,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 108,
+        "b_index": 108,
+        "a": 35,
+        "b": 70
+      }
+    },
+    "ordinal": {
+      "count": 107,
+      "available": 108,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 108,
+        "b_index": 108,
+        "a": 35,
+        "b": 70
+      }
+    },
+    "packet_variant": {
+      "count": 107,
+      "available": 108,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 108,
+        "b_index": 108,
+        "a": 35,
+        "b": 70
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 107,
+        "available": 108,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 108,
+          "b_index": 108,
+          "a": 35,
+          "b": 70
+        }
+      },
+      {
+        "count": 106,
+        "available": 107,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 108,
+          "b_index": 108,
+          "a": 35,
+          "b": 70
+        }
+      },
+      {
+        "count": 105,
+        "available": 106,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 108,
+          "b_index": 108,
+          "a": 35,
+          "b": 70
+        }
+      }
+    ]
+  },
+  {
+    "rank": 123,
+    "a": "A007094",
+    "b": "A039155",
+    "score": 73.6,
+    "claimed": 64,
+    "variant": "raw",
+    "family_size": 10,
+    "offset_a": 0,
+    "offset_b": 1,
+    "length_a": 74,
+    "length_b": 69,
+    "native": {
+      "count": 0,
+      "available": 69,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": 0
+      }
+    },
+    "ordinal": {
+      "count": 64,
+      "available": 69,
+      "a_start": 0,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 64,
+        "b_index": 65,
+        "a": 100,
+        "b": 89
+      }
+    },
+    "packet_variant": {
+      "count": 64,
+      "available": 69,
+      "a_start": 0,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 64,
+        "b_index": 65,
+        "a": 100,
+        "b": 89
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 64,
+        "available": 69,
+        "a_start": 0,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 64,
+          "b_index": 65,
+          "a": 100,
+          "b": 89
+        }
+      },
+      {
+        "count": 63,
+        "available": 68,
+        "a_start": 1,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 64,
+          "b_index": 65,
+          "a": 100,
+          "b": 89
+        }
+      },
+      {
+        "count": 62,
+        "available": 67,
+        "a_start": 2,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 64,
+          "b_index": 65,
+          "a": 100,
+          "b": 89
+        }
+      }
+    ]
+  },
+  {
+    "rank": 124,
+    "a": "A088828",
+    "b": "A348741",
+    "score": 73.6,
+    "claimed": 64,
+    "variant": "raw",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 64,
+    "length_b": 73,
+    "native": {
+      "count": 64,
+      "available": 64,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 64,
+      "available": 64,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 64,
+      "available": 64,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 64,
+        "available": 64,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 63,
+        "available": 63,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 62,
+        "available": 62,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 125,
+    "a": "A213222",
+    "b": "A265283",
+    "score": 73.6,
+    "claimed": 64,
+    "variant": "drop2",
+    "family_size": 3,
+    "offset_a": 3,
+    "offset_b": 0,
+    "length_a": 82,
+    "length_b": 66,
+    "native": {
+      "count": 0,
+      "available": 63,
+      "a_start": 3,
+      "b_start": 3,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 3,
+        "b_index": 3,
+        "a": 3,
+        "b": 6
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 66,
+      "a_start": 3,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 3,
+        "b_index": 0,
+        "a": 3,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 64,
+      "available": 64,
+      "a_start": 5,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 64,
+        "available": 64,
+        "a_start": 5,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 63,
+        "available": 63,
+        "a_start": 6,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 2,
+        "available": 65,
+        "a_start": 3,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 5,
+          "b_index": 3,
+          "a": 4,
+          "b": 6
+        }
+      }
+    ]
+  },
+  {
+    "rank": 126,
+    "a": "A099564",
+    "b": "A276153",
+    "score": 73.1,
+    "claimed": 106,
+    "variant": "raw",
+    "family_size": 4,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 106,
+    "length_b": 121,
+    "native": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 106,
+        "available": 106,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 127,
+    "a": "A276150",
+    "b": "A341513",
+    "score": 73.1,
+    "claimed": 106,
+    "variant": "raw",
+    "family_size": 4,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 121,
+    "length_b": 106,
+    "native": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 106,
+        "available": 106,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 128,
+    "a": "A292592",
+    "b": "A332996",
+    "score": 73.1,
+    "claimed": 106,
+    "variant": "raw",
+    "family_size": 3,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 108,
+    "length_b": 106,
+    "native": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 106,
+        "available": 106,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 129,
+    "a": "A328482",
+    "b": "A371091",
+    "score": 73.1,
+    "claimed": 106,
+    "variant": "raw",
+    "family_size": 6,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 106,
+    "length_b": 121,
+    "native": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 106,
+      "available": 106,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 106,
+        "available": 106,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 130,
+    "a": "A133265",
+    "b": "A275365",
+    "score": 73.0,
+    "claimed": 73,
+    "variant": "drop1",
+    "family_size": 2,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 80,
+    "length_b": 74,
+    "native": {
+      "count": 0,
+      "available": 74,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 0,
+        "b_index": 0,
+        "a": 2,
+        "b": 0
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 74,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 0,
+        "b_index": 0,
+        "a": 2,
+        "b": 0
+      }
+    },
+    "packet_variant": {
+      "count": 73,
+      "available": 73,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 73,
+        "available": 73,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 72,
+        "available": 72,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 71,
+        "available": 71,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 131,
+    "a": "A002324",
+    "b": "A171774",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 114,
+    "length_b": 105,
+    "native": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 132,
+    "a": "A004258",
+    "b": "A029837",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 11,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 133,
+    "a": "A010476",
+    "b": "A020762",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 4,
+    "offset_a": 1,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 1,
+      "available": 104,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": 4,
+        "b": 7
+      }
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 134,
+    "a": "A025658",
+    "b": "A025673",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 24,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 135,
+    "a": "A046978",
+    "b": "A075553",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 2,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "ordinal": {
+      "count": 2,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 136,
+    "a": "A052409",
+    "b": "A327503",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 12,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 137,
+    "a": "A069158",
+    "b": "A359155",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 11,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 106,
+    "length_b": 105,
+    "native": {
+      "count": 2,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 3,
+        "b_index": 3,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 2,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 3,
+        "b_index": 3,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 138,
+    "a": "A077267",
+    "b": "A081602",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 3,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 106,
+    "length_b": 105,
+    "native": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 139,
+    "a": "A083650",
+    "b": "A138514",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 1,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 140,
+    "a": "A093829",
+    "b": "A113447",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 4,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 1,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 141,
+    "a": "A099443",
+    "b": "A132342",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 4,
+    "offset_a": 0,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 3,
+      "available": 104,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 4,
+        "b_index": 4,
+        "a": 0,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 10,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 10,
+        "b_index": 11,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 1,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 3,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 142,
+    "a": "A101871",
+    "b": "A101875",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 3,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 143,
+    "a": "A103391",
+    "b": "A331743",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 4,
+    "offset_a": 1,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 106,
+    "native": {
+      "count": 0,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": 2
+      }
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 0,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 0,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 144,
+    "a": "A106459",
+    "b": "A143433",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 4,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 3,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 3,
+        "b_index": 3,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 3,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 3,
+        "b_index": 3,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 145,
+    "a": "A106510",
+    "b": "A163804",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 8,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 106,
+    "native": {
+      "count": 1,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 146,
+    "a": "A109017",
+    "b": "A110161",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 6,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 5,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 5,
+        "b_index": 5,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "ordinal": {
+      "count": 5,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 5,
+        "b_index": 5,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 147,
+    "a": "A113446",
+    "b": "A121450",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 1,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 148,
+    "a": "A113661",
+    "b": "A113974",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 1,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": 2,
+        "b": -2
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": 2,
+        "b": -2
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 149,
+    "a": "A121373",
+    "b": "A199918",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 9,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 2,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 2,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 150,
+    "a": "A143064",
+    "b": "A185124",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 6,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 16,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 16,
+        "b_index": 16,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "ordinal": {
+      "count": 16,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 16,
+        "b_index": 16,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 151,
+    "a": "A143259",
+    "b": "A359818",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 121,
+    "native": {
+      "count": 8,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 9,
+        "b_index": 9,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "ordinal": {
+      "count": 8,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 9,
+        "b_index": 9,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 152,
+    "a": "A156277",
+    "b": "A365428",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 106,
+    "length_b": 105,
+    "native": {
+      "count": 1,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 2,
+        "b_index": 2,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 153,
+    "a": "A163812",
+    "b": "A163818",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 9,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 1,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 154,
+    "a": "A164116",
+    "b": "A164118",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "abs",
+    "family_size": 3,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 1,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": -1,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 155,
+    "a": "A209927",
+    "b": "A223139",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "drop1",
+    "family_size": 4,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 106,
+    "length_b": 106,
+    "native": {
+      "count": 0,
+      "available": 106,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 2,
+        "b": 1
+      }
+    },
+    "ordinal": {
+      "count": 0,
+      "available": 106,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 2,
+        "b": 1
+      }
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 2,
+      "b_start": 2,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 4,
+        "b_start": 4,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 156,
+    "a": "A290110",
+    "b": "A300250",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 14,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 157,
+    "a": "A305979",
+    "b": "A334868",
+    "score": 72.4,
+    "claimed": 63,
+    "variant": "raw",
+    "family_size": 3,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 101,
+    "length_b": 105,
+    "native": {
+      "count": 63,
+      "available": 101,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 64,
+        "b_index": 64,
+        "a": 42,
+        "b": 6
+      }
+    },
+    "ordinal": {
+      "count": 63,
+      "available": 101,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 64,
+        "b_index": 64,
+        "a": 42,
+        "b": 6
+      }
+    },
+    "packet_variant": {
+      "count": 63,
+      "available": 101,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 64,
+        "b_index": 64,
+        "a": 42,
+        "b": 6
+      }
+    },
+    "best_small_shift": [
+      {
+        "count": 63,
+        "available": 101,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 64,
+          "b_index": 64,
+          "a": 42,
+          "b": 6
+        }
+      },
+      {
+        "count": 62,
+        "available": 100,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 64,
+          "b_index": 64,
+          "a": 42,
+          "b": 6
+        }
+      },
+      {
+        "count": 61,
+        "available": 99,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "mismatch": {
+          "a_index": 64,
+          "b_index": 64,
+          "a": 42,
+          "b": 6
+        }
+      }
+    ]
+  },
+  {
+    "rank": 158,
+    "a": "A351454",
+    "b": "A351460",
+    "score": 72.4,
+    "claimed": 105,
+    "variant": "raw",
+    "family_size": 5,
+    "offset_a": 1,
+    "offset_b": 1,
+    "length_a": 105,
+    "length_b": 105,
+    "native": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "ordinal": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "packet_variant": {
+      "count": 105,
+      "available": 105,
+      "a_start": 1,
+      "b_start": 1,
+      "absolute": false,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 105,
+        "available": 105,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 104,
+        "available": 104,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": false,
+        "censored_by_listing": true
+      },
+      {
+        "count": 103,
+        "available": 103,
+        "a_start": 3,
+        "b_start": 3,
+        "absolute": false,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 159,
+    "a": "A030205",
+    "b": "A159817",
+    "score": 72.0,
+    "claimed": 72,
+    "variant": "abs",
+    "family_size": 2,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 72,
+    "length_b": 89,
+    "native": {
+      "count": 1,
+      "available": 72,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": -2,
+        "b": 2
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 72,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": -2,
+        "b": 2
+      }
+    },
+    "packet_variant": {
+      "count": 72,
+      "available": 72,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 72,
+        "available": 72,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 71,
+        "available": 71,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 70,
+        "available": 70,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  },
+  {
+    "rank": 160,
+    "a": "A115633",
+    "b": "A115713",
+    "score": 72.0,
+    "claimed": 120,
+    "variant": "abs",
+    "family_size": 2,
+    "offset_a": 0,
+    "offset_b": 0,
+    "length_a": 120,
+    "length_b": 120,
+    "native": {
+      "count": 1,
+      "available": 120,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "ordinal": {
+      "count": 1,
+      "available": 120,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": false,
+      "mismatch": {
+        "a_index": 1,
+        "b_index": 1,
+        "a": 1,
+        "b": -1
+      }
+    },
+    "packet_variant": {
+      "count": 120,
+      "available": 120,
+      "a_start": 0,
+      "b_start": 0,
+      "absolute": true,
+      "censored_by_listing": true
+    },
+    "best_small_shift": [
+      {
+        "count": 120,
+        "available": 120,
+        "a_start": 0,
+        "b_start": 0,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 119,
+        "available": 119,
+        "a_start": 1,
+        "b_start": 1,
+        "absolute": true,
+        "censored_by_listing": true
+      },
+      {
+        "count": 118,
+        "available": 118,
+        "a_start": 2,
+        "b_start": 2,
+        "absolute": true,
+        "censored_by_listing": true
+      }
+    ]
+  }
+]

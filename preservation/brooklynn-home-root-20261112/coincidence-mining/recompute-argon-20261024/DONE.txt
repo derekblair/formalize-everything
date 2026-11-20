@@ -1,0 +1,15 @@
+Independent recomputation of candidates C36 and C2 completed using Python 3 standard library only.
+
+Task A — C36 (A267579 vs A347523):
+- Simulated elementary cellular automaton Rule 167 (111..000 -> 1,0,1,0,0,1,1,1) from a single ON cell on an all-zero background to step N = 2000, tracking the dynamic uniform background state outside the active light cone [-n, n].
+- Compared centre cell A267579(n) against A347523(n) (0 if n >= 1 is a power of 2, else 1) over 2 <= n <= 2000 (at n = 1, A267579(1) = 1 != A347523(1) = 0 as noted in the brief).
+- Result: 0 mismatches on 2 <= n <= 2000 (verdict: AGREE_TO_2000). Written to result-C36.json.
+
+Task B — C2 (Maslanka coefficients A(n), OEIS A355437):
+- Computed A(n) = Sum_{j=0..n} (-1)^j * comb(n, j) * (2j+1) * zeta(2j+2) for n = 0..300 using exact rational Bernoulli numbers B_{2k} (via 2^(2k)*B_{2k} recurrence in fractions.Fraction) and pi via Machin's formula in decimal.Decimal at 360 working digits rounded to 250 certified output digits (absorbing the ~91-digit binomial cancellation at n = 300).
+- Every n in 0..300 has |A(n)| > 10^(-150); the minimum magnitude on 0 <= n <= 300 is at n = 289 with |A(289)| = 2.121166831936412556146...e-11 (uncertain_n = []).
+- Pinned claim sign(A(n)) = -1 iff n = 1 (mod 8) holds only for n = 0..7 and breaks first at n = 8, where A(8) = -0.005600136284920295... < 0 (pattern_holds = false, first_pattern_break = 8).
+- Cross-checked against the m-series Sum_{m>=1} m^(-2)*(1 - m^(-2))^(n-1)*(1 - (2n+1)*m^(-2)) (whose general term decays as m^(-2) with exact closed-form antiderivative F_n(x) = -x^(-1)*(1 - x^(-2))^n): both the elementary truncation bound and the Euler-Maclaurin integral tail confirm A(n) and its signs (crosscheck = "pass").
+- Compared computed signs against the published OEIS A355437 record (%S/%T/%U for n = 0..115 and b355437.txt for n = 0..300): 0 disagreements (listing_disagreements = []). Written to result-C2.json.
+
+RECOMPUTE COMPLETE

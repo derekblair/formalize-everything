@@ -1,0 +1,66 @@
+{
+  "136": {
+    "agreement": 215,
+    "start": 1,
+    "first_mismatch": {
+      "index": 216,
+      "a": 3,
+      "b": 2
+    },
+    "listed_terms_reproduced": true
+  },
+  "143": {
+    "agreement": 191,
+    "a_start": 1,
+    "b_start": 0,
+    "first_mismatch": {
+      "a_index": 192,
+      "b_index": 191,
+      "a": 97,
+      "b": 23
+    },
+    "listed_terms_reproduced": true
+  },
+  "156": {
+    "agreement": 857,
+    "start": 1,
+    "first_mismatch": {
+      "index": 858,
+      "a": 115,
+      "b": 75
+    },
+    "listed_terms_reproduced": true
+  },
+  "157": {
+    "agreement": 63,
+    "start": 1,
+    "first_mismatch": {
+      "index": 64,
+      "a": 42,
+      "b": 6
+    },
+    "listed_terms_reproduced": true
+  },
+  "158": {
+    "agreement": 120,
+    "start": 1,
+    "first_mismatch": {
+      "index": 121,
+      "a": 51,
+      "b": 62
+    },
+    "listed_terms_reproduced": true
+  },
+  "150_formula_contradiction": {
+    "formula": "sum_{k>=0} x^k/(1+x^(2*k+1))^(k+1), expanded in powers of x^2",
+    "n": 1,
+    "literal_coefficient": 2,
+    "listed": 1
+  },
+  "149_formula_contradictions": {
+    "bilateral_constant": 0,
+    "listed_a0": 1,
+    "ambiguous_prime29_prediction": -1,
+    "listed_a35": 1
+  }
+}

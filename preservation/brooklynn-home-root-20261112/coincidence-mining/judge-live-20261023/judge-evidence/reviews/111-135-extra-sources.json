@@ -1,0 +1,23 @@
+[
+  {
+    "url": "https://oeis.org/A292592/b292592.txt",
+    "local_path": ".firecrawl/b292592.txt",
+    "bytes": 71714,
+    "sha256": "9b59e1104fa75018be899810e4a6a5bc7bcd332a67f3d8370a8aea56f4e39a76",
+    "retrieved_utc": "2026-10-23T16:16:40.264655+00:00"
+  },
+  {
+    "url": "https://oeis.org/A332996/b332996.txt",
+    "local_path": ".firecrawl/b332996.txt",
+    "bytes": 156386,
+    "sha256": "b677d6aa0167c566e39ac2f050f73f5340919a7c5614447469b4d878b98431a3",
+    "retrieved_utc": "2026-10-23T16:16:39.820653+00:00"
+  },
+  {
+    "url": "https://oeis.org/A171774/b171774.txt",
+    "local_path": ".firecrawl/b171774.txt",
+    "bytes": 70489,
+    "sha256": "52f9a9a6cb514d1d1e3e5cd5dc5b39862057b7ea1f70503459be865c7d8647c9",
+    "retrieved_utc": "2026-10-23T16:16:39.600652+00:00"
+  }
+]

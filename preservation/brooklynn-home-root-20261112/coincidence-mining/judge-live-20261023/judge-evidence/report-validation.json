@@ -1,0 +1,12 @@
+{
+  "candidate_sections": 100,
+  "verdicts": {
+    "KEEP": 0,
+    "DROP": 100
+  },
+  "exact_order": true,
+  "local_links_valid": true,
+  "closing_marker": "JUDGE COMPLETE",
+  "sha256": "ebd5610ebe25866c522eb6d0c70a379d4bc85d31ea61a38d9b7382c243137947",
+  "bytes": 96924
+}

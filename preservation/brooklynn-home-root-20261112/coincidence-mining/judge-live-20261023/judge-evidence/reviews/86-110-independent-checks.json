@@ -1,0 +1,257 @@
+{
+  "87": {
+    "n": 11011,
+    "a": 111,
+    "b": 1111,
+    "preceding_agreement": 11011
+  },
+  "91": {
+    "n": 135,
+    "a": 1,
+    "b": 0,
+    "preceding_agreement": 134,
+    "135": {
+      "factor": {
+        "3": 3,
+        "5": 1
+      },
+      "derivative": 162,
+      "divisible_by_3_cubed": true
+    }
+  },
+  "93": {
+    "n": 144,
+    "a": 4,
+    "b": 8,
+    "preceding_agreement": 143
+  },
+  "94": {
+    "n": 625,
+    "a": 0,
+    "b": 1,
+    "preceding_agreement": 624
+  },
+  "95": {
+    "n": 748,
+    "sigma": 1512,
+    "zumkeller_divisors": [],
+    "divisors": [
+      1,
+      2,
+      4,
+      11,
+      17,
+      22,
+      34,
+      44,
+      68,
+      187,
+      374,
+      748
+    ]
+  },
+  "96": {
+    "n": 1155,
+    "a": 1,
+    "b": 0,
+    "preceding_agreement": 1153
+  },
+  "97": {
+    "n": 120,
+    "a": 3,
+    "b": 4,
+    "preceding_agreement": 120,
+    "split_sums_120": [
+      3,
+      12,
+      21,
+      120
+    ]
+  },
+  "99": {
+    "n": 137,
+    "a": 221,
+    "b": 222,
+    "preceding_agreement": 136
+  },
+  "100": {
+    "n": 144,
+    "strict": [
+      [
+        [
+          6,
+          24
+        ],
+        [
+          9,
+          16
+        ]
+      ],
+      [
+        [
+          8,
+          18
+        ],
+        [
+          12,
+          12
+        ]
+      ],
+      [
+        [
+          9,
+          16
+        ],
+        [
+          12,
+          12
+        ]
+      ]
+    ],
+    "proper": [
+      [
+        [
+          4,
+          4,
+          9
+        ],
+        [
+          4,
+          6,
+          6
+        ]
+      ],
+      [
+        [
+          6,
+          24
+        ],
+        [
+          9,
+          16
+        ]
+      ],
+      [
+        [
+          8,
+          18
+        ],
+        [
+          12,
+          12
+        ]
+      ],
+      [
+        [
+          9,
+          16
+        ],
+        [
+          12,
+          12
+        ]
+      ]
+    ],
+    "additional": [
+      [
+        [
+          4,
+          4,
+          9
+        ],
+        [
+          4,
+          6,
+          6
+        ]
+      ]
+    ]
+  },
+  "101": {
+    "n": 153,
+    "a": 0,
+    "b": 1,
+    "preceding_agreement": 151
+  },
+  "102": {
+    "n": 135,
+    "a": 0,
+    "b": 1,
+    "preceding_agreement": 133,
+    "g135": 1
+  },
+  "103": {
+    "n": 119,
+    "a": 9,
+    "b": 5,
+    "preceding_agreement": 119
+  },
+  "105": {
+    "n": 128,
+    "exponent_binary": "111",
+    "alternating_sum": 3,
+    "a": 8,
+    "b": 1
+  },
+  "106": {
+    "n": 555,
+    "proper_divisors": [
+      3,
+      5,
+      15,
+      37,
+      111,
+      185
+    ],
+    "gf2_divisors": [
+      1,
+      555
+    ],
+    "factor_x_squared_minus_x_plus_1": true,
+    "quotient_coefficients_low_to_high": [
+      1,
+      2,
+      1,
+      0,
+      -1,
+      0,
+      1,
+      1
+    ]
+  },
+  "107": {
+    "k": 225,
+    "factor": {
+      "3": 2,
+      "5": 2
+    },
+    "sigma": 403,
+    "powerful_part": 225,
+    "a_membership": true,
+    "b_membership": false
+  },
+  "108": {
+    "k": 256,
+    "square_divisors": 5,
+    "exponent_base4": "20",
+    "b_membership": false
+  },
+  "109": {
+    "n": 185,
+    "a": 240,
+    "b": 241,
+    "preceding_agreement": 184,
+    "240": {
+      "unitary_sigma": 408,
+      "squarefree_sigma": 72,
+      "m": 8,
+      "q": 7
+    }
+  },
+  "110": {
+    "x": "1.1049875621120890270219264912",
+    "y": "10.049875621120890270219264912",
+    "first_130_digits_match_after_two": true,
+    "relation": "10*x-1=y"
+  }
+}
