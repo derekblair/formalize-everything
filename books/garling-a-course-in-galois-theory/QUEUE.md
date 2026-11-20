@@ -1190,3 +1190,66 @@ Chapter 18 (*Transcendental elements and algebraic independence*) contains **11*
   - `Garling.Chapter18.exercise_18_7_repaired`: proves `¬ ∃ s : L, IntermediateField.adjoin K {x, y} = IntermediateField.adjoin K {s}`.
   - `Garling.Chapter18.exercise_18_7_not_purelyTranscendental`: proves `transcendenceDegree K K(x, y) = 1`, `¬ IsGarlingPurelyTranscendental K K(x, y)`, and `¬ IsPurelyTranscendental K K(x, y)`.
 - **Status:** Held in `QUEUE.md` for the corrupted printed hypothesis `K(x, y) = s` (intended `K(x, y) = K(s)`); all repaired parts `(i)`, `(ii)`, non-simplicity, and non-pure-transcendence are kernel-proved.
+
+---
+
+# Chapter 19 — Fidelity Holds (Printed pp. 147–154 / PDF pp. 155–162)
+
+Chapter 19 (*Some further topics*) contains **11** main-text theorem/corollary items (`Theorem 19.1`–`Theorem 19.9` + 2 unnumbered `Corollary` blocks [to `Theorem 19.1` and to `Theorem 19.4`]; `0` numbered definitions, `0` numbered lemmas) and **3** numbered exercises (`Exercise 19.1`–`Exercise 19.3`), for **14** scope-of-record items total (plus inline prose definitions and unnumbered prose derivations across §§19.1–19.3). Among these **14** items, **10 / 14** (`7 / 11` main-text: `Theorems 19.1, 19.2, 19.4, 19.5, 19.6, 19.8` + `Corollary` [to `Theorem 19.4`]; + `3 / 3` exercises: `Exercise 19.1`, `Exercise 19.2`, `Exercise 19.3`) are proved literally as printed, while **4 / 14** (`4 / 11` main-text: `Corollary` [to `Theorem 19.1`], `Theorem 19.3`, `Theorem 19.7`, `Theorem 19.9 (Gauss)`; `0 / 3` exercises) are held below as source-fidelity holds covering an omitted `1 ≤ n` guard (`Corollary` [to `19.1`]), a genuine positive-characteristic textbook error in Clause 4 + omitted `1 ≤ n` (`Theorem 19.3`), and omitted standing `2 < n` domain hypotheses (`Theorem 19.7`, `Theorem 19.9 (Gauss)`, plus implicit `1 ≤ k` in *Fermat primes*). Every held item has its kernel-proved counterexample(s), repaired theorem(s), and exact biconditional characterization(s) in `Garling/Chapter19.lean`; none is silently weakened or counted as literally closed prior to coordinator ruling.
+
+---
+
+## Ch. 19, Corollary [to Theorem 19.1] (§19.1, printed p. 148 / PDF p. 156) — Omitted `1 ≤ n` hypothesis for irreducibility (`n = 0` unit counterexample) (fidelity hold)
+
+- **Printed statement (p. 148, verified on 160 DPI scan; OCR `garling1986_pages.txt` l. 5505 corrupts `Γ_f ≅ Σ_n` to `r 1 ~ L 11`):** *"$f$ is irreducible over $K(s_1, \dots, s_n)$ and $\Gamma_f \cong \Sigma_n$, the group of permutations of $\{1, \dots, n\}$."*
+- **Exact blocker:** The statement omits $n \ge 1$. At $n = 0$, the empty product $f = \prod_{i \in \emptyset} (x - t_i) = 1 \in K[x]$ is a unit and therefore **not** irreducible (`¬ Irreducible 1` and `¬ IsGarlingIrreducible 1`, matching the Chapter 5 `Theorem 5.2` / `Exercises 5.6–5.7` hold convention). By contrast, the Galois-group isomorphism $\Gamma_f \cong \Sigma_n$ holds unconditionally for **all** `n : ℕ` (at $n = 0$, both $\Gamma_1$ and $\Sigma_0$ are trivial).
+- **Kernel-proved declarations in `Garling/Chapter19.lean`:**
+  - `Garling.Chapter19.corollary_to_theorem_19_1_galoisGroup`: proves $\Gamma_f \cong \Sigma_n$ unconditionally for **all** `n : ℕ` (including `n = 0`) and across **every** splitting field `F` in any universe `w`.
+  - `Garling.Chapter19.corollary_to_theorem_19_1_n0_counterexample`: proves for every field `K` at `n = 0` (`t = Fin.elim0`) that `IsGarlingAlgIndepTuple K t`, `generalRootsPolyOverElemSymm K t = 1`, `¬ Irreducible (generalRootsPolyOverElemSymm K t)`, and `¬ IsGarlingIrreducible (generalRootsPolyOverElemSymm K t)`.
+  - `Garling.Chapter19.corollary_to_theorem_19_1`: proves both irreducibility (`Irreducible` and `IsGarlingIrreducible`) and $\Gamma_f \cong \Sigma_n$ (for `E` and for every splitting field `F`) for all `1 ≤ n`.
+  - `Garling.Chapter19.corollary_to_theorem_19_1_irred_iff`: proves `Irreducible (generalRootsPolyOverElemSymm K t) ↔ 1 ≤ n`.
+- **Status:** Held in `QUEUE.md` as an omitted-`1 ≤ n` boundary hold; unconditional Galois-group theorem, `n = 0` counterexample, repaired `1 ≤ n` theorem, and exact `↔ 1 ≤ n` biconditional are all kernel-proved.
+
+---
+
+## Ch. 19, Theorem 19.3 (§19.1, printed pp. 148–149 / PDF pp. 156–157) — Genuine positive-characteristic textbook error in Clause 4 (`char K = 2, 3`) + omitted `1 ≤ n` in Clause 1 (fidelity hold)
+
+- **Printed statement (pp. 148–149, verified on 160 DPI scan; OCR `garling1986_pages.txt` l. 5527 corrupts `Σ_n` and `n ≤ 4` to `En` and `n ~4`):** *"The generic polynomial $x^n - a_1 x^{n-1} + \dots + (-1)^n a_n$ is irreducible over $K(a_1, \dots, a_n)$. It is separable, and its Galois group is isomorphic to $\Sigma_n$. It is solvable by radicals if and only if $n \leqslant 4$."*
+- **Exact blockers:**
+  1. **Genuine mathematical error in Clause 4 (`n ≤ 4 ⟹ solvable by radicals` fails when `char K = 2` at `n ∈ {2, 3, 4}` and when `char K = 3` at `n ∈ {3, 4}`):** §19.1 assumes only *"Suppose that $K$ is a field"* (p. 147), and §14.1 (`IsGarlingSolvableByRadicals`, p. 110) imposes **no** characteristic condition on radical extensions (unlike `Theorem 17.3` and `Theorem 17.6`, and unlike Chapter 20's opening sentence on p. 155). Whenever $p = \operatorname{char} K > 0$ divides $n!$ (in particular $p = 2, n \in \{2, 3, 4\}$ and $p = 3, n \in \{3, 4\}$), the generic polynomial $f_n$ is **not** solvable by radicals over $K(a_1, \dots, a_n)$: passing to $\overline{K}(a_1, \dots, a_n)$, Frobenius-reducing every $p^{e_i} q_i$-th radical step ($\eta_i = \beta_i^{p^{D_i}}$) to a $p \nmid q_i$ radical tower, and taking its Galois closure produces an extension of degree prime to $p$ containing all separable roots of $f_n$, contradicting $p \mid n! = [\overline{K}(t_1, \dots, t_n) : \overline{K}(a_1, \dots, a_n)]$. Across **all** fields $K$ and all `n : ℕ`, the exact truth is: `IsGarlingSolvableByRadicals f_n ↔ n ≤ 4 ∧ ¬ (ringChar K ∣ n.factorial)`.
+  2. **Omitted `1 ≤ n` in Clause 1:** At `n = 0`, the generic polynomial is `1` (a unit), which is not irreducible.
+- **Kernel-proved declarations in `Garling/Chapter19.lean`:**
+  - `Garling.Chapter19.theorem_19_3_clauses_1_to_3`: proves irreducibility, separability (`Polynomial.Separable` and `IsGarlingSeparablePoly`), and $\Gamma_f \cong \Sigma_n$ across all splitting fields for every `1 ≤ n` and arbitrary characteristic.
+  - `Garling.Chapter19.theorem_19_3_n0_not_irreducible`: refutes irreducibility at `n = 0` over every field `K`.
+  - `Garling.Chapter19.theorem_19_3_solvable_iff`: proves the universal characterization `IsGarlingSolvableByRadicals f ↔ n ≤ 4 ∧ ¬ (ringChar K ∣ n.factorial)` across **all** fields `K` and **all** `n : ℕ`.
+  - `Garling.Chapter19.theorem_19_3_char_dvd_factorial_not_solvable`, `Garling.Chapter19.theorem_19_3_char_two_counterexample` (`K = ZMod 2`, `n = 2, 3, 4`), and `Garling.Chapter19.theorem_19_3_char_three_counterexample` (`K = ZMod 3`, `n = 3, 4`): kernel-proved refutations of the literal printed Clause 4.
+  - `Garling.Chapter19.theorem_19_3_repaired`: full repaired theorem (`1 ≤ n`, universal `n ≤ 4 ∧ ¬ (ringChar K ∣ n.factorial)`).
+  - `Garling.Chapter19.theorem_19_3_of_char_zero_or_ge_five`: literal `IsGarlingSolvableByRadicals f ↔ n ≤ 4` under `1 ≤ n` and `ringChar K = 0 ∨ 5 ≤ ringChar K`.
+- **Status:** Held in `QUEUE.md` as a genuine textbook mathematical-error fidelity hold; counterexamples (`n = 0`, char 2, char 3), universal characterization, and repaired theorems are all kernel-proved.
+
+---
+
+## Ch. 19, Theorem 19.7 (§19.3, printed p. 152 / PDF p. 160) — Omitted standing `2 < n` hypothesis (`n = 1, 2` counterexamples at `r = 0`) (fidelity hold)
+
+- **Printed statement (p. 152, verified on 160 DPI scan; OCR `garling1986_pages.txt` ll. 5678–5679 corrupts `p_i^b` to `pr`):** *"Suppose that $n = 2^t p_1^{a_1} \dots p_r^{a_r}$, where $p_1 \dots p_r$ `[sic]` are distinct odd primes. Then $n$ is possible if and only if $p_i^b$ is possible for $1 \leqslant b \leqslant a_i$, $1 \leqslant i \leqslant r$."*
+- **Exact blocker:** §19.3 (p. 152) defines *possible* strictly for integers $n > 2$ (`IsPossible n := 2 < n ∧ IsUnitSideRegularPolygonConstructible n`), matching `Chapter06.regularPolygon_constructible_iff` ($3 \le n$). Because powers of $2$ ($n = 4, 8, \dots$) require $r = 0$ odd prime factors, omitting `2 < n` from `Theorem 19.7` allows $r = 0, t = 0$ ($n = 1$) and $r = 0, t = 1$ ($n = 2$), where the universal quantifier over $1 \le i \le 0$ holds vacuously on the RHS while `¬ IsPossible 1` and `¬ IsPossible 2` on the LHS.
+- **Kernel-proved declarations in `Garling/Chapter19.lean`:**
+  - `Garling.Chapter19.theorem_19_7_n1_n2_counterexamples`: refutes the literal unguarded statement at $n = 1$ ($t = 0, r = 0$) and $n = 2$ ($t = 1, r = 0$).
+  - `Garling.Chapter19.theorem_19_7_repaired`: proves the exact biconditional under `2 < n`.
+  - `Garling.Chapter19.theorem_19_7_iff`: proves the unconditional biconditional `IsPossible n ↔ 2 < n ∧ ∀ i, ∀ b, 1 ≤ b → b ≤ a i → IsPossible (p i ^ b)` for all `n : ℕ`.
+- **Status:** Held in `QUEUE.md` as an omitted-standing-`2 < n` fidelity hold; counterexamples, repaired theorem, and unconditional characterization are all kernel-proved.
+
+---
+
+## Ch. 19, Theorem 19.9 (Gauss) (§19.3, printed p. 154 / PDF p. 162) — Omitted standing `2 < n` hypothesis (`n = 1, 2` at `r = 0, t ∈ {0, 1}`) + implicit `1 ≤ k` in *Fermat primes* (fidelity hold)
+
+- **Printed statement (p. 154, verified on 160 DPI scan):** *"It is possible to construct a regular polygon with $n$ sides if and only if $n$ is of the form $2^t p_1 \dots p_r$, where $t \geqslant 0$ and $p_1, \dots, p_r$ are distinct Fermat primes."*
+- **Exact blockers:**
+  1. **Omitted standing `2 < n` (`3 ≤ n`):** Because squares ($n = 4 = 2^2$) and regular octagons ($n = 8 = 2^3$) require $r = 0$ Fermat primes while the statement explicitly prints $t \ge 0$, the values $n = 2^0 = 1$ and $n = 2^1 = 2$ satisfy the RHS (`t = 0, P = ∅` and `t = 1, P = ∅`) whereas no Euclidean regular polygon has $1$ or $2$ sides (`¬ IsPossible 1`, `¬ IsPossible 2`).
+  2. **Implicit `1 ≤ k` excluding $2 = 2^0 + 1$ in *Fermat primes* (pp. 153–154):** Allowing $k = 0$ in *"Primes of the form $2^k + 1$"* would make $2 = 2^0 + 1$ a "Fermat prime", contradicting p. 154 l. 1 (*"$k$ must be of the form $2^l$"*, since $2^l \ge 1$) and p. 154 l. 4's list starting at $3$; `IsFermatPrime p` explicitly includes `1 ≤ k` (documented in `section_19_3_fermat_prime_k0_remark`).
+- **Kernel-proved declarations in `Garling/Chapter19.lean`:**
+  - `Garling.Chapter19.theorem_19_9_n1_n2_counterexamples`: proves both $n = 1$ and $n = 2$ satisfy the RHS (`P = ∅`, `t = 0, 1`) while `¬ IsPossible 1` and `¬ IsPossible 2`.
+  - `Garling.Chapter19.section_19_3_fermat_prime_k0_remark`: documents `Nat.Prime (2^0 + 1)`, `¬ IsFermatPrime 2`, and `¬ ∃ l, 0 = 2^l`.
+  - `Garling.Chapter19.theorem_19_9_repaired`: proves Gauss's theorem for every `2 < n` in both `Finset ℕ` and injective `Fin r → ℕ` tuple forms.
+  - `Garling.Chapter19.theorem_19_9_iff`: proves both unconditional characterizations across all `n : ℕ` (`2 < n ∧ ...`, and equivalently `(P = ∅ → 2 ≤ t) ∧ ...`).
+- **Status:** Held in `QUEUE.md` as an omitted-standing-`2 < n` (plus implicit `1 ≤ k` in *Fermat primes*) fidelity hold; counterexamples, repaired theorems, and unconditional characterizations are all kernel-proved.
